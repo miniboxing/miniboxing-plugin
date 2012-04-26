@@ -20,26 +20,49 @@ class Minibox(val global: Global) extends Plugin {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks");
     val phaseName = Minibox.this.name
-    //def newPhase(_prev: Phase): StdPhase =
-    import scala.tools.nsc.Phase
-    //def newPhase(prev: Phase): StdPhase = new MiniboxPhase(prev)
 
-    def transformInfo(sym: Symbol,tpe: Type): Type = {println("type: " + tpe); tpe}
-    def newTransformer(unit: CompilationUnit): Transformer = new Transformer() {
-      override def transform(tree) = {println("tree: " + tree); tree}
+    val MinispecedClass = definitions.getRequiredClass("plugin.minispec")
+
+    override def transformInfo(sym: Symbol, tpe: Type): Type = {
+      if (sym hasAnnotation MinispecedClass)
+        println("minispec'd class: " + sym.nameString);
+
+//      tpe.resultType match {
+//        case cinfo @ ClassInfoType(parents, decls, clazz) =>
+//          val tparams = tpe.typeParams
+//          if (tparams.isEmpty)
+//            afterSpecialize(parents foreach (_.typeSymbol.info))
+//
+//          val parents1 = parents mapConserve specializedType
+//          if (parents ne parents1) {
+//            debuglog("specialization transforms %s%s parents to %s".format(
+//              if (tparams.nonEmpty) "(poly) " else "", clazz, parents1))
+//          }
+//          
+//          val newScope = newScopeWith(specializeClass(clazz, typeEnv(clazz)) ++ specialOverrides(clazz): _*)
+//          // If tparams.isEmpty, this is just the ClassInfoType.
+//          GenPolyType(tparams, ClassInfoType(parents1, newScope, clazz))
+//        case _ =>
+//          tpe
+//      }
+      tpe
     }
 
-//    val x = 1
-//    class MiniboxPhase(prev: Phase) extends StdPhase(prev) {
-//      override def name = Minibox.this.name
-//      def apply(unit: CompilationUnit) {
-//        for ( tree @ Apply(Select(rcvr, nme.DIV), List(Literal(Constant(0)))) <- unit.body;
-//             if rcvr.tpe <:< definitions.IntClass.tpe) 
-//          {
-//            unit.error(tree.pos, "definitely division by zero")
-//          }
-//      }
-//    }
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer() {
+      override def transform(tree) = { println("tree: " + tree); tree }
+    }
+
+    //    val x = 1
+    //    class MiniboxPhase(prev: Phase) extends StdPhase(prev) {
+    //      override def name = Minibox.this.name
+    //      def apply(unit: CompilationUnit) {
+    //        for ( tree @ Apply(Select(rcvr, nme.DIV), List(Literal(Constant(0)))) <- unit.body;
+    //             if rcvr.tpe <:< definitions.IntClass.tpe) 
+    //          {
+    //            unit.error(tree.pos, "definitely division by zero")
+    //          }
+    //      }
+    //    }
   }
 }
 
