@@ -25,9 +25,7 @@ class Minibox(val global: Global) extends Plugin {
 
     // just patching through to the MiniboxTransformation methods
     override def transformInfo(sym: Symbol, tpe: Type): Type = miniboxTransformInfo(sym, tpe)
-    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer() {
-      override def transform(tree: Tree) = miniboxTransformTree(tree)
-    }
+    override def newTransformer(unit: CompilationUnit): Transformer = new MiniboxTransformer(unit)
   }
 }
 
