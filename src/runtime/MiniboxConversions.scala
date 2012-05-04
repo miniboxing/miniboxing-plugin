@@ -30,12 +30,12 @@ object MiniboxConversions {
    * As a workaround, in our test examples we manually insert MiniboxToAny 
    * in such places. 
    */
-  @inline final def minibox[T](l: T)(implicit tag: Manifest[T]) : Any = {
+  @inline final def minibox2box[T](l: T)(implicit tag: Manifest[T]) : Any = {
     null // dispatch on tag
   }
   
   // the tag should be known from the context
-  @inline final def miniunbox[T](a: Any): T = {
+  @inline final def box2minibox[T](a: Any): T = {
     null.asInstanceOf[T]
   }
   

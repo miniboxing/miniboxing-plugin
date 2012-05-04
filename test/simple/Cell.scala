@@ -1,10 +1,8 @@
 package simple
 
-import runtime.MiniboxConversions._
-import runtime.MiniboxTypeTagDispatch._
-import runtime.MiniboxTypes._
 import plugin.minispec 
 
+@minispec
 class Cell[@minispec T : Manifest](t : T) {
   def toString2(): String = t.toString
   
@@ -12,7 +10,7 @@ class Cell[@minispec T : Manifest](t : T) {
     "Cell(" + t + ")" + t.##
   }
   
-  def meth() : Any = t
+  def meth() : Any = Cell.this.t
   override def hashCode() = {
     println(toString())
     if (t.isInstanceOf[Int]){

@@ -15,7 +15,7 @@ object MiniboxTypeTagDispatch {
   import MiniboxTypes._
   @inline final def toString[T](x: T)(implicit tag: Manifest[T]): String = "" + x
   @inline final def ##[T](x: T)(implicit tag: Manifest[T]): Int = x.##
-  @inline final def hashCode[T](x: T)(implicit tag: Manifest[T]): Int = x.##
+  @inline final def hashCode[T](x: T)(implicit tag: Manifest[T]): Int = x.hashCode
 
   @inline final def array_apply[T](array: Any, pos: Int)(implicit tag: Manifest[T]): T =
     array.asInstanceOf[Array[T]](pos)
@@ -23,14 +23,6 @@ object MiniboxTypeTagDispatch {
   @inline final def array_update[T](array: Any, pos: Int, x: T)(implicit tag: Manifest[T]): Unit = {
     ()
   }
-
-  @inline final def isInstanceOf(x: Minibox, tag: Tag, c: Int): Boolean = false
-  @inline final def hashcode(x: Minibox, tag: Tag) = x.toInt
-  @inline final def asInstanceOf(x: Minibox, tag: Tag, c: Int) = x
-
-  @inline final def eq(x: Minibox, tag: Tag, y: Minibox, yTag: Int) = false
-  @inline final def eq(x: Minibox, tag: Tag, y: Double) = false
-  @inline final def eq(x: Minibox, tag: Tag, y: Any) = false
 
   @inline final def newarray(len: Int, tag: Tag): Any = ()
 }
