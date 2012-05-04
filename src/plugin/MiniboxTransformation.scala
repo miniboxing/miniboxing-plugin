@@ -9,6 +9,7 @@ trait MiniboxTransformation extends TypingTransformers {
   import global._
   import definitions._
   import Flags._
+  import typer.{ typed, atOwner }
   lazy val MinispecedClass = definitions.getRequiredClass("plugin.minispec")
   //lazy val 
   /**
@@ -55,60 +56,80 @@ trait MiniboxTransformation extends TypingTransformers {
      * Tells whether a tree computes a value that will be stored on Long and
      * will have a Manifest[T].
      * 
-     * XXX: now its a hack
+     * XXX: now it's a hack
      * The following would work for sure if we add the annotation:
      *   t.tpe.typeSymbol hasAnnotation MinispecedClass 
      */
-    private def isMiniboxed(t: Tree) = {
-      t.tpe.typeSymbol isTypeParameter
-    }
+    private def isMiniboxed(t: Tree) = t.tpe.typeSymbol isTypeParameter
+    private def isMiniboxed(typ: Symbol) = typ.isTypeParameter
 
     override def transform(tree: Tree): Tree = {
-      // similar to Erasure.scala:656
       tree match {
-        case Apply(sel @ Select(qual, meth), args) => {
+        case Apply(fn, args) => 
           val methodSym = tree.symbol
-          var newTree: Tree = null
-
-          /*
-           * Dispatch on a variable of type T:
-           *  - for hashCode and ##, use an optimized function
-           *  - for the rest, box
-           */
-          if (isMiniboxed(qual)) {
-            if (methodSym == Any_## || methodSym == Any_hashCode) {
-              newTree = Apply(Select(tagDispatchObject, methodSym.name), transform(qual) :: transformTrees(args))
-            } else {
-              newTree = Apply(Select(box(qual), meth), args)
+          
+          // box the arguments if necessary
+          val newArgs = 
+            (methodSym.tpe.paramTypes zip (args map (a => (a, a.tpe)))) map {
+              case (paramType, (arg, argType)) =>
+                if (paramType == AnyClass.tpe && isMiniboxed(argType.typeSymbol))
+                  localTyper.typed(atPos(arg.pos)(box(arg)))
+                else
+                  arg
             }
+
+          fn match {
+            case sel @ Select(qual, meth) =>
+              var newTree: Tree = null
+
+              /*
+               * Dispatch on a variable of type T:
+               *  - for hashCode and ##, use an optimized function
+               *  - for the rest, box
+               */
+              if (isMiniboxed(qual)) {
+                if (methodSym == Any_## || methodSym == Any_hashCode) {
+                  newTree = Apply(Select(tagDispatchObject, methodSym.name), transformTrees(qual :: newArgs))
+                } else {
+                  newTree = Apply(Select(box(transform(qual)), meth), transformTrees(newArgs))
+                }
+              }
+
+              /*
+               * For array access instructions, use the static methods from MiniboxTypeTagDispatch  
+               */
+              if (methodSym == Array_apply && isMiniboxed(tree)) {
+                newTree = Apply(Select(tagDispatchObject, array_apply), transformTrees(qual :: newArgs))
+              }
+
+              if (methodSym == Array_update && isMiniboxed(args(1))) {
+                newTree = Apply(Select(tagDispatchObject, array_update), transformTrees(qual :: newArgs))
+              }
+
+              if (newTree == null)
+                newTree = treeCopy.Apply(tree, transform(fn), newArgs)
+              localTyper.typed(atPos(tree.pos)(newTree))
+            case _ =>
+              localTyper.typed(atPos(tree.pos)(treeCopy.Apply(tree, transform(fn), newArgs)))
           }
 
-          /*
-           * For array access instructions, use the static methods from MiniboxTypeTagDispatch  
-           */
-          if (methodSym == Array_apply && isMiniboxed(tree)) {
-            newTree = Apply(Select(tagDispatchObject, array_apply), transform(qual) :: transformTrees(args))
-          }
 
-          if (methodSym == Array_update && isMiniboxed(args(1))) {
-            newTree = Apply(Select(tagDispatchObject, array_update), transform(qual) :: transformTrees(args))
-          }
+        /*
+         *  assignment, valdef, return => box
+         *  HACK: There are also other cases where boxing has to be done by hand :D
+         */
+          //XXX: not able to change valdefs and defdefs
+        case DefDef(mods, name, tparams, vparamss, tpt, rhs) if (tpt.tpe == AnyClass.tpe && isMiniboxed(rhs)) =>
+          //localTyper.typed(atPos(tree.pos)(DefDef(mods, name, tparams, vparamss, tpt, box(rhs))))
+          super.transform(tree)
+        case ValDef(mods, name, tpt, rhs) if (tpt.tpe == AnyClass.tpe && isMiniboxed(rhs)) =>
+          // localTyper.typed((ValDef(mods, name, tpt, box(transform(rhs))))
+          super.transform(tree)
+        case Assign(lhs, rhs) if (lhs.tpe == AnyClass.tpe && isMiniboxed(rhs)) =>
+          localTyper.typed(atPos(tree.pos)(Assign(lhs, box(transform(rhs)))))
 
-          /*
-           * A couple of other cases where we have to box/unbox a value of type T
-           * 
-           * HACK: Can be inserted by hand 
-           */
-
-          if (newTree != null) {
-            localTyper.typed(atPos(tree.pos)(newTree))
-          } else {
-            localTyper.typed(atPos(tree.pos)(
-              treeCopy.Apply(tree, treeCopy.Select(sel, transform(qual), meth), transformTrees(args))))
-          }
-        }
         case _ =>
-          //          println("descending into: " + tree.printingPrefix + " " +  tree)
+          //                    println("descending into: " + tree.printingPrefix + " " +  tree)
           super.transform(tree)
       }
     }
