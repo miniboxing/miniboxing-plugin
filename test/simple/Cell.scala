@@ -22,8 +22,6 @@ class Cell[@minispec T : Manifest](t : T) {
     var x1 : Any = a(0)
     x1 = a(1)
     val y : Cell[_] = new Cell[T](x1.asInstanceOf[T])
-    // Why is it expanded to: 
-    // val y: simple.Cell[_] = new simple.Cell[T](x1.asInstanceOf[T])(Cell.this.evidence$1)(Cell.this.evidence$1);
     t.hashCode
   }
 }

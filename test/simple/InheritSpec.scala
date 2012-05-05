@@ -1,11 +1,24 @@
 package simple
 
-trait SpecTrait[A, B]
+import plugin.minispec 
+import scala.util.Random
 
-class Base 
-class Foo[A,B] extends Base with SpecTrait[A, Int] // XXX:  won't compile if add  'with SpecTrait[Double, A]'
-class Bar[A,B] extends Foo[A,B]
-class Top extends Bar[Int, Double]
+class Base
 
-class Foo2[A] extends Top
+@minispec
+trait SpecTrait[@minispec A, @minispec B]
+
+
+@minispec
+class Foo[@minispec T: Manifest] extends Base with SpecTrait[T, T]
+
+@minispec
+class Bar[@minispec T: Manifest] extends Foo[T]
+
+class Top extends Bar[Int] {
+  def method = {
+    val x : Foo[_] = if (Random.nextInt == 0) new Bar[Double] else new Top 
+    x
+  }
+}
 

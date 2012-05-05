@@ -6,9 +6,11 @@ object Main {
           "-cp", 
           "bin/", 
           "test/simple/Cell.scala", 
+//          "test/simple/Members.scala", 
           "-Xprint:minibox,cleanup",
           "-Ystop-after:cleanup",
-          "-no-specialization"
+          "-no-specialization",
+          "-nowarn"
           )
     println("running")
     scala.tools.nsc.Main.main(args);

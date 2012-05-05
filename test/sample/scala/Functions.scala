@@ -1,4 +1,4 @@
-package scala
+package sample.scala
 
 trait Function0[@specialized +R] {
   def apply():R

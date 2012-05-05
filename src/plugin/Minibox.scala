@@ -8,6 +8,7 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
+import plugin.MiniboxTreeTransformation
 
 class Minibox(val global: Global) extends Plugin {
   import global._
@@ -16,16 +17,21 @@ class Minibox(val global: Global) extends Plugin {
   val description = "checks for division by zero"
   val components = List[PluginComponent](Component)
 
-  private object Component extends PluginComponent with InfoTransform with TypingTransformers with 
-    MiniboxLogic with MiniboxTransformation with MiniboxLogging {
+  private object Component extends PluginComponent with  
+    MiniboxLogic with MiniboxInfoTransformation with MiniboxLogging  with MiniboxTreeTransformation {
     
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks");
     val phaseName = Minibox.this.name
 
-    // just patching through to the MiniboxTransformation methods
-    override def transformInfo(sym: Symbol, tpe: Type): Type = miniboxTransformInfo(sym, tpe)
-    override def newTransformer(unit: CompilationUnit): Transformer = new MiniboxTransformer(unit)
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = {
+        // execute the tree transformer after all symbols have been processed
+        //afterSpecialize(
+            new MiniboxTreeTransformer(unit).transform(tree)
+            //)
+      }
+    }
   }
 }
 

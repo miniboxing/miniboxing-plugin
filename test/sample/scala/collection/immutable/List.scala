@@ -13,11 +13,7 @@ sealed abstract class List[+A] extends TraversableLike[A, List[A]]
   def head: A
   def tail: List[A]
 
-  def iterator: Iterator[A] = new Iterator[A] {
-    var cursor = List.this
-    override def hasNext = !isEmpty
-    override def next = { val ret = cursor.head; cursor = cursor.tail; ret }
-  }
+  def iterator: Iterator[A] = new ListIterator[A](this)
 
   def ::[B >: A](x: B): List[B] =
     new immutable.::(x, this)
@@ -57,17 +53,25 @@ object List {
   }
 
   implicit def canBuildFrom[A, T]: CanBuildFrom[List[T], A, List[A]] =
-    new CanBuildFrom[List[T], A, List[A]] {
-      override def apply(from: List[T]) = apply
-      override def apply() = new Builder[A, List[A]] {
-        var lb = new ListBuffer[A]()
-        override def +=(elem: A) = {
-          lb ++= List(elem); this
-        }
-        override def clear(): Unit = lb = new ListBuffer[A]()
-        override def result() = lb.prependToList(Nil)
-      }
-    }
+    new ListCanBuildFrom[A, T]
 }
 
+class ListCanBuildFrom[A, T] extends CanBuildFrom[List[T], A, List[A]] {
+  override def apply(from: List[T]) = apply
+  override def apply() = new ListBuilder[A]
+}
 
+class ListBuilder[A] extends Builder[A, List[A]] {
+  var lb = new ListBuffer[A]()
+  override def +=(elem: A) = {
+    lb ++= List(elem); this
+  }
+  override def clear(): Unit = lb = new ListBuffer[A]()
+  override def result() = lb.prependToList(Nil)
+}
+
+class ListIterator[A](l: List[A]) extends Iterator[A] {
+  var cursor = l
+  override def hasNext = !l.isEmpty
+  override def next = { val ret = cursor.head; cursor = cursor.tail; ret }
+}
