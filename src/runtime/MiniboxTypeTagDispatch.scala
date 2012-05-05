@@ -14,7 +14,7 @@ package runtime
 object MiniboxTypeTagDispatch {
   import MiniboxTypes._
   @inline final def toString[T](x: T)(implicit tag: Manifest[T]): String = "" + x
-  @inline final def ##[T](x: T)(implicit tag: Manifest[T]): Int = x.##
+  @inline final def hashhash[T](x: T)(implicit tag: Manifest[T]): Int = x.##
   @inline final def hashCode[T](x: T)(implicit tag: Manifest[T]): Int = x.hashCode
 
   @inline final def array_apply[T](array: Any, pos: Int)(implicit tag: Manifest[T]): T =

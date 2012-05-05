@@ -8,7 +8,6 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
-import plugin.MiniboxTreeTransformation
 
 class Minibox(val global: Global) extends Plugin {
   import global._
@@ -27,9 +26,8 @@ class Minibox(val global: Global) extends Plugin {
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
-        //afterSpecialize(
+        //XXX: implicit resolution does not work with afterSpecialize(...)
             new MiniboxTreeTransformer(unit).transform(tree)
-            //)
       }
     }
   }

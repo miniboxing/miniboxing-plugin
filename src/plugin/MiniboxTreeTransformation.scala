@@ -1,6 +1,5 @@
 package plugin
 
-package plugin
 
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
@@ -14,12 +13,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   import Flags._
   import typer.{ typed, atOwner }
 
-  lazy val TagDipatchObjectSymbol = definitions.getRequiredModule("mbruntime.MiniboxTypeTagDispatch")
-  lazy val array_update = definitions.getMember(TagDipatchObjectSymbol, newTermName("array_update"))
-  lazy val array_apply = definitions.getMember(TagDipatchObjectSymbol, newTermName("array_apply"))
+  private lazy val TagDipatchObjectSymbol = definitions.getRequiredModule("runtime.MiniboxTypeTagDispatch")
+  private lazy val array_update = definitions.getMember(TagDipatchObjectSymbol, newTermName("array_update"))
+  private lazy val array_apply = definitions.getMember(TagDipatchObjectSymbol, newTermName("array_apply"))
+  private lazy val tag_hashCode = definitions.getMember(TagDipatchObjectSymbol, newTermName("hashCode"))
+  private lazy val tag_## = definitions.getMember(TagDipatchObjectSymbol, newTermName("hashhash"))
   
-  lazy val ConversionsObjectSymbol = definitions.getRequiredModule("mbruntime.MiniboxConversions")
-  lazy val minibox2box = definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
+  private lazy val ConversionsObjectSymbol = definitions.getRequiredModule("runtime.MiniboxConversions")
+  private lazy val minibox2box = definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
 
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
@@ -31,10 +32,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
           // box the arguments if necessary
           val newArgs =
-            (methodSym.tpe.paramTypes zip (args map (a => (a, a.tpe)))) map {
+            (methodSym.tpe.paramTypes zip (transformTrees(args) map (a => (a, a.tpe)))) map {
               case (paramType, (arg, argType)) =>
                 if (paramType == AnyClass.tpe && isMiniboxed(argType.typeSymbol))
-                  box(transform(arg))
+                  box(arg)
                 else
                   arg
             }
@@ -49,13 +50,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                *  - for the rest, box
                */
               if (isMiniboxed(qual)) {
-                if (methodSym == Any_## || methodSym == Any_hashCode) {
-                  newTree = gen.mkMethodCall(TagDipatchObjectSymbol, methodSym.name, transform(qual) :: newArgs)
+                if (methodSym == Any_##) {
+                    newTree = gen.mkMethodCall(tag_##, transform(qual) :: newArgs)
+                } else if (methodSym == Any_hashCode) {
+                    newTree = gen.mkMethodCall(tag_hashCode, transform(qual) :: newArgs)
                 } else {
-                  newTree = treeCopy.Apply(tree, treeCopy.Select(sel, box(transform(qual)), meth), newArgs)
+                  newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
                 }
               }
-
+//              println(runtime.this.MiniboxConversions.MiniboxToBoolea(0))
               /*
                * For array access instructions, use the static methods from MiniboxTypeTagDispatch  
                */
