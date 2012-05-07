@@ -45,13 +45,19 @@ trait MiniboxSpecializationInfo {
    * E.g. `apply$mcII$sp` uses as implementation the body of `apply` which
    * forwards to it. So, `method` will be `apply`.
    */
-  case class SpeclializedImplementationOf(method: Symbol) extends MethodInfo
+  case class SpecializedImplementationOf(method: Symbol) extends MethodInfo
 
+  /**
+   * Method to access `field`, in a specialized class should be rewired to the
+   * actual field. 
+   */
+  case class FieldAccessor(field: Symbol) extends MethodInfo
+  
   /**
    * When the newly introduced symbol is abstract and does not
    * have an implementation at all.
    */
-  case class Abstract() extends MethodInfo
+  case class Interface() extends MethodInfo
 
   /**
    * While running the `MiniboxInfoTransform` we record information about how
@@ -74,6 +80,7 @@ trait MiniboxSpecializationInfo {
   object ParamMap {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
       val newParams = oldParams map (_.cloneSymbol(newOwner))
+      newParams foreach (_.removeAnnotation(MinispecedClass))
       (oldParams zip newParams).toMap
     }
   }
