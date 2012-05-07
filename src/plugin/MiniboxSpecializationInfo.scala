@@ -22,7 +22,9 @@ trait MiniboxSpecializationInfo {
   // FIXME: the symbol will have to box its arguments according to
   // their actual types. For this, it has to know the type tags. Include
   // them in the info class
-  case class ForwardTo(method: Symbol) extends MethodInfo
+  case class ForwardTo(method: Symbol) extends MethodInfo {
+    override def toString = "ForwardTo(" + method.fullName + ")"
+  }
 
   /**
    * For the following example:
@@ -36,7 +38,9 @@ trait MiniboxSpecializationInfo {
    *
    *  So, if the symbol is `apply`, the `method` will be `apply$mcII$sp`.
    */
-  case class OverrideOfSpecializedMethod(method: Symbol) extends MethodInfo
+  case class OverrideOfSpecializedMethod(method: Symbol) extends MethodInfo {
+    override def toString = "OverrideOfSpecializedMethod(" + method.fullName + ")"
+  }
 
   /**
    * In the specialized class the function which will have the implementation
@@ -45,13 +49,17 @@ trait MiniboxSpecializationInfo {
    * E.g. `apply$mcII$sp` uses as implementation the body of `apply` which
    * forwards to it. So, `method` will be `apply`.
    */
-  case class SpecializedImplementationOf(method: Symbol) extends MethodInfo
+  case class SpecializedImplementationOf(method: Symbol) extends MethodInfo {
+    override def toString = "SpecializedImplementationOf(" + method.fullName + ")"
+  }
 
   /**
    * Method to access `field`, in a specialized class should be rewired to the
    * actual field. 
    */
-  case class FieldAccessor(field: Symbol) extends MethodInfo
+  case class FieldAccessor(field: Symbol) extends MethodInfo {
+    override def toString = "FieldAccessor(" + field.fullName + ")"
+  }
   
   /**
    * When the newly introduced symbol is abstract and does not
@@ -64,11 +72,10 @@ trait MiniboxSpecializationInfo {
    * the newly created methods should be implemented when reached by the
    * `MiniboxTreeTransformation`.
    */
-  object methodSpecializationInfo extends HashMap[Symbol, MethodInfo] {
-
+  object memberSpecializationInfo extends HashMap[Symbol, MethodInfo] {
+    def hasInfo(defn: Tree) = memberSpecializationInfo.this isDefinedAt defn.symbol
   }
 
-  
   
   /**
    * Every time we create a specialized class (or the interface) we clone 
@@ -105,3 +112,4 @@ trait MiniboxSpecializationInfo {
   val specializedClasses = new HashMap[Symbol, HashMap[TypeEnv, ClassInfo]] withDefaultValue (new HashMap())
     
 }
+

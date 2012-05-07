@@ -52,6 +52,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
           println("-------------- ORIGINAL CLASS ----------------")
           println(clazz.name + " " + clazz.info);
 
+          println("-------------- INFO ----------------")
+          for ((m, info) <- memberSpecializationInfo) 
+            println(m.fullName + ": " + info)
+          
           tpe
         case _ =>
           println("Not specializing: " + sym)
@@ -82,11 +86,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (!isAllAnyRef(env)) {
           newMbr = member.cloneSymbol(clazz)
 
-          
           newMbr setFlag SPECIALIZED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, env)))
           newMbr modifyInfo (info => subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
 
+          memberSpecializationInfo(newMbr) = ForwardTo(member)
+          
           clazz.info.resultType.decls enter (newMbr)
         }
 
@@ -118,9 +123,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Creates the generic interface of the `clazz`. It contains the
    * methods of `clazz` with all their specialized overloads.
    */
+  import definitions._
   private def createGenericInterface(clazz: Symbol): Symbol = {
     val sClassName = interfaceName(clazz.name)
-    val iface: Symbol = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags | INTERFACE | TRAIT)
+    val iface: Symbol = 
+      clazz.owner.newClass(sClassName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
 
     // Copy the methods into the interface and replace the type parameters with new ones
     val pmap = ParamMap(clazz.typeParams, iface)
@@ -129,15 +136,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val ifaceDecls = newScope
     for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
       val d = decl.cloneSymbol(iface) modifyInfo substParams(pmap)
+
       ifaceDecls enter d
-
+      
       // record the fact that the method `d` will not have an implementation
-      methodSpecializationInfo(d) = Interface()
+      memberSpecializationInfo(d) = Interface()
     }
-
-    val interfaceType = PolyType(pmap.values.toList, ClassInfoType(Nil, ifaceDecls, iface))
+    val interfaceType = 
+      PolyType(pmap.values.toList, ClassInfoType(List(AnyRefClass.tpe), ifaceDecls, iface))
 
     iface setInfo interfaceType
+
+    println("~~~~~~" + iface.info.typeOfThis)
     iface
   }
 
@@ -147,14 +157,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
    */
   def specializeClass(clazz: Symbol, iface: Type, env: TypeEnv): Symbol = {
     val sClassName = specializedName(clazz.name, clazz.typeParams.map(env)).toTypeName
-    val sClass = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags | SPECIALIZED)
+    val sClass = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags)
 
     sClass.sourceFile = clazz.sourceFile
     currentRun.symSource(sClass) = clazz.sourceFile
 
     // insert the new symbol in the info maps
     val pmap = ParamMap(clazz.typeParams, sClass)
-    specializedClasses(clazz)(null) = ClassInfo(sClass, pmap) // XXX
+    specializedClasses(clazz)(env) = ClassInfo(sClass, pmap) 
     if (isAllAnyRef(env)) {
       allAnyRefClass(clazz) = ClassInfo(sClass, pmap)
     }
@@ -185,31 +195,29 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val newMembers = (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
     //for ((m,n) <- newMembers) println(m + " " + n)
     for ((m, newMbr) <- newMembers) {
+      newMbr setFlag SPECIALIZED
       newMbr modifyInfo { info =>
         val info1 = info.substThis(clazz, sClass)
 
         val info2 =
           if (m.isConstructor) { // constructor
-            methodSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
             MethodType(subst(env, info1).params, newMbr.owner.tpe)
           } else if (m.isTerm && !m.isMethod) { // fields, except implicit definitions
-            methodSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
             if (m.isImplicit) info1 else subst(env, info1)
           } else {
-            //println("-"+m.defString+"-")
-            //println(" * " + overloads(m)(env))
-     
             if (m.hasAccessorFlag) {
-              methodSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
+              memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
             } else if (m.isDeferred) {
-              methodSpecializationInfo(newMbr) = Interface()
+              memberSpecializationInfo(newMbr) = Interface()
             } else if (overloads(m)(env) == m) {
-              methodSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+              memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
             } else {
               val target = newMembers(overloads(m)(env))
-              methodSpecializationInfo(newMbr) = ForwardTo(target)
+              memberSpecializationInfo(newMbr) = ForwardTo(target)
             }
 
             info1
