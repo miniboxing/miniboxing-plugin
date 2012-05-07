@@ -33,6 +33,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
 
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+
     override def transform(tree: Tree): Tree = {
       curTree = tree
 
@@ -53,7 +54,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 pid,
                 transformStats(classdefs ::: specClasses, tree.symbol.moduleClass)))
           }
-          
+
         /*
          * The tree of a specialized class is empty for the moment, but we
          * have creates symbols for the methods - give them an empty body
@@ -70,16 +71,24 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
           memberSpecializationInfo(tree.symbol) match {
-            case info: MethodInfo => println(tree.symbol.fullName + " - " + info)
+            case FieldAccessor(field) =>
+              val rhs1 = localTyper.typed(
+                if (tree.symbol.isGetter)
+                  gen.mkAttributedRef(field)
+                else
+                  Assign(gen.mkAttributedRef(field), Ident(vparamss.head.head.symbol)))
+              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
+
+            case info: MethodInfo =>
+              println(tree.symbol.fullName + " - " + info)
+              super.transform(ddef)
           }
-          super.transform(ddef)
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
             case info: MethodInfo => println(tree.symbol.fullName + " - " + info)
           }
           super.transform(vdef)
 
-          
         // array_length with tag-based dispatch
         case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
           localTyper.typedPos(tree.pos)(
@@ -221,5 +230,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         }
       buf.toList
     }
+
   }
 }
