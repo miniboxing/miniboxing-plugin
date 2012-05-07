@@ -1,8 +1,7 @@
 import plugin.minispec 
 
-@minispec
-//class Members[@minispec T: Manifest](t: T, u: Int) {
-class Members[@specialized(Int, Boolean) T: Manifest](t: T, u: Int) {
+class Members[@minispec T: Manifest](t: T, u: Int) {
+//class Members[@specialized(Int, Boolean) T: Manifest](t: T, u: Int) {
   var a : T = t
   val b : Int = u
   

@@ -1,34 +1,29 @@
 package plugin
 
-import scala.collection.immutable.HashMap
+import scala.collection.mutable.HashMap
 
+trait MiniboxSpecializationInfo {
+  self: MiniboxLogic =>
 
-/**
- * While running the `MiniboxInfoTransform` we record information about how 
- * the newly created methods should be implemented when reached by the 
- * `MiniboxTreeTransformation`.
- */
-object MiniboxSpecializationInfo extends HashMap[Symbol, Info]{
-  
+  import global._
+
+  /**
+   * This class should be extended by various classes containing information
+   * about different types of methods that are created during specialization.
+   */
+  sealed class MethodInfo
+
   /**
    * The symbol with this information needs a body that forwards
-   * to `method` which works with boxed arguments.
-   * 
-   * E.g. `apply$mcII$sp` forwards to `apply` in `Function1`. 
+   * to `method`.
+   *
+   * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
   // FIXME: the symbol will have to box its arguments according to
   // their actual types. For this, it has to know the type tags. Include
   // them in the info class
-  case class ForwardToBoxed(method: Symbol) extends Info
-  
-  /**
-   * The symbol with this information needs a body that forwards
-   * to `method` which works with unboxed arguments.
-   * 
-   * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`. 
-   */
-  case class ForwardToUnboxed(method: Symbol) extends Info
-  
+  case class ForwardTo(method: Symbol) extends MethodInfo
+
   /**
    * For the following example:
    *
@@ -38,30 +33,68 @@ object MiniboxSpecializationInfo extends HashMap[Symbol, Info]{
    *
    *  method `apply` will have type `(Any)Any` and we want in fact to override
    *  `apply$mcII$sp` of type `(Int)Int`, and `apply` will forward to it.
-   *  
+   *
    *  So, if the symbol is `apply`, the `method` will be `apply$mcII$sp`.
    */
-  case class OverrideOfSpecializedMethod(method: Symbol) extends Info 
-  
+  case class OverrideOfSpecializedMethod(method: Symbol) extends MethodInfo
+
   /**
    * In the specialized class the function which will have the implementation
    * will be the specialized one and the generic one will forward to it.
-   * 
+   *
    * E.g. `apply$mcII$sp` uses as implementation the body of `apply` which
    * forwards to it. So, `method` will be `apply`.
    */
-  case class SpeclializedImplementationOf(method: Symbol) extends Info
-  
-  
+  case class SpeclializedImplementationOf(method: Symbol) extends MethodInfo
+
   /**
    * When the newly introduced symbol is abstract and does not
    * have an implementation at all.
    */
-  case class Abstract extends Info
-}
+  case class Abstract() extends MethodInfo
 
-/**
- * This class should be extended by various classes containing information
- * about different types of methods that are created during specialization. 
- */
-sealed class Info
+  /**
+   * While running the `MiniboxInfoTransform` we record information about how
+   * the newly created methods should be implemented when reached by the
+   * `MiniboxTreeTransformation`.
+   */
+  object methodSpecializationInfo extends HashMap[Symbol, MethodInfo] {
+
+  }
+
+  
+  
+  /**
+   * Every time we create a specialized class (or the interface) we clone 
+   * the type parameters from the original class. This mapping records 
+   * how the new params correspond to the old ones.
+   */
+  type ParamMap = Map[Symbol, Symbol]
+  
+  object ParamMap {
+    def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
+      val newParams = oldParams map (_.cloneSymbol(newOwner))
+      (oldParams zip newParams).toMap
+    }
+  }
+
+  case class ClassInfo(sym: Symbol, pmap: ParamMap)
+  
+  /**
+   * `specializedInterface(C)` is the interface `C_interface` extended by all
+   * specialized versions of `C`
+   */
+  val specializedInterface = new HashMap[Symbol, ClassInfo]
+  
+  /**
+   * `allAnyRefClass(C)` is the class that is not specialized for any parameter
+   */
+  val allAnyRefClass = new HashMap[Symbol, ClassInfo]
+  
+  /**
+   * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
+   * version of `C` w.r.t. that environment. 
+   */
+  val specializedClasses = new HashMap[Symbol, HashMap[TypeEnv, ClassInfo]] withDefaultValue (new HashMap())
+    
+}

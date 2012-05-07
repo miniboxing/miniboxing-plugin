@@ -46,10 +46,14 @@ final case class ::[B](private var hd: B, private[collection] var tl: List[B]) e
   override def isEmpty: Boolean = false
 }
 
+class AppendToList[A] extends Function2[A, List[A], List[A]] {
+  override def apply(x: A, l : List[A]): List[A] = x :: l
+}
+
 object List {
   def empty[A]: List[A] = Nil
   def apply[A](xs: A*): List[A] = {
-    xs.foldRight[List[A]](Nil)({ case (x, l) => x :: l })
+    xs.foldRight[List[A]](Nil)(new AppendToList[A])
   }
 
   implicit def canBuildFrom[A, T]: CanBuildFrom[List[T], A, List[A]] =

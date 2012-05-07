@@ -54,13 +54,17 @@ class HashMap[A, B] private[collection] (contents: HashTable.Contents[A, Default
 
   def -=(key: A): this.type = { removeEntry(key); this }
 
-  def foreach[C](f: ((A, B)) => C): Unit = foreachEntry(e => f(e.key, e.value))
+  def foreach[C](f: ((A, B)) => C): Unit = foreachEntry(new FunctionOnEntry(f))
 
   /** Toggles whether a size map is used to track hash map statistics.
    */
   def useSizeMap(t: Boolean) = if (t) {
     if (!isSizeMapDefined) sizeMapInitAndRebuild
   } else sizeMapDisable
+}
+
+class FunctionOnEntry[A, B, C](f : ((A, B)) => C) extends Function1[DefaultEntry[A, B], C]{
+  override def apply(e: DefaultEntry[A, B]) : C = f(e.key, e.value)
 }
 
 object HashMap {

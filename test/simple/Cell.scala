@@ -2,7 +2,6 @@ package simple
 
 import plugin.minispec 
 
-@minispec
 class Cell[@minispec T : Manifest](t : T) {
   def toString2(): String = t.toString
   
@@ -22,7 +21,7 @@ class Cell[@minispec T : Manifest](t : T) {
     var x1 : Any = a(0)
     x1 = a(1)
     val y : Cell[_] = new Cell[T](x1.asInstanceOf[T])
-    t.hashCode
+    t.hashCode + a.length
   }
 }
 

@@ -10,11 +10,11 @@ trait MiniboxLogic {
   import global._
   import definitions._
   
+  lazy val MinispecedClass = definitions.getRequiredClass("plugin.minispec")
+
   // TypeEnv maps type parameters to types
   type TypeEnv = Map[Symbol, Type]
   
-  var specializedClass = Map[(Symbol, TypeEnv), Symbol]() 
-  var allObjectClass = Map[Symbol, Symbol]()
   
   /** 
    * For a set of type parameters, get all the specialized environments 
@@ -28,6 +28,13 @@ trait MiniboxLogic {
       envs = envs.flatMap(rest => List(LongClass.tpe::rest, AnyRefClass.tpe::rest))
 
     envs.map((types: List[Type]) => (tParams zip types).toMap)
+  }
+  
+  /**
+   * Creates the name of the interface which corresponds to class `className`
+   */
+  def interfaceName(className: Name): TypeName = {
+    newTypeName(className.toString + "_interface")
   }
   
   /** 

@@ -7,6 +7,7 @@ import mutable.ListBuffer
 import immutable._
 import generic.Growable
 import generic.CanBuildFrom
+import scala.runtime.ObjectRef
 
 
 trait TraversableLike[+A, +Repr] extends FilterMonadic[A, Repr]{
@@ -14,9 +15,9 @@ trait TraversableLike[+A, +Repr] extends FilterMonadic[A, Repr]{
   def foreach[U](f: A => U): Unit
 
   def toList(): List[A] = {
-    var lb = new ListBuffer[A]()
-    this foreach { a => lb ++= List(a) }
-    lb.prependToList(Nil)
+    var lb = new ObjectRef(new ListBuffer[A]())
+    this foreach new AppendToBuffer[A](lb)
+    lb.elem.prependToList(Nil)
   }
   
   def ++[B >: A, That](that: List[B])(implicit bf: CanBuildFrom[Repr, B, That]): That = {
@@ -30,5 +31,11 @@ trait TraversableLike[+A, +Repr] extends FilterMonadic[A, Repr]{
     val b = bf(repr)
     for (x <- this) b += f(x)
     b.result
+  }
+}
+
+class AppendToBuffer[A](lb: ObjectRef[ListBuffer[A]]) extends Function1[A, Unit]{
+  override def apply(a: A): Unit = {
+    lb.elem ++= List(a)
   }
 }
