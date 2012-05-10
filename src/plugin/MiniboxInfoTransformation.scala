@@ -9,10 +9,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   import global._
   import Flags._
+  import definitions._
 
   /**
    * For each method of the original class and each type environment we keep track
-   * of the overload specialized for that environment. 
+   * of the overload specialized for that environment.
    */
   val overloads = new HashMap[Symbol, HashMap[TypeEnv, Symbol]]
 
@@ -39,6 +40,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
           println("-------------- INTERFACE ----------------")
           println(iface.name + " " + iface.info);
 
+          val ifaceParentType = iface.tpe.instantiateTypeParams(iface.typeParams, clazz.typeParams map (_.tpe))
+          clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(ifaceParentType), decls, typeSym))
+          println("-------------- ORIGINAL CLASS ----------------")
+          println(clazz.name + " " + clazz.info);
+
           // 4. Perform actual specialization
           val classes = envs map (specializeClass(clazz, iface.tpe, _))
 
@@ -47,19 +53,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
             println(cls.name + " " + cls.info)
           }
 
-          // XXX: interface is applied to type params
-          val ifaceParentType = iface.tpe.instantiateTypeParams(iface.typeParams, clazz.typeParams map (_.tpe))
-          clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(ifaceParentType), decls, typeSym))
-          println("-------------- ORIGINAL CLASS ----------------")
-          println(clazz.name + " " + clazz.info);
-
           println("-------------- TEMPLATE MEMBERS ----------------")
           templateMembers foreach (m => println(m.fullName))
-//          for ((m, info) <- memberSpecializationInfo) 
-//            println("%s - %s".format(m.fullName, info))
-          
-          sys.exit
-          
+          //          for ((m, info) <- memberSpecializationInfo) 
+          //            println("%s - %s".format(m.fullName, info))
+
           tpe
         case _ =>
           println("Not specializing: " + sym)
@@ -88,14 +86,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
       for (env <- envs) {
         var newMbr = member
         if (!isAllAnyRef(env)) {
+          val specEnv: TypeEnv = env map {
+            case (p, v) => (p, if (v == AnyRefClass.tpe) p.tpe else v)
+          }
+
           newMbr = member.cloneSymbol(clazz)
 
           newMbr setFlag SPECIALIZED
-          newMbr setName (specializedName(member.name, typeParamValues(clazz, env)))
-          newMbr modifyInfo (info => subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
+          newMbr setName (specializedName(member.name, typeParamValues(clazz, specEnv)))
+          newMbr modifyInfo (info => subst(specEnv, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
 
           memberSpecializationInfo(newMbr) = ForwardTo(member)
-          
+
           clazz.info.resultType.decls enter (newMbr)
         }
 
@@ -127,10 +129,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Creates the generic interface of the `clazz`. It contains the
    * methods of `clazz` with all their specialized overloads.
    */
-  import definitions._
   private def createGenericInterface(clazz: Symbol): Symbol = {
     val sClassName = interfaceName(clazz.name)
-    val iface: Symbol = 
+    val iface: Symbol =
       clazz.owner.newClass(sClassName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
 
     // Copy the methods into the interface and replace the type parameters with new ones
@@ -142,11 +143,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val d = decl.cloneSymbol(iface, decl.flags | SPECIALIZED) modifyInfo substParams(pmap)
 
       ifaceDecls enter d
-      
+
       // record the fact that the method `d` will not have an implementation
       memberSpecializationInfo(d) = Interface()
     }
-    val interfaceType = 
+    val interfaceType =
       PolyType(pmap.values.toList, ClassInfoType(List(AnyRefClass.tpe), ifaceDecls, iface))
 
     iface setInfo interfaceType
@@ -159,35 +160,47 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * to be extended and `env` is the type parameter mapping for which we specialize.
    */
   def specializeClass(clazz: Symbol, iface: Type, env: TypeEnv): Symbol = {
-    val sClassName = specializedName(clazz.name, clazz.typeParams.map(env)).toTypeName
+    val sClassName = specializedName(clazz.name, typeParamValues(clazz, env)).toTypeName
     val sClass = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags)
 
     sClass.sourceFile = clazz.sourceFile
     currentRun.symSource(sClass) = clazz.sourceFile
 
-    // insert the new symbol in the info maps
+    /*
+     * All the info that we copy uses the type parameters of the original class
+     * `pmap` allows us to change them to the new parameters, while `specEnv` have
+     * mapping to their or to the actual value class (if any).
+     */
     val pmap = ParamMap(clazz.typeParams, sClass)
-    specializedClasses(clazz)(env) = sClass 
-    typeEnv(sClass) = env
+    val specEnv: TypeEnv = env map {
+      case (p, v) => (p, if (v == AnyRefClass.tpe) pmap(p).tpe else v)
+    }
+    
+    // insert the new symbol in the info maps
+    specializedClasses(clazz)(env) = sClass
+    typeEnv(sClass) = specEnv
     if (isAllAnyRef(env)) {
       allAnyRefClass(clazz) = ClassInfo(sClass, pmap)
     }
 
     // declarations inside the specialized class - to be filled in later
     val sClassDecls = newScope
-    val (oldTParams, newTParams) = pmap.toList.unzip
+
 
     // create the type of the new class
     val specializedInfoType: Type = {
-      // FIXME: replace parents with the specialized version
-      val sParents = (clazz.info.parents ::: List(iface)) map {
-        t => substParams(pmap)(subst(env, t))
+      // TODO: replace parents with the specialized version
+      val sParents = (clazz.info.parents) map {
+        t => (subst(specEnv, t))
       }
+
+      // parameters which are not fixed
+      val newTParams: List[Symbol] =
+        (specEnv.values map (_.typeSymbol) filterNot isPrimitiveValueClass).toList
       GenPolyType(newTParams, ClassInfoType(sParents, sClassDecls, sClass))
     }
     sClass setInfo specializedInfoType // ??? afterMinibox ???
 
-    
     /*
      * Copy the members from the original class `clazz` to the specialized class
      * `sClass`, and use the `newTParams` symbols in their definitions. Also, 
@@ -198,48 +211,45 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * For each newly introduced symbol, record how its tree should be generated.
      */
     val newMembers = (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
-    //for ((m,n) <- newMembers) println(m + " " + n)
+
     for ((m, newMbr) <- newMembers) {
       newMbr setFlag SPECIALIZED
       newMbr modifyInfo { info =>
         val info1 = info.substThis(clazz, sClass)
 
-        val info2 =
-          if (m.isConstructor) { // constructor
-            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+        if (m.isConstructor) { // constructor
+          memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
-            MethodType(subst(env, info1).params, newMbr.owner.tpe)
-          } else if (m.isTerm && !m.isMethod) { // fields, except implicit definitions
-            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+          MethodType(subst(specEnv, info1).params, newMbr.owner.tpe)
+        } else if (m.isTerm && !m.isMethod) { // fields, except implicit definitions
+          memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
-            if (m.isImplicit) info1 else subst(env, info1)
-          } else {
-            if (m.hasAccessorFlag) {
-              memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
-            } else if (m.isDeferred) {
-              memberSpecializationInfo(newMbr) = Interface()
-            } else 
-              /* Check whether the method is the one that will carry the
-               * implementation. If yes, find the original method from the original
-               * class from which to copy the implementation. If no, find the method 
-               * that will have an implementation and forward to it.
-               */
-            if (overloads(m)(env) == m) {
-              memberSpecializationInfo.get(m) match {
-                case Some(ForwardTo(original)) => 
-                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
-                case None => 
-                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
-              }
-            } else {
-              val target = newMembers(overloads(m)(env))
-              memberSpecializationInfo(newMbr) = ForwardTo(target)
+          if (m.isImplicit) info1 else subst(specEnv, info1)
+        } else {
+          if (m.hasAccessorFlag) {
+            memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
+          } else if (m.isDeferred) {
+            memberSpecializationInfo(newMbr) = Interface()
+          } else if (overloads(m)(env) == m) {
+            /* Check whether the method is the one that will carry the
+             * implementation. If yes, find the original method from the original
+             * class from which to copy the implementation. If no, find the method 
+             * that will have an implementation and forward to it.
+             */
+            memberSpecializationInfo.get(m) match {
+              case Some(ForwardTo(original)) =>
+                memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+              case None =>
+                memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
             }
-
-            info1
+          } else {
+            val target = newMembers(overloads(m)(env))
+            memberSpecializationInfo(newMbr) = ForwardTo(target)
           }
 
-        substParams(pmap)(info2)
+          subst(specEnv, info1)
+        }
+
       }
 
       sClassDecls enter newMbr
