@@ -47,14 +47,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
             println(cls.name + " " + cls.info)
           }
 
-          // TODO: make `clazz` extend the version specialized with object
           clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(iface.tpe), decls, typeSym))
           println("-------------- ORIGINAL CLASS ----------------")
           println(clazz.name + " " + clazz.info);
 
-          println("-------------- INFO ----------------")
-          for ((m, info) <- memberSpecializationInfo) 
-            println(m.fullName + ": " + info)
+          println("-------------- TEMPLATE MEMBERS ----------------")
+          templateMembers foreach (m => println(m.fullName))
+//          for ((m, info) <- memberSpecializationInfo) 
+//            println("%s - %s".format(m.fullName, info))
+          
           
           tpe
         case _ =>
@@ -77,7 +78,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val setters = members.filter(_.isSetter)
     val fields = members.filter(m => m.isTerm && !m.isMethod)
 
-    // XXX: safer without: overloads.clear
+    // NOTE: safer without: overloads.clear
     // we leave the fields untouched, only touching the methods
     for (member <- methods ::: getters ::: setters if (needsSpecialization(clazz, member))) {
       val overloadsOfMember = new HashMap[TypeEnv, Symbol]
@@ -135,7 +136,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     val ifaceDecls = newScope
     for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
-      val d = decl.cloneSymbol(iface) modifyInfo substParams(pmap)
+      val d = decl.cloneSymbol(iface, decl.flags | SPECIALIZED) modifyInfo substParams(pmap)
 
       ifaceDecls enter d
       
@@ -147,7 +148,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     iface setInfo interfaceType
 
-    println("~~~~~~" + iface.info.typeOfThis)
     iface
   }
 
@@ -213,8 +213,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
               memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
             } else if (m.isDeferred) {
               memberSpecializationInfo(newMbr) = Interface()
-            } else if (overloads(m)(env) == m) {
-              memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+            } else 
+              /* Check whether the method is the one that will carry the
+               * implementation. If yes, find the original method from the original
+               * class from which to copy the implementation. If no, find the method 
+               * that will have an implementation and forward to it.
+               */
+            if (overloads(m)(env) == m) {
+              memberSpecializationInfo.get(m) match {
+                case Some(ForwardTo(original)) => 
+                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+                case None => 
+                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+              }
             } else {
               val target = newMembers(overloads(m)(env))
               memberSpecializationInfo(newMbr) = ForwardTo(target)

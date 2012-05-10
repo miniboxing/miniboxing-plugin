@@ -1,6 +1,6 @@
 package plugin
 
-import scala.collection.mutable.HashMap
+import scala.collection.mutable
 
 trait MiniboxSpecializationInfo {
   self: MiniboxLogic =>
@@ -49,8 +49,9 @@ trait MiniboxSpecializationInfo {
    * E.g. `apply$mcII$sp` uses as implementation the body of `apply` which
    * forwards to it. So, `method` will be `apply`.
    */
-  case class SpecializedImplementationOf(method: Symbol) extends MethodInfo {
-    override def toString = "SpecializedImplementationOf(" + method.fullName + ")"
+  case class SpecializedImplementationOf(member: Symbol) extends MethodInfo {
+    templateMembers += member
+    override def toString = "SpecializedImplementationOf(" + member.fullName + ")"
   }
 
   /**
@@ -72,9 +73,15 @@ trait MiniboxSpecializationInfo {
    * the newly created methods should be implemented when reached by the
    * `MiniboxTreeTransformation`.
    */
-  object memberSpecializationInfo extends HashMap[Symbol, MethodInfo] {
+  object memberSpecializationInfo extends mutable.HashMap[Symbol, MethodInfo] {
     def hasInfo(defn: Tree) = memberSpecializationInfo.this isDefinedAt defn.symbol
   }
+  
+  /**
+   * The set of members that provide the template to copy and specialize
+   * by the specialized overloads
+   */
+  val templateMembers = mutable.Set[Symbol]()
 
   
   /**
@@ -98,18 +105,19 @@ trait MiniboxSpecializationInfo {
    * `specializedInterface(C)` is the interface `C_interface` extended by all
    * specialized versions of `C`
    */
-  val specializedInterface = new HashMap[Symbol, ClassInfo]
+  val specializedInterface = new mutable.HashMap[Symbol, ClassInfo]
   
   /**
    * `allAnyRefClass(C)` is the class that is not specialized for any parameter
    */
-  val allAnyRefClass = new HashMap[Symbol, ClassInfo]
+  val allAnyRefClass = new mutable.HashMap[Symbol, ClassInfo]
   
   /**
    * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
    * version of `C` w.r.t. that environment. 
    */
-  val specializedClasses = new HashMap[Symbol, HashMap[TypeEnv, ClassInfo]] withDefaultValue (new HashMap())
+  val specializedClasses = 
+    new mutable.HashMap[Symbol, mutable.HashMap[TypeEnv, ClassInfo]] withDefaultValue (new mutable.HashMap())
     
 }
 
