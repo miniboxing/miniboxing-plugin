@@ -93,7 +93,7 @@ trait MiniboxSpecializationInfo {
   
   object ParamMap {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
-      val newParams = oldParams map (_.cloneSymbol(newOwner))
+      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, p.name.append("sp")))
       newParams foreach (_.removeAnnotation(MinispecedClass))
       (oldParams zip newParams).toMap
     }
@@ -117,7 +117,12 @@ trait MiniboxSpecializationInfo {
    * version of `C` w.r.t. that environment. 
    */
   val specializedClasses = 
-    new mutable.HashMap[Symbol, mutable.HashMap[TypeEnv, ClassInfo]] withDefaultValue (new mutable.HashMap())
+    new mutable.HashMap[Symbol, mutable.HashMap[TypeEnv, Symbol]] withDefaultValue (new mutable.HashMap())
+    
+  /**
+   * Type environment of a class
+   */
+  val typeEnv = new mutable.HashMap[Symbol, TypeEnv]
     
 }
 

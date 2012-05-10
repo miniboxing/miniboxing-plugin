@@ -47,7 +47,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
             println(cls.name + " " + cls.info)
           }
 
-          clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(iface.tpe), decls, typeSym))
+          // XXX: interface is applied to type params
+          val ifaceParentType = iface.tpe.instantiateTypeParams(iface.typeParams, clazz.typeParams map (_.tpe))
+          clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(ifaceParentType), decls, typeSym))
           println("-------------- ORIGINAL CLASS ----------------")
           println(clazz.name + " " + clazz.info);
 
@@ -56,6 +58,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 //          for ((m, info) <- memberSpecializationInfo) 
 //            println("%s - %s".format(m.fullName, info))
           
+          sys.exit
           
           tpe
         case _ =>
@@ -164,7 +167,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // insert the new symbol in the info maps
     val pmap = ParamMap(clazz.typeParams, sClass)
-    specializedClasses(clazz)(env) = ClassInfo(sClass, pmap) 
+    specializedClasses(clazz)(env) = sClass 
+    typeEnv(sClass) = env
     if (isAllAnyRef(env)) {
       allAnyRefClass(clazz) = ClassInfo(sClass, pmap)
     }
@@ -183,6 +187,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
     sClass setInfo specializedInfoType // ??? afterMinibox ???
 
+    
     /*
      * Copy the members from the original class `clazz` to the specialized class
      * `sClass`, and use the `newTParams` symbols in their definitions. Also, 

@@ -4,6 +4,8 @@ import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.mutable
 
+import scala.tools.nsc.typechecker._
+
 trait MiniboxTreeTransformation extends TypingTransformers {
   self: MiniboxLogic with MiniboxLogging with MiniboxSpecializationInfo =>
 
@@ -73,9 +75,13 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         /*
          * A definition with empty body - add a body as prescribed by the
          * `methodSpecializationInfo` data structure. 
+         * 
+         * XXX: transform the body further
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
           memberSpecializationInfo(tree.symbol) match {
+
+            // Implement the getter or setter functionality
             case FieldAccessor(field) =>
               val rhs1 =
                 if (tree.symbol.isGetter) {
@@ -88,9 +94,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 }
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
+            // copy the body of the `original` method
             case SpecializedImplementationOf(original) =>
-              val rhs1 = MethodBodiesCollector.getMethodBody(original)._1
-              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
+              val newTree = addBody(tree, original)
+              localTyper.typedPos(tree.pos)(newTree)
 
             case ForwardTo(target) =>
               val rhs1 = if (vparamss.isEmpty) {
@@ -118,8 +125,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
-              val rhs1 = MethodBodiesCollector.getMethodBody(original)._1
-              localTyper.typed(deriveValDef(tree)(_ => rhs1))
+              val newTree = addBody(tree, original)
+              localTyper.typedPos(tree.pos)(newTree)
             case info =>
               sys.error("Unknown info type: " + info)
           }
@@ -163,7 +170,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
             if (specializedInterface isDefinedAt classSymbol) {
               sClasses ::= specializedInterface(classSymbol).sym
-              sClasses ++= specializedClasses(classSymbol).values map (_.sym)
+              sClasses ++= specializedClasses(classSymbol).values
             }
 
             for (sClass <- sClasses) {
@@ -207,6 +214,43 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       def getMethodBody(meth: Symbol) = body(meth)
       def getFieldBody(fld: Symbol) = body(fld)._1
     }
+
+    /**
+     * Adds the body of the `member` as the rhs of the `defn` and
+     * replaces the parameters with fresh symbols in it.
+     */
+    private def addBody(defn: Tree, member: Symbol): Tree = {
+      val defSymbol = defn.symbol
+      val (body, params) = MethodBodiesCollector.getMethodBody(member);
+
+      val vparams: List[ValDef] = defn match {
+        case DefDef(_, _, Nil, vparams :: Nil, _, _) => vparams
+        case DefDef(_, _, Nil, Nil, _, _) => Nil
+        case ValDef(_, _, _, _) => Nil
+      }
+
+      val newParams = cloneSymbolsAtOwner(vparams map (_.symbol), defSymbol)
+      val newBody = (new TreeSymSubstituter(params, newParams))(body.duplicate)
+
+      val newDef = defn match {
+        case _: DefDef =>
+          copyDefDef(defn)(vparamss = List(newParams map ValDef), rhs = newBody)
+        case _: ValDef =>
+          copyValDef(defn)(rhs = newBody)
+      }
+      
+      duplicator.retyped(
+        localTyper.context1.asInstanceOf[duplicator.Context],
+        newDef,
+        member.enclClass,
+        defSymbol.enclClass,
+        typeEnv(defSymbol.owner)) // XXX: typeEnv?
+    }
+
+    object duplicator extends {
+      val global: MiniboxTreeTransformation.this.global.type =
+        MiniboxTreeTransformation.this.global
+    } with Duplicators
 
     /**
      * Tree transformer that is used for inserting casts.
