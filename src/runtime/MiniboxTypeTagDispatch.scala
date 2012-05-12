@@ -14,8 +14,8 @@ package runtime
 object MiniboxTypeTagDispatch {
   import MiniboxTypes._
   @inline final def toString[T](x: T): String = "" + x
-  @inline final def hashhash[T](x: T): Int = x.##
-  @inline final def hashCode[T](x: T): Int = x.hashCode
+  @inline final def hashhash(x: Long): Int = x.##
+  @inline final def hashCode(x: Long): Int = x.hashCode
 
   @inline final def array_apply[T](array: Any, pos: Int): T =
     array.asInstanceOf[Array[T]](pos)

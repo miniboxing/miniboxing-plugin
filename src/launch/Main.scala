@@ -9,7 +9,7 @@ object Main {
 //          "test/simple/ArrayWrap.scala", 
           "test/simple/Members.scala", 
           "-Xprint:minibox,cleanup",
-          "-Ystop-after:cleanup",
+          "-Ystop-after:genicode",
           "-no-specialization",
           "-nowarn"
           )

@@ -2,7 +2,7 @@ import plugin.minispec
 
 import runtime.MiniboxTypeTagDispatch
 
-class Members[@minispec T](t: T, u: Int) {
+class Members[@minispec T: Manifest](t: T, u: Int) {
 //class Members[@specialized(Int, Boolean) T: Manifest](t: T, u: Int) {
   var a : T = t
   val b : Int = u
