@@ -13,17 +13,17 @@ package runtime
  */
 object MiniboxTypeTagDispatch {
   import MiniboxTypes._
-  @inline final def toString[T](x: T)(implicit tag: Manifest[T]): String = "" + x
-  @inline final def hashhash[T](x: T)(implicit tag: Manifest[T]): Int = x.##
-  @inline final def hashCode[T](x: T)(implicit tag: Manifest[T]): Int = x.hashCode
+  @inline final def toString[T](x: T): String = "" + x
+  @inline final def hashhash[T](x: T): Int = x.##
+  @inline final def hashCode[T](x: T): Int = x.hashCode
 
-  @inline final def array_apply[T](array: Any, pos: Int)(implicit tag: Manifest[T]): T =
+  @inline final def array_apply[T](array: Any, pos: Int): T =
     array.asInstanceOf[Array[T]](pos)
 
-  @inline final def array_update[T](array: Any, pos: Int, x: T)(implicit tag: Manifest[T]): Unit = {
+  @inline final def array_update[T](array: Any, pos: Int, x: T): Unit = {
     ()
   }
-  @inline final def array_length[T](array: Any)(implicit tag: Manifest[T]): Int = 0
+  @inline final def array_length[T](array: Any): Int = 0
 
 //  @inline final def newarray(len: Int, tag: Tag): Any = ()
 

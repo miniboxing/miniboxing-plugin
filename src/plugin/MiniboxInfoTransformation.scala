@@ -175,7 +175,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val specEnv: TypeEnv = env map {
       case (p, v) => (p, if (v == AnyRefClass.tpe) pmap(p).tpe else v)
     }
-    
+
     // insert the new symbol in the info maps
     specializedClasses(clazz)(env) = sClass
     typeEnv(sClass) = specEnv
@@ -185,7 +185,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // declarations inside the specialized class - to be filled in later
     val sClassDecls = newScope
-
 
     // create the type of the new class
     val specializedInfoType: Type = {
@@ -226,21 +225,24 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           if (m.isImplicit) info1 else subst(specEnv, info1)
         } else {
-          if (m.hasAccessorFlag) {
-            memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
-          } else if (m.isDeferred) {
+          if (m.isDeferred) {
             memberSpecializationInfo(newMbr) = Interface()
-          } else if (overloads(m)(env) == m) {
-            /* Check whether the method is the one that will carry the
-             * implementation. If yes, find the original method from the original
-             * class from which to copy the implementation. If no, find the method 
-             * that will have an implementation and forward to it.
-             */
-            memberSpecializationInfo.get(m) match {
-              case Some(ForwardTo(original)) =>
-                memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
-              case None =>
-                memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+          }
+          /* Check whether the method is the one that will carry the
+           * implementation. If yes, find the original method from the original
+           * class from which to copy the implementation. If no, find the method 
+           * that will have an implementation and forward to it.
+           */
+          if (overloads(m)(env) == m) {
+            if (m.hasAccessorFlag) {
+              memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
+            } else {
+              memberSpecializationInfo.get(m) match {
+                case Some(ForwardTo(original)) =>
+                  memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+                case None =>
+                  memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+              }
             }
           } else {
             val target = newMembers(overloads(m)(env))
