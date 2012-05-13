@@ -154,7 +154,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case NoCast => ttree
         case CastMiniboxToBox(tag) => // use `tag` for miniboxing 
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree)))
-        case CastBoxToMinibox => 
+        case CastBoxToMinibox =>
           ltypedpos(gen.mkMethodCall(box2minibox, List(ttree)))
       }
     }
@@ -191,8 +191,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             var sClasses: List[Symbol] = Nil
 
             if (specializedInterface isDefinedAt classSymbol) {
-              sClasses ::= specializedInterface(classSymbol).sym
-              sClasses ++= specializedClasses(classSymbol).values
+              sClasses ::= specializedInterface(classSymbol)
+              sClasses ++= specializedClasses(classSymbol)
             }
 
             for (sClass <- sClasses) {
@@ -272,7 +272,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         newDef,
         member.enclClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner)) // XXX: typeEnv?
+        typeEnv(defSymbol.owner)) // XXX: keep all parameters
     }
 
     object duplicator extends {
@@ -391,9 +391,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * the class that we are currently specializing it is mapped to Long.   
          */
         val currentClass = MiniboxTreeTransformer.this.currentClass
-        typeEnv(currentClass).get(typs) match {
-          case None => false
-          case Some(actualType) => actualType == LongClass.tpe
+        partialSpec(currentClass).get(typs) match {
+          case Some(Miniboxed) => true
+          case _ => false
         }
       }
 

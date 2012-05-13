@@ -13,21 +13,34 @@ trait MiniboxLogic {
 
   lazy val MinispecedClass = definitions.getRequiredClass("plugin.minispec")
 
-  // TypeEnv maps type parameters to types
+  /**
+   * A `TypeEnv` maps each type parameter to the actual type used in the
+   * current instantiation.
+   */
   type TypeEnv = immutable.Map[Symbol, Type]
 
   /**
-   * For a set of type parameters, get all the specialized environments
-   * TODO: We'll need to refine this in order to accommodate miniboxing + real specialization. This might include adding
-   * a special 'miniboxed' type which acts as a list of types that are treated under miniboxing
+   * A `PartialSpec` tells us for each type parameter whether it is represented
+   * as a `Boxed` value or as a `Miniboxed` one.
    */
-  def specializations(tParams: List[Symbol]): List[TypeEnv] = {
-    var envs: List[List[Type]] = List(Nil)
+  sealed trait SpecInfo
+  case object Miniboxed extends SpecInfo
+  case object Boxed extends SpecInfo
+  type PartialSpec = immutable.Map[Symbol, SpecInfo]
+
+  /**
+   * For a set of type parameters, get all the possible partial specializations.
+   *
+   * A partial specialization is represented as a list that gives the types that
+   * specifies what a type parameter is instantiated to.
+   */
+  def specializations(tParams: List[Symbol]): List[PartialSpec] = {
+    var envs: List[List[SpecInfo]] = List(Nil)
 
     for (tParam <- tParams)
-      envs = envs.flatMap(rest => List(LongClass.tpe :: rest, AnyRefClass.tpe :: rest))
+      envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
 
-    envs.map((types: List[Type]) => (tParams zip types).toMap)
+    envs.map((types: List[SpecInfo]) => (tParams zip types).toMap)
   }
 
   /**
@@ -51,7 +64,7 @@ trait MiniboxLogic {
       newTermName(name.toString + "_" + types.map(t => definitions.abbrvTag(t.typeSymbol)).mkString(""))
     }
   }
-  
+
   /**
    * The name of the field carrying the type tag of corresponding to a type
    * parameter `tparam`
@@ -73,10 +86,14 @@ trait MiniboxLogic {
     m.owner.info.decl(nme.getterToLocal(originalGetterName))
   }
 
-  def typeParamValues(clazz: Symbol, env: TypeEnv) = clazz.typeParams.map(env)
+  def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
+    clazz.typeParams.map(env) map {
+      case Boxed => AnyRefClass.tpe
+      case Miniboxed => LongClass.tpe
+    }
 
   def needsSpecialization(clazz: Symbol, method: Symbol) = true
 
-  def isAllAnyRef(env: TypeEnv) = env.forall(_._2 == AnyRefClass.tpe)
+  def isAllAnyRef(env: PartialSpec) = env.forall(_._2 == Boxed)
 
 }

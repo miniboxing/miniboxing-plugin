@@ -108,32 +108,30 @@ trait MiniboxSpecializationInfo {
   
   
   
-  case class ClassInfo(sym: Symbol, pmap: ParamMap)
-  
   /**
    * `specializedInterface(C)` is the interface `C_interface` extended by all
    * specialized versions of `C`
    */
-  val specializedInterface = new mutable.HashMap[Symbol, ClassInfo]
-  
-  /**
-   * `allAnyRefClass(C)` is the class that is not specialized for any parameter
-   */
-  val allAnyRefClass = new mutable.HashMap[Symbol, ClassInfo]
+  val specializedInterface = new mutable.HashMap[Symbol, Symbol]
   
   /**
    * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
    * version of `C` w.r.t. that environment. 
    */
   val specializedClasses = 
-    new mutable.HashMap[Symbol, mutable.HashMap[TypeEnv, Symbol]] withDefaultValue (new mutable.HashMap())
+    new mutable.HashMap[Symbol, List[Symbol]] withDefaultValue (List())
+
     
   /**
    * Type environment of a class:
-   * Maps type parameters of the original class to type parameters 
-   * of the specialized one, or their values.
+   * Needed by the duplicator to replace the symbols in the old tree.
    */
   val typeEnv = new mutable.HashMap[Symbol, TypeEnv]
+  
+  /**
+   * Partial specialization corresponding to a class.
+   */
+  val partialSpec = new mutable.HashMap[Symbol, PartialSpec]
   
   /**
    * Records for each of the specialized classes the type tag fields corresponding
