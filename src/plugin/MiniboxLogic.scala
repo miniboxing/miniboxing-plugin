@@ -51,6 +51,14 @@ trait MiniboxLogic {
       newTermName(name.toString + "_" + types.map(t => definitions.abbrvTag(t.typeSymbol)).mkString(""))
     }
   }
+  
+  /**
+   * The name of the field carrying the type tag of corresponding to a type
+   * parameter `tparam`
+   */
+  def typeTagName(tparam: Symbol): TermName = {
+    tparam.name.append("_TypeTag").toTermName
+  }
 
   /**
    * Find the variable that should be accessed by some specialized accessor

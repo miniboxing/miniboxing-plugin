@@ -19,13 +19,18 @@ trait MiniboxSpecializationInfo {
    *
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
-  // FIXME: the symbol will have to box its arguments according to
-  // their actual types. For this, it has to know the type tags. Include
-  // them in the info class
-  case class ForwardTo(method: Symbol) extends MethodInfo {
+  case class ForwardTo(method: Symbol, ret: CastInfo, params: List[CastInfo]) extends MethodInfo {
     override def toString = "ForwardTo(" + method.fullName + ")"
   }
-
+  /*
+   * We need to record how the parameters and the return value should be casted. 
+   */
+  sealed class CastInfo
+  case class CastMiniboxToBox(tag: Symbol) extends CastInfo
+  case object CastBoxToMinibox extends CastInfo
+  case object NoCast extends CastInfo
+  
+  
   /**
    * For the following example:
    *
@@ -125,9 +130,15 @@ trait MiniboxSpecializationInfo {
     
   /**
    * Type environment of a class:
-   * Maps type parameters of the original class to their type parameters 
+   * Maps type parameters of the original class to type parameters 
    * of the specialized one, or their values.
    */
   val typeEnv = new mutable.HashMap[Symbol, TypeEnv]
+  
+  /**
+   * Records for each of the specialized classes the type tag fields corresponding
+   * to each type parameter.
+   */
+  val typeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 }
 

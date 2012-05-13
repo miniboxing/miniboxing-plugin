@@ -76,12 +76,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         /*
          * A definition with empty body - add a body as prescribed by the
          * `methodSpecializationInfo` data structure. 
-         * 
-         * XXX: transform the body further
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
-//          println("class: " + tree.symbol.owner)
-//          println("info: " + tree.symbol + " " + memberSpecializationInfo(tree.symbol))
+          //          println("class: " + tree.symbol.owner)
+          //          println("info: " + tree.symbol + " " + memberSpecializationInfo(tree.symbol))
           memberSpecializationInfo(tree.symbol) match {
 
             // Implement the getter or setter functionality
@@ -100,19 +98,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               val newTree = addBody(tree, original)
               localTyper.typedPos(tree.pos)(newTree)
 
-            case ForwardTo(target) =>
+            case ForwardTo(target, retCast, paramCasts) => // XXX: cast info here
               val rhs1 = vparamss match {
                 case Nil => gen.mkAttributedRef(target)
                 case vparams :: _ =>
                   val params1 =
-                    (vparams zip target.paramss.head) map {
-                      case (p, t) =>
-                        cast(Ident(p.symbol), t.tpe)
+                    ((vparams zip target.paramss.head) zip paramCasts) map {
+                      case ((p, t), paramCast) =>
+                        cast(Ident(p.symbol), t.tpe, paramCast)
                     }
                   gen.mkMethodCall(target, tparams map (_.tpe), params1)
               }
               println(rhs1);
-              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe)))
+              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
 
             case Interface() =>
               tree
@@ -147,22 +145,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     /*
      * Casts a `tree` to a given type `tpe` as result of a `ForwardTo`
-     * information being processed. The only case when the type of the
-     * tree does not match the required type is when boxing / unboxing is
-     * needed.
+     * information being processed. The cast is perform as indicated by 
+     * the `cinfo`.
      */
-    private def cast(tree: Tree, tpe: Type) = {
+    private def cast(tree: Tree, tpe: Type, cinfo: CastInfo) = {
       val ttree = ltypedpos(tree)
-      if (tree.tpe == tpe) {
-        ttree
-      } else {
-        if (tpe == LongClass.tpe && tree.tpe != LongClass.tpe){
-          ltypedpos(gen.mkMethodCall(box2minibox, List(ttree)))
-        } else if (tpe != LongClass.tpe && tree.tpe == LongClass.tpe){
+      cinfo match {
+        case NoCast => ttree
+        case CastMiniboxToBox(tag) => // use `tag` for miniboxing 
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree)))
-        } else {
-          sys.error("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
-        }
+        case CastBoxToMinibox => 
+          ltypedpos(gen.mkMethodCall(box2minibox, List(ttree)))
       }
     }
 
@@ -250,7 +243,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def addBody(defn: Tree, member: Symbol): Tree = {
       val defSymbol = defn.symbol
-      val (body, params) = MethodBodiesCollector.getMethodBody(member);
+      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(member);
 
       val vparams: List[ValDef] = defn match {
         case DefDef(_, _, Nil, vparams :: Nil, _, _) => vparams
@@ -260,12 +253,12 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val newParams = cloneSymbolsAtOwner(vparams map (_.symbol), defSymbol)
 
-      // XXX : as discussed with Vlad on Friday
-      // XXX : change only for cases when we have Miniboxed version there. 
-      // need to provide an env as a parameter.
-      val adaptedBody = adaptTypes(body)
+      /*
+       * Adapt the body to use miniboxed representation of fields where possible. 
+       */
+      val adaptedBody = adaptTypes(origBody)
 
-      val newBody = (new TreeSymSubstituter(params, newParams))(adaptedBody.duplicate)
+      val newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(adaptedBody.duplicate)
 
       val newDef = defn match {
         case _: DefDef =>
@@ -290,9 +283,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     /**
      * When copying the code from the generic class to the specialized one,
      * we need to convert type parameters to the uniform representation: Long
-     * and to replace code that treats them as instances of Any. 
-     * 
-     * 
+     * and to replace code that treats them as instances of Any.
+     *
+     *
      * NOTE: In the standard implementation of specialization such casts
      * are done during erasure, but in our case we need to look at the type
      * Manifest when boxing/unboxing, so a custom transformation needs to be
@@ -333,9 +326,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                  */
                 if (isMiniboxed(qual)) {
                   if (methodSym == Any_##) {
-                    newTree = gen.mkMethodCall(tag_##, asMB(transform(qual)) :: Nil)
+                    newTree = gen.mkMethodCall(tag_##, packedMB(transform(qual)) ::: Nil)
                   } else if (methodSym == Any_hashCode) {
-                    newTree = gen.mkMethodCall(tag_hashCode, asMB(transform(qual)) :: Nil)
+                    newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
                   } else {
                     newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
                   }
@@ -383,7 +376,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
        * Returns the code to box around some tree 
        */
       private def box(tree: Tree) = localTyper.typed(
-        gen.mkMethodCall(minibox2box, List(tree)))
+        gen.mkMethodCall(minibox2box, packedMB(tree)))
 
       /*
        * Tells whether a tree computes a value that will be stored on Long and
@@ -391,7 +384,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
        */
       private def isMiniboxed(t: Tree): Boolean = isMiniboxed(t.tpe)
       private def isMiniboxed(typ: Type): Boolean = isMiniboxed(typ.typeSymbol)
-      
+
       private def isMiniboxed(typs: Symbol): Boolean = {
         /*
          * `typs` is the symbol of a type parameter; we look whether in 
@@ -400,21 +393,26 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         val currentClass = MiniboxTreeTransformer.this.currentClass
         typeEnv(currentClass).get(typs) match {
           case None => false
-          case Some(actualType) => actualType == LongClass.tpe 
+          case Some(actualType) => actualType == LongClass.tpe
         }
-      } 
-      
+      }
+
       private def isMiniboxedArray(qual: Tree): Boolean =
         qual.tpe.underlying.typeArgs exists isMiniboxed
 
       /*
-       * Casts to Long in order to trick the typechecker of the original 
-       * method for the moment, once we duplicate the tree, we have the right types
-       * anyway
+       * Converts a tree that has type `T` whith Minispeced annotation to
+       * a packed representation: a Long representing the value and a 
+       * Byte representing the type.
        */
-      private def asMB(t: Tree) = 
-        gen.mkAsInstanceOf(t, LongClass.tpe, true, false)
+      private def packedMB(t: Tree) = {
+        assert(isMiniboxed(t))
+        val currentClass = MiniboxTreeTransformer.this.currentClass
+        val tag = typeTags(currentClass)(t.tpe.typeSymbol)
 
+        List(gen.mkAsInstanceOf(t, LongClass.tpe, true, false),
+          localTyper.typed(gen.mkAttributedRef(tag)))
+      }
 
     }
 

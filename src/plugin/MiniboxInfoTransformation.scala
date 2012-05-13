@@ -16,7 +16,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * of the overload specialized for that environment.
    */
   val overloads = new HashMap[Symbol, HashMap[TypeEnv, Symbol]]
-
+  
+  /**
+   * The environment for which a method is "meant"
+   */
+  val envOf = new HashMap[Symbol, TypeEnv]
+  
   /**
    * This function performs the info transformation
    */
@@ -96,13 +101,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr setName (specializedName(member.name, typeParamValues(clazz, specEnv)))
           newMbr modifyInfo (info => subst(specEnv, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
 
-          memberSpecializationInfo(newMbr) = ForwardTo(member)
+          memberSpecializationInfo(newMbr) = genForwardingInfo(clazz, newMbr, member)
 
           clazz.info.resultType.decls enter (newMbr)
         }
 
         overloadsOfMember(env) = newMbr
         overloads(newMbr) = overloadsOfMember
+        envOf(newMbr) = env
       }
     }
   }
@@ -201,6 +207,26 @@ trait MiniboxInfoTransformation extends InfoTransform {
     sClass setInfo specializedInfoType // ??? afterMinibox ???
 
     /*
+     * Add type tag fields to the new class and keep a mapping between type 
+     * parameters and the corresponding types tags. 
+     * 
+     * TODO: Meanwhile, erase the evidence field.
+     */
+
+    val typeTagMap: Map[Symbol, Symbol] =
+      (for ((tparam, tval) <- specEnv if tval == LongClass.tpe) yield {
+        val accFlags = SYNTHETIC | PARAMACCESSOR | PrivateLocal
+        val sym = sClass.newValue(typeTagName(tparam), sClass.pos, accFlags)
+        sym setInfo ByteClass.tpe
+        sym setFlag SPECIALIZED 
+        
+        sClassDecls enter sym
+        (tparam, sym)
+      }).toMap
+
+    typeTags(sClass) = typeTagMap
+
+    /*
      * Copy the members from the original class `clazz` to the specialized class
      * `sClass`, and use the `newTParams` symbols in their definitions. Also, 
      * replace the this type of `clazz` with that of `sClass`.
@@ -210,7 +236,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * For each newly introduced symbol, record how its tree should be generated.
      */
     val newMembers = (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
+    for ((m, newMbr) <- newMembers; envOfm <- envOf get m) envOf(newMbr) = envOfm
 
+    newMembers foreach {case (m,newMbr)=> }
     for ((m, newMbr) <- newMembers) {
       newMbr setFlag SPECIALIZED
       newMbr modifyInfo { info =>
@@ -219,7 +247,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (m.isConstructor) { // constructor
           memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
-          MethodType(subst(specEnv, info1).params, newMbr.owner.tpe)
+          // add type tags as parameters
+          val tagParams = typeTagMap.values map (_.cloneSymbol(newMbr))
+          MethodType(subst(specEnv, info1).params ++ tagParams, newMbr.owner.tpe)
         } else if (m.isTerm && !m.isMethod) { // fields, except implicit definitions
           memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
 
@@ -238,7 +268,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
               memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
             } else {
               memberSpecializationInfo.get(m) match {
-                case Some(ForwardTo(original)) =>
+                case Some(ForwardTo(original, _, _)) =>
                   memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
                 case None =>
                   memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
@@ -246,7 +276,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             }
           } else {
             val target = newMembers(overloads(m)(env))
-            memberSpecializationInfo(newMbr) = ForwardTo(target)
+            memberSpecializationInfo(newMbr) = genForwardingInfo(sClass, newMbr, target)
           }
 
           subst(specEnv, info1)
@@ -259,5 +289,44 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     sClass
   }
+  
+  /**
+   * Generate the information about how arguments and return value should
+   * be converted when forwarding to `target`.
+   * 
+   * XXX: need to generate tags for all type params. not only for specialized
+   * ones.
+   */
+  private def genForwardingInfo(sClass: Symbol, wrapper: Symbol, target: Symbol): ForwardTo = {
+//    val wenv = envOf(wrapper)
+//    val tenv = envOf(target)
+
+    def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
+      if (srcType == LongClass.tpe && tgtType != LongClass.tpe) {
+        CastMiniboxToBox(null)
+      } else if (srcType != LongClass.tpe && tgtType == LongClass.tpe) {
+        CastBoxToMinibox
+      } else if (srcType == tgtType) {
+        NoCast
+      } else {
+        sys.error("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
+      }
+//      (wenv get srcType.typeSymbol, tenv get tgtType.typeSymbol) match {
+//        case (Some(wptpe), Some(tptpe)) if (wptpe == LongClass.tpe && tptpe != LongClass.tpe) =>
+//          CastMiniboxToBox(typeTags(sClass)(tgtType.typeSymbol))
+//        case (Some(wptpe), Some(tptpe)) if (wptpe != LongClass.tpe && tptpe == LongClass.tpe) =>
+//          CastBoxToMinibox
+//        case _ => NoCast
+//      }
+    }
+    
+    val paramCasts = (wrapper.tpe.params zip target.tpe.params) map { case (wtp, ttp) => 
+      genCastInfo(wtp.tpe, ttp.tpe)
+    }
+    val retCast = genCastInfo(target.tpe.resultType, wrapper.tpe.resultType)
+    ForwardTo(target, retCast, paramCasts)
+  }
+  
 }
+
 

@@ -12,6 +12,7 @@ class Members[@minispec T: Manifest](t: T, u: Int) {
   def foo3(c : Int): Int = foo4(a)
   def foo4(c : T): Int = b
   def hash() = t.hashCode
+  def print = println(t)
 }
 
 
