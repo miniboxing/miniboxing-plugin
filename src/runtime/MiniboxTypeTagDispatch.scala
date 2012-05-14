@@ -23,8 +23,6 @@ object MiniboxTypeTagDispatch {
   @inline final def array_update[T](array: Any, pos: Int, x: T): Unit = {
     ()
   }
-  @inline final def array_length[T](array: Any): Int = 0
-
-//  @inline final def newarray(len: Int, tag: Tag): Any = ()
+  @inline final def array_length(array: Any): Int = 0
 
 }

@@ -18,16 +18,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
   val overloads = new HashMap[Symbol, HashMap[PartialSpec, Symbol]]
 
   /**
-   * The environment for which a method is "meant"
+   * The partial specialization for which a method is "meant"
    */
-  val envOf = new HashMap[Symbol, PartialSpec]
+  val specOf = new HashMap[Symbol, PartialSpec]
 
   /**
    * This function performs the info transformation
    */
   override def transformInfo(sym: Symbol, tpe: Type): Type =
     // XXX: even for non specialized classes we need to add `special overrides`
-    if (sym.typeParams exists (_ hasAnnotation MinispecedClass)) {
+    if (isSpecializableClass(sym)) {
       println("Specializing " + sym + "...")
       tpe match {
         case PolyType(tArgs, ClassInfoType(parents, decls, typeSym)) =>
@@ -60,8 +60,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           println("-------------- TEMPLATE MEMBERS ----------------")
           templateMembers foreach (m => println(m.fullName))
-          //          for ((m, info) <- memberSpecializationInfo) 
-          //            println("%s - %s".format(m.fullName, info))
+//          for ((m, info) <- memberSpecializationInfo)
+//            println("%s \t- %s".format(m.fullName, info))
 
           tpe
         case _ =>
@@ -88,7 +88,35 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val setters = members.filter(_.isSetter)
     val fields = members.filter(m => m.isTerm && !m.isMethod)
 
-    // we leave the fields untouched, only touching the methods
+    /*
+   * Add type tag fields for each parameter. Will be copied in specialized
+   * subclasses.
+   *  
+   * NOTE: We need type tag fields even for non-miniboxed parameters since
+   * the class contains methods that are "meant" for the instance where 
+   * those parameters are miniboxed. 
+   */
+    val typeTagMap: Map[Symbol, Symbol] =
+      (for (tparam <- clazz.typeParams) yield {
+        val sym = clazz.newValue(typeTagName(tparam), clazz.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal)
+        sym setInfo ByteClass.tpe
+        sym setFlag SPECIALIZED
+
+        clazz.info.decls enter sym
+        (tparam, sym)
+      }).toMap
+    typeTags(clazz) = typeTagMap
+
+    // adding the type tags as constructor arguments
+    // XXX: add a new constructor which calls the previous one with 0,0,0
+    for (ctor <- ctors) {
+      ctor modifyInfo { info =>
+        val tagParams = typeTagMap.values map (_.cloneSymbol(ctor, SYNTHETIC))
+        MethodType(info.params ++ tagParams, clazz.tpe)
+      }
+    }
+
+    // we make specialzed overloads for every member of the original class
     for (member <- methods ::: getters ::: setters if (needsSpecialization(clazz, member))) {
       val overloadsOfMember = new HashMap[PartialSpec, Symbol]
       for (spec <- specs) {
@@ -104,14 +132,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
           newMbr modifyInfo (info => subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
 
-          memberSpecializationInfo(newMbr) = genForwardingInfo(clazz, newMbr, member)
-
           clazz.info.resultType.decls enter (newMbr)
         }
 
         overloadsOfMember(spec) = newMbr
         overloads(newMbr) = overloadsOfMember
-        envOf(newMbr) = spec
+        specOf(newMbr) = spec
+      }
+
+      for (spec <- specs; newMbr <- overloadsOfMember get spec) {
+        memberSpecializationInfo(newMbr) = genForwardingInfo(typeTagMap, newMbr, member)
       }
     }
   }
@@ -179,14 +209,21 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * mapping to their or to the actual value class (if any).
      */
     val pmap = ParamMap(clazz.typeParams, sClass)
-    val env: TypeEnv = spec map {
-      case (p, Miniboxed) => (p, LongClass.tpe)
+
+    /*
+     * We have two type mappings: one for the interface and one for the
+     * implementation. The interface type mapping is just `pmap`, while the
+     * implementation mapping is `env`.
+     */
+    val implEnv: TypeEnv = spec map {
       case (p, Boxed) => (p, pmap(p).tpe)
+      case (p, Miniboxed) => (p, LongClass.tpe)
     }
+    val ifaceEnv: TypeEnv = pmap mapValues (_.tpe)
 
     // insert the new symbol in the info maps
     specializedClasses(clazz) ::= sClass
-    typeEnv(sClass) = env
+    typeEnv(sClass) = implEnv
     partialSpec(sClass) = spec
 
     // declarations inside the specialized class - to be filled in later
@@ -196,71 +233,55 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val specializedInfoType: Type = {
       // TODO: replace parents with the specialized version
       val sParents = (clazz.info.parents) map {
-        t => (subst(env, t))
+        t => (subst(ifaceEnv, t))
       }
 
       // parameters which are not fixed
-      val newTParams: List[Symbol] =
-        (env.values map (_.typeSymbol) filterNot isPrimitiveValueClass).toList
+      val newTParams: List[Symbol] = pmap.values.toList
       GenPolyType(newTParams, ClassInfoType(sParents, sClassDecls, sClass))
     }
     sClass setInfo specializedInfoType // ??? afterMinibox ???
 
     /*
-     * Add type tag fields to the new class and keep a mapping between type 
-     * parameters and the corresponding types tags. 
-     * 
-     * TODO: Meanwhile, erase the `evidence`: Manifest[T] field.
+     * TODO: erase the `evidence`: Manifest[T] field.
      */
 
-    val typeTagMap: Map[Symbol, Symbol] =
-      (for ((tparam, tval) <- env if tval == LongClass.tpe) yield {
-        val accFlags = SYNTHETIC | PARAMACCESSOR | PrivateLocal
-        val sym = sClass.newValue(typeTagName(tparam), sClass.pos, accFlags)
-        sym setInfo ByteClass.tpe
-        sym setFlag SPECIALIZED
-
-        sClassDecls enter sym
-        (tparam, sym)
-      }).toMap
-
-    typeTags(sClass) = typeTagMap
-
-    /*
-     * Copy the members from the original class `clazz` to the specialized class
-     * `sClass`, and use the `newTParams` symbols in their definitions. Also, 
-     * replace the this type of `clazz` with that of `sClass`.
-     * 
-     * For fields, use the environment to determine their type.
-     * 
-     * For each newly introduced symbol, record how its tree should be generated.
-     */
+    // Copy the members of the original class `clazz` to the specialized class. 
     val newMembers = (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
+    
+    // Record the new mapping for type tags
+    val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag))}
+    typeTags(sClass) = typeTags(clazz) mapValues newMembers
 
-    for ((m, newMbr) <- newMembers; envOfm <- envOf get m)
-      envOf(newMbr) = envOfm
-
+    // Replace the info in the copied members to reflect their new class
     for ((m, newMbr) <- newMembers) {
       newMbr setFlag SPECIALIZED
       newMbr modifyInfo { info =>
         val info1 = info.substThis(clazz, sClass)
         if (m.isConstructor) { // constructor - add type tags as parameters
-          val tagParams = typeTagMap.values map (_.cloneSymbol(newMbr))
-          MethodType(subst(env, info1).params ++ tagParams, newMbr.owner.tpe)
-        } else if (m.isTerm && !m.isMethod && m.isImplicit) { // implicit fields
-          info1
+          MethodType(subst(implEnv, info1).params, newMbr.owner.tpe)
+        } else if (m.isTerm && !m.isMethod) {
+          if (m.isImplicit) info1 else {
+            subst(implEnv, info1)
+          }
         } else {
-          subst(env, info1)
+          subst(ifaceEnv, info1)
         }
       }
       sClassDecls enter newMbr
     }
 
+//    for ((m, newMbr) <- newMembers; specOfm <- specOf get m)
+//      specOf(newMbr) = specOfm
+
+    // Record how the body of these members should be generated
     for ((m, newMbr) <- newMembers) {
       if (m.isConstructor) { // constructor
         memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
       } else if (m.isTerm && !m.isMethod) { // fields
-        memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+        if (!m.isImplicit && !isTypeTagField(m)) {
+          memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
+        }
       } else {
         if (m.isDeferred)
           memberSpecializationInfo(newMbr) = Interface()
@@ -275,17 +296,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
             memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
           } else {
             memberSpecializationInfo.get(m) match {
-              case info: Some[_] => info.get match {
-                case ForwardTo(original, _, _) =>
+              case Some(ForwardTo(original, _, _)) => 
                   memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
-              }
               case None =>
                 memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
             }
           }
         } else {
           val target = newMembers(overloads(m)(spec))
-          memberSpecializationInfo(newMbr) = genForwardingInfo(sClass, newMbr, target)
+          memberSpecializationInfo(newMbr) = genForwardingInfo(typeTagMap, newMbr, target)
         }
       }
     }
@@ -300,38 +319,36 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * XXX: need to generate tags for all type params. not only for specialized
    * ones.
    */
-  private def genForwardingInfo(sClass: Symbol, wrapper: Symbol, target: Symbol): ForwardTo = {
-    //    val wenv = envOf(wrapper)
-    //    val tenv = envOf(target)
-
-    def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
-      if (srcType == LongClass.tpe && tgtType != LongClass.tpe) {
-        CastMiniboxToBox(null)
-      } else if (srcType != LongClass.tpe && tgtType == LongClass.tpe) {
+  private def genForwardingInfo(tags: Map[Symbol, Symbol], wrapper: Symbol, target: Symbol): ForwardTo = {
+    def genCastInfo(srcTypeSymbol: Symbol, tgtTypeSymbol: Symbol): CastInfo = {
+      if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass) {
+        CastMiniboxToBox(tags(tgtTypeSymbol))
+      } else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass) {
         CastBoxToMinibox
-      } else if (srcType == tgtType) {
+      } else if (srcTypeSymbol == tgtTypeSymbol) {
         NoCast
       } else {
-        sys.error("A cast which is neither boxing, nor unboxing when handling `ForwardTo`." +
-          srcType + " --> " + tgtType)
+        /*
+         * The only mismatch between the signatures come from the fact that one
+         * of the members is specialized and the other is not for some type 
+         * parameter. 
+         */
+        println(wrapper + ": " + wrapper.tpe)
+        println(target + ": " + target.tpe)
+        println("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
+        println(srcTypeSymbol + " --> " + tgtTypeSymbol)
+
+        sys.exit
       }
-      //      (wenv get srcType.typeSymbol, tenv get tgtType.typeSymbol) match {
-      //        case (Some(wptpe), Some(tptpe)) if (wptpe == LongClass.tpe && tptpe != LongClass.tpe) =>
-      //          CastMiniboxToBox(typeTags(sClass)(tgtType.typeSymbol))
-      //        case (Some(wptpe), Some(tptpe)) if (wptpe != LongClass.tpe && tptpe == LongClass.tpe) =>
-      //          CastBoxToMinibox
-      //        case _ => NoCast
-      //      }
+
     }
 
-    val paramCasts = (wrapper.tpe.params zip target.tpe.params) map {
+    val paramCasts = (wrapper.tpe.paramTypes zip target.tpe.paramTypes) map {
       case (wtp, ttp) =>
-        genCastInfo(wtp.tpe, ttp.tpe)
+        genCastInfo(wtp.typeSymbol, ttp.typeSymbol)
     }
-    val retCast = genCastInfo(target.tpe.resultType, wrapper.tpe.resultType)
+    val retCast = genCastInfo(target.tpe.resultType.typeSymbol, wrapper.tpe.resultType.typeSymbol)
+
     ForwardTo(target, retCast, paramCasts)
   }
-
 }
-
-

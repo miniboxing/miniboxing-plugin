@@ -72,6 +72,9 @@ trait MiniboxLogic {
   def typeTagName(tparam: Symbol): TermName = {
     tparam.name.append("_TypeTag").toTermName
   }
+  def isTypeTagField(field: Symbol): Boolean = {
+    field.name.endsWith("_TypeTag")
+  }
 
   /**
    * Find the variable that should be accessed by some specialized accessor
@@ -85,7 +88,7 @@ trait MiniboxLogic {
 
     m.owner.info.decl(nme.getterToLocal(originalGetterName))
   }
-
+  
   def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
     clazz.typeParams.map(env) map {
       case Boxed => AnyRefClass.tpe
@@ -96,4 +99,9 @@ trait MiniboxLogic {
 
   def isAllAnyRef(env: PartialSpec) = env.forall(_._2 == Boxed)
 
+  def isSpecializableClass(clazz: Symbol) =
+    clazz.isClass &&
+    !clazz.typeParams.isEmpty && 
+    (clazz.typeParams forall (_ hasAnnotation MinispecedClass))
+    
 }
