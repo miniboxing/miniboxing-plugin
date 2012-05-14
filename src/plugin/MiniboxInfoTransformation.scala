@@ -12,17 +12,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
   import definitions._
 
   /**
-   * For each method of the original class and each type environment we keep track
-   * of the overload specialized for that environment.
-   */
-  val overloads = new HashMap[Symbol, HashMap[PartialSpec, Symbol]]
-
-  /**
-   * The partial specialization for which a method is "meant"
-   */
-  val specOf = new HashMap[Symbol, PartialSpec]
-
-  /**
    * This function performs the info transformation
    */
   override def transformInfo(sym: Symbol, tpe: Type): Type =
@@ -137,7 +126,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
         overloadsOfMember(spec) = newMbr
         overloads(newMbr) = overloadsOfMember
-        specOf(newMbr) = spec
       }
 
       for (spec <- specs; newMbr <- overloadsOfMember get spec) {
@@ -247,7 +235,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
      */
 
     // Copy the members of the original class `clazz` to the specialized class. 
-    val newMembers = (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
+    val newMembers: Map[Symbol, Symbol] = 
+      (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
     
     // Record the new mapping for type tags
     val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag))}
@@ -270,9 +259,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
       sClassDecls enter newMbr
     }
-
-//    for ((m, newMbr) <- newMembers; specOfm <- specOf get m)
-//      specOf(newMbr) = specOfm
 
     // Record how the body of these members should be generated
     for ((m, newMbr) <- newMembers) {
@@ -309,6 +295,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
     }
 
+    // populate the overloads data structure for the new members also
+    for ((m, newMbr) <- newMembers if (m.isMethod && !m.isConstructor)) {
+      val newMbrMeantForSpec = newMembers(overloads(m)(spec))
+      if (!(overloads isDefinedAt newMbrMeantForSpec)) {
+        overloads(newMbrMeantForSpec) = new HashMap[PartialSpec, Symbol]
+        for ((s, m) <- overloads(m)) {
+          overloads(newMbrMeantForSpec)(s) = newMembers(m)
+        }
+      }
+      overloads(newMbr) = overloads(newMbrMeantForSpec) 
+    }
+    
     sClass
   }
 
@@ -320,13 +318,23 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * ones.
    */
   private def genForwardingInfo(tags: Map[Symbol, Symbol], wrapper: Symbol, target: Symbol): ForwardTo = {
-    def genCastInfo(srcTypeSymbol: Symbol, tgtTypeSymbol: Symbol): CastInfo = {
+    def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
+      val srcTypeSymbol: Symbol = srcType.typeSymbol
+      val tgtTypeSymbol: Symbol = tgtType.typeSymbol
+      
       if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass) {
         CastMiniboxToBox(tags(tgtTypeSymbol))
       } else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass) {
         CastBoxToMinibox
       } else if (srcTypeSymbol == tgtTypeSymbol) {
-        NoCast
+        if (srcType == tgtType) NoCast 
+        else { 
+          /*
+           * We have something like Foo[T] vs Foo[Long] which will be the same 
+           * after erasure. For now, just pretend that they are the same.
+           */
+          AsInstanceOfCast
+        }
       } else {
         /*
          * The only mismatch between the signatures come from the fact that one
@@ -345,9 +353,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     val paramCasts = (wrapper.tpe.paramTypes zip target.tpe.paramTypes) map {
       case (wtp, ttp) =>
-        genCastInfo(wtp.typeSymbol, ttp.typeSymbol)
+        genCastInfo(wtp, ttp)
     }
-    val retCast = genCastInfo(target.tpe.resultType.typeSymbol, wrapper.tpe.resultType.typeSymbol)
+    val retCast = genCastInfo(target.tpe.resultType, wrapper.tpe.resultType)
 
     ForwardTo(target, retCast, paramCasts)
   }

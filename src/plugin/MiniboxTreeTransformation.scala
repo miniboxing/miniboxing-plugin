@@ -158,6 +158,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val ttree = ltypedpos(tree)
       cinfo match {
         case NoCast => ttree
+        case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
+        
         case CastMiniboxToBox(tag) => // use `tag` for miniboxing 
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree, tagref)))
@@ -261,9 +263,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       /*
        * Adapt the body to use miniboxed representation of fields where possible. 
        */
-      val adaptedBody = adaptTypes(origBody)
-
-      val newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(adaptedBody.duplicate)
+      var newBody = origBody 
+      newBody = adaptTypes(newBody)
+      newBody = (new replaceLocalCalls(currentClass))(newBody)
+      newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody.duplicate)
 
       val newDef = defn match {
         case _: DefDef =>
@@ -271,29 +274,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case _: ValDef =>
           copyValDef(defn)(rhs = newBody)
       }
-      
+
+      println(defSymbol.fullName)
       /*
-       * XXX
-       * XXX
-       * XXX
        * 
-       * `foo2_J` copies the implementation from `foo2` which is `foo1(t)`
-       * 
-       * `foo1` has type `T => T`, and `t` has type `T`.
-       * 
-       * The duplicator, during retyping, will see that `t` has type 
-       * `Long` in the new class while `foo1` has type `Tsp => Tsp` 
-       * and will issue a type exception.
-       * 
-       * The problem comes from the fact that we have two type environments
-       * according to which we make the changes and the duplicator takes
-       * only one.
-       *
-       * Solution: replace foo1 with foo1_J ???
-       * 
-       * XXX
-       * XXX
-       * XXX
        */
       duplicator.retyped(
         localTyper.context1.asInstanceOf[duplicator.Context],
@@ -307,6 +291,22 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val global: MiniboxTreeTransformation.this.global.type =
         MiniboxTreeTransformation.this.global
     } with Duplicators
+
+    /**
+     * Replace calls to generic functions with calls to specialized ones.
+     */
+    private class replaceLocalCalls(sClass: Symbol) extends Transformer {
+      val spec: PartialSpec = partialSpec(sClass)
+      def apply(tree: Tree): Tree = transform(tree)
+      override def transform(tree: Tree): Tree = {
+        val mbr = tree.symbol
+        tree match {
+          case Select(This(clazz), meth) if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr) =>
+            Select(This(sClass), overloads(mbr)(spec))
+          case _ => super.transform(tree)
+        }
+      }
+    }
 
     /**
      * When copying the code from the generic class to the specialized one,
@@ -328,7 +328,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
           // array_length with tag-based dispatch
           case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
-            // XXX: this is the typer of the outer class :D
             localTyper.typedPos(tree.pos)(
               gen.mkMethodCall(array_length, List(transform(qual))))
 
@@ -346,11 +345,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               }
 
             fn match {
-              case Select(This(_), meth) =>
-                // XXX: rewire method calls
-                println("----" + fn)
-                super.transform(fn)
-                
               case sel @ Select(qual, meth) =>
                 var newTree: Tree = null
 

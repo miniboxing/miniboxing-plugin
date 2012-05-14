@@ -3,24 +3,7 @@ import plugin.minispec
 import runtime.MiniboxTypeTagDispatch
 
 
-class Members[@minispec T: Manifest](t: T) {
-  def foo1(t1 : T) : T = t1
-  def foo2 : T = foo1(t)
-}
 
-/*
-class Members_J[@minispec T: Manifest](t: Long) {
-  def foo1(t1 : T) : T = t1
-  def foo2 : T = foo1(minibox2box(t))
-
-  def foo1(t1 : T) : T = t1
-  def foo2_J : T = foo1_J(t)
-}
-*/
-
-
-
-/*
 class Members[@minispec T: Manifest](t: T, u: Int) {
   var a : T = t
   val b : Int = u
@@ -39,4 +22,3 @@ object Impl extends Members[Boolean](false, 1) {
 }
 
 
-*/
