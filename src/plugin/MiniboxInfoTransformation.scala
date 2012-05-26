@@ -16,6 +16,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
    */
   override def transformInfo(sym: Symbol, tpe: Type): Type =
     // XXX: even for non specialized classes we need to add `special overrides`
+    // and bridge methods
     if (isSpecializableClass(sym)) {
       println("Specializing " + sym + "...")
       tpe match {
@@ -49,8 +50,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           println("-------------- TEMPLATE MEMBERS ----------------")
           templateMembers foreach (m => println(m.fullName))
-//          for ((m, info) <- memberSpecializationInfo)
-//            println("%s \t- %s".format(m.fullName, info))
+          //          for ((m, info) <- memberSpecializationInfo)
+          //            println("%s \t- %s".format(m.fullName, info))
 
           tpe
         case _ =>
@@ -105,7 +106,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
     }
 
-    // we make specialzed overloads for every member of the original class
+    // we make specialized overloads for every member of the original class
     for (member <- methods ::: getters ::: setters if (needsSpecialization(clazz, member))) {
       val overloadsOfMember = new HashMap[PartialSpec, Symbol]
       for (spec <- specs) {
@@ -119,7 +120,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           newMbr setFlag SPECIALIZED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
-          newMbr modifyInfo (info => subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
+          newMbr modifyInfo (info =>
+            subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
 
           clazz.info.resultType.decls enter (newMbr)
         }
@@ -136,11 +138,24 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   /*
    * Substitute the type parameters with their value as given by the 'env'
-   * in the type 'tpe'. 
+   * in the type 'tpe'. Also replace use only the specialized interface 
+   * in signatures.
    */
   private def subst(env: TypeEnv, tpe: Type): Type = {
     val (keys, values) = env.toList.unzip
-    (new SubstTypeMap(keys, values))(tpe)
+    val substMap = new SubstTypeMap(keys, values) {
+      override def mapOver(tp: Type): Type = tp match {
+        case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
+//          println("here " + tp)
+//          println("---- " + sym)
+          val iface = specializedInterface(sym)
+          TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
+        case _ =>
+          super.mapOver(tp)
+      }
+    }
+
+    substMap(tpe)
   }
   /*
    * Every specialized class has its own symbols for the type parameters, 
@@ -157,9 +172,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * methods of `clazz` with all their specialized overloads.
    */
   private def createGenericInterface(clazz: Symbol): Symbol = {
-    val sClassName = interfaceName(clazz.name)
+    val ifaceName = interfaceName(clazz.name)
     val iface: Symbol =
-      clazz.owner.newClass(sClassName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
+      clazz.owner.newClass(ifaceName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
 
     // Copy the methods into the interface and replace the type parameters with fresh ones
     val pmap = ParamMap(clazz.typeParams, iface)
@@ -235,11 +250,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
      */
 
     // Copy the members of the original class `clazz` to the specialized class. 
-    val newMembers: Map[Symbol, Symbol] = 
+    val newMembers: Map[Symbol, Symbol] =
       (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
-    
+
     // Record the new mapping for type tags
-    val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag))}
+    val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag)) }
     typeTags(sClass) = typeTags(clazz) mapValues newMembers
 
     // Replace the info in the copied members to reflect their new class
@@ -251,12 +266,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
           MethodType(subst(implEnv, info1).params, newMbr.owner.tpe)
         } else if (m.isTerm && !m.isMethod) {
           if (m.isImplicit) info1 else {
+//            println(info1);
             subst(implEnv, info1)
           }
         } else {
           subst(ifaceEnv, info1)
         }
       }
+//      println(newMbr + " " + newMbr.info)
       sClassDecls enter newMbr
     }
 
@@ -282,8 +299,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
             memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(accessed(m)))
           } else {
             memberSpecializationInfo.get(m) match {
-              case Some(ForwardTo(original, _, _)) => 
-                  memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+              case Some(ForwardTo(original, _, _)) =>
+                memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
               case None =>
                 memberSpecializationInfo(newMbr) = SpecializedImplementationOf(m)
             }
@@ -304,31 +321,28 @@ trait MiniboxInfoTransformation extends InfoTransform {
           overloads(newMbrMeantForSpec)(s) = newMembers(m)
         }
       }
-      overloads(newMbr) = overloads(newMbrMeantForSpec) 
+      overloads(newMbr) = overloads(newMbrMeantForSpec)
     }
-    
+
     sClass
   }
 
   /**
    * Generate the information about how arguments and return value should
    * be converted when forwarding to `target`.
-   *
-   * XXX: need to generate tags for all type params. not only for specialized
-   * ones.
    */
   private def genForwardingInfo(tags: Map[Symbol, Symbol], wrapper: Symbol, target: Symbol): ForwardTo = {
     def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
       val srcTypeSymbol: Symbol = srcType.typeSymbol
       val tgtTypeSymbol: Symbol = tgtType.typeSymbol
-      
+
       if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass) {
         CastMiniboxToBox(tags(tgtTypeSymbol))
       } else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass) {
         CastBoxToMinibox
       } else if (srcTypeSymbol == tgtTypeSymbol) {
-        if (srcType == tgtType) NoCast 
-        else { 
+        if (srcType == tgtType) NoCast
+        else {
           /*
            * We have something like Foo[T] vs Foo[Long] which will be the same 
            * after erasure. For now, just pretend that they are the same.

@@ -13,16 +13,102 @@ package runtime
  */
 object MiniboxTypeTagDispatch {
   import MiniboxTypes._
-  @inline final def toString[T](x: T): String = "" + x
-  @inline final def hashhash(x: Long, tag: Byte): Int = x.##
-  @inline final def hashCode(x: Long, tag: Byte): Int = x.hashCode
+  import MiniboxConversions._
+  import MiniboxConstants._
 
-  @inline final def array_apply[T](array: Any, pos: Int): T =
-    array.asInstanceOf[Array[T]](pos)
+  /*
+   *  For methods like `toString` or `equals` there is not much improvement
+   *  to be expected. Just use boxing for them. 
+   */
+  @inline final def toString(x: Minibox, tag: Tag): String =
+    minibox2box(x, tag).toString
 
-  @inline final def array_update[T](array: Any, pos: Int, x: T): Unit = {
-    ()
+  /*
+   * Implementation that takes care of the primitive semantics
+   */
+  @inline final def hashhash(x: Minibox, tag: Tag): Int = tag match {
+    case UNIT | BOOLEAN | INT | LONG => x.toInt
+    case BYTE => x.toByte.toInt
+    case CHAR => x.toChar.toInt
+    case SHORT => x.toShort.toInt
+    case FLOAT =>
+      val ibits = x.toInt
+      val fv = java.lang.Float.intBitsToFloat(ibits)
+      val iv = fv.toInt
+      if (iv.toFloat == fv) iv else ibits
+    case DOUBLE =>
+      val ibits = x.toInt
+      val dv = java.lang.Double.longBitsToDouble(x)
+      val iv = dv.toInt
+      if (iv.toDouble == dv) iv else ibits
   }
-  @inline final def array_length(array: Any): Int = 0
 
+  @inline final def hashCode(x: Minibox, tag: Tag): Int = x.hashCode
+
+  @inline final def array_apply[T](array: Any, pos: Int, tag: Tag): T = {
+    val elem: Minibox = tag match {
+      case UNIT =>
+        0
+      case BOOLEAN =>
+        BooleanToMinibox(array.asInstanceOf[Array[Boolean]](pos))
+      case BYTE =>
+        ByteToMinibox(array.asInstanceOf[Array[Byte]](pos))
+      case CHAR =>
+        CharToMinibox(array.asInstanceOf[Array[Char]](pos))
+      case SHORT =>
+        ShortToMinibox(array.asInstanceOf[Array[Short]](pos))
+      case INT =>
+        IntToMinibox(array.asInstanceOf[Array[Int]](pos))
+      case LONG =>
+        array.asInstanceOf[Array[Long]](pos)
+      case FLOAT =>
+        FloatToMinibox(array.asInstanceOf[Array[Float]](pos))
+      case DOUBLE =>
+        DoubleToMinibox(array.asInstanceOf[Array[Double]](pos))
+    }
+    elem.asInstanceOf[T]
+  }
+
+  @inline final def array_update[T](array: Any, pos: Int, x: Minibox, tag: Tag): Unit = tag match {
+    case UNIT =>
+      array.asInstanceOf[Array[Unit]](pos) = MiniboxToUnit(x)
+    case BOOLEAN =>
+      array.asInstanceOf[Array[Boolean]](pos) = MiniboxToBoolean(x)
+    case BYTE =>
+      array.asInstanceOf[Array[Byte]](pos) = MiniboxToByte(x)
+    case CHAR =>
+      array.asInstanceOf[Array[Char]](pos) = MiniboxToChar(x)
+    case SHORT =>
+      array.asInstanceOf[Array[Short]](pos) = MiniboxToShort(x)
+    case INT =>
+      array.asInstanceOf[Array[Int]](pos) = MiniboxToInt(x)
+    case LONG =>
+      array.asInstanceOf[Array[Long]](pos) = MiniboxToLong(x)
+    case FLOAT =>
+      array.asInstanceOf[Array[Float]](pos) = MiniboxToFloat(x)
+    case DOUBLE =>
+      array.asInstanceOf[Array[Double]](pos) = MiniboxToDouble(x)
+    
+  }
+
+  @inline final def array_length(array: Any, tag: Tag): Int = tag match {
+    case UNIT =>
+      array.asInstanceOf[Array[Unit]].length
+    case BOOLEAN =>
+      array.asInstanceOf[Array[Boolean]].length
+    case BYTE =>
+      array.asInstanceOf[Array[Byte]].length
+    case CHAR =>
+      array.asInstanceOf[Array[Char]].length
+    case SHORT =>
+      array.asInstanceOf[Array[Short]].length
+    case INT =>
+      array.asInstanceOf[Array[Int]].length
+    case LONG =>
+      array.asInstanceOf[Array[Long]].length
+    case FLOAT =>
+      array.asInstanceOf[Array[Float]].length
+    case DOUBLE =>
+      array.asInstanceOf[Array[Double]].length
+  }
 }

@@ -11,9 +11,11 @@ trait Array_intf[T] {
 */
 
 class ArrayWrap[@minispec T : Manifest] {
-  private var array : Array[T] = _ 
-//  def newArray(len: Int): Unit = array = new Array[T](len) 
-  def setElement(p: Int, t: T) = array(p) = t
-  def getElement(p: Int) :T = array(p)
+  private var array : MiniboxArray = _ 
+  def newArray(len: Int): Unit = array = MiniboxArray[T](len) 
+  def setElement(p: Int, t: T) = {
+    array(i) = t
+  }
+  def getElement(p: Int): T = array(p)
 }
 

@@ -159,7 +159,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       cinfo match {
         case NoCast => ttree
         case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
-        
+
         case CastMiniboxToBox(tag) => // use `tag` for miniboxing 
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree, tagref)))
@@ -263,9 +263,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       /*
        * Adapt the body to use miniboxed representation of fields where possible. 
        */
-      var newBody = origBody 
+      var newBody = origBody
       newBody = adaptTypes(newBody)
-      newBody = (new replaceLocalCalls(currentClass))(newBody)
+      newBody = (new replaceLocalCalls(currentClass, origMember.owner))(newBody)
       newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody.duplicate)
 
       val newDef = defn match {
@@ -293,16 +293,24 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     } with Duplicators
 
     /**
-     * Replace calls to generic functions with calls to specialized ones.
+     * Replace calls to generic functions with calls to specialized ones
+     * in the implementation copied from the generic class.
      */
-    private class replaceLocalCalls(sClass: Symbol) extends Transformer {
+    private class replaceLocalCalls(sClass: Symbol, clazz: Symbol) extends Transformer {
       val spec: PartialSpec = partialSpec(sClass)
       def apply(tree: Tree): Tree = transform(tree)
       override def transform(tree: Tree): Tree = {
         val mbr = tree.symbol
         tree match {
           case Select(This(clazz), meth) if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr) =>
-            Select(This(sClass), overloads(mbr)(spec))
+            Select(This(sClass), overloads(mbr)(spec).name)
+          /*
+           * `Select` nodes use the symbols for methods from the original class.
+           * Change them to use the interface.
+           */
+          case Select(obj, meth) if (mbr.owner == clazz && mbr.isMethod) =>
+            val iface = specializedInterface(clazz)
+            Select(obj, iface.tpe.decl(meth))
           case _ => super.transform(tree)
         }
       }

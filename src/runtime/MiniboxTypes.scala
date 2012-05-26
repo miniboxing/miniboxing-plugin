@@ -1,6 +1,6 @@
 package runtime
 
 object MiniboxTypes {
-  type Tag = Manifest[_]
+  type Tag = Byte
   type Minibox = Long
 }
