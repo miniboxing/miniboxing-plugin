@@ -135,8 +135,8 @@ trait MiniboxSpecializationInfo {
   val typeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 
   /**
-   * For each method of the original class and each type environment we keep track
-   * of the overload specialized for that environment.
+   * For each method of the original class and each partial specialization 
+   * we keep track of the overload specialized for that representation.
    */
   val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 

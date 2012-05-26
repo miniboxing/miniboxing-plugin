@@ -36,6 +36,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   private lazy val box2minibox =
     definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox"))
 
+  /**
+   * The tree transformer that adds the trees for the specialized classes inside
+   * the current package.
+   */
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
     override def transform(tree: Tree): Tree = {
       curTree = tree
@@ -78,8 +82,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * `methodSpecializationInfo` data structure. 
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
-          //          println("class: " + tree.symbol.owner)
-          //          println("info: " + tree.symbol + " " + memberSpecializationInfo(tree.symbol))
           memberSpecializationInfo(tree.symbol) match {
 
             // Implement the getter or setter functionality
@@ -99,7 +101,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               val newTree = addBody(tree, original)
               localTyper.typedPos(tree.pos)(newTree)
 
-            case ForwardTo(target, retCast, paramCasts) => // XXX: cast info here
+            // forward to the target methods, making casts as prescribed
+            case ForwardTo(target, retCast, paramCasts) =>
               val rhs1 = vparamss match {
                 case Nil => gen.mkAttributedRef(target)
                 case vparams :: _ =>
@@ -136,7 +139,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
 
         case _ =>
-          //          println("descending into: " + tree.printingPrefix + " " + tree)
           super.transform(tree)
       }
     }
@@ -151,8 +153,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Casts a `tree` to a given type `tpe` as result of a `ForwardTo`
      * information being processed. The cast is perform as indicated by 
      * the `cinfo`.
-     * 
-     * XXX: make minibox2box use the right type argument
      */
     private def cast(tree: Tree, tpe: Type, cinfo: CastInfo) = {
       val ttree = ltypedpos(tree)
@@ -160,7 +160,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case NoCast => ttree
         case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
 
-        case CastMiniboxToBox(tag) => // use `tag` for miniboxing 
+        case CastMiniboxToBox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree, tagref)))
         case CastBoxToMinibox =>
@@ -261,7 +261,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val newParams = cloneSymbolsAtOwner(vparams map (_.symbol), defSymbol)
 
       /*
-       * Adapt the body to use miniboxed representation of fields where possible. 
+       * Most of the work of the tree transformer is done here. 
+       * We need to adapt the body of the generic class to use the value 
+       * representation of the current (specialized) class. 
+       * 
+       * In order to achieve this we must:
+       * - insert type tag dispatching methods instead of the methods
+       *   from `Array` and `Any` classes
+       * - rewire method calls to use the overloads specialized for this
+       *   representation
+       * - replace all method selections to use the interface rather than
+       *   the generic class   
+       * - insert conversions between boxed, miniboxed and natural representation
+       *   of primitive values.  
        */
       var newBody = origBody
       newBody = adaptTypes(newBody)
@@ -294,7 +306,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     /**
      * Replace calls to generic functions with calls to specialized ones
-     * in the implementation copied from the generic class.
+     * in the implementation copied from the generic class and replaces
+     * calls of methods from the generic class to calls of methods 
+     * from the specialized interface.
      */
     private class replaceLocalCalls(sClass: Symbol, clazz: Symbol) extends Transformer {
       val spec: PartialSpec = partialSpec(sClass)
@@ -371,9 +385,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   }
                 }
 
-                // XXX: use the tag in the other functions also
                 /*
-                 * For array access instructions, use the static methods from 
+                 * TODO: For array access instructions, use the static methods from 
                  * MiniboxTypeTagDispatch   
                  */
                 if (methodSym == Array_apply && isMiniboxedArray(qual)) {

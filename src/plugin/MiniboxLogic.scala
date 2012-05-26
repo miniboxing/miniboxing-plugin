@@ -5,7 +5,6 @@ import scala.tools.nsc.Global
 trait MiniboxLogic {
   self: MiniboxLogging =>
 
-  // we need it, there's no way around
   val global: Global
   import global._
   import definitions._
@@ -14,14 +13,17 @@ trait MiniboxLogic {
   lazy val MinispecedClass = definitions.getRequiredClass("plugin.minispec")
 
   /**
-   * A `TypeEnv` maps each type parameter to the actual type used in the
-   * current instantiation.
+   * A `TypeEnv` maps each type parameter of the original class to the 
+   * actual type used in the specialized version to which this environment
+   * correspond. This type may be either `Long` or a fresh type parameter
+   *  `Tsp`.
    */
   type TypeEnv = immutable.Map[Symbol, Type]
 
   /**
-   * A `PartialSpec` tells us for each type parameter whether it is represented
-   * as a `Boxed` value or as a `Miniboxed` one.
+   * A `PartialSpec` provides us information about the representation used
+   * for values of a type parameter: either `Boxed` (as AnyRef) or 
+   * `Miniboxed` (as Long).
    */
   sealed trait SpecInfo
   case object Miniboxed extends SpecInfo
@@ -99,6 +101,9 @@ trait MiniboxLogic {
 
   def isAllAnyRef(env: PartialSpec) = env.forall(_._2 == Boxed)
 
+  /**
+   * Tells whether a class must be specialized by looking at the annotations
+   */
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
     !clazz.typeParams.isEmpty && 
