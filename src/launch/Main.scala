@@ -8,6 +8,7 @@ object Main {
           "-d",
           "test-bin/",
           "test/simple/MBList.scala", 
+          "-optimize",
           //"-Xprint:all",
           //"-Ybrowse:minibox",
           "-Xprint:minibox,cleanup",

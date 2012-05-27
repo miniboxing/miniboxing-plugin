@@ -28,6 +28,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     definitions.getMember(TagDipatchObjectSymbol, newTermName("hashCode"))
   private lazy val tag_## =
     definitions.getMember(TagDipatchObjectSymbol, newTermName("hashhash"))
+  private lazy val tag_== =
+    definitions.getMember(TagDipatchObjectSymbol, newTermName("eqeq"))
 
   private lazy val ConversionsObjectSymbol =
     definitions.getRequiredModule("runtime.MiniboxConversions")
@@ -305,10 +307,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     } with Duplicators
 
     /**
-     * Replace calls to generic functions with calls to specialized ones
-     * in the implementation copied from the generic class and replaces
-     * calls of methods from the generic class to calls of methods 
-     * from the specialized interface.
+     * In the `_J` class, we should not be calling the generic methods, but
+     * the `_J` version of it. Replace the symbol for the methods in the generic
+     * class with the symbols of the corresponding methods in the interface.
      */
     private class replaceLocalCalls(sClass: Symbol, clazz: Symbol) extends Transformer {
       val spec: PartialSpec = partialSpec(sClass)
@@ -316,15 +317,23 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       override def transform(tree: Tree): Tree = {
         val mbr = tree.symbol
         tree match {
-          case Select(This(clazz), meth) if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr) =>
-            Select(This(sClass), overloads(mbr)(spec).name)
           /*
            * `Select` nodes use the symbols for methods from the original class.
-           * Change them to use the interface.
+           * Change them to use the interface. 
+           * 
+           * TODO: do the same in the generic class.
            */
           case Select(obj, meth) if (mbr.owner == clazz && mbr.isMethod) =>
+            println(" *** " + meth + " : " + sClass)
             val iface = specializedInterface(clazz)
-            Select(obj, iface.tpe.decl(meth))
+            // use the most specific overload
+            val methName =
+              if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr)
+                overloads(mbr)(spec).name
+              else
+                meth
+            println("  *  " + methName)
+            Select(obj, iface.tpe.decl(methName))
           case _ => super.transform(tree)
         }
       }
@@ -380,6 +389,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                     newTree = gen.mkMethodCall(tag_##, packedMB(transform(qual)) ::: Nil)
                   } else if (methodSym == Any_hashCode) {
                     newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
+                  } else if (methodSym == Any_== && args.size == 1 && isMiniboxed(args(0))) {
+                    if (qual.tpe.typeSymbol == args(0).tpe.typeSymbol) {
+                      newTree = gen.mkMethodCall(tag_==,
+                        asMB(transform(qual)) :: asMB(transform(args(0))) :: Nil)
+                    } else {
+                      newTree = gen.mkMethodCall(tag_==,
+                        packedMB(transform(qual)) ::: packedMB(args(0)))
+                    }
                   } else {
                     newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
                   }
@@ -448,6 +465,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
         List(gen.mkAsInstanceOf(t, LongClass.tpe, true, false),
           localTyper.typed(gen.mkAttributedRef(tag)))
+      }
+
+      private def asMB(t: Tree) = {
+        gen.mkAsInstanceOf(t, LongClass.tpe, true, false)
       }
 
     }

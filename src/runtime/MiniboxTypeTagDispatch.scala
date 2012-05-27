@@ -22,6 +22,25 @@ object MiniboxTypeTagDispatch {
    */
   @inline final def toString(x: Minibox, tag: Tag): String =
     minibox2box(x, tag).toString
+    
+  /*
+   * Equality between miniboxed values. Optimized for the case when they have
+   * the same type.
+   */
+  @inline final def eqeq(x: Minibox, xtag: Tag, y: Minibox, ytag: Tag): Boolean = {
+    if (xtag == ytag) {
+      x == y
+    } else {
+      minibox2box(x, xtag) == minibox2box(y, ytag)
+    }
+  }
+  /*
+   * Equality between miniboxed values provided that they have the same type
+   */
+  @inline final def eqeq(x: Minibox, y: Minibox): Boolean = {
+    x == y
+  }
+  
 
   /*
    * Implementation that takes care of the primitive semantics
