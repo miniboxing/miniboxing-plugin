@@ -331,7 +331,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
            * TODO: do the same in the generic class.
            */
           case Select(obj, meth) if (mbr.owner == clazz && mbr.isMethod) =>
-            log(" *** " + meth + " : " + sClass)
+            debug(" *** " + meth + " : " + sClass)
             val iface = specializedInterface(clazz)
             // use the most specific overload
             val methName =
@@ -339,8 +339,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 overloads(mbr)(spec).name
               else
                 meth
-            log("  *  " + methName)
+            debug("  *  " + methName)
             Select(obj, iface.tpe.decl(methName))
+
           case _ => super.transform(tree)
         }
       }
@@ -371,7 +372,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
            *   MiniboxArray.internal_newArray(len, tagOfT) 
            */
           case Apply(TypeApply(meth, tpe :: Nil), len :: Nil) if (tree.symbol == newArray) =>
-            log("here " + tree.symbol);
+            debug("here " + tree.symbol);
             localTyper.typedPos(tree.pos)(
               gen.mkMethodCall(internal_newArray, List(transform(len), getTag(tpe))))
 
@@ -409,6 +410,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                     newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
                   } else if (methodSym == Any_== && args.size == 1 && isMiniboxed(args(0))) {
                     if (qual.tpe.typeSymbol == args(0).tpe.typeSymbol) {
+                      // the types are known to be equal
                       newTree = gen.mkMethodCall(tag_==,
                         asMB(transform(qual)) :: asMB(transform(args(0))) :: Nil)
                     } else {

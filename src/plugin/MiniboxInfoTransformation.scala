@@ -195,8 +195,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
       clazz.owner.newClass(ifaceName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
 
     // Copy the methods into the interface and replace the type parameters with fresh ones
-    val pmap = ParamMap(clazz.typeParams, iface)
     specializedInterface(clazz) = iface
+    val pmap = ParamMap(clazz.typeParams, iface)
 
     val ifaceDecls = newScope
     for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
