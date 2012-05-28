@@ -3,6 +3,7 @@ package simple
 import plugin.minispec 
 import scala.util.Random
 
+// XXX: inheritance related tests do not work
 class Base {
   val b = 0 
 }
@@ -22,13 +23,13 @@ class Foo[@minispec T: Manifest](p: T) extends Base with SpecTrait[T, T] {
 }
 
 class Bar[@minispec T: Manifest](t: T) extends Foo[T](t: T) {
-  def toString1() = t.toString
+  override def toString1() = t.toString
 }
 
 
-class Top extends Bar[Int] {
+class Top extends Bar[Int](2) {
   def method = {
-    val x : Bar[_] = if (Random.nextInt == 0) new Bar[Double] else new Top 
+    val x : Bar[_] = if (Random.nextInt == 0) new Bar[Double](2d) else new Top 
     x
   }
 }

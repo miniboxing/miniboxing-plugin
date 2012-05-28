@@ -165,6 +165,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
           val iface = specializedInterface(sym)
           TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
+        case TypeRef(pre, sym, args) if (sym == ArrayClass) =>
+          AnyClass.tpe // arrays are 'erased' to Any
         case _ =>
           super.mapOver(tp)
       }
@@ -365,6 +367,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
            */
           AsInstanceOfCast
         }
+        // Arrays are 'erased' to Any
+      } else if (srcTypeSymbol == ArrayClass && tgtTypeSymbol == AnyClass) {
+          NoCast
+      } else if (srcTypeSymbol == AnyClass && tgtTypeSymbol == ArrayClass){
+          AsInstanceOfCast
       } else {
         log(wrapper + ": " + wrapper.tpe)
         log(target + ": " + target.tpe)

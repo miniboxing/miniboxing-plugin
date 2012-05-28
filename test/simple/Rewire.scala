@@ -1,5 +1,6 @@
 package simple
 
+// XXX: rewire-ing does not work
 trait MyFunction[-T, R] {
   def apply(t : T) : R
 }

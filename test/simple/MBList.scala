@@ -15,7 +15,14 @@ class MBList[@minispec T](head: T, tail: MBList[T]) {
       false
     else
       tail.contains(e)
-      
-  def toString2 : String = toString
-}
 
+  override def hashCode(): Int = {
+    val headhash = head.##
+    if (tail == null)
+      headhash
+    else
+      (headhash >> 8 | tail.hashCode)
+  }
+
+  def toString2: String = toString
+}

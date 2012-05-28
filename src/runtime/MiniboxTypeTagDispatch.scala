@@ -20,9 +20,17 @@ object MiniboxTypeTagDispatch {
    *  For methods like `toString` or `equals` there is not much improvement
    *  to be expected. Just use boxing for them. 
    */
-  @inline final def toString(x: Minibox, tag: Tag): String =
-    minibox2box(x, tag).toString
-    
+  @inline final def toString(x: Minibox, tag: Tag): String = tag match {
+    case UNIT => "()"
+    case BOOLEAN => if (x != 0) "true" else "false"
+    case INT | LONG | SHORT | BYTE => java.lang.Long.toString(x)
+    case CHAR => java.lang.Character.toString(x.toChar)
+    case FLOAT =>
+      java.lang.Float.toString(java.lang.Float.intBitsToFloat(x.toInt))
+    case DOUBLE =>
+      java.lang.Double.toString(java.lang.Double.longBitsToDouble(x))
+  }
+
   /*
    * Equality between miniboxed values. Optimized for the case when they have
    * the same type.
@@ -40,7 +48,6 @@ object MiniboxTypeTagDispatch {
   @inline final def eqeq(x: Minibox, y: Minibox): Boolean = {
     x == y
   }
-  
 
   /*
    * Implementation that takes care of the primitive semantics
@@ -64,7 +71,7 @@ object MiniboxTypeTagDispatch {
 
   @inline final def hashCode(x: Minibox, tag: Tag): Int = x.hashCode
 
-  @inline final def array_apply[T](array: Any, pos: Int, tag: Tag): T = {
+  @inline final def array_apply(array: Any, pos: Int, tag: Tag): Long = {
     val elem: Minibox = tag match {
       case UNIT =>
         0
@@ -85,7 +92,7 @@ object MiniboxTypeTagDispatch {
       case DOUBLE =>
         DoubleToMinibox(array.asInstanceOf[Array[Double]](pos))
     }
-    elem.asInstanceOf[T]
+    elem
   }
 
   @inline final def array_update[T](array: Any, pos: Int, x: Minibox, tag: Tag): Unit = tag match {
@@ -107,7 +114,7 @@ object MiniboxTypeTagDispatch {
       array.asInstanceOf[Array[Float]](pos) = MiniboxToFloat(x)
     case DOUBLE =>
       array.asInstanceOf[Array[Double]](pos) = MiniboxToDouble(x)
-    
+
   }
 
   @inline final def array_length(array: Any, tag: Tag): Int = tag match {
