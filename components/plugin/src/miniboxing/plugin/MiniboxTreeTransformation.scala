@@ -284,11 +284,13 @@ trait MiniboxTreeTransformation extends TypingTransformers {
        *   the generic class
        * - insert conversions between boxed, miniboxed and natural representation
        *   of primitive values.
+       * - redirect super calls 
        */
-      var newBody = origBody
+      var newBody = origBody.duplicate
       newBody = adaptTypes(newBody)
       newBody = (new replaceLocalCalls(currentClass, origMember.owner))(newBody)
-      newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody.duplicate)
+      newBody = (new ThisSubstituter(origMember.owner, typed(This(currentClass)))).transform(newBody)
+      newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody)
 
       val newDef = defn match {
         case _: DefDef =>
