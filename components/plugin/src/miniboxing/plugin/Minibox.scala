@@ -1,4 +1,4 @@
-package plugin
+package miniboxing.plugin
 
 import scala.tools.nsc
 import scala.tools.nsc.Global

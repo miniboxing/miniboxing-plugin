@@ -1,4 +1,4 @@
-package plugin
+package miniboxing.plugin
 
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.InfoTransform
@@ -13,8 +13,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   /**
    * This function receives (among others) the symbol for a parameterized type
-   * which we call "the generic class" or "the original class". Based on this 
-   * class it creates a number of "specialized versions", one for each 
+   * which we call "the generic class" or "the original class". Based on this
+   * class it creates a number of "specialized versions", one for each
    * "partial specialization".
    *
    * The generic class and specialized versions can be used interchangeably
@@ -78,8 +78,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   /**
    * For each method in the original class and each partial specialization
-   * we generate another methods, which we call "specialized overload" that 
-   * works with values according to the representation prescribed by the 
+   * we generate another methods, which we call "specialized overload" that
+   * works with values according to the representation prescribed by the
    * partial specialization.
    *
    * Now the original class becomes a template for creating the interface and the
@@ -98,7 +98,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     /*
      * Add type tag fields for each parameter. Will be copied in specialized
      * subclasses.
-     *  
+     *
      * NOTE: We need type tag fields even for type parameters that
      * don't use Miniboxed representation because we may forward form
      * specialized overloads that receive Miniboxed arguments.
@@ -107,7 +107,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       (for (tparam <- clazz.typeParams) yield {
         val sym = clazz.newValue(typeTagName(tparam), clazz.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal)
         sym setInfo ByteClass.tpe
-        sym setFlag SPECIALIZED
+        sym setFlag MINIBOXED
 
         clazz.info.decls enter sym
         (tparam, sym)
@@ -135,7 +135,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           newMbr = member.cloneSymbol(clazz)
 
-          newMbr setFlag SPECIALIZED
+          newMbr setFlag MINIBOXED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
           newMbr modifyInfo (info =>
             subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
@@ -155,7 +155,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   /*
    * Substitute the type parameters with their value as given by the 'env'
-   * in the type 'tpe'. Also replace use only the specialized interface 
+   * in the type 'tpe'. Also replace use only the specialized interface
    * in signatures.
    */
   private def subst(env: TypeEnv, tpe: Type): Type = {
@@ -176,7 +176,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
   }
 
   /*
-   * Every specialized class has its own symbols for the type parameters, 
+   * Every specialized class has its own symbols for the type parameters,
    * this function replaces the ones of the original class with the ones
    * from the specialized class.
    */
@@ -200,7 +200,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     val ifaceDecls = newScope
     for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
-      val d = decl.cloneSymbol(iface, decl.flags | SPECIALIZED) modifyInfo substParams(pmap)
+      val d = decl.cloneSymbol(iface, decl.flags | MINIBOXED) modifyInfo substParams(pmap)
       // record the fact that the method `d` will not have an implementation
       memberSpecializationInfo(d) = Interface()
       ifaceDecls enter d
@@ -214,7 +214,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
   }
 
   /**
-   * Specialize class `clazz` using the interface `iface`. `spec` gives the 
+   * Specialize class `clazz` using the interface `iface`. `spec` gives the
    * representation for the type parameters.
    */
   def specializeClass(clazz: Symbol, iface: Type, spec: PartialSpec): Symbol = {
@@ -226,13 +226,13 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     /*
      * `pmap` is a map from the parameters of the original class to those
-     * of the current specialized version. 
+     * of the current specialized version.
      */
     val pmap = ParamMap(clazz.typeParams, sClass)
 
     /*
-     * When copying information from the original class, we need to change 
-     * types. For the fields, we need to convert them to the new 
+     * When copying information from the original class, we need to change
+     * types. For the fields, we need to convert them to the new
      * representation (implEnv). For the methods, since we already have
      * one overload for each representation, we only need to change the
      * type parameter symbols to the fresh ones (ifaceEnv).
@@ -243,8 +243,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
     val ifaceEnv: TypeEnv = pmap mapValues (_.tpe)
 
-    /* 
-     * Insert the newly created symbol in our various maps that are used by 
+    /*
+     * Insert the newly created symbol in our various maps that are used by
      * the tree transformer.
      */
     specializedClasses(clazz) ::= sClass
@@ -269,7 +269,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // TODO: erase the `evidence`: Manifest[T] field.
 
-    // Copy the members of the original class to the specialized class. 
+    // Copy the members of the original class to the specialized class.
     val newMembers: Map[Symbol, Symbol] =
       (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
 
@@ -279,7 +279,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // Replace the info in the copied members to reflect their new class
     for ((m, newMbr) <- newMembers) {
-      newMbr setFlag SPECIALIZED
+      newMbr setFlag MINIBOXED
       newMbr modifyInfo { info =>
         val info1 = info.substThis(clazz, sClass)
         if (m.isConstructor) { // constructor - add type tags as parameters
@@ -309,7 +309,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
         /* Check whether the method is the one that will carry the
          * implementation. If yes, find the original method from the original
-         * class from which to copy the implementation. If no, find the method 
+         * class from which to copy the implementation. If no, find the method
          * that will have an implementation and forward to it.
          */
         if (overloads(m)(spec) == m) {
@@ -362,7 +362,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (srcType == tgtType) NoCast
         else {
           /*
-           * We have something like Foo[T] vs Foo[Long] which will be the same 
+           * We have something like Foo[T] vs Foo[Long] which will be the same
            * after erasure. For now, just pretend that they are the same.
            */
           AsInstanceOfCast

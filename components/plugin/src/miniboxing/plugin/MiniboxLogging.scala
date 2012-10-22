@@ -1,4 +1,4 @@
-package plugin
+package miniboxing.plugin
 
 trait MiniboxLogging {
   self: MiniboxLogic =>

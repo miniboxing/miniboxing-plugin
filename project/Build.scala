@@ -9,7 +9,7 @@ object MiniboxingBuild extends Build {
     scalaSource in Compile <<= baseDirectory(_ / "src"),
     resourceDirectory in Compile <<= baseDirectory(_ / "resources"),
     unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_)),
-    unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_)),
+    unmanagedSourceDirectories in Test := Nil,
     // this should work but it doesn't:
     // resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     // so I replaced it with this, which works with both sbt 0.11 and 0.12 :)

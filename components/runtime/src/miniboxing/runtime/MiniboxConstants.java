@@ -1,4 +1,4 @@
-package runtime;
+package miniboxing.runtime;
 
 public interface MiniboxConstants {
   public static final byte UNIT = 0;

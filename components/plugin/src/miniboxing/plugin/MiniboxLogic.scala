@@ -1,4 +1,4 @@
-package plugin
+package miniboxing.plugin
 
 import scala.tools.nsc.Global
 
@@ -10,10 +10,10 @@ trait MiniboxLogic {
   import definitions._
   import scala.collection.immutable
 
-  lazy val MinispecedClass = rootMirror.getRequiredClass("plugin.minispec")
+  lazy val MinispecedClass = rootMirror.getRequiredClass("miniboxing.plugin.minispec")
 
   /**
-   * A `TypeEnv` maps each type parameter of the original class to the 
+   * A `TypeEnv` maps each type parameter of the original class to the
    * actual type used in the specialized version to which this environment
    * correspond. This type may be either `Long` or a fresh type parameter
    *  `Tsp`.
@@ -22,7 +22,7 @@ trait MiniboxLogic {
 
   /**
    * A `PartialSpec` provides us information about the representation used
-   * for values of a type parameter: either `Boxed` (as AnyRef) or 
+   * for values of a type parameter: either `Boxed` (as AnyRef) or
    * `Miniboxed` (as Long).
    */
   sealed trait SpecInfo
@@ -90,7 +90,7 @@ trait MiniboxLogic {
 
     m.owner.info.decl(nme.getterToLocal(originalGetterName))
   }
-  
+
   def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
     clazz.typeParams.map(env) map {
       case Boxed => AnyRefClass.tpe
@@ -106,7 +106,9 @@ trait MiniboxLogic {
    */
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
-    !clazz.typeParams.isEmpty && 
+    !clazz.typeParams.isEmpty &&
     (clazz.typeParams forall (_ hasAnnotation MinispecedClass))
-    
+
+
+  final val MINIBOXED = 1L << 45 // we define our own flag
 }

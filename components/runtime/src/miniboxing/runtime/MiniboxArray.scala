@@ -1,4 +1,4 @@
-package runtime
+package miniboxing.runtime
 
 object MiniboxArray {
   import MiniboxTypes._

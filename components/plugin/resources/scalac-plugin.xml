@@ -1,4 +1,4 @@
 <plugin>
   <name>minibox</name>
-  <classname>plugin.Minibox</classname>
+  <classname>miniboxing.plugin.Minibox</classname>
 </plugin>

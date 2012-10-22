@@ -1,4 +1,4 @@
-package plugin
+package miniboxing.plugin
 
 import scala.collection.mutable
 
@@ -56,7 +56,7 @@ trait MiniboxSpecializationInfo {
    */
   case class SpecializedImplementationOf(member: Symbol) extends MethodInfo {
     templateMembers += member
-    override def toString = "SpecializedImplementationOf(" + member.fullName + ")"
+    override def toString = "SpecializedImplementationOf2(" + member.fullName + ")"
   }
 
   /**
