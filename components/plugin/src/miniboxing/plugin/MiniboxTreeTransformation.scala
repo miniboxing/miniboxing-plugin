@@ -343,7 +343,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               else
                 meth
             debug("  *  " + methName)
-            Select(obj, iface.tpe.decl(methName))
+            typed(Select(obj, iface.tpe.decl(methName)))
 
           case _ => super.transform(tree)
         }
