@@ -45,8 +45,10 @@ abstract class Duplicators extends Analyzer {
 
   protected def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
 
-  def retypedMethod(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol): Tree =
-    (newBodyDuplicator(context)).retypedMethod(tree.asInstanceOf[DefDef], oldThis, newThis)
+  def retypedMethod(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type]): Tree = {
+    envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
+    (newBodyDuplicator(context)).retypedMethodMB(tree.asInstanceOf[DefDef], oldThis, newThis)
+  }
 
   /** Return the special typer for duplicate method bodies. */
   override def newTyper(context: Context): Typer =
@@ -199,6 +201,20 @@ abstract class Duplicators extends Analyzer {
       }
       ddef.symbol = NoSymbol
       enterSym(context, ddef)
+      debuglog("remapping this of " + oldClassOwner + " to " + newClassOwner)
+      typed(ddef)
+    }
+
+    /** Miniboxing-specific retypedMethod */
+    def retypedMethodMB(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
+      oldClassOwner = oldThis
+      newClassOwner = newThis
+      invalidateAll(ddef.tparams)
+
+      // TODO: Invalidate method parameters 
+
+//      ddef.symbol = NoSymbol
+//      enterSym(context, ddef)
       debuglog("remapping this of " + oldClassOwner + " to " + newClassOwner)
       typed(ddef)
     }
@@ -394,11 +410,6 @@ abstract class Duplicators extends Analyzer {
           // fixType would yield the correct type, it would prevent the typer from recusing inside the tree node and
           // resolving symbols
           tree.tpe = null
-
-          val printtypes = settings.printtypes.value
-          settings.printtypes.value = true
-          println("tree:\n" + asString(tree))
-          settings.printtypes.value = printtypes
 
           val ntree = castType(tree, pt)
           super.typed(ntree, mode, pt)

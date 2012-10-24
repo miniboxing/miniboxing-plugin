@@ -258,17 +258,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Adds the body of the `member` as the rhs of the `defn` and
      * replaces the parameters with fresh symbols in it.
      */
-    private def addBody(defn: Tree, origMember: Symbol): Tree = {
-      val defSymbol = defn.symbol
-      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
-
-      val vparams: List[ValDef] = defn match {
-        case DefDef(_, _, Nil, vparams :: Nil, _, _) => vparams
-        case DefDef(_, _, Nil, Nil, _, _) => Nil
-        case ValDef(_, _, _, _) => Nil
+    private def addBody(defn: Tree, original: Symbol) =
+      defn match {
+        case v: ValDef => addValDefBody(v, original)
+        case d: DefDef => addDefDefBody(d, original)
       }
 
-      val newParams = cloneSymbolsAtOwner(vparams map (_.symbol), defSymbol)
+    private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
+      val defSymbol = defn.symbol
+      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
       val origClass = origMember.owner
 
       /*
@@ -289,8 +287,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
        */
       var newBody = origBody.duplicate
       newBody = adaptTypes(newBody)
-      newBody = (new ThisSubstituter(origClass, typed(This(currentClass)))).transform(newBody)
-      newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody)
       newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
 
 //      // debugging
@@ -300,20 +296,27 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 //      settings.printtypes.value = printtypes
 //      // end debugging
 
-      val newDef = defn match {
-        case _: DefDef =>
-          copyDefDef(defn)(vparamss = List(newParams map ValDef), rhs = newBody)
-        case _: ValDef =>
-          copyValDef(defn)(rhs = newBody)
-      }
-
       println(defSymbol.fullName)
-      /*
-       *
-       */
+      duplicator.retypedMethod(
+        localTyper.context1.asInstanceOf[duplicator.Context],
+        copyDefDef(defn)(rhs = newBody),
+        origMember.enclClass,
+        defSymbol.enclClass,
+        typeEnv(defSymbol.owner)) // XXX: keep all parameters
+    }
+
+    private def addValDefBody(defn: Tree, origMember: Symbol): Tree = {
+      val defSymbol = defn.symbol
+      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
+      val origClass = origMember.owner
+
+      var newBody = origBody.duplicate
+      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
+      newBody = adaptTypes(newBody)
+
       duplicator.retyped(
         localTyper.context1.asInstanceOf[duplicator.Context],
-        newDef,
+        copyValDef(defn)(rhs = newBody),
         origMember.enclClass,
         defSymbol.enclClass,
         typeEnv(defSymbol.owner)) // XXX: keep all parameters
