@@ -91,7 +91,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * `methodSpecializationInfo` data structure.
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
-          println(tree.symbol + " ===> " + memberSpecializationInfo.apply(tree.symbol))
+          //println(tree.symbol + " ===> " + memberSpecializationInfo.apply(tree.symbol))
           memberSpecializationInfo.apply(tree.symbol) match {
 
             // Implement the getter or setter functionality
@@ -269,6 +269,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
 
       val newParams = cloneSymbolsAtOwner(vparams map (_.symbol), defSymbol)
+      val origClass = origMember.owner
 
       /*
        * Most of the work of the tree transformer is done here.
@@ -288,9 +289,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
        */
       var newBody = origBody.duplicate
       newBody = adaptTypes(newBody)
-      newBody = (new replaceLocalCalls(currentClass, origMember.owner))(newBody)
-      newBody = (new ThisSubstituter(origMember.owner, typed(This(currentClass)))).transform(newBody)
+      newBody = (new ThisSubstituter(origClass, typed(This(currentClass)))).transform(newBody)
       newBody = (new TreeSymSubstituter(origParams, newParams take (origParams.size)))(newBody)
+      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
+
+//      // debugging
+//      val printtypes = settings.printtypes.value
+//      settings.printtypes.value = true
+//      println(defSymbol + ":\n" + asString(newBody))
+//      settings.printtypes.value = printtypes
+//      // end debugging
 
       val newDef = defn match {
         case _: DefDef =>
@@ -348,6 +356,40 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           case _ => super.transform(tree)
         }
       }
+
+
+//      override def transform(tree: Tree): Tree = {
+//        val mbr = tree.symbol
+//        tree match {
+//          /*
+//           * `Select` nodes use the symbols for methods from the original class.
+//           * Change them to use the interface.
+//           *
+//           * TODO: do the same in the generic class.
+//           */
+//          case Select(obj, meth) if mbr.owner == clazz =>
+//            val newBody = 
+//              if (mbr.isMethod) {
+//                debug(" *** " + meth + " : " + sClass)
+//                val iface = specializedInterface(clazz)
+//                // use the most specific overload
+//                val methName =
+//                  if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr)
+//                    overloads(mbr)(spec).name
+//                  else
+//                    meth
+//                debug("  *  " + methName)
+//                Select(transform(obj), iface.tpe.decl(methName))
+//              } else
+//                Select(transform(obj), sClass.tpe.decl(meth))
+//
+//            typed(newBody)
+//          case _: Select | _: Ident | _: This => 
+//            tree.tpe = null
+//            typed(tree)
+//          case _ => super.transform(tree)
+//        }
+//      }
     }
 
     /**
