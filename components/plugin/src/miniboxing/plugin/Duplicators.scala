@@ -18,7 +18,7 @@ import scala.tools.nsc.typechecker._
  * 
  *  Vlad Ureche: I have to branch duplicators so I can make changes to it to suit miniboxing
  */
-abstract class Duplicators extends Analyzer {
+abstract class Duplicators extends Analyzer with MiniboxLogging {
   import global._
   import definitions.{ AnyRefClass, AnyValClass }
 
@@ -215,6 +215,7 @@ abstract class Duplicators extends Analyzer {
 
 //      ddef.symbol = NoSymbol
 //      enterSym(context, ddef)
+      logTree(ddef.symbol.toString, ddef)
       debuglog("remapping this of " + oldClassOwner + " to " + newClassOwner)
       typed(ddef)
     }
@@ -235,6 +236,8 @@ abstract class Duplicators extends Analyzer {
      */
     def castType(tree: Tree, pt: Type): Tree = tree
 
+    var indent = 0;
+
     /** Special typer method for re-type checking trees. It expects a typed tree.
      *  Returns a typed tree that has fresh symbols for all definitions in the original tree.
      *
@@ -251,6 +254,9 @@ abstract class Duplicators extends Analyzer {
      */
     override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
+      debuglog("  " * indent + " <= " + tree)
+      indent += 1
+
       val origtreesym = tree.symbol
       if (tree.hasSymbol && tree.symbol != NoSymbol
           && !tree.symbol.isLabel  // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
@@ -259,7 +265,7 @@ abstract class Duplicators extends Analyzer {
         tree.symbol = NoSymbol
       }
 
-      tree match {
+      val result = tree match {
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
           ttree.tpe = fixType(ttree.tpe)
@@ -412,8 +418,14 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
 
           val ntree = castType(tree, pt)
+          logTree("default case: ", ntree)
+          debuglog(ntree.summaryString)
           super.typed(ntree, mode, pt)
       }
+
+      indent -= 1
+      debuglog("  " * indent + " => " + result)
+      result
     }
 
   }

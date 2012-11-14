@@ -3,7 +3,7 @@ package benchmarks
 import miniboxing.plugin.minispec
 
 class MBList[@minispec T](head: T, tail: MBList[T]) {
-/*
+
   def length: Int = 1 + (if (tail != null) tail.length else 0)
 
   override def toString =
@@ -26,5 +26,4 @@ class MBList[@minispec T](head: T, tail: MBList[T]) {
   }
   
   def toString2: String = toString
-*/
 }

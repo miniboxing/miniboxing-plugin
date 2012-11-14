@@ -44,24 +44,32 @@ trait MiniboxInfoTransformation extends InfoTransform {
           // For each method in the original class, add its specialized overloads
           widenClass(clazz, envs)
           log("-------------- WIDENDED CLAZZ ----------------")
-          log(clazz.name + " " + clazz.info);
+          log(clazz.name.toString);
+          for (decl <- clazz.info.decls)
+            log(decl.defString)
 
           // Build the interface to be implemented by all specialized classes
           val iface = createGenericInterface(clazz)
           log("-------------- INTERFACE ----------------")
-          log(iface.name + " " + iface.info);
+          log(iface.name.toString);
+          for (decl <- iface.info.decls)
+            log(decl.defString)
 
           val ifaceParentType = iface.tpe.instantiateTypeParams(iface.typeParams, clazz.typeParams map (_.tpe))
           clazz setInfo PolyType(tArgs, ClassInfoType(parents ::: List(ifaceParentType), decls, typeSym))
           log("-------------- ORIGINAL CLASS ----------------")
-          log(clazz.name + " " + clazz.info);
+          log(clazz.name.toString);
+          for (decl <- clazz.info.decls)
+            log(decl.defString)
 
           // Create the actual specialized classes
           val classes = envs map (specializeClass(clazz, iface.tpe, _))
 
           classes foreach { cls =>
             log("------------ SPEC CLASS ------------")
-            log(cls.name + " " + cls.info)
+            log(cls.name.toString);
+            for (decl <- cls.info.decls)
+              log(decl.defString)
           }
 
           log("-------------- TEMPLATE MEMBERS ----------------")

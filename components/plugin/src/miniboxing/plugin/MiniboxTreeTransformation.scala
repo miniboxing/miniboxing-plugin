@@ -53,15 +53,18 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     override def transform(tree: Tree): Tree = {
       curTree = tree
 
+      // make sure specializations have been performed
       tree match {
+        case t: SymTree => t.symbol.info
+        case _ =>
+      }
 
+      tree match {
         /*
          *  We have created just the symbols for the specialized classes - now
          *  it's time to create their trees as well (initially empty).
-         *
          */
         case PackageDef(pid, classdefs) =>
-          tree.symbol.info // make sure specializations have been performed
 
           atOwner(tree, tree.symbol) {
             val specClasses = createSpecializedClassesTrees(classdefs) map localTyper.typed
@@ -185,7 +188,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     private def createMethodTrees(sClass: Symbol): List[Tree] = {
       val mbrs = new mutable.ListBuffer[Tree]
       for (m <- sClass.info.decls if m hasFlag MINIBOXED) {
-        debug("creating tree for " + m.fullName)
+        debug("creating empty tree for " + m.fullName)
         if (m.isMethod) {
           mbrs += atPos(m.pos)(DefDef(m, { paramss => EmptyTree }))
         } else if (m.isValue) {
@@ -296,7 +299,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 //      settings.printtypes.value = printtypes
 //      // end debugging
 
-      println(defSymbol.fullName)
       duplicator.retypedMethod(
         localTyper.context1.asInstanceOf[duplicator.Context],
         copyDefDef(defn)(rhs = newBody),
@@ -337,7 +339,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       def apply(tree: Tree): Tree = transform(tree)
       override def transform(tree: Tree): Tree = {
         val mbr = tree.symbol
-        tree match {
+        logTree("before", tree)
+        val result = tree match {
           /*
            * `Select` nodes use the symbols for methods from the original class.
            * Change them to use the interface.
@@ -354,10 +357,18 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               else
                 meth
             debug("  *  " + methName)
-            typed(Select(obj, iface.tpe.decl(methName)))
+
+            // Mr. Typer will insert an unwanted Apply node here in case of no-params functions
+            // No thanks Mr. Typer, keep them to yourself!
+            typed(Select(obj, iface.tpe.decl(methName))) match {
+              case Apply(tree, List()) => tree
+              case tree => tree 
+            }
 
           case _ => super.transform(tree)
         }
+        logTree("after", result)
+        result
       }
 
 
