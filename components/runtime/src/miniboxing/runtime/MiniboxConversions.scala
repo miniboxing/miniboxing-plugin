@@ -62,10 +62,10 @@ object MiniboxConversions {
     ret.asInstanceOf[T]
   }
 
-  @inline final def minibox2box[T](l: Long) : T = {
-    null.asInstanceOf[T] // dispatch on tag
-  }
-  
+//  @inline final def minibox2box[T](l: Long) : T = {
+//    null.asInstanceOf[T] // dispatch on tag
+//  }
+
   /*
    *  We do not need to return the type tag also since it is known in the
    *  calling context.

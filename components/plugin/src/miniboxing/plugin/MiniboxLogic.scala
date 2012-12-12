@@ -45,12 +45,12 @@ trait MiniboxLogic {
     envs.map((types: List[SpecInfo]) => (tParams zip types).toMap)
   }
 
-  /**
-   * Creates the name of the interface which corresponds to class `className`
-   */
-  def interfaceName(className: Name): TypeName = {
-    newTypeName(className.toString + "_interface")
-  }
+//  /**
+//   * Creates the name of the interface which corresponds to class `className`
+//   */
+//  def interfaceName(className: Name): TypeName = {
+//    newTypeName(className.toString + "_interface")
+//  }
 
   /**
    * Specialize name for the two list of types.
@@ -78,19 +78,6 @@ trait MiniboxLogic {
     field.name.endsWith("_TypeTag")
   }
 
-  /**
-   * Find the variable that should be accessed by some specialized accessor
-   */
-  def accessed(m: Symbol): Symbol = {
-    val getterName = m.getterName
-    val originalGetterName = if (getterName.containsChar('_'))
-      getterName.subName(0, getterName.indexOf('_'))
-    else
-      getterName
-
-    m.owner.info.decl(nme.getterToLocal(originalGetterName))
-  }
-
   def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
     clazz.typeParams.map(env) map {
       case Boxed => AnyRefClass.tpe
@@ -110,5 +97,5 @@ trait MiniboxLogic {
     (clazz.typeParams forall (_ hasAnnotation MinispecedClass))
 
 
-  final val MINIBOXED = 1L << 45 // we define our own flag
+  final val MINIBOXED = 1L << 46 // we define our own flag
 }

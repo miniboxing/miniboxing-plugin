@@ -9,6 +9,16 @@ import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 
+trait MiniboxComponent extends 
+    PluginComponent
+    with MiniboxLogic 
+    with MiniboxInfoTransformation 
+    with MiniboxLogging 
+    with MiniboxTreeTransformation
+    with MiniboxSpecializationInfo
+    with MiniboxingDefinitions
+    with MiniboxPhase
+
 class Minibox(val global: Global) extends Plugin {
   import global._
 
@@ -16,14 +26,7 @@ class Minibox(val global: Global) extends Plugin {
   val description = "spcializes generic classes"
   val components = List[PluginComponent](Component)
 
-  
-  private object Component extends PluginComponent 
-    with MiniboxLogic 
-    with MiniboxInfoTransformation 
-    with MiniboxLogging 
-    with MiniboxTreeTransformation 
-    with MiniboxSpecializationInfo 
-    with MiniboxPhase {
+  private object Component extends MiniboxComponent {
 
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks")
@@ -39,7 +42,6 @@ class Minibox(val global: Global) extends Plugin {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
         afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
-            
       }
     }
   }

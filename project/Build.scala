@@ -24,7 +24,7 @@ object MiniboxingBuild extends Build {
                     "org.ow2.asm" % "asm-tree" % "4.0")
 
   lazy val _mboxing = Project(id = "miniboxing", base = file(".")) aggregate (runtime, plugin, classloader, tests)
-  lazy val runtime  = Project(id = "miniboxing-runime", base = file("components/runtime"), settings = defaults)
+  lazy val runtime  = Project(id = "miniboxing-runtime", base = file("components/runtime"), settings = defaults)
   lazy val plugin   = Project(id = "miniboxing-plugin", base = file("components/plugin"),  settings = defaults) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ Seq(libraryDependencies ++= asmDeps))
 

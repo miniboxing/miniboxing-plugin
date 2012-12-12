@@ -3,7 +3,7 @@ package miniboxing.plugin
 import scala.collection.mutable
 
 trait MiniboxSpecializationInfo {
-  self: MiniboxLogic =>
+  self: MiniboxLogic with MiniboxingDefinitions =>
 
   import global._
 
@@ -23,7 +23,7 @@ trait MiniboxSpecializationInfo {
     override def toString = "ForwardTo(" + method.fullName + ")"
   }
   /*
-   * We need to record how the parameters and the return value should be casted. 
+   * We need to record how the parameters and the return value should be casted.
    */
   sealed class CastInfo
   case class CastMiniboxToBox(tag: Symbol) extends CastInfo
@@ -104,11 +104,11 @@ trait MiniboxSpecializationInfo {
     }
   }
 
-  /**
-   * `specializedInterface(C)` is the interface `C_interface` extended by all
-   * specialized versions of `C`
-   */
-  val specializedInterface = new mutable.HashMap[Symbol, Symbol]
+//  /**
+//   * `specializedInterface(C)` is the interface `C_interface` extended by all
+//   * specialized versions of `C`
+//   */
+//  val specializedInterface = new mutable.HashMap[Symbol, Symbol]
 
   /**
    * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
@@ -116,6 +116,13 @@ trait MiniboxSpecializationInfo {
    */
   val specializedClasses =
     new mutable.HashMap[Symbol, List[Symbol]] withDefaultValue (List())
+
+  /**
+   * `baseClass` is the inverse of specializedClass: for each specialized class it
+   * indicates the base abstract class all specialized classes extend from
+   */
+  val baseClass =
+    new mutable.HashMap[Symbol, Symbol]
 
   /**
    * Type environment of a class:
@@ -135,7 +142,7 @@ trait MiniboxSpecializationInfo {
   val typeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 
   /**
-   * For each method of the original class and each partial specialization 
+   * For each method of the original class and each partial specialization
    * we keep track of the overload specialized for that representation.
    */
   val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
