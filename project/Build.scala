@@ -27,6 +27,5 @@ object MiniboxingBuild extends Build {
   lazy val runtime  = Project(id = "miniboxing-runtime", base = file("components/runtime"), settings = defaults)
   lazy val plugin   = Project(id = "miniboxing-plugin", base = file("components/plugin"),  settings = defaults) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ Seq(libraryDependencies ++= asmDeps))
-
-  lazy val tests    = Project(id = "miniboxing-tests",  base = file("tests"),              settings = defaults)
+  lazy val tests    = Project(id = "miniboxing-tests",  base = file("tests"),              settings = defaults) dependsOn(plugin) dependsOn(runtime)
 }
