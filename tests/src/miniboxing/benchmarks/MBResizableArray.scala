@@ -1,4 +1,4 @@
-package benchmarks
+package miniboxing.benchmarks
 
 import miniboxing.plugin.minispec
 import miniboxing.runtime.MiniboxArray

@@ -1,4 +1,5 @@
-package benchmarks
+package miniboxing.benchmarks
+package erasure
 
 object MainErasure {
   val N = 1000000

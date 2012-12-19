@@ -1,11 +1,11 @@
-package benchmarks
+package miniboxing.benchmarks
 
 object Benchmark {
   def timed(msg: String, f: => Unit, iter: Int) = {
-    f; f; f 
+    f; f; f
     System.gc
-    
-    
+
+
 //    println("*****************************************************")
     val tb = System.nanoTime
     var i = 0

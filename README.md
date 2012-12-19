@@ -1,4 +1,4 @@
 miniboxing-plugin
 =================
 
-A Scala compiler plugin that adds the miniboxing specialization feature.
+A Scala compiler plugin that adds a more lightweight specialization transformation.

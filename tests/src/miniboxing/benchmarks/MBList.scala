@@ -1,4 +1,4 @@
-package benchmarks
+package miniboxing.benchmarks
 
 import miniboxing.plugin.minispec
 
@@ -24,6 +24,6 @@ class MBList[@minispec T](head: T, tail: MBList[T]) {
     else
       (headhash >> 8 | tail.hashCode)
   }
-  
+
   def toString2: String = toString
 }
