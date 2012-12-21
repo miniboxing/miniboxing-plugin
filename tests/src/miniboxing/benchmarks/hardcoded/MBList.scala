@@ -52,12 +52,12 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def contains_J(e: Long): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(head, T_TypeTag, e, T_TypeTag))
+      if (mboxed_eqeq(head, e))
         true
-      else if (list.tail == null)
+      else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail_J)
 
     containsTail(this)
   }
@@ -89,10 +89,10 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
       if (minibox2box(list.head, T_TypeTag) == e) // TODO this probably needs to be forwarded
         true
-      else if (list.tail == null)
+      else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail_J)
 
     containsTail(this)
   }
@@ -126,12 +126,12 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
   def contains_J(e: Long): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(head, T_TypeTag, e, T_TypeTag))
+      if (mboxed_eqeq(head, e))
         true
-      else if (list.tail == null)
+      else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail_J)
 
     containsTail(this)
   }
@@ -163,10 +163,10 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
       if (minibox2box(list.head, T_TypeTag) == e)
         true
-      else if (list.tail == null)
+      else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail_J)
 
     containsTail(this)
   }

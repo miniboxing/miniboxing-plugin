@@ -8,7 +8,7 @@ object MiniboxingBuild extends Build {
     scalaVersion := "2.10.0-SNAPSHOT",
     scalaSource in Compile <<= baseDirectory(_ / "src"),
     scalaSource in Test <<= baseDirectory(_ / "test"),
-    scalacOptions += "-optimize",
+    scalacOptions ++= Seq("-optimize", "-Yinline-warnings"),
     //fork in Test := true,
     resourceDirectory in Compile <<= baseDirectory(_ / "resources"),
     unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_)),

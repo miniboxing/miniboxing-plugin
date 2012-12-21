@@ -106,7 +106,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
   // extend
   def extend(): Unit = extend_J
   def extend_J(): Unit = {
-    if (mboxed_eqeq(elemCount_J, T_TypeTag, size_J, T_TypeTag)) {
+    if (mboxed_eqeq(elemCount_J, size_J)) {
       var pos = 0
       newarray_J = mbarray_new(2 * size, T_TypeTag)// new Array[Tsp](2 * size)
       while(pos < size_J) {
@@ -150,7 +150,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
   def contains_J(elem: Long): Boolean = {
     var pos = 0
     while (pos < elemCount_J){
-      if (mboxed_eqeq(getElement_J(pos), T_TypeTag, elem, T_TypeTag))
+      if (mboxed_eqeq(getElement_J(pos), elem))
         return true
       pos += 1
     }
@@ -223,7 +223,7 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   // extend
   def extend(): Unit = extend_J
   def extend_J(): Unit = {
-    if (mboxed_eqeq(elemCount_J, T_TypeTag, size_J, T_TypeTag)) {
+    if (mboxed_eqeq(elemCount_J, size_J)) {
       var pos = 0
       newarray_J = mbarray_new(2 * size, T_TypeTag)// new Array[Tsp](2 * size)
       while(pos < size_J) {
@@ -267,7 +267,7 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   def contains_J(elem: Long): Boolean = {
     var pos = 0
     while (pos < elemCount_J){
-      if (mboxed_eqeq(getElement_J(pos), T_TypeTag, elem, T_TypeTag))
+      if (mboxed_eqeq(getElement_J(pos), elem))
         return true
       pos += 1
     }
