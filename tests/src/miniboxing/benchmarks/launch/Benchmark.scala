@@ -1,4 +1,4 @@
-package miniboxing.benchmarks
+package miniboxing.benchmarks.launch
 
 object Benchmark {
   def timed(msg: String, f: => Unit, iter: Int) = {

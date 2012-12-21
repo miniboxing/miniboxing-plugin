@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="target/scala-2.10/classes" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
 	<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_COMPILER_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.10.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.ow2.asm/asm/jars/asm-4.0.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.ow2.asm/asm-tree/jars/asm-tree-4.0.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/com.github.axel22/scalameter_2.10/jars/scalameter_2.10-0.2.jar" sourcepath="/home/sun/workspace/dev/miniboxing-plugin/lib/scalameter.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.scalatest/scalatest_2.10.0-RC2/jars/scalatest_2.10.0-RC2-1.8-B2.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.scala-lang/scala-actors/jars/scala-actors-2.10.0-RC2.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.10.0-RC2.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/jfree/jfreechart/jars/jfreechart-1.0.12.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/jfree/jcommon/jars/jcommon-1.0.15.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.apache.commons/commons-math3/jars/commons-math3-3.0.jar"/>
+	<classpathentry kind="lib" path="/home/sun/.ivy2/cache/org.scala-tools.testing/test-interface/jars/test-interface-0.5.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/miniboxing-plugin"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/miniboxing-runtime"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/miniboxing-classloader"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/miniboxing-plugin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/miniboxing-runime"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

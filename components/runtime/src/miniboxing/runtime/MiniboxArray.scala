@@ -37,9 +37,9 @@ object MiniboxArray {
     }
 
   @inline final def mbarray_apply_minibox(array: Any, idx: Int, tag: Tag): Minibox = {
-    array match {
-      case a: Array[Any] => box2minibox(a(idx))
-      case _ =>
+//    array match {
+//      case a: Array[Any] => box2minibox(a(idx))
+//      case _ =>
         tag match {
           case UNIT =>     array.asInstanceOf[Array[Unit]](idx); 0
           case BOOLEAN =>  if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
@@ -51,13 +51,13 @@ object MiniboxArray {
           case FLOAT =>    java.lang.Float.floatToIntBits(array.asInstanceOf[Array[Float]](idx)).toLong
           case DOUBLE =>   java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong
         }
-    }
+//    }
   }
 
   @inline final def mbarray_apply_box[T](array: Any, idx: Int, tag: Tag): T = {
-    array match {
-      case a: Array[Any] => a(idx).asInstanceOf[T]
-      case _ =>
+//    array match {
+//      case a: Array[Any] => a(idx).asInstanceOf[T]
+//      case _ =>
         val result = tag match {
           case UNIT =>     array.asInstanceOf[Array[Unit]](idx) = 0
           case BOOLEAN =>  array.asInstanceOf[Array[Boolean]](idx)
@@ -70,13 +70,13 @@ object MiniboxArray {
           case DOUBLE =>   array.asInstanceOf[Array[Double]](idx)
         }
         result.asInstanceOf[T]
-    }
+//    }
   }
 
   @inline final def mbarray_update_minibox(array: Any, idx: Int, value: Minibox, tag: Tag): Unit = {
-    array match {
-      case a: Array[Any] => a(idx) = minibox2box(value, tag)
-      case _ =>
+//    array match {
+//      case a: Array[Any] => a(idx) = minibox2box(value, tag)
+//      case _ =>
         tag match {
           case UNIT =>     array.asInstanceOf[Array[Unit]](idx) = ()
           case BOOLEAN =>  array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
@@ -88,13 +88,13 @@ object MiniboxArray {
           case FLOAT =>    array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt)
           case DOUBLE =>   array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value)
         }
-    }
+//    }
   }
 
   @inline final def mbarray_update_box[T](array: Any, idx: Int, value: T, tag: Tag): Unit = {
-    array match {
-      case a: Array[Any] => a(idx) = value
-      case _ =>
+//    array match {
+//      case a: Array[Any] => a(idx) = value
+//      case _ =>
         tag match {
           case UNIT =>     array.asInstanceOf[Array[Unit]](idx) = value.asInstanceOf[Unit]
           case BOOLEAN =>  array.asInstanceOf[Array[Boolean]](idx) = value.asInstanceOf[Boolean]
@@ -106,13 +106,13 @@ object MiniboxArray {
           case FLOAT =>    array.asInstanceOf[Array[Float]](idx) = value.asInstanceOf[Float]
           case DOUBLE =>   array.asInstanceOf[Array[Double]](idx) = value.asInstanceOf[Double]
         }
-    }
+//    }
   }
 
   @inline final def mbarray_length(array: Any, tag: Tag): Int =
-    array match {
-      case a: Array[Any] => a.length
-      case _ =>
+//    array match {
+//      case a: Array[Any] => a.length
+//      case _ =>
         tag match {
           case UNIT =>    array.asInstanceOf[Array[Unit]].length
           case BOOLEAN => array.asInstanceOf[Array[Boolean]].length
@@ -124,5 +124,5 @@ object MiniboxArray {
           case FLOAT =>   array.asInstanceOf[Array[Float]].length
           case DOUBLE =>  array.asInstanceOf[Array[Double]].length
         }
-  }
+//  }
 }

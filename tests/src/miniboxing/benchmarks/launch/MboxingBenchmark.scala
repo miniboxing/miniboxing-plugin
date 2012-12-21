@@ -1,6 +1,10 @@
 package miniboxing.benchmarks
 package erasure
 
+import miniboxing.benchmarks.minibox.MBList
+import miniboxing.benchmarks.launch.Benchmark
+import miniboxing.benchmarks.generic.ResizableArray
+
 object MainErasure {
   val N = 1000000
   val M = 20

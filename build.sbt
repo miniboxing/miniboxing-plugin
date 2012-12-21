@@ -8,3 +8,5 @@ scalaVersion := "2.10.0-SNAPSHOT"
 EclipseKeys.withSource := true
 
 compileOrder := CompileOrder.JavaThenScala
+
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
