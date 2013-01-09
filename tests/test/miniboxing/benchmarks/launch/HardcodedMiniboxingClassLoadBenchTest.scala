@@ -22,12 +22,14 @@ object HardcodedMiniboxingClassLoadBenchTest extends BenchTest {
       list.hashCode_J
     }
 
-    def list_find(l: MBList[Int]) = {
+    def list_find(l: MBList[Int]): Boolean = {
       var i = 0
+      var b = true
       while (i < N) {
-        l contains_J(IntToMinibox(i))
+        b = b ^ l.contains(i)
         i += 10000
       }
+      b
     }
   }
 
@@ -42,16 +44,19 @@ object HardcodedMiniboxingClassLoadBenchTest extends BenchTest {
       a
     }
 
-    def array_reverse(a: MBResizableArray[Int]) = {
-      a.reverse_J
+    def array_reverse(a: MBResizableArray[Int]): MBResizableArray[Int] = {
+      a.reverse
+      a
     }
 
-    def array_find(a: MBResizableArray[Int]) = {
+    def array_find(a: MBResizableArray[Int]): Boolean = {
       var i = 0
+      var b = true
       while (i < N) {
-        a.contains_J(IntToMinibox(i))
+        b = b ^ a.contains(i) // TODO: Does this cost much?
         i += 10000
       }
+      b
     }
   }
 
@@ -61,14 +66,17 @@ object HardcodedMiniboxingClassLoadBenchTest extends BenchTest {
   System.gc
 
   println("TESTING HARDCODED MINIBOXED w/ SIMULATED CLASSLOADING")
+  val prefix = "miniboxed w/cl "
 
   var a: MBResizableArray[Int] = null
-  test("miniboxed w/cl array", "insert ", _ => (),                 a = array_insert(), a = null)
-  test("miniboxed w/cl array", "reverse", _ => a = array_insert(), array_reverse(a),   a = null)
-  test("miniboxed w/cl array", "find   ", _ => a = array_insert(), array_find(a),      a = null)
+  var b: Boolean = true
+  test(prefix + "array", "insert ", _ => (),                 a = array_insert(),   () => { assert(a.length == N); a = null })
+  test(prefix + "array", "reverse", _ => a = array_insert(), a = array_reverse(a), () => { assert(a.length == N); a = null })
+  test(prefix + "array", "find   ", _ => a = array_insert(), b = array_find(a),    () => { assert(b == true); a = null })
 
   var l: MBList[Int] = null
-  test("miniboxed w/cl list", "insert  ", _ => (),                 l = list_insert(),  l = null)
-  test("miniboxed w/cl list", "hashCode", _ => l = list_insert(),  list_hashCode(l),   l = null)
-  test("miniboxed w/cl list", "find    ", _ => l = list_insert(),  list_find(l),       l = null)
+  var i: Int = 0
+  test(prefix + "list", "insert  ", _ => (),                 l = list_insert(),    () => { assert(l.length == N); l = null })
+  test(prefix + "list", "hashCode", _ => l = list_insert(),  i = list_hashCode(l), () => { assert(i != 0); l = null })
+  test(prefix + "list", "find    ", _ => l = list_insert(),  b = list_find(l),     () => { assert(b == true); l = null })
 }

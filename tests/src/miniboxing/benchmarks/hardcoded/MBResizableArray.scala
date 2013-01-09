@@ -57,6 +57,10 @@ trait MBResizableArray[T] {
   def contains(elem: T): Boolean
   def contains_J(elem: Long): Boolean
 
+  // length
+  def length: Int
+  def length_J: Int
+
   // setElement
   def setElement(p: Int, t: T): Unit
   def setElement_J(p: Int, t: Long): Unit
@@ -156,6 +160,10 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
     }
     return false
   }
+
+  // length
+  def length: Int = length_J
+  def length_J: Int = elemCount_J
 
   // setElement
   @inline final def setElement(p: Int, t: Tsp): Unit = setElement_J(p, box2minibox(t))
@@ -273,6 +281,10 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
     }
     return false
   }
+
+  // length
+  def length: Int = length_J
+  def length_J: Int = elemCount_J
 
   // setElement
   @inline final def setElement(p: Int, t: Tsp): Unit = setElement_J(p, box2minibox(t))

@@ -56,6 +56,7 @@ class ResizableArray[@specialized T: Manifest] {
     return false
   }
 
+  def length = elemCount
 
   def setElement(p: Int, t: T) = {
     array.asInstanceOf[Array[T]](p) = t

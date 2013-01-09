@@ -20,12 +20,14 @@ object GenericBenchTest extends BenchTest {
       list.hashCode
     }
 
-    def list_find(l: List[Int]) = {
+    def list_find(l: List[Int]): Boolean = {
       var i = 0
+      var b = true
       while (i < N) {
-        l contains(i)
+        b = b ^ l.contains(i)
         i += 10000
       }
+      b
     }
   }
 
@@ -40,16 +42,19 @@ object GenericBenchTest extends BenchTest {
       a
     }
 
-    def array_reverse(a: ResizableArray[Int]) = {
+    def array_reverse(a: ResizableArray[Int]): ResizableArray[Int] = {
       a.reverse
+      a
     }
 
-    def array_find(a: ResizableArray[Int]) = {
+    def array_find(a: ResizableArray[Int]): Boolean = {
       var i = 0
+      var b = true
       while (i < N) {
-        a.contains(i)
+        b = b ^ a.contains(i) // TODO: Does this cost much?
         i += 10000
       }
+      b
     }
   }
 
@@ -59,14 +64,17 @@ object GenericBenchTest extends BenchTest {
   System.gc
 
   println("TESTING GENERIC")
+  val prefix = "generic "
 
   var a: ResizableArray[Int] = null
-  test("generic array", "insert ", _ => (),                 a = array_insert(), a = null)
-  test("generic array", "reverse", _ => a = array_insert(), array_reverse(a),   a = null)
-  test("generic array", "find   ", _ => a = array_insert(), array_find(a),      a = null)
+  var b: Boolean = true
+  test(prefix + "array", "insert ", _ => (),                 a = array_insert(),   () => { assert(a.length == N); a = null })
+  test(prefix + "array", "reverse", _ => a = array_insert(), a = array_reverse(a), () => { assert(a.length == N); a = null })
+  test(prefix + "array", "find   ", _ => a = array_insert(), b = array_find(a),    () => { assert(b == true); a = null })
 
   var l: List[Int] = null
-  test("generic list", "insert  ", _ => (),                 l = list_insert(),  l = null)
-  test("generic list", "hashCode", _ => l = list_insert(),  list_hashCode(l),   l = null)
-  test("generic list", "find    ", _ => l = list_insert(),  list_find(l),       l = null)
+  var i: Int = 0
+  test(prefix + "list", "insert  ", _ => (),                 l = list_insert(),    () => { assert(l.length == N); l = null })
+  test(prefix + "list", "hashCode", _ => l = list_insert(),  i = list_hashCode(l), () => { assert(i != 0); l = null })
+  test(prefix + "list", "find    ", _ => l = list_insert(),  b = list_find(l),     () => { assert(b == true); l = null })
 }

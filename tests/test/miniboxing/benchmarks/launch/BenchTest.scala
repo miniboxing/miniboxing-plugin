@@ -37,7 +37,7 @@ trait BenchTest extends PerformanceTest with Serializable {
         ) setUp {
           size => N = size; setup(size)
         } tearDown {
-          size => N = 0; teardown
+          teardown; size => N = 0
         } in {
           size => benchmark
         }

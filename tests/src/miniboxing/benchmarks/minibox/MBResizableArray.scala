@@ -59,6 +59,8 @@ class MBResizableArray[@minispec T] {
     return false
   }
 
+  def length: Int = elemCount
+
   @inline final def setElement(p: Int, t: T) = {
     array.asInstanceOf[Array[T]](p) = t
   }
