@@ -26,7 +26,7 @@ object HardcodedMiniboxingBenchTest extends BenchTest {
       var i = 0
       var b = true
       while (i < N) {
-        b = b ^ l.contains(i)
+        b = b ^ l.contains_J(IntToMinibox(i))
         i += 10000
       }
       b
@@ -45,7 +45,7 @@ object HardcodedMiniboxingBenchTest extends BenchTest {
     }
 
     def array_reverse(a: MBResizableArray[Int]): MBResizableArray[Int] = {
-      a.reverse
+      a.reverse_J
       a
     }
 
@@ -53,7 +53,7 @@ object HardcodedMiniboxingBenchTest extends BenchTest {
       var i = 0
       var b = true
       while (i < N) {
-        b = b ^ a.contains(i) // TODO: Does this cost much?
+        b = b ^ a.contains_J(IntToMinibox(i)) // TODO: Does this cost much?
         i += 10000
       }
       b

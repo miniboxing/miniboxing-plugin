@@ -52,7 +52,7 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def contains_J(e: Long): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(head, e))
+      if (mboxed_eqeq(list.head_J, e))
         true
       else if (list.tail_J == null)
         false
@@ -99,7 +99,6 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   // </added for a quick test>
 }
 
-
 // as if transformed by the classloader
 class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
 
@@ -126,7 +125,7 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
   def contains_J(e: Long): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(head, e))
+      if (mboxed_eqeq(list.head_J, e))
         true
       else if (list.tail_J == null)
         false

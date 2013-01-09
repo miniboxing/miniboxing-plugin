@@ -1,7 +1,5 @@
 package miniboxing.benchmarks.specialized
 
-import miniboxing.plugin.minispec
-
 class List[@specialized T](val head: T, val tail: List[T]) {
 
   def length: Int = 1 + (if (tail != null) tail.length else 0)
@@ -9,16 +7,35 @@ class List[@specialized T](val head: T, val tail: List[T]) {
   override def toString =
     head.toString + (if (tail != null) (", " + tail.toString) else "")
 
-  def contains(e: Any): Boolean = {
-    @annotation.tailrec def containsTail(list: List[T]): Boolean =
+//  this was for the generic signature:
+//    def contains(e: Any) which was awfully slow
+//  but now we use the specific signature on both sides
+//  TODO: Also use the generic signature for both
+//
+//  // FIXME: This is what specialization is forcing on us:
+//  // we can't put the containsTail method inside the contains method as it won't get specialized at all.
+//  // so we resort to manually lifting it top level in the class
+//  @annotation.tailrec private[this] final def containsTail(list: List[T], e: T): Boolean =
+//    if (list.head == e)
+//      true
+//    else if (list.tail == null)
+//      false
+//    else
+//      containsTail(list.tail, e)
+//
+//  def contains(e: Any): Boolean =
+//    containsTail(this, e)
+
+  def contains(e: T): Boolean = {
+    @annotation.tailrec def containsTail(list: List[T], e: T): Boolean =
       if (list.head == e)
         true
       else if (list.tail == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
 
   override def hashCode(): Int = {
@@ -35,3 +52,4 @@ class List[@specialized T](val head: T, val tail: List[T]) {
 
   def toString2: String = toString
 }
+

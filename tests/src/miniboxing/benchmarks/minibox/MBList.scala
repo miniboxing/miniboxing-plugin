@@ -9,7 +9,7 @@ class MBList[@minispec T](val head: T, val tail: MBList[T]) {
   override def toString =
     head.toString + (if (tail != null) (", " + tail.toString) else "")
 
-  def contains(e: Any): Boolean = {
+  def contains(e: T): Boolean = {
     @annotation.tailrec def containsTail(list: MBList[T]): Boolean =
       if (list.head == e)
         true
