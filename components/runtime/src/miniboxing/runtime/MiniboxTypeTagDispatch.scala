@@ -14,20 +14,33 @@ package miniboxing.runtime
 object MiniboxTypeTagDispatch {
   import MiniboxTypes._
   import MiniboxConversions._
-  import MiniboxConstants._
+
+  // import MiniboxConstants._
+  // instead of importing, we copy the values here so the Scala compiler transforms the calls into tableswitches
+  private[this] final val UNIT = 0;
+  private[this] final val BOOLEAN = 1;
+  private[this] final val BYTE = 2;
+  private[this] final val SHORT = 3;
+  private[this] final val CHAR = 4;
+  private[this] final val INT = 5;
+  private[this] final val LONG = 6;
+  private[this] final val FLOAT = 7;
+  private[this] final val DOUBLE = 8;
+  private[this] final val REFERENCE = 9;
 
   /*
    *  For methods like `toString` or `equals` there is not much improvement
    *  to be expected. Just use boxing for them.
    */
   @inline final def mboxed_toString(x: Minibox, tag: Tag): String = tag match {
-    case UNIT => "()"
-    case BOOLEAN => if (x != 0) "true" else "false"
-    case INT | LONG | SHORT | BYTE => java.lang.Long.toString(x)
-    case CHAR => java.lang.Character.toString(x.toChar)
-    case FLOAT =>
+    // See https://issues.scala-lang.org/browse/SI-6956
+    case 0 /* UNIT */ => "()"
+    case 1 /* BOOLEAN */ => if (x != 0) "true" else "false"
+    case 2 /* BYTE */ | 3 /* SHORT */ | 5 /* INT */ | 6 /* LONG */  => java.lang.Long.toString(x)
+    case 4 /* CHAR */ => java.lang.Character.toString(x.toChar)
+    case 7 /* FLOAT */ =>
       java.lang.Float.toString(java.lang.Float.intBitsToFloat(x.toInt))
-    case DOUBLE =>
+    case 8 /* DOUBLE */ =>
       java.lang.Double.toString(java.lang.Double.longBitsToDouble(x))
   }
 
@@ -53,87 +66,22 @@ object MiniboxTypeTagDispatch {
    * Implementation that takes care of the primitive semantics
    */
   @inline final def mboxed_hashhash(x: Minibox, tag: Tag): Int = tag match {
-    case UNIT | BOOLEAN | INT | LONG => x.toInt
-    case BYTE => x.toByte.toInt
-    case CHAR => x.toChar.toInt
-    case SHORT => x.toShort.toInt
-    case FLOAT =>
+    // See https://issues.scala-lang.org/browse/SI-6956
+    case 0 /* UNIT */ | 1 /* BOOLEAN */ | 5 /* INT */ | 6 /* LONG */ => x.toInt
+    case 2 /* BYTE */ => x.toByte.toInt
+    case 3 /* SHORT */ => x.toShort.toInt
+    case 4 /* CHAR */ => x.toChar.toInt
+    case 7 /* FLOAT */ =>
       val ibits = x.toInt
       val fv = java.lang.Float.intBitsToFloat(ibits)
       val iv = fv.toInt
       if (iv.toFloat == fv) iv else ibits
-    case DOUBLE =>
+    case 8 /* DOUBLE */ =>
       val ibits = x.toInt
       val dv = java.lang.Double.longBitsToDouble(x)
       val iv = dv.toInt
       if (iv.toDouble == dv) iv else ibits
   }
 
-  @inline final def mboxed_hashCode(x: Minibox, tag: Tag): Int = x.hashCode
-
-//  @inline final def array_apply(array: Any, pos: Int, tag: Tag): Long = {
-//    val elem: Minibox = tag match {
-//      case UNIT =>
-//        0
-//      case BOOLEAN =>
-//        BooleanToMinibox(array.asInstanceOf[Array[Boolean]](pos))
-//      case BYTE =>
-//        ByteToMinibox(array.asInstanceOf[Array[Byte]](pos))
-//      case CHAR =>
-//        CharToMinibox(array.asInstanceOf[Array[Char]](pos))
-//      case SHORT =>
-//        ShortToMinibox(array.asInstanceOf[Array[Short]](pos))
-//      case INT =>
-//        IntToMinibox(array.asInstanceOf[Array[Int]](pos))
-//      case LONG =>
-//        array.asInstanceOf[Array[Long]](pos)
-//      case FLOAT =>
-//        FloatToMinibox(array.asInstanceOf[Array[Float]](pos))
-//      case DOUBLE =>
-//        DoubleToMinibox(array.asInstanceOf[Array[Double]](pos))
-//    }
-//    elem
-//  }
-
-//  @inline final def array_update[T](array: Any, pos: Int, x: Minibox, tag: Tag): Unit = tag match {
-//    case UNIT =>
-//      array.asInstanceOf[Array[Unit]](pos) = MiniboxToUnit(x)
-//    case BOOLEAN =>
-//      array.asInstanceOf[Array[Boolean]](pos) = MiniboxToBoolean(x)
-//    case BYTE =>
-//      array.asInstanceOf[Array[Byte]](pos) = MiniboxToByte(x)
-//    case CHAR =>
-//      array.asInstanceOf[Array[Char]](pos) = MiniboxToChar(x)
-//    case SHORT =>
-//      array.asInstanceOf[Array[Short]](pos) = MiniboxToShort(x)
-//    case INT =>
-//      array.asInstanceOf[Array[Int]](pos) = MiniboxToInt(x)
-//    case LONG =>
-//      array.asInstanceOf[Array[Long]](pos) = MiniboxToLong(x)
-//    case FLOAT =>
-//      array.asInstanceOf[Array[Float]](pos) = MiniboxToFloat(x)
-//    case DOUBLE =>
-//      array.asInstanceOf[Array[Double]](pos) = MiniboxToDouble(x)
-//  }
-
-//  @inline final def array_length(array: Any, tag: Tag): Int = tag match {
-//    case UNIT =>
-//      array.asInstanceOf[Array[Unit]].length
-//    case BOOLEAN =>
-//      array.asInstanceOf[Array[Boolean]].length
-//    case BYTE =>
-//      array.asInstanceOf[Array[Byte]].length
-//    case CHAR =>
-//      array.asInstanceOf[Array[Char]].length
-//    case SHORT =>
-//      array.asInstanceOf[Array[Short]].length
-//    case INT =>
-//      array.asInstanceOf[Array[Int]].length
-//    case LONG =>
-//      array.asInstanceOf[Array[Long]].length
-//    case FLOAT =>
-//      array.asInstanceOf[Array[Float]].length
-//    case DOUBLE =>
-//      array.asInstanceOf[Array[Double]].length
-//  }
+  @inline final def mboxed_hashCode(x: Minibox, tag: Tag): Int = mboxed_hashhash(x, tag)
 }

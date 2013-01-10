@@ -27,7 +27,7 @@ trait BenchTest extends PerformanceTest with Serializable {
 
   // And the common benchmarking stuff:
   var N = 0
-  val sizes = Gen.single("size")(1000000)
+  val sizes = Gen.range("size")(1000000, 3000000, 1000000)
 
   def test[T](clazz: String, method: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit) =
     performance of clazz in {

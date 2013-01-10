@@ -10,5 +10,5 @@ public interface MiniboxConstants {
   public static final byte LONG = 6;
   public static final byte FLOAT = 7;
   public static final byte DOUBLE = 8;
-  public static final byte REFERENCE = -1;
+  public static final byte REFERENCE = 9;
 }

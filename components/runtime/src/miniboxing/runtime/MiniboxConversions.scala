@@ -47,24 +47,22 @@ object MiniboxConversions {
    * As a workaround, in our test examples we manually insert minibox2box
    * in such places.
    */
-  @inline final def minibox2box[T](l: Minibox, tag: Tag) : T = {
-    val ret: Any = tag match {
-      case UNIT => ()
-      case BOOLEAN => (l != 0)
-      case BYTE => l.toByte
-      case CHAR => l.toChar
-      case SHORT => l.toShort
-      case INT => l.toInt
-      case LONG => l
-      case FLOAT => java.lang.Float.intBitsToFloat(l.toInt)
-      case DOUBLE => java.lang.Double.longBitsToDouble(l)
+  @inline final def minibox2box[T](l: Minibox, tag: Tag ) : T = {
+    val ret: Any = tag.asInstanceOf[Byte] match {
+      // See https://issues.scala-lang.org/browse/SI-6956
+      case 0 /* UNIT */ => ()
+      case 1 /* BOOLEAN */ => (l != 0)
+      case 2 /* BYTE */ => l.toByte
+      case 3 /* CHAR */ => l.toChar
+      case 4 /* SHORT */ => l.toShort
+      case 5 /* INT */ => l.toInt
+      case 6 /* LONG */ => l
+      case 7 /* FLOAT */ => java.lang.Float.intBitsToFloat(l.toInt)
+      case 8 /* DOUBLE */ => java.lang.Double.longBitsToDouble(l)
+      case 9 /* REFERENCE */ => ???
     }
     ret.asInstanceOf[T]
   }
-
-//  @inline final def minibox2box[T](l: Long) : T = {
-//    null.asInstanceOf[T] // dispatch on tag
-//  }
 
   /*
    *  We do not need to return the type tag also since it is known in the
