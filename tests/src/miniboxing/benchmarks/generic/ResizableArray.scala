@@ -8,7 +8,7 @@ package miniboxing.benchmarks.generic
  *  - every access to the array requires a cast to its type: array.asInstanceOf[Array[T]](p)
  *  - local array variables are not supported
  */
-class ResizableArray[@specialized T: Manifest] {
+class ResizableArray[T: Manifest] {
   private final val initialSize = 4
   private var size: Int = initialSize
   private var elemCount: Int = 0
