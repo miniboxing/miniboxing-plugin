@@ -11,17 +11,17 @@ import miniboxing.runtime.MiniboxArray
  *  - every access to the array requires a cast to its type: array.asInstanceOf[Array[T]](p)
  *  - local array variables are not supported
  */
-class MBResizableArray[@minispec T] {
+class MBResizableArray[@minispec T: Manifest] {
   private final val initialSize = 4
   private var size: Int = initialSize
   private var elemCount: Int = 0
-  private var array: Array[T] = MiniboxArray.newArray[T](initialSize)
+  private var array: Array[T] = new Array[T](initialSize) // MiniboxArray.newArray[T](initialSize)
   private var newarray: Array[T] = _
 
   def extend(): Unit = {
     if (elemCount == size) {
       var pos = 0
-      newarray = MiniboxArray.newArray[T](2 * size)
+      newarray = new Array[T](initialSize) // MiniboxArray.newArray[T](2 * size)
       while(pos < size) {
         newarray.asInstanceOf[Array[T]](pos) = array.asInstanceOf[Array[T]](pos)
         pos += 1

@@ -7,7 +7,7 @@ import miniboxing.runtime.MiniboxTypeTagDispatch._
 
 trait MBList[T] {
   // accessors
-  def head: Long
+  def head: T
   def head_J: Long
   def tail: MBList[T]
   def tail_J: MBList[T]
@@ -32,7 +32,7 @@ trait MBList[T] {
 class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MBList[Tsp] {
 
   // head
-  def head: Long = head_J
+  def head: Tsp = minibox2box[Tsp](head_J, T_TypeTag)
   def head_J: Long = _head
 
   // tail
@@ -45,7 +45,7 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
 
   // toString
   override def toString = toString_J
-  def toString_J = minibox2box[Tsp](head, T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
+  def toString_J = minibox2box[Tsp](head_J, T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
 
   // contains
   def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
@@ -87,7 +87,7 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def containsAny_J(e: Any): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (minibox2box(list.head, T_TypeTag) == e) // TODO this probably needs to be forwarded
+      if (minibox2box(list.head_J, T_TypeTag) == e) // TODO this probably needs to be forwarded
         true
       else if (list.tail_J == null)
         false
@@ -105,7 +105,7 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
   private[this] final val T_TypeTag: Byte = INT
 
   // head
-  def head: Long = head_J
+  def head: Tsp = minibox2box[Tsp](head_J, T_TypeTag)
   def head_J: Long = _head
 
   // tail
@@ -118,7 +118,7 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
 
   // toString
   override def toString = toString_J
-  def toString_J = minibox2box[Tsp](head, T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
+  def toString_J = minibox2box[Tsp](head_J, T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
 
   // contains
   def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
@@ -160,7 +160,7 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
   def containsAny_J(e: Any): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (minibox2box(list.head, T_TypeTag) == e)
+      if (minibox2box(list.head_J, T_TypeTag) == e)
         true
       else if (list.tail_J == null)
         false
@@ -176,10 +176,10 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
 // as if transformed by the classloader
 class MBList_INT_FULL[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
 
-  private[this] final val 5: Byte = INT
+  //private[this] final val 5: Byte = INT
 
   // head
-  def head: Long = head_J
+  def head: Tsp = minibox2box[Tsp](head_J, 5)
   def head_J: Long = _head
 
   // tail
@@ -192,7 +192,7 @@ class MBList_INT_FULL[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] 
 
   // toString
   override def toString = toString_J
-  def toString_J = minibox2box[Tsp](head, 5).toString + (if (tail != null) (", " + tail.toString_J) else "")
+  def toString_J = minibox2box[Tsp](head_J, 5).toString + (if (tail != null) (", " + tail.toString_J) else "")
 
   // contains
   def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
@@ -234,7 +234,7 @@ class MBList_INT_FULL[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] 
   def containsAny_J(e: Any): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (minibox2box(list.head, 5) == e)
+      if (minibox2box(list.head_J, 5) == e)
         true
       else if (list.tail_J == null)
         false

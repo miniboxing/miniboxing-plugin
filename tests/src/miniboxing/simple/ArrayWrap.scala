@@ -12,7 +12,7 @@ import miniboxing.runtime.MiniboxArray
  */
 class ArrayWrap[@minispec T] {
   private var array : Array[T] = _
-  def newArray(len: Int): Unit = array = MiniboxArray.newArray[T](len)
+  def newArray(len: Int): Unit = array = ??? //MiniboxArray.newArray[T](len)
   def setElement(p: Int, t: T) = {
     array.asInstanceOf[Array[T]](p) = t
   }

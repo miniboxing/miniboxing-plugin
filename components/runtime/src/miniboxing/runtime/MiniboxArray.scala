@@ -19,24 +19,6 @@ object MiniboxArray {
 //  private[this] final val DOUBLE = 8;
 //  private[this] final val REFERENCE = 9;
 
-  @inline final def newArray[T](len: Int): Array[T] =
-    sys.error("I'm just a compile time entity")
-
-  @inline final def internal_newArray(len: Int, tag: Tag): Any = {
-    tag.asInstanceOf[Byte] match {
-      // See https://issues.scala-lang.org/browse/SI-6956
-      case 0 /* UNIT */ =>     new Array[Unit](len)
-      case 1 /* BOOLEAN */ =>  new Array[Boolean](len)
-      case 2 /* BYTE */ =>     new Array[Byte](len)
-      case 3 /* CHAR */ =>     new Array[Char](len)
-      case 4 /* SHORT */ =>    new Array[Short](len)
-      case 5 /* INT */ =>      new Array[Int](len)
-      case 6 /* LONG */ =>     new Array[Long](len)
-      case 7 /* FLOAT */ =>    new Array[Float](len)
-      case 8 /* DOUBLE */ =>   new Array[Double](len)
-    }
-  }
-
   @inline final def mbarray_new(len: Int, tag: Tag): Any =
     tag.asInstanceOf[Byte] match {
       // See https://issues.scala-lang.org/browse/SI-6956

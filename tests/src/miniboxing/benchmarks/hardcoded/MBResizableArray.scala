@@ -93,7 +93,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
   def elemCount_J: Int = _elemCount_J
   def elemCount_J_=(newElemCount: Int): Unit = _elemCount_J = newElemCount
 
-  private[this] var _array_J: Any = MiniboxArray.internal_newArray(initialSize, T_TypeTag)
+  private[this] var _array_J: Any = mbarray_new(initialSize, T_TypeTag)
   def array: Any = array_J
   def array_=(newArray: Any): Unit = array_J_=(newArray)
   def array_J: Any = _array_J
@@ -214,7 +214,7 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   def elemCount_J: Int = _elemCount_J
   def elemCount_J_=(newElemCount: Int): Unit = _elemCount_J = newElemCount
 
-  private[this] var _array_J: Any = MiniboxArray.internal_newArray(initialSize, T_TypeTag)
+  private[this] var _array_J: Any = mbarray_new(initialSize, T_TypeTag)
   def array: Any = array_J
   def array_=(newArray: Any): Unit = array_J_=(newArray)
   def array_J: Any = _array_J
@@ -335,7 +335,7 @@ class MBResizableArray_INT_FULL[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   def elemCount_J: Int = _elemCount_J
   def elemCount_J_=(newElemCount: Int): Unit = _elemCount_J = newElemCount
 
-  private[this] var _array_J: Any = MiniboxArray.internal_newArray(initialSize, 5)
+  private[this] var _array_J: Any = mbarray_new(initialSize, 5)
   def array: Any = array_J
   def array_=(newArray: Any): Unit = array_J_=(newArray)
   def array_J: Any = _array_J
