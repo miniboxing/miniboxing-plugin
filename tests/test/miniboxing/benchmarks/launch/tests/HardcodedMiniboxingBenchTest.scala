@@ -8,11 +8,11 @@ import miniboxing.benchmarks.hardcoded._
 trait HardcodedMiniboxingBenchTest extends BaseTest {
 
   private[this] object TestList {
-    def list_insert(): MBList[Int] = {
+    def list_insert(tag: Byte = INT): MBList[Int] = {
       var l: MBList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Int](IntToMinibox(i), l, INT)
+        l = new MBList_J[Int](IntToMinibox(i), l, tag)
         i += 1
       }
       l
@@ -34,8 +34,8 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
   }
 
   private[this] object TestArray {
-    def array_insert(): MBResizableArray[Int] = {
-      val a: MBResizableArray[Int] = new MBResizableArray_J[Int](INT)
+    def array_insert(tag: Byte = INT): MBResizableArray[Int] = {
+      val a: MBResizableArray[Int] = new MBResizableArray_J[Int](tag)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i))
@@ -60,23 +60,34 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
     }
   }
 
-  def testHardcodedMiniboxing() = {
+  def testHardcodedMiniboxing(megamorphic: Boolean) = {
     import TestArray._
     import TestList._
 
-    val transformation = "miniboxed"
+    val transformation = "miniboxed standard " + (if (megamorphic) "mega" else "mono")
+
+      def forceMegamorphicCallSites(): Unit =
+      if (megamorphic) {
+        def dirty(tag: Byte) = {
+          array_find(array_reverse(array_insert(tag)))
+          list_hashCode(list_insert(tag)); list_find(list_insert(tag))
+        }
+        dirty(INT)
+        dirty(DOUBLE)
+        dirty(LONG)
+      }
 
     var a: MBResizableArray[Int] = null
     var b: Boolean = true
-    test(transformation, "array.insert ", _ => (),                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.reverse", _ => a = array_insert(), a = array_reverse(a), () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.find   ", _ => a = array_insert(), b = array_find(a),    () => { assert(b == true); a = null })
+    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites(); () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
+    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites(); a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
+    test(transformation, "array.find   ", _ => { forceMegamorphicCallSites(); a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
 
     var l: MBList[Int] = null
     var i: Int = 0
-    test(transformation, "list.insert  ", _ => (),                 l = list_insert(),    () => { assert(l.length == testSize); l = null })
-    test(transformation, "list.hashCode", _ => l = list_insert(),  i = list_hashCode(l), () => { assert(i != 0); l = null })
-    test(transformation, "list.find    ", _ => l = list_insert(),  b = list_find(l),     () => { assert(b == true); l = null })
+    test(transformation, "list.insert  ", _ => { forceMegamorphicCallSites(); () },                 l = list_insert(),    () => { assert(l.length == testSize); l = null })
+    test(transformation, "list.hashCode", _ => { forceMegamorphicCallSites(); l = list_insert() },  i = list_hashCode(l), () => { assert(i != 0); l = null })
+    test(transformation, "list.find    ", _ => { forceMegamorphicCallSites(); l = list_insert() },  b = list_find(l),     () => { assert(b == true); l = null })
   }
 
 }

@@ -67,7 +67,7 @@ trait ScalameterBenchTest extends PerformanceTest
     performance of transformation in {
       measure method tag in {
         using(sizes) config (exec.independentSamples -> 5) setUp {
-          size => testSize = size; System.gc(); setup(size)
+          size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {
           teardown; size => testSize = 0
         } in {
