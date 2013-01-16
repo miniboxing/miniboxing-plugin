@@ -67,7 +67,7 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def hashCode_J(): Int = {
 
     @annotation.tailrec def tailHash(list: MBList[Tsp], or: Int): Int = {
-      val headhash = mboxed_hashhash(list.head_J, T_TypeTag)
+      val headhash = mboxed_hashCode(list.head_J, T_TypeTag)
       if (list.tail_J == null)
         headhash | or
       else
@@ -140,7 +140,7 @@ class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
   def hashCode_J(): Int = {
 
     @annotation.tailrec def tailHash(list: MBList[Tsp], or: Int): Int = {
-      val headhash = mboxed_hashhash(list.head_J, T_TypeTag)
+      val headhash = mboxed_hashCode(list.head_J, T_TypeTag)
       if (list.tail_J == null)
         headhash | or
       else
@@ -214,7 +214,7 @@ class MBList_INT_FULL[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] 
   def hashCode_J(): Int = {
 
     @annotation.tailrec def tailHash(list: MBList[Tsp], or: Int): Int = {
-      val headhash = mboxed_hashhash(list.head_J, 5)
+      val headhash = mboxed_hashCode(list.head_J, 5)
       if (list.tail_J == null)
         headhash | or
       else

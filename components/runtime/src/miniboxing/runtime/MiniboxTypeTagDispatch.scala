@@ -32,17 +32,25 @@ object MiniboxTypeTagDispatch {
    *  For methods like `toString` or `equals` there is not much improvement
    *  to be expected. Just use boxing for them.
    */
-  @inline final def mboxed_toString(x: Minibox, tag: Tag): String = tag match {
-    // See https://issues.scala-lang.org/browse/SI-6956
-    case 0 /* UNIT */ => "()"
-    case 1 /* BOOLEAN */ => if (x != 0) "true" else "false"
-    case 2 /* BYTE */ | 3 /* SHORT */ | 5 /* INT */ | 6 /* LONG */  => java.lang.Long.toString(x)
-    case 4 /* CHAR */ => java.lang.Character.toString(x.toChar)
-    case 7 /* FLOAT */ =>
-      java.lang.Float.toString(java.lang.Float.intBitsToFloat(x.toInt))
-    case 8 /* DOUBLE */ =>
-      java.lang.Double.toString(java.lang.Double.longBitsToDouble(x))
-  }
+  @inline final def mboxed_toString(x: Minibox, tag: Tag): String =
+    tag match {
+      // See https://issues.scala-lang.org/browse/SI-6956
+      case 0 /* UNIT */ =>    scala.runtime.BoxedUnit.UNIT.toString()
+      case 1 /* BOOLEAN */ => scala.runtime.BoxesRunTime.boxToBoolean(x != 0).toString()
+      case 5 /* INT */ =>     scala.runtime.BoxesRunTime.boxToInteger(x.toInt).toString()
+      case 6 /* LONG */ =>    scala.runtime.BoxesRunTime.boxToLong(x).toString()
+      case 2 /* BYTE */ =>    scala.runtime.BoxesRunTime.boxToByte(x.toByte).toString()
+      case 3 /* SHORT */ =>   scala.runtime.BoxesRunTime.boxToShort(x.toShort).toString()
+      case 4 /* CHAR */ =>    scala.runtime.BoxesRunTime.boxToCharacter(x.toChar).toString()
+      case 7 /* FLOAT */ =>
+        val ibits = x.toInt
+        val fv = java.lang.Float.intBitsToFloat(ibits)
+        scala.runtime.BoxesRunTime.boxToFloat(fv).toString()
+      case 8 /* DOUBLE */ =>
+        val ibits = x.toInt
+        val dv = java.lang.Double.longBitsToDouble(x)
+        scala.runtime.BoxesRunTime.boxToDouble(dv).toString()
+    }
 
   /*
    * Equality between miniboxed values. Optimized for the case when they have
@@ -63,23 +71,23 @@ object MiniboxTypeTagDispatch {
   /*
    * Implementation that takes care of the primitive semantics
    */
-  @inline final def mboxed_hashhash(x: Minibox, tag: Tag): Int = tag match {
-    // See https://issues.scala-lang.org/browse/SI-6956
-    case 0 /* UNIT */ | 1 /* BOOLEAN */ | 5 /* INT */ | 6 /* LONG */ => x.toInt
-    case 2 /* BYTE */ => x.toByte.toInt
-    case 3 /* SHORT */ => x.toShort.toInt
-    case 4 /* CHAR */ => x.toChar.toInt
-    case 7 /* FLOAT */ =>
-      val ibits = x.toInt
-      val fv = java.lang.Float.intBitsToFloat(ibits)
-      val iv = fv.toInt
-      if (iv.toFloat == fv) iv else ibits
-    case 8 /* DOUBLE */ =>
-      val ibits = x.toInt
-      val dv = java.lang.Double.longBitsToDouble(x)
-      val iv = dv.toInt
-      if (iv.toDouble == dv) iv else ibits
-  }
-
-  @inline final def mboxed_hashCode(x: Minibox, tag: Tag): Int = mboxed_hashhash(x, tag)
+  @inline final def mboxed_hashCode(x: Minibox, tag: Tag): Int =
+    tag match {
+      // See https://issues.scala-lang.org/browse/SI-6956
+      case 0 /* UNIT */ =>    scala.runtime.BoxedUnit.UNIT.hashCode()
+      case 1 /* BOOLEAN */ => scala.runtime.BoxesRunTime.boxToBoolean(x != 0).hashCode()
+      case 5 /* INT */ =>     scala.runtime.BoxesRunTime.boxToInteger(x.toInt).hashCode()
+      case 6 /* LONG */ =>    scala.runtime.BoxesRunTime.boxToLong(x).hashCode()
+      case 2 /* BYTE */ =>    scala.runtime.BoxesRunTime.boxToByte(x.toByte).hashCode()
+      case 3 /* SHORT */ =>   scala.runtime.BoxesRunTime.boxToShort(x.toShort).hashCode()
+      case 4 /* CHAR */ =>    scala.runtime.BoxesRunTime.boxToCharacter(x.toChar).hashCode()
+      case 7 /* FLOAT */ =>
+        val ibits = x.toInt
+        val fv = java.lang.Float.intBitsToFloat(ibits)
+        scala.runtime.BoxesRunTime.boxToFloat(fv).hashCode()
+      case 8 /* DOUBLE */ =>
+        val ibits = x.toInt
+        val dv = java.lang.Double.longBitsToDouble(x)
+        scala.runtime.BoxesRunTime.boxToDouble(dv).hashCode()
+    }
 }

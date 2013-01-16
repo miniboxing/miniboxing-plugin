@@ -65,7 +65,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
     import TestArray._
     import TestList._
 
-    val transformation = "miniboxed dispatch " + (if (megamorphic) "monomorphic" else "megamorphic")
+    val transformation = "miniboxed dispatch " + (if (megamorphic) "mega" else "mono")
 
     def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
