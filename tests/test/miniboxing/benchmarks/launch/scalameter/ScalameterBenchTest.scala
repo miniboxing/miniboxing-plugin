@@ -79,9 +79,9 @@ trait ScalameterBenchTest extends PerformanceTest
 
 
   def printResults() = {
-    for (testTag <- testTags) {
+    for (testTag <- testTags.reverse) {
       println(testTag + ":")
-      for (testTraf <- testTrafs) {
+      for (testTraf <- testTrafs.reverse) {
         val tagEntry = testValues.get(testTag).flatMap(_.get(testTraf))
         val entries = testSizes.map(size => tagEntry.flatMap(_.get(size)).getOrElse((0.0, 0.0)))
         println(f"${testTraf}%30s : " + entries.map({case (value, error) => f"${value}%11.5f +/- ${error}%9.5f "}).mkString("  "))
