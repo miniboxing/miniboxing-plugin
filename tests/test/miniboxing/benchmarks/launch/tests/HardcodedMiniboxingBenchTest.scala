@@ -8,11 +8,11 @@ import miniboxing.benchmarks.hardcoded._
 trait HardcodedMiniboxingBenchTest extends BaseTest {
 
   private[this] object TestList {
-    def list_insert(tag: Byte = INT): MBList[Int] = {
+    def list_insert(): MBList[Int] = {
       var l: MBList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Int](IntToMinibox(i), l, tag)
+        l = new MBList_J[Int](IntToMinibox(i), l, INT)
         i += 1
       }
       l
@@ -31,11 +31,59 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
       }
       b
     }
+
+    def list_insert_DOUBLE(): MBList[Int] = {
+      var l: MBList[Int] = null
+      var i = 0
+      while (i < testSize) {
+        l = new MBList_J[Int](IntToMinibox(i), l, DOUBLE)
+        i += 1
+      }
+      l
+    }
+
+    def list_hashCode_DOUBLE(list: MBList[Int]): Int = {
+      list.hashCode_J
+    }
+
+    def list_find_DOUBLE(l: MBList[Int]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains_J(IntToMinibox(i))
+        i += 10000
+      }
+      b
+    }
+
+    def list_insert_LONG(): MBList[Int] = {
+      var l: MBList[Int] = null
+      var i = 0
+      while (i < testSize) {
+        l = new MBList_J[Int](IntToMinibox(i), l, LONG)
+        i += 1
+      }
+      l
+    }
+
+    def list_hashCode_LONG(list: MBList[Int]): Int = {
+      list.hashCode_J
+    }
+
+    def list_find_LONG(l: MBList[Int]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains_J(IntToMinibox(i))
+        i += 10000
+      }
+      b
+    }
   }
 
   private[this] object TestArray {
-    def array_insert(tag: Byte = INT): MBResizableArray[Int] = {
-      val a: MBResizableArray[Int] = new MBResizableArray_J[Int](tag)
+    def array_insert(): MBResizableArray[Int] = {
+      val a: MBResizableArray[Int] = new MBResizableArray_J[Int](INT)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i))
@@ -58,6 +106,56 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
       }
       b
     }
+
+    def array_insert_LONG(): MBResizableArray[Long] = {
+      val a: MBResizableArray[Long] = new MBResizableArray_J[Long](LONG)
+      var i = 0
+      while (i < testSize) {
+        a.add_J(LongToMinibox(i))
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_LONG(a: MBResizableArray[Long]): MBResizableArray[Long] = {
+      a.reverse_J
+      a
+    }
+
+    def array_find_LONG(a: MBResizableArray[Long]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains_J(LongToMinibox(i)) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
+
+    def array_insert_DOUBLE(): MBResizableArray[Double] = {
+      val a: MBResizableArray[Double] = new MBResizableArray_J[Double](DOUBLE)
+      var i = 0
+      while (i < testSize) {
+        a.add_J(DoubleToMinibox(i))
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_DOUBLE(a: MBResizableArray[Double]): MBResizableArray[Double] = {
+      a.reverse_J
+      a
+    }
+
+    def array_find_DOUBLE(a: MBResizableArray[Double]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains_J(DoubleToMinibox(i)) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
   }
 
   def testHardcodedMiniboxing(megamorphic: Boolean) = {
@@ -68,13 +166,14 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
 
       def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
-        def dirty(tag: Byte) = {
-          array_find(array_reverse(array_insert(tag)))
-          list_hashCode(list_insert(tag)); list_find(list_insert(tag))
+        withTestSize(1000) {
+          array_find(array_reverse(array_insert()))
+          list_hashCode(list_insert()); list_find(list_insert())
+          array_find_LONG(array_reverse_LONG(array_insert_LONG()))
+          list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
+          array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
+          list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
         }
-        dirty(INT)
-        dirty(DOUBLE)
-        dirty(LONG)
       }
 
     var a: MBResizableArray[Int] = null

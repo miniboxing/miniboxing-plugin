@@ -9,11 +9,11 @@ package miniboxing.benchmarks.ideal
  *  - local array variables are not supported
  */
 class ResizableArray {
-  private final val initialSize = 4
-  private var size: Int = initialSize
-  private var elemCount: Int = 0
-  private var array: Array[Int] = new Array[Int](initialSize)
-  private var newarray: Array[Int] = _
+  final val initialSize = 4
+  var size: Int = initialSize
+  var elemCount: Int = 0
+  var array: Array[Int] = new Array[Int](initialSize)
+  var newarray: Array[Int] = _
 
   def extend(): Unit = {
     if (elemCount == size) {

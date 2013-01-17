@@ -16,7 +16,7 @@ object BenchmarkingTest extends ScalameterBenchTest
   lazy val testSizes = {
     //List(1000, 2000, 3000)
     List(1000000, 2000000, 3000000)
-    //List(1000000)
+    //List(100000)
   }
   def lastTag = "list.find"
   def lastTraf = "generic"

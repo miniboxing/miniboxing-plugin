@@ -161,15 +161,14 @@ trait SpecializedBenchTest extends BaseTest {
 
       def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
-        // INT
-        array_find(array_reverse(array_insert()))
-        list_hashCode(list_insert()); list_find(list_insert())
-        // DOUBLE
-        array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
-        list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
-        // LONG
-        array_find_LONG(array_reverse_LONG(array_insert_LONG()))
-        list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
+        withTestSize(1000) {
+          array_find(array_reverse(array_insert()))
+          list_hashCode(list_insert()); list_find(list_insert())
+          array_find_LONG(array_reverse_LONG(array_insert_LONG()))
+          list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
+          array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
+          list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
+        }
       }
 
     var a: ResizableArray[Int] = null

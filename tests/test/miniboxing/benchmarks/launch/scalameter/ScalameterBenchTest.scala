@@ -11,6 +11,12 @@ trait ScalameterBenchTest extends PerformanceTest
   import collection.mutable.{HashSet, HashMap}
 
   var testSize: Int = _
+  def withTestSize(size: Int)(f : => Unit) = {
+    val _testSize = testSize
+    testSize = size
+    f
+    testSize = _testSize
+  }
   def testSizes: List[Int]
   val sizes = Gen.enumeration("size")(testSizes: _*)
   def lastTag: String
