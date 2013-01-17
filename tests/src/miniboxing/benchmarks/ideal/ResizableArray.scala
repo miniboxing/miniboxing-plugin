@@ -20,7 +20,7 @@ class ResizableArray {
       var pos = 0
       newarray = new Array[Int](2 * size)
       while(pos < size) {
-        newarray.asInstanceOf[Array[Int]](pos) = array.asInstanceOf[Array[Int]](pos)
+        newarray(pos) = array(pos)
         pos += 1
       }
       array = newarray
@@ -30,7 +30,7 @@ class ResizableArray {
 
   def add(elem: Int) = {
     extend()
-    array.asInstanceOf[Array[Int]](elemCount) = elem
+    array(elemCount) = elem
     elemCount += 1
   }
 
@@ -59,8 +59,8 @@ class ResizableArray {
   def length = elemCount
 
   def setElement(p: Int, t: Int) = {
-    array.asInstanceOf[Array[Int]](p) = t
+    array(p) = t
   }
-  def getElement(p: Int): Int = array.asInstanceOf[Array[Int]](p)
+  def getElement(p: Int): Int = array(p)
 }
 

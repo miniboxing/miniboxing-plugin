@@ -5,7 +5,7 @@ package miniboxing.benchmarks.generic
  *
  * The plugin if arrays are used inside minispeced code according to the following rules:
  *  - every array creation is done via: MiniboxArray.newArray[T](len)
- *  - every access to the array requires a cast to its type: array.asInstanceOf[Array[T]](p)
+ *  - every access to the array requires a cast to its type: array(p)
  *  - local array variables are not supported
  */
 class ResizableArray[T: Manifest] {
@@ -20,7 +20,7 @@ class ResizableArray[T: Manifest] {
       var pos = 0
       newarray = new Array[T](2 * size)
       while(pos < size) {
-        newarray.asInstanceOf[Array[T]](pos) = array.asInstanceOf[Array[T]](pos)
+        newarray(pos) = array(pos)
         pos += 1
       }
       array = newarray
@@ -30,7 +30,7 @@ class ResizableArray[T: Manifest] {
 
   def add(elem: T) = {
     extend()
-    array.asInstanceOf[Array[T]](elemCount) = elem
+    array(elemCount) = elem
     elemCount += 1
   }
 
@@ -59,8 +59,8 @@ class ResizableArray[T: Manifest] {
   def length = elemCount
 
   def setElement(p: Int, t: T) = {
-    array.asInstanceOf[Array[T]](p) = t
+    array(p) = t
   }
-  def getElement(p: Int): T = array.asInstanceOf[Array[T]](p)
+  def getElement(p: Int): T = array(p)
 }
 
