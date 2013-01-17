@@ -16,11 +16,56 @@ trait SpecializedBenchTest extends BaseTest {
       l
     }
 
-    def list_hashCode(list: List[Int]): Int = {
+    def list_hashCode(list: List[Int]): Int =
       list.hashCode
-    }
 
     def list_find(l: List[Int]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains(i)
+        i += 10000
+      }
+      b
+    }
+
+    def list_insert_DOUBLE(): List[Double] = {
+      var l: List[Double] = null
+      var i = 0
+      while (i < testSize) {
+        l = new List[Double](i, l)
+        i += 1
+      }
+      l
+    }
+
+    def list_hashCode_DOUBLE(list: List[Double]): Int =
+      list.hashCode
+
+    def list_find_DOUBLE(l: List[Double]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains(i)
+        i += 10000
+      }
+      b
+    }
+
+    def list_insert_LONG(): List[Long] = {
+      var l: List[Long] = null
+      var i = 0
+      while (i < testSize) {
+        l = new List[Long](i, l)
+        i += 1
+      }
+      l
+    }
+
+    def list_hashCode_LONG(list: List[Long]): Int =
+      list.hashCode
+
+    def list_find_LONG(l: List[Long]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
@@ -56,13 +101,76 @@ trait SpecializedBenchTest extends BaseTest {
       }
       b
     }
+
+    def array_insert_DOUBLE(): ResizableArray[Double] = {
+      val a: ResizableArray[Double] = new ResizableArray[Double]()
+      var i = 0
+      while (i < testSize) {
+        a.add(i)
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_DOUBLE(a: ResizableArray[Double]): ResizableArray[Double] = {
+      a.reverse
+      a
+    }
+
+    def array_find_DOUBLE(a: ResizableArray[Double]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains(i) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
+
+    def array_insert_LONG(): ResizableArray[Long] = {
+      val a: ResizableArray[Long] = new ResizableArray[Long]()
+      var i = 0
+      while (i < testSize) {
+        a.add(i)
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_LONG(a: ResizableArray[Long]): ResizableArray[Long] = {
+      a.reverse
+      a
+    }
+
+    def array_find_LONG(a: ResizableArray[Long]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains(i) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
   }
 
-  def testSpecialized() = {
+  def testSpecialized(megamorphic: Boolean) = {
     import TestArray._
     import TestList._
 
-    val transformation = "specialized"
+    val transformation = "specialized " + (if (megamorphic) "mega" else "mono")
+
+      def forceMegamorphicCallSites(): Unit =
+      if (megamorphic) {
+        // INT
+        array_find(array_reverse(array_insert()))
+        list_hashCode(list_insert()); list_find(list_insert())
+        // DOUBLE
+        array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
+        list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
+        // LONG
+        array_find_LONG(array_reverse_LONG(array_insert_LONG()))
+        list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
+      }
 
     var a: ResizableArray[Int] = null
     var b: Boolean = true
