@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.dispatcher
 
-trait Dispatcher[T] {
+abstract class Dispatcher[T] {
   import miniboxing.runtime.MiniboxTypes._
   def mbarray_new(len: Int): Any
   def mbarray_apply_minibox(array: Any, idx: Int): Minibox
