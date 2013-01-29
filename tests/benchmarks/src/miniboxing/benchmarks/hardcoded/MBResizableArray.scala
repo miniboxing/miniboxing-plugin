@@ -130,7 +130,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
     extend_J()
     //array.asInstanceOf[Array[Tsp]](elemCount) = elem
     mbarray_update_minibox(array_J, elemCount_J, elem, T_TypeTag)
-    elemCount += 1
+    elemCount_J += 1
   }
 
 
@@ -176,7 +176,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
   @inline final def getElement(p: Int): Tsp = minibox2box(getElement_J(p), T_TypeTag)
   @inline final def getElement_J(p: Int): Long = {
     // array.asInstanceOf[Array[Tsp]](p)
-    mbarray_apply_minibox(array, p, T_TypeTag)
+    mbarray_apply_minibox(array_J, p, T_TypeTag)
   }
 
   // toString
@@ -251,7 +251,7 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
     extend_J()
     //array.asInstanceOf[Array[Tsp]](elemCount) = elem
     mbarray_update_minibox(array_J, elemCount_J, elem, T_TypeTag)
-    elemCount += 1
+    elemCount_J += 1
   }
 
 
@@ -297,7 +297,7 @@ class MBResizableArray_INT[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   @inline final def getElement(p: Int): Tsp = minibox2box(getElement_J(p), T_TypeTag)
   @inline final def getElement_J(p: Int): Long = {
     // array.asInstanceOf[Array[Tsp]](p)
-    mbarray_apply_minibox(array, p, T_TypeTag)
+    mbarray_apply_minibox(array_J, p, T_TypeTag)
   }
 
   // toString
@@ -372,7 +372,7 @@ class MBResizableArray_INT_FULL[Tsp: Manifest]() extends MBResizableArray[Tsp] {
     extend_J()
     //array.asInstanceOf[Array[Tsp]](elemCount) = elem
     mbarray_update_minibox(array_J, elemCount_J, elem, 5)
-    elemCount += 1
+    elemCount_J += 1
   }
 
 
@@ -418,7 +418,7 @@ class MBResizableArray_INT_FULL[Tsp: Manifest]() extends MBResizableArray[Tsp] {
   @inline final def getElement(p: Int): Tsp = minibox2box(getElement_J(p), 5)
   @inline final def getElement_J(p: Int): Long = {
     // array.asInstanceOf[Array[Tsp]](p)
-    mbarray_apply_minibox(array, p, 5)
+    mbarray_apply_minibox(array_J, p, 5)
   }
 
   // toString
