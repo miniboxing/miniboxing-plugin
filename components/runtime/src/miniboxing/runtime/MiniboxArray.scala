@@ -8,16 +8,16 @@ object MiniboxArray {
 
   // import MiniboxConstants._
   // instead of importing, we copy the values here so the Scala compiler transforms the calls into tableswitches
-//  private[this] final val UNIT = 0;
-//  private[this] final val BOOLEAN = 1;
-//  private[this] final val BYTE = 2;
-//  private[this] final val SHORT = 3;
-//  private[this] final val CHAR = 4;
-//  private[this] final val INT = 5;
-//  private[this] final val LONG = 6;
-//  private[this] final val FLOAT = 7;
-//  private[this] final val DOUBLE = 8;
-//  private[this] final val REFERENCE = 9;
+  private[this] final val UNIT = 0;
+  private[this] final val BOOLEAN = 1;
+  private[this] final val BYTE = 2;
+  private[this] final val SHORT = 3;
+  private[this] final val CHAR = 4;
+  private[this] final val INT = 5;
+  private[this] final val LONG = 6;
+  private[this] final val FLOAT = 7;
+  private[this] final val DOUBLE = 8;
+  private[this] final val REFERENCE = 9;
 
   @inline final def mbarray_new(len: Int, tag: Tag): Any =
     tag.asInstanceOf[Byte] match {
@@ -37,21 +37,35 @@ object MiniboxArray {
 //    array match {
 //      case a: Array[Any] => box2minibox(a(idx))
 //      case _ =>
-      if (tag % 2 == 0)
-        tag.asInstanceOf[Byte] match {
-          case 0 /* UNIT */ =>     array.asInstanceOf[Array[Unit]](idx); 0
-          case 2 /* BYTE */ =>     array.asInstanceOf[Array[Byte]](idx).toLong
-          case 4 /* SHORT */ =>    array.asInstanceOf[Array[Short]](idx).toLong
-          case 6 /* LONG */ =>     array.asInstanceOf[Array[Long]](idx)
-          case 8 /* DOUBLE */ =>   java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong
+      if (tag % 2 == 0) {
+        if (tag % 4 == 0) {
+          if (tag == DOUBLE) {
+            java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong
+          } else if (tag == SHORT) {
+            array.asInstanceOf[Array[Short]](idx).toLong
+          } else // UNIT
+            array.asInstanceOf[Array[Unit]](idx); 0
+        } else {
+          if (tag == LONG) {
+            array.asInstanceOf[Array[Long]](idx)
+          } else // BYTE
+            array.asInstanceOf[Array[Byte]](idx).toLong
         }
-      else
-        tag.asInstanceOf[Byte] match {
-          case 1 /* BOOLEAN */ =>  if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
-          case 3 /* CHAR */ =>     array.asInstanceOf[Array[Char]](idx).toLong
-          case 5 /* INT */ =>      array.asInstanceOf[Array[Int]](idx).toLong
-          case 7 /* FLOAT */ =>    java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong
+      } else {
+        if (tag % 4 == 1) {
+          if (tag == INT) {
+            array.asInstanceOf[Array[Int]](idx).toLong
+          } else { // BOOLEAN
+            if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
+          }
+        } else {
+          if (tag == FLOAT) {
+            java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong
+          } else { // CHAR
+            array.asInstanceOf[Array[Char]](idx).toLong
+          }
         }
+      }
 //    }
   }
 
@@ -63,7 +77,7 @@ object MiniboxArray {
           if (tag % 2 == 0)
             tag.asInstanceOf[Byte] match {
               // See https://issues.scala-lang.org/browse/SI-6956
-              case 0 /* UNIT */ =>     array.asInstanceOf[Array[Unit]](idx) = 0
+              case 0 /* UNIT */ =>     array.asInstanceOf[Array[Unit]](idx)
               case 2 /* BYTE */ =>     array.asInstanceOf[Array[Byte]](idx)
               case 4 /* SHORT */ =>    array.asInstanceOf[Array[Short]](idx)
               case 6 /* LONG */ =>     array.asInstanceOf[Array[Long]](idx)
@@ -85,21 +99,35 @@ object MiniboxArray {
 //    array match {
 //      case a: Array[Any] => a(idx) = minibox2box(value, tag)
 //      case _ =>
-      if (tag % 2 == 0)
-        tag.asInstanceOf[Byte] match {
-          case 0 /* UNIT */ =>     array.asInstanceOf[Array[Unit]](idx) = ()
-          case 2 /* BYTE */ =>     array.asInstanceOf[Array[Byte]](idx) = value.toByte
-          case 4 /* SHORT */ =>    array.asInstanceOf[Array[Short]](idx) = value.toShort
-          case 6 /* LONG */ =>     array.asInstanceOf[Array[Long]](idx) = value
-          case 8 /* DOUBLE */ =>   array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value)
+      if (tag % 2 == 0) {
+        if (tag % 4 == 0) {
+          if (tag == DOUBLE) {
+            array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value)
+          } else if (tag == SHORT) {
+            array.asInstanceOf[Array[Short]](idx) = value.toShort
+          } else // UNIT
+            array.asInstanceOf[Array[Unit]](idx) = ()
+        } else {
+          if (tag == LONG) {
+            array.asInstanceOf[Array[Long]](idx) = value
+          } else // BYTE
+            array.asInstanceOf[Array[Byte]](idx) = value.toByte
         }
-      else
-        tag.asInstanceOf[Byte] match {
-          case 1 /* BOOLEAN */ =>  array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
-          case 3 /* CHAR */ =>     array.asInstanceOf[Array[Char]](idx) = value.toChar
-          case 5 /* INT */ =>      array.asInstanceOf[Array[Int]](idx) = value.toInt
-          case 7 /* FLOAT */ =>    array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt)
+      } else {
+        if (tag % 4 == 1) {
+          if (tag == INT) {
+            array.asInstanceOf[Array[Int]](idx) = value.toInt
+          } else { // BOOLEAN
+            array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
+          }
+        } else {
+          if (tag == FLOAT) {
+            array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt)
+          } else { // CHAR
+            array.asInstanceOf[Array[Char]](idx) = value.toChar
+          }
         }
+      }
 //    }
   }
 

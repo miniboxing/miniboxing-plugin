@@ -6,7 +6,7 @@ import AssemblyKeys._
 
 object MiniboxingBuild extends Build {
 
-  val scalaVer = "2.10.0-SNAPSHOT"
+  val scalaVer = "2.10.1-SNAPSHOT"
 
   val defaults = Defaults.defaultSettings ++ assemblySettings ++ Seq(
     scalaVersion := scalaVer,
