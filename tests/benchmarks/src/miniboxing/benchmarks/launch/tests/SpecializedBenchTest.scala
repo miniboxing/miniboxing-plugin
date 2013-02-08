@@ -88,7 +88,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def array_reverse(a: ResizableArray[Int]): ResizableArray[Int] = {
-      a.reverse
+      a.reverse(1) // we need it specialized
       a
     }
 
@@ -113,7 +113,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def array_reverse_DOUBLE(a: ResizableArray[Double]): ResizableArray[Double] = {
-      a.reverse
+      a.reverse(1d) // we need it specialized
       a
     }
 
@@ -138,7 +138,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def array_reverse_LONG(a: ResizableArray[Long]): ResizableArray[Long] = {
-      a.reverse
+      a.reverse(1l) // we need it specialized
       a
     }
 

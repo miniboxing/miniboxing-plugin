@@ -35,7 +35,7 @@ class ResizableArray[@specialized T: Manifest] {
   }
 
 
-  def reverse() = {
+  def reverse(t: T) = {
     var pos = 0
     while (pos * 2 < elemCount) {
       val tmp1: T = getElement(pos)
