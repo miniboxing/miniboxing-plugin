@@ -37,35 +37,16 @@ object MiniboxArray {
 //    array match {
 //      case a: Array[Any] => box2minibox(a(idx))
 //      case _ =>
-      if (tag % 2 == 0) {
-        if (tag % 4 == 0) {
-          if (tag == DOUBLE) {
-            java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong
-          } else if (tag == SHORT) {
-            array.asInstanceOf[Array[Short]](idx).toLong
-          } else // UNIT
-            array.asInstanceOf[Array[Unit]](idx); 0
-        } else {
-          if (tag == LONG) {
-            array.asInstanceOf[Array[Long]](idx)
-          } else // BYTE
-            array.asInstanceOf[Array[Byte]](idx).toLong
-        }
-      } else {
-        if (tag % 4 == 1) {
-          if (tag == INT) {
-            array.asInstanceOf[Array[Int]](idx).toLong
-          } else { // BOOLEAN
-            if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
-          }
-        } else {
-          if (tag == FLOAT) {
-            java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong
-          } else { // CHAR
-            array.asInstanceOf[Array[Char]](idx).toLong
-          }
-        }
-      }
+      if (tag == INT)          { array.asInstanceOf[Array[Int]](idx).toLong }
+      else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx) }
+      else if (tag == DOUBLE)  { java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong }
+      else if (tag == FLOAT)   { java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong }
+      else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx).toLong }
+      else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx).toLong }
+      else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx).toLong }
+      else if (tag == BOOLEAN) { if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0 }
+      else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx); 0 }
+      else ???
 //    }
   }
 
@@ -99,35 +80,16 @@ object MiniboxArray {
 //    array match {
 //      case a: Array[Any] => a(idx) = minibox2box(value, tag)
 //      case _ =>
-      if (tag % 2 == 0) {
-        if (tag % 4 == 0) {
-          if (tag == DOUBLE) {
-            array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value)
-          } else if (tag == SHORT) {
-            array.asInstanceOf[Array[Short]](idx) = value.toShort
-          } else // UNIT
-            array.asInstanceOf[Array[Unit]](idx) = ()
-        } else {
-          if (tag == LONG) {
-            array.asInstanceOf[Array[Long]](idx) = value
-          } else // BYTE
-            array.asInstanceOf[Array[Byte]](idx) = value.toByte
-        }
-      } else {
-        if (tag % 4 == 1) {
-          if (tag == INT) {
-            array.asInstanceOf[Array[Int]](idx) = value.toInt
-          } else { // BOOLEAN
-            array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
-          }
-        } else {
-          if (tag == FLOAT) {
-            array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt)
-          } else { // CHAR
-            array.asInstanceOf[Array[Char]](idx) = value.toChar
-          }
-        }
-      }
+      if (tag == INT)          { array.asInstanceOf[Array[Int]](idx) = value.toInt }
+      else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx) = value }
+      else if (tag == DOUBLE)  { array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value) }
+      else if (tag == FLOAT)   { array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt) }
+      else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx) = value.toChar }
+      else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx) = value.toByte }
+      else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx) = value.toShort }
+      else if (tag == BOOLEAN) { array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true }
+      else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx) = () }
+      else ???
 //    }
   }
 
