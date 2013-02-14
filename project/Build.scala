@@ -52,7 +52,7 @@ object MiniboxingBuild extends Build {
   )
 
   val scalaMeter = {
-    val sMeter  = Seq("com.github.axel22" %% "scalameter" % "0.2") // off-the-shelf version
+    val sMeter  = Seq("com.github.axel22" %% "scalameter" % "0.3")
     // val sMeter  = Seq("com.github.axel22" % "scalameter_2.10.0" % "0.2.1-SNAPSHOT") // published locally
     Seq(
       libraryDependencies ++= sMeter, 
@@ -60,7 +60,7 @@ object MiniboxingBuild extends Build {
     )
   }
 
-  lazy val _mboxing    = Project(id = "miniboxing",             base = file(".")) aggregate (runtime, plugin, classloader, tests)
+  lazy val _mboxing    = Project(id = "miniboxing",             base = file(".")) aggregate (runtime, plugin, classloader, tests, benchmarks)
   lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ asm)

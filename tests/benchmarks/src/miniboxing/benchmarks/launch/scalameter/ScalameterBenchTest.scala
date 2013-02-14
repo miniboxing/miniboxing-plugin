@@ -54,16 +54,16 @@ trait ScalameterBenchTest extends PerformanceTest
         if (!testTrafs.contains(testTraf)) testTrafs ::= testTraf
         if (!testTags.contains(testTag))   testTags  ::= testTag
         val testEntry = testValues.getOrElseUpdate(testTag, HashMap()).getOrElseUpdate(testTraf, HashMap())
-        testEntry += testSize -> (measurement.time, 0.0 /* measurement.errors.sdeviation */)
+        testEntry += testSize -> (measurement.time, measurement.errors.sdeviation)
 
         // println(s""""${testTag}" "${testTraf}", "${testSize}": ${measurement.time} +/- ${measurement.errors.sdeviation}""")
       }
 
+      println(output)
+
       // printout:
       if ((testTag == lastTag) && (testTraf == lastTraf))
         printResults()
-
-      println(output)
     }
   }
 
@@ -85,6 +85,7 @@ trait ScalameterBenchTest extends PerformanceTest
 
 
   def printResults() = {
+    println("\n\n\n")
     for (testTag <- testTags.reverse) {
       println(testTag + ":")
       for (testTraf <- testTrafs.reverse) {
@@ -93,5 +94,6 @@ trait ScalameterBenchTest extends PerformanceTest
         println(f"${testTraf}%30s : " + entries.map({case (value, error) => f"${value}%11.5f +/- ${error}%9.5f "}).mkString("  "))
       }
     }
+    println("\n\n\n")
   }
 }
