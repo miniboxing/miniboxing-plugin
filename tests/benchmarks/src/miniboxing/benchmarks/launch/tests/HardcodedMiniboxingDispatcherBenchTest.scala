@@ -166,6 +166,12 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
 
     val transformation = "miniboxed dispatch " + (if (megamorphic) "mega" else "mono")
 
+    // whether or not it's megamorphic, let's stress test the inline caches:
+    // let's make sure all three subclasees or Dispatcher are loaded in the system
+    println(Dispatchers.LongDispatcher)
+    println(Dispatchers.IntDispatcher)
+    println(Dispatchers.DoubleDispatcher)
+
     def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
         withTestSize(1000) {
