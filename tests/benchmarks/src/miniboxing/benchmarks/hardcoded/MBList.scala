@@ -4,6 +4,7 @@ package miniboxing.benchmarks.hardcoded
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
 import miniboxing.runtime.MiniboxTypeTagDispatch._
+import miniboxing.classloader.MiniboxingClassLoader
 
 trait MBList[T] {
   // accessors
@@ -99,149 +100,19 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   // </added for a quick test>
 }
 
-// as if transformed by the classloader
-class MBList_INT[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
+// This is just the instantiation of the *Factory template
+object MBListFactory {
+  val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
 
-  private[this] final val T_TypeTag: Byte = INT
-
-  // head
-  def head: Tsp = minibox2box[Tsp](head_J, T_TypeTag)
-  def head_J: Long = _head
-
-  // tail
-  def tail: MBList[Tsp] = tail_J
-  def tail_J: MBList[Tsp] = _tail
-
-  // length
-  def length: Int = length_J
-  def length_J: Int = 1 + (if (tail != null) tail.length else 0)
-
-  // toString
-  override def toString = toString_J
-  def toString_J = minibox2box[Tsp](head_J, T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
-
-  // contains
-  def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
-  def contains_J(e: Long): Boolean = {
-
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(list.head_J, e))
-        true
-      else if (list.tail_J == null)
-        false
-      else
-        containsTail(list.tail_J)
-
-    containsTail(this)
-  }
-
-  // hashCode
-  override def hashCode(): Int = hashCode_J()
-  def hashCode_J(): Int = {
-
-    @annotation.tailrec def tailHash(list: MBList[Tsp], or: Int): Int = {
-      val headhash = mboxed_hashCode(list.head_J, T_TypeTag)
-      if (list.tail_J == null)
-        headhash | or
-      else
-        tailHash(list.tail_J, or | headhash >> 8)
+  def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] = {
+    try {
+      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBList_" + T_TypeTag)
+      val const = clazz.getConstructor(classOf[Long], classOf[MBList[T$inst]], classOf[Byte])
+      val inst  = const.newInstance(_head: java.lang.Long, _tail: MBList[T$inst], T_TypeTag: java.lang.Byte)
+      inst.asInstanceOf[MBList[T$inst]]
+    } catch {
+      case cnf: ClassNotFoundException =>
+        ??? //new MBList_J[T$inst](_head, _tail, T_TypeTag)
     }
-
-    tailHash(this, 0)
   }
-
-  // toString2
-  def toString2: String = toString2_J
-  def toString2_J: String = toString_J
-
-  // <added for a quick test>
-  // contains: Any
-  def containsAny(e: Any): Boolean = containsAny_J(e)
-  def containsAny_J(e: Any): Boolean = {
-
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (minibox2box(list.head_J, T_TypeTag) == e)
-        true
-      else if (list.tail_J == null)
-        false
-      else
-        containsTail(list.tail_J)
-
-    containsTail(this)
-  }
-  // </added for a quick test>
-}
-
-
-// as if transformed by the classloader
-class MBList_INT_FULL[Tsp](_head: Long, _tail: MBList[Tsp]) extends MBList[Tsp] {
-
-  //private[this] final val 5: Byte = INT
-
-  // head
-  def head: Tsp = minibox2box[Tsp](head_J, 5)
-  def head_J: Long = _head
-
-  // tail
-  def tail: MBList[Tsp] = tail_J
-  def tail_J: MBList[Tsp] = _tail
-
-  // length
-  def length: Int = length_J
-  def length_J: Int = 1 + (if (tail != null) tail.length else 0)
-
-  // toString
-  override def toString = toString_J
-  def toString_J = minibox2box[Tsp](head_J, 5).toString + (if (tail != null) (", " + tail.toString_J) else "")
-
-  // contains
-  def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
-  def contains_J(e: Long): Boolean = {
-
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (mboxed_eqeq(list.head_J, e))
-        true
-      else if (list.tail_J == null)
-        false
-      else
-        containsTail(list.tail_J)
-
-    containsTail(this)
-  }
-
-  // hashCode
-  override def hashCode(): Int = hashCode_J()
-  def hashCode_J(): Int = {
-
-    @annotation.tailrec def tailHash(list: MBList[Tsp], or: Int): Int = {
-      val headhash = mboxed_hashCode(list.head_J, 5)
-      if (list.tail_J == null)
-        headhash | or
-      else
-        tailHash(list.tail_J, or | headhash >> 8)
-    }
-
-    tailHash(this, 0)
-  }
-
-  // toString2
-  def toString2: String = toString2_J
-  def toString2_J: String = toString_J
-
-  // <added for a quick test>
-  // contains: Any
-  def containsAny(e: Any): Boolean = containsAny_J(e)
-  def containsAny_J(e: Any): Boolean = {
-
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
-      if (minibox2box(list.head_J, 5) == e)
-        true
-      else if (list.tail_J == null)
-        false
-      else
-        containsTail(list.tail_J)
-
-    containsTail(this)
-  }
-  // </added for a quick test>
 }

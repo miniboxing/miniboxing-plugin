@@ -12,7 +12,7 @@ trait HardcodedMiniboxingClassLoadBenchTest extends BaseTest {
       var l: MBList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_INT[Int](IntToMinibox(i), l)
+        l = MBListFactory.newMBList_J[Int](IntToMinibox(i), l, INT)
         i += 1
       }
       l
@@ -35,7 +35,7 @@ trait HardcodedMiniboxingClassLoadBenchTest extends BaseTest {
 
   private[this] object TestArray {
     def array_insert(): MBResizableArray[Int] = {
-      val a: MBResizableArray[Int] = new MBResizableArray_INT[Int]()
+      val a: MBResizableArray[Int] = MBResizableArrayFactory.newMBResizableArray_J[Int](INT)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i))

@@ -35,15 +35,19 @@ object MiniboxingBuild extends Build {
       "org.scala-lang" % "scala-library" % scalaVer,
       "org.scala-lang" % "scala-reflect" % scalaVer,
       "org.scala-lang" % "scala-compiler" % scalaVer,
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test"
+      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+      "com.novocode" % "junit-interface" % "0.10-M2" % "test"
     ),
-    parallelExecution in Test := false
+    parallelExecution in Test := false,
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
   )
 
   val asm = Seq(
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm" % "4.0",
-      "org.ow2.asm" % "asm-tree" % "4.0"
+      "org.ow2.asm" % "asm-tree" % "4.0",
+      "org.ow2.asm" % "asm-util" % "4.0",
+      "org.ow2.asm" % "asm-analysis" % "4.0"
     )
   )
 
