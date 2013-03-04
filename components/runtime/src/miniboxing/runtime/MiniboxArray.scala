@@ -31,59 +31,62 @@ object MiniboxArray {
       case DOUBLE =>   new Array[Double](len)
     }
 
-  @inline final def mbarray_apply_minibox(array: Any, idx: Int, tag: Tag): Minibox = {
-    if (tag == INT)          { array.asInstanceOf[Array[Int]](idx).toLong }
-    else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx) }
-    else if (tag == DOUBLE)  { java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong }
-    else if (tag == FLOAT)   { java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong }
-    else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx).toLong }
-    else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx).toLong }
-    else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx).toLong }
-    else if (tag == BOOLEAN) { if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0 }
-    else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx); 0 }
-    else ???
+  @inline final def mbarray_apply_minibox(array: Any, idx: Int, tag: Tag): Minibox = tag match {
+    case INT =>     array.asInstanceOf[Array[Int]](idx).toLong
+    case LONG =>    array.asInstanceOf[Array[Long]](idx)
+    case DOUBLE =>  java.lang.Double.doubleToRawLongBits(array.asInstanceOf[Array[Double]](idx)).toLong
+    case FLOAT =>   java.lang.Float.floatToRawIntBits(array.asInstanceOf[Array[Float]](idx)).toLong
+    case CHAR =>    array.asInstanceOf[Array[Char]](idx).toLong
+    case BYTE =>    array.asInstanceOf[Array[Byte]](idx).toLong
+    case SHORT =>   array.asInstanceOf[Array[Short]](idx).toLong
+    case BOOLEAN => if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
+    case UNIT =>    array.asInstanceOf[Array[Unit]](idx); 0
+    case _ =>       ???
   }
 
   @inline final def mbarray_apply_box[T](array: Any, idx: Int, tag: Tag): T = {
-    val result =
-      if (tag == INT)          { array.asInstanceOf[Array[Int]](idx) }
-      else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx) }
-      else if (tag == DOUBLE)  { array.asInstanceOf[Array[Double]](idx) }
-      else if (tag == FLOAT)   { array.asInstanceOf[Array[Float]](idx) }
-      else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx) }
-      else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx) }
-      else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx) }
-      else if (tag == BOOLEAN) { array.asInstanceOf[Array[Boolean]](idx) }
-      else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx) }
-      else ???
+    val result = tag match {
+      case INT =>     array.asInstanceOf[Array[Int]](idx)
+      case LONG =>    array.asInstanceOf[Array[Long]](idx)
+      case DOUBLE =>  array.asInstanceOf[Array[Double]](idx)
+      case FLOAT =>   array.asInstanceOf[Array[Float]](idx)
+      case CHAR =>    array.asInstanceOf[Array[Char]](idx)
+      case BYTE =>    array.asInstanceOf[Array[Byte]](idx)
+      case SHORT =>   array.asInstanceOf[Array[Short]](idx)
+      case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx)
+      case UNIT =>    array.asInstanceOf[Array[Unit]](idx)
+      case _ =>       ???
+    }
     result.asInstanceOf[T]
   }
 
-  @inline final def mbarray_update_minibox(array: Any, idx: Int, value: Minibox, tag: Tag): Unit = {
-    if (tag == INT)          { array.asInstanceOf[Array[Int]](idx) = value.toInt }
-    else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx) = value }
-    else if (tag == DOUBLE)  { array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value) }
-    else if (tag == FLOAT)   { array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt) }
-    else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx) = value.toChar }
-    else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx) = value.toByte }
-    else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx) = value.toShort }
-    else if (tag == BOOLEAN) { array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true }
-    else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx) = () }
-    else ???
+  @inline final def mbarray_update_minibox(array: Any, idx: Int, value: Minibox, tag: Tag): Unit = tag match {
+    case INT  =>    array.asInstanceOf[Array[Int]](idx) = value.toInt
+    case LONG =>    array.asInstanceOf[Array[Long]](idx) = value
+    case DOUBLE =>  array.asInstanceOf[Array[Double]](idx) = java.lang.Double.longBitsToDouble(value)
+    case FLOAT =>   array.asInstanceOf[Array[Float]](idx) = java.lang.Float.intBitsToFloat(value.toInt)
+    case CHAR =>    array.asInstanceOf[Array[Char]](idx) = value.toChar
+    case BYTE =>    array.asInstanceOf[Array[Byte]](idx) = value.toByte
+    case SHORT =>   array.asInstanceOf[Array[Short]](idx) = value.toShort
+    case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
+    case UNIT =>    array.asInstanceOf[Array[Unit]](idx) = ()
+    case _ =>       ???
   }
 
   @inline final def mbarray_update_box[T](array: Any, idx: Int, value: T, tag: Tag): Unit = {
-    val result =
-      if (tag == INT)          { array.asInstanceOf[Array[Int]](idx)     = value.asInstanceOf[Int]}
-      else if (tag == LONG)    { array.asInstanceOf[Array[Long]](idx)    = value.asInstanceOf[Long] }
-      else if (tag == DOUBLE)  { array.asInstanceOf[Array[Double]](idx)  = value.asInstanceOf[Double] }
-      else if (tag == FLOAT)   { array.asInstanceOf[Array[Float]](idx)   = value.asInstanceOf[Float] }
-      else if (tag == CHAR)    { array.asInstanceOf[Array[Char]](idx)    = value.asInstanceOf[Char] }
-      else if (tag == BYTE)    { array.asInstanceOf[Array[Byte]](idx)    = value.asInstanceOf[Byte] }
-      else if (tag == SHORT)   { array.asInstanceOf[Array[Short]](idx)   = value.asInstanceOf[Short] }
-      else if (tag == BOOLEAN) { array.asInstanceOf[Array[Boolean]](idx) = value.asInstanceOf[Boolean] }
-      else if (tag == UNIT)    { array.asInstanceOf[Array[Unit]](idx)    = value.asInstanceOf[Unit] }
-      else ???
+    val result = tag match {
+      case INT =>     array.asInstanceOf[Array[Int]](idx)     = value.asInstanceOf[Int]
+      case LONG =>    array.asInstanceOf[Array[Long]](idx)    = value.asInstanceOf[Long]
+      case DOUBLE =>  array.asInstanceOf[Array[Double]](idx)  = value.asInstanceOf[Double]
+      case FLOAT =>   array.asInstanceOf[Array[Float]](idx)   = value.asInstanceOf[Float]
+      case CHAR =>    array.asInstanceOf[Array[Char]](idx)    = value.asInstanceOf[Char]
+      case BYTE =>    array.asInstanceOf[Array[Byte]](idx)    = value.asInstanceOf[Byte]
+      case SHORT =>   array.asInstanceOf[Array[Short]](idx)   = value.asInstanceOf[Short]
+      case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx) = value.asInstanceOf[Boolean]
+      case UNIT =>    array.asInstanceOf[Array[Unit]](idx)    = value.asInstanceOf[Unit]
+      case _ =>       ???
+    }
+    result
   }
 
   @inline final def mbarray_length(array: Any, tag: Tag): Int =
