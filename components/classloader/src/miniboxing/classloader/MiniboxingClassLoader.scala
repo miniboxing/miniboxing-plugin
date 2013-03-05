@@ -13,11 +13,21 @@ import org.objectweb.asm.tree.analysis.Analyzer
 import org.objectweb.asm.tree.analysis.BasicValue
 import org.objectweb.asm.tree.analysis.BasicVerifier
 import scala.collection.mutable.Map
+import scala.tools.asm.optimiz.Util
+import scala.tools.asm.optimiz.ConstantFolder
+import scala.tools.asm.optimiz.UnreachableCode
+import scala.tools.asm.optimiz.JumpReducer
+import scala.tools.asm.optimiz.JumpChainsCollapser
 
 /** Taken from http://stackoverflow.com/questions/6366288/how-to-change-default-class-loader-in-java */
 class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 
   val classes = Map.empty[String, Class[_]]
+  lazy val constantFolder = new ConstantFolder()
+  lazy val unreachableCode = new UnreachableCode()
+  lazy val jumpReducer = new JumpReducer(null)
+  lazy val jumpChainsColl = new JumpChainsCollapser(jumpReducer)
+
 
   def needsModifying(name: String): Boolean =
     // TODO: Extend to more parameters
@@ -34,7 +44,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     // Make the type tags static final
     val fieldNodes = classNode.fields.asInstanceOf[JList[FieldNode]].asScala
     for (fieldNode <- fieldNodes if fieldNode.name.endsWith("_TypeTag")) {
-      fieldNode.access |= Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
+      fieldNode.access |= Opcodes.ACC_FINAL;
       // TODO: Extend to more parameters, this only supports one
       fieldNode.value = new Integer(tparam)
     }
@@ -53,7 +63,15 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
               finst.getOpcode match {
                 case Opcodes.GETFIELD =>
                   insnNodes.set(new InsnNode(Opcodes.POP));
-                  insnNodes.add(new FieldInsnNode(Opcodes.GETSTATIC, finst.owner, finst.name, finst.desc))
+                  val replNode = tparam match {
+                    case 0 => new InsnNode(Opcodes.ICONST_0)
+                    case 1 => new InsnNode(Opcodes.ICONST_1)
+                    case 2 => new InsnNode(Opcodes.ICONST_2)
+                    case 3 => new InsnNode(Opcodes.ICONST_3)
+                    case 4 => new InsnNode(Opcodes.ICONST_4)
+                    case _ => new IntInsnNode(Opcodes.BIPUSH, tparam)
+                  }
+                  insnNodes.add(replNode) // Full expansion
                 case Opcodes.PUTFIELD =>
                   insnNodes.set(new InsnNode(Opcodes.POP2));
               }
@@ -74,11 +92,24 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
       }
     }
 
+    // Optimizing the hell out of that class:
+    val iter = classNode.methods.asInstanceOf[JList[MethodNode]].iterator()
+    while(iter.hasNext) {
+      val mnode = iter.next().asInstanceOf[scala.tools.asm.tree.MethodNode]
+      if(Util.hasBytecodeInstructions(mnode)) {
+        Util.computeMaxLocalsMaxStack(mnode)
+        jumpChainsColl.transform(mnode)
+        constantFolder.transform(newname, mnode)
+        unreachableCode.transform(newname, mnode)
+        jumpChainsColl.transform(mnode)
+      }
+    }
+
     // Debugging:
-//    val printWriter = new PrintWriter(System.err);
-//    val traceClassVisitor = new TraceClassVisitor(printWriter);
-//    classNode.accept(traceClassVisitor);
-//
+    val printWriter = new PrintWriter(System.err);
+    val traceClassVisitor = new TraceClassVisitor(printWriter);
+    classNode.accept(traceClassVisitor);
+
 //    val analyzer = new Analyzer(new BasicVerifier)
 //    for (methodNode <- methodNodes) {
 //      analyzer.analyze(name, methodNode)

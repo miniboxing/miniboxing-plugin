@@ -27,10 +27,10 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingDispatch(true)
   testHardcodedMiniboxingClassloaderFull()
   testHardcodedMiniboxingClassloaderPartial()
-  testHardcodedMiniboxing(false)
-  testHardcodedMiniboxing(true)
-  testSpecialized(false)
-  testSpecialized(true)
+//  testHardcodedMiniboxing(false)
+//  testHardcodedMiniboxing(true)
+//  testSpecialized(false)
+//  testSpecialized(true)
   testGeneric()
 }
 

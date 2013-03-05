@@ -8,7 +8,7 @@ trait Target[T] {
   def print: Unit
 }
 
-class Target_J[T$sp](val t_J: Long, val T_TypeTag: Byte) extends Target[T$sp] {
+class Target_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends Target[T$sp] {
   def t = ???
   def print: Unit = System.out.println("print(" + t_J + ", " + T_TypeTag + ") by " + this.getClass.getName())
 }
