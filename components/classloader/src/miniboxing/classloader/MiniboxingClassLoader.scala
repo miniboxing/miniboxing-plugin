@@ -106,9 +106,9 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     }
 
     // Debugging:
-    val printWriter = new PrintWriter(System.err);
-    val traceClassVisitor = new TraceClassVisitor(printWriter);
-    classNode.accept(traceClassVisitor);
+//    val printWriter = new PrintWriter(System.err);
+//    val traceClassVisitor = new TraceClassVisitor(printWriter);
+//    classNode.accept(traceClassVisitor);
 
 //    val analyzer = new Analyzer(new BasicVerifier)
 //    for (methodNode <- methodNodes) {
