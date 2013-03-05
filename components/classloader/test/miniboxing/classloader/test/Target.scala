@@ -10,7 +10,18 @@ trait Target[T] {
 
 class Target_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends Target[T$sp] {
   def t = ???
-  def print: Unit = System.out.println("print(" + t_J + ", " + T_TypeTag + ") by " + this.getClass.getName())
+  def print: Unit = {
+    System.out.println("print(" + t_J + ", " + T_TypeTag + ") by " + this.getClass.getName())
+    val x = T_TypeTag match {
+      case 1 => 1
+      case 2 => 2
+      case 3 => 3
+      case 4 => 4
+      case 5 => 5
+      case _ => 6
+    }
+    ()
+  }
 }
 
 class Target_L[T$sp](val t: T$sp) extends Target[T$sp] {

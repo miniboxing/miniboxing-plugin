@@ -2,22 +2,22 @@ package miniboxing.classloader
 
 import java.net._
 import java.io._
-import org.objectweb.asm._
-import org.objectweb.asm.tree._
+import miniboxing.tools.asm._
+import miniboxing.tools.asm.tree._
 import java.lang.{ClassLoader => JClassLoader}
 import java.util.{List => JList}
 import scala.collection.JavaConverters.asScalaBufferConverter
 import java.util.ListIterator
-import org.objectweb.asm.util._
-import org.objectweb.asm.tree.analysis.Analyzer
-import org.objectweb.asm.tree.analysis.BasicValue
-import org.objectweb.asm.tree.analysis.BasicVerifier
+import miniboxing.tools.asm.util._
+import miniboxing.tools.asm.tree.analysis.Analyzer
+import miniboxing.tools.asm.tree.analysis.BasicValue
+import miniboxing.tools.asm.tree.analysis.BasicVerifier
 import scala.collection.mutable.Map
-import scala.tools.asm.optimiz.Util
-import scala.tools.asm.optimiz.ConstantFolder
-import scala.tools.asm.optimiz.UnreachableCode
-import scala.tools.asm.optimiz.JumpReducer
-import scala.tools.asm.optimiz.JumpChainsCollapser
+import miniboxing.tools.asm.optimiz.Util
+import miniboxing.tools.asm.optimiz.ConstantFolder
+import miniboxing.tools.asm.optimiz.UnreachableCode
+import miniboxing.tools.asm.optimiz.JumpReducer
+import miniboxing.tools.asm.optimiz.JumpChainsCollapser
 
 /** Taken from http://stackoverflow.com/questions/6366288/how-to-change-default-class-loader-in-java */
 class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
@@ -92,10 +92,16 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
       }
     }
 
+//    // Debugging:
+//    System.err.println("================================BEFORE================================")
+//    var printWriter = new PrintWriter(System.err);
+//    var traceClassVisitor = new TraceClassVisitor(printWriter);
+//    classNode.accept(traceClassVisitor);
+
     // Optimizing the hell out of that class:
     val iter = classNode.methods.asInstanceOf[JList[MethodNode]].iterator()
     while(iter.hasNext) {
-      val mnode = iter.next().asInstanceOf[scala.tools.asm.tree.MethodNode]
+      val mnode = iter.next()
       if(Util.hasBytecodeInstructions(mnode)) {
         Util.computeMaxLocalsMaxStack(mnode)
         jumpChainsColl.transform(mnode)
@@ -105,11 +111,11 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
       }
     }
 
-    // Debugging:
-//    val printWriter = new PrintWriter(System.err);
-//    val traceClassVisitor = new TraceClassVisitor(printWriter);
+//    System.err.println("================================AFTER================================")
+//    printWriter = new PrintWriter(System.err);
+//    traceClassVisitor = new TraceClassVisitor(printWriter);
 //    classNode.accept(traceClassVisitor);
-
+//
 //    val analyzer = new Analyzer(new BasicVerifier)
 //    for (methodNode <- methodNodes) {
 //      analyzer.analyze(name, methodNode)
