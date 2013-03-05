@@ -41,7 +41,6 @@ object MiniboxArray {
     case SHORT =>   array.asInstanceOf[Array[Short]](idx).toLong
     case BOOLEAN => if (array.asInstanceOf[Array[Boolean]](idx)) 1 else 0
     case UNIT =>    array.asInstanceOf[Array[Unit]](idx); 0
-    case _ =>       ???
   }
 
   @inline final def mbarray_apply_box[T](array: Any, idx: Int, tag: Tag): T = {
@@ -55,7 +54,6 @@ object MiniboxArray {
       case SHORT =>   array.asInstanceOf[Array[Short]](idx)
       case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx)
       case UNIT =>    array.asInstanceOf[Array[Unit]](idx)
-      case _ =>       ???
     }
     result.asInstanceOf[T]
   }
@@ -70,11 +68,9 @@ object MiniboxArray {
     case SHORT =>   array.asInstanceOf[Array[Short]](idx) = value.toShort
     case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx) = if (value == 0) false else true
     case UNIT =>    array.asInstanceOf[Array[Unit]](idx) = ()
-    case _ =>       ???
   }
 
-  @inline final def mbarray_update_box[T](array: Any, idx: Int, value: T, tag: Tag): Unit = {
-    val result = tag match {
+  @inline final def mbarray_update_box[T](array: Any, idx: Int, value: T, tag: Tag): Unit = tag match {
       case INT =>     array.asInstanceOf[Array[Int]](idx)     = value.asInstanceOf[Int]
       case LONG =>    array.asInstanceOf[Array[Long]](idx)    = value.asInstanceOf[Long]
       case DOUBLE =>  array.asInstanceOf[Array[Double]](idx)  = value.asInstanceOf[Double]
@@ -84,9 +80,6 @@ object MiniboxArray {
       case SHORT =>   array.asInstanceOf[Array[Short]](idx)   = value.asInstanceOf[Short]
       case BOOLEAN => array.asInstanceOf[Array[Boolean]](idx) = value.asInstanceOf[Boolean]
       case UNIT =>    array.asInstanceOf[Array[Unit]](idx)    = value.asInstanceOf[Unit]
-      case _ =>       ???
-    }
-    result
   }
 
   @inline final def mbarray_length(array: Any, tag: Tag): Int =

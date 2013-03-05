@@ -132,7 +132,7 @@ object MBListFactory {
         } catch {
 //          case cnf: ClassNotFoundException =>
 //            new MBList_J[T$inst](_head, _tail, T_TypeTag)
-          case other => throw other
+          case other: Throwable => throw other
         }
     }
   }

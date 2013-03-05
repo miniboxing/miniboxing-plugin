@@ -2,6 +2,10 @@ package miniboxing.classloader.test
 
 import scala.collection.mutable.WeakHashMap
 
+
+/**********************************************************************************************************************
+ * CLASS C()DE ********************************************************************************************************
+ **********************************************************************************************************************/
 trait Target[T] {
   def t: T
   def t_J: Long
@@ -29,6 +33,9 @@ class Target_L[T$sp](val t: T$sp) extends Target[T$sp] {
   def print: Unit = System.out.println("print( " + t.toString + ") by " + this.getClass.getName())
 }
 
+/**********************************************************************************************************************
+ * FACTORY C()DE ******************************************************************************************************
+ **********************************************************************************************************************/
 /*
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
@@ -60,7 +67,7 @@ object TargetFactory {
         } catch {
 //          case cnf: ClassNotFoundException =>
 //            new Target_J[T$inst](_t_J, T_TypeTag)
-          case other => throw other
+          case other: Throwable => throw other
         }
     }
   }

@@ -224,7 +224,7 @@ object MBResizableArrayFactory {
         } catch {
 //          case cnf: ClassNotFoundException =>
 //            new MBResizableArray_J[T$inst](T_TypeTag)
-          case other => throw other
+          case other: Throwable => throw other
         }
     }
   }

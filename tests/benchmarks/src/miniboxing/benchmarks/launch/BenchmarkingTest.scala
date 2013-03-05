@@ -22,16 +22,16 @@ object BenchmarkingTest extends ScalameterBenchTest
   def lastTraf = "generic"
 
   // run the tests:
-  testIdeal()
-  testHardcodedMiniboxingDispatch(false)
+//  testIdeal()
+//  testHardcodedMiniboxingDispatch(false)
 //  testHardcodedMiniboxingDispatch(true)
-  testHardcodedMiniboxingClassloaderFull()
+//  testHardcodedMiniboxingClassloaderFull()
 //  testHardcodedMiniboxingClassloaderPartial()
   testHardcodedMiniboxing(false)
 //  testHardcodedMiniboxing(true)
 //  testSpecialized(false)
 //  testSpecialized(true)
-  testGeneric()
+//  testGeneric()
 }
 
 
