@@ -18,18 +18,39 @@ class Target_L[T$sp](val t: T$sp) extends Target[T$sp] {
   def print: Unit = System.out.println("print( " + t.toString + ") by " + this.getClass.getName())
 }
 
-object TargetFactory {
-  val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetFactory.this)
+/*
+ * That's a lot of bytecode for constructing the class.
+ * TODO: Can we factor out some common functionalty?
+ */
+trait TargetFactoryInterface {
+  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst]
+}
 
-  def newTarget_J[T$inst](_t_J: Long, _T_TypeTag: Byte): Target[T$inst] = {
+class TargetFactoryInstance_J extends TargetFactoryInterface {
+  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = new Target_J(_t_J, T_TypeTag)
+}
+
+object TargetFactory {
+  val factories = new Array[TargetFactoryInterface](10)
+
+  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = {
     try {
-      val clazz = classloader.findClass("miniboxing.classloader.test.Target_" + _T_TypeTag)
-      val const = clazz.getConstructor(classOf[Long], classOf[Byte])
-      val inst  = const.newInstance(_t_J: java.lang.Long, _T_TypeTag: java.lang.Byte)
-      inst.asInstanceOf[Target[T$inst]]
+      val fact = factories(T_TypeTag)
+      fact.newTarget_J(_t_J, T_TypeTag)
     } catch {
-      case cnf: ClassNotFoundException =>
-        ??? // new Target_J[T$inst](_t_J, _T_TypeTag)
+      // factory creation is outside the critical path
+      case _: NullPointerException =>
+        try {
+          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetFactory.this)
+          val clazz = classloader.findClass("miniboxing.classloader.test.TargetFactoryInstance_" + T_TypeTag)
+          val inst  = clazz.newInstance().asInstanceOf[TargetFactoryInterface]
+          factories(T_TypeTag) = inst
+          newTarget_J(_t_J, T_TypeTag)
+        } catch {
+//          case cnf: ClassNotFoundException =>
+//            new Target_J[T$inst](_t_J, T_TypeTag)
+          case other => throw other
+        }
     }
   }
 }

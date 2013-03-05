@@ -24,6 +24,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     name.matches(".*_[0-9]$")
 
   def modifyClass(in: InputStream, oldname: String, newname: String): Array[Byte] = {
+    val tparam = newname.last.toInt - '0'.toInt
     val cr = new ClassReader(in)
     val classNode = new ClassNode()
     cr.accept(classNode, 0)
@@ -35,7 +36,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     for (fieldNode <- fieldNodes if fieldNode.name.endsWith("_TypeTag")) {
       fieldNode.access |= Opcodes.ACC_STATIC | Opcodes.ACC_FINAL;
       // TODO: Extend to more parameters, this only supports one
-      fieldNode.value = new Integer(newname.last.toInt - '0'.toInt)
+      fieldNode.value = new Integer(tparam)
     }
 
     // Patch all the methods
@@ -57,9 +58,17 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
                   insnNodes.set(new InsnNode(Opcodes.POP2));
               }
             }
+          case tinst: TypeInsnNode if tinst.getOpcode() == Opcodes.NEW =>
+            // patch up NEW calls
+            if (tinst.desc.endsWith("_J"))
+              insnNodes.set(new TypeInsnNode(Opcodes.NEW, tinst.desc.replaceAll("_J$", "_" + tparam)))
           case minst: MethodInsnNode =>
             // update owner to the new class
             minst.owner = minst.owner.replace(oldname, newname) // update names everywhere
+            // patch up constructor call
+            if (minst.name == "<init>")
+              if (minst.owner.endsWith("_J"))
+                minst.owner = minst.owner.replaceAll("_J$", "_" + tparam)
           case _ =>
         }
       }

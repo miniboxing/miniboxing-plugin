@@ -192,18 +192,40 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
   }
 }
 
+/*
+ * That's a lot of bytecode for constructing the class.
+ * TODO: Can we factor out some common functionalty?
+ */
+trait MBResizableArrayFactoryInterface {
+  def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst]
+}
+
+class MBResizableArrayFactoryInstance_J extends MBResizableArrayFactoryInterface {
+  def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] = new MBResizableArray_J[T$inst](T_TypeTag)
+}
+
 object MBResizableArrayFactory {
-  val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
+
+  val factories = new Array[MBResizableArrayFactoryInterface](10)
 
   def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] = {
     try {
-      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBResizableArray_" + T_TypeTag)
-      val const = clazz.getConstructor(classOf[Byte], classOf[Manifest[T$inst]])
-      val inst  = const.newInstance(T_TypeTag: java.lang.Byte, manifest[T$inst])
-      inst.asInstanceOf[MBResizableArray[T$inst]]
+      val fact = factories(T_TypeTag)
+      fact.newMBResizableArray_J(T_TypeTag)
     } catch {
-      case cnf: ClassNotFoundException =>
-        ??? // new MBResizableArray_J[T$inst](T_TypeTag)
+      // factory creation is outside the critical path
+      case _: NullPointerException =>
+        try {
+          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
+          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBResizableArrayFactoryInstance_" + T_TypeTag)
+          val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
+          factories(T_TypeTag) = inst
+          newMBResizableArray_J(T_TypeTag)
+        } catch {
+//          case cnf: ClassNotFoundException =>
+//            new MBResizableArray_J[T$inst](T_TypeTag)
+          case other => throw other
+        }
     }
   }
 }

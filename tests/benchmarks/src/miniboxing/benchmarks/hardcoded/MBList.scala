@@ -100,19 +100,40 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   // </added for a quick test>
 }
 
-// This is just the instantiation of the *Factory template
+/*
+ * That's a lot of bytecode for constructing the class.
+ * TODO: Can we factor out some common functionalty?
+ */
+trait MBListFactoryInterface {
+  def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst]
+}
+
+class MBListFactoryInstance_J extends MBListFactoryInterface {
+  def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] = new MBList_J(_head, _tail, T_TypeTag)
+}
+
 object MBListFactory {
-  val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
+
+  val factories = new Array[MBListFactoryInterface](10)
 
   def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] = {
     try {
-      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBList_" + T_TypeTag)
-      val const = clazz.getConstructor(classOf[Long], classOf[MBList[T$inst]], classOf[Byte])
-      val inst  = const.newInstance(_head: java.lang.Long, _tail: MBList[T$inst], T_TypeTag: java.lang.Byte)
-      inst.asInstanceOf[MBList[T$inst]]
+      val fact = factories(T_TypeTag)
+      fact.newMBList_J(_head, _tail, T_TypeTag)
     } catch {
-      case cnf: ClassNotFoundException =>
-        ??? //new MBList_J[T$inst](_head, _tail, T_TypeTag)
+      // factory creation is outside the critical path
+      case _: NullPointerException =>
+        try {
+          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
+          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBListFactoryInstance_" + T_TypeTag)
+          val inst  = clazz.newInstance().asInstanceOf[MBListFactoryInterface]
+          factories(T_TypeTag) = inst
+          newMBList_J(_head, _tail, T_TypeTag)
+        } catch {
+//          case cnf: ClassNotFoundException =>
+//            new MBList_J[T$inst](_head, _tail, T_TypeTag)
+          case other => throw other
+        }
     }
   }
 }

@@ -169,9 +169,9 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
     def forceDispInit() = {
       // whether or not it's megamorphic, let's stress test the inline caches:
       // let's make sure all three subclasees or Dispatcher are loaded in the system
-      println(Dispatchers.LongDispatcher)
-      println(Dispatchers.IntDispatcher)
-      println(Dispatchers.DoubleDispatcher)
+//      println(Dispatchers.LongDispatcher)
+//      println(Dispatchers.IntDispatcher)
+//      println(Dispatchers.DoubleDispatcher)
     }
 
     def forceMegamorphicCallSites(): Unit =
