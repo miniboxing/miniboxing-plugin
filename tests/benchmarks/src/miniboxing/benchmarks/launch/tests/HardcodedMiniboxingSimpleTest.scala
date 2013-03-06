@@ -5,7 +5,7 @@ import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
 import miniboxing.benchmarks.hardcoded._
 
-trait HardcodedMiniboxingBenchTest extends BaseTest {
+trait HardcodedMiniboxingSimple extends BaseTest {
 
   private[this] object TestList {
     def list_insert(): MBList[Int] = {
@@ -32,21 +32,21 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
       b
     }
 
-    def list_insert_DOUBLE(): MBList[Int] = {
-      var l: MBList[Int] = null
+    def list_insert_DOUBLE(): MBList[Double] = {
+      var l: MBList[Double] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Int](IntToMinibox(i), l, DOUBLE)
+        l = new MBList_J[Double](IntToMinibox(i), l, DOUBLE)
         i += 1
       }
       l
     }
 
-    def list_hashCode_DOUBLE(list: MBList[Int]): Int = {
+    def list_hashCode_DOUBLE(list: MBList[Double]): Int = {
       list.hashCode_J
     }
 
-    def list_find_DOUBLE(l: MBList[Int]): Boolean = {
+    def list_find_DOUBLE(l: MBList[Double]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
@@ -56,21 +56,21 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
       b
     }
 
-    def list_insert_LONG(): MBList[Int] = {
-      var l: MBList[Int] = null
+    def list_insert_LONG(): MBList[Long] = {
+      var l: MBList[Long] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Int](IntToMinibox(i), l, LONG)
+        l = new MBList_J[Long](IntToMinibox(i), l, LONG)
         i += 1
       }
       l
     }
 
-    def list_hashCode_LONG(list: MBList[Int]): Int = {
+    def list_hashCode_LONG(list: MBList[Long]): Int = {
       list.hashCode_J
     }
 
-    def list_find_LONG(l: MBList[Int]): Boolean = {
+    def list_find_LONG(l: MBList[Long]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
@@ -158,7 +158,7 @@ trait HardcodedMiniboxingBenchTest extends BaseTest {
     }
   }
 
-  def testHardcodedMiniboxing(megamorphic: Boolean) = {
+  def testHardcodedMiniboxingSimple(megamorphic: Boolean) = {
     import TestArray._
     import TestList._
 

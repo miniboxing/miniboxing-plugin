@@ -6,9 +6,8 @@ import tests._
 object BenchmarkingTest extends ScalameterBenchTest
                            with GenericBenchTest
                            with SpecializedBenchTest
-                           with HardcodedMiniboxingBenchTest
-                           with HardcodedMiniboxingClassLoadBenchTest
-                           with HardcodedMiniboxingClassLoadFullBenchTest
+                           with HardcodedMiniboxingSimple
+                           with HardcodedMiniboxingSimpleCL
                            with HardcodedMiniboxingDispatcherBenchTest
                            with HardcodedMiniboxingDispatcherBenchTestCL
                            with IdealBenchTest
@@ -25,13 +24,13 @@ object BenchmarkingTest extends ScalameterBenchTest
   // run the tests:
   testIdeal()
   testHardcodedMiniboxingDispatch(false)
-  testHardcodedMiniboxingDispatchClassLoader(false)
   testHardcodedMiniboxingDispatch(true)
+  testHardcodedMiniboxingDispatchClassLoader(false)
   testHardcodedMiniboxingDispatchClassLoader(true)
-  testHardcodedMiniboxingClassloaderFull()
-  testHardcodedMiniboxingClassloaderPartial()
-  testHardcodedMiniboxing(false)
-  testHardcodedMiniboxing(true)
+  testHardcodedMiniboxingSimple(false)
+  testHardcodedMiniboxingSimple(true)
+  testHardcodedMiniboxingSimpleClassLoader(false)
+  testHardcodedMiniboxingSimpleClassLoader(true)
   testSpecialized(false)
   testSpecialized(true)
   testGeneric()
