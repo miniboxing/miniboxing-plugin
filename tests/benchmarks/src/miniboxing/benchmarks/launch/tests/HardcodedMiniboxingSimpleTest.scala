@@ -164,7 +164,7 @@ trait HardcodedMiniboxingSimple extends BaseTest {
 
     val transformation = "miniboxed standard " + (if (megamorphic) "mega" else "mono")
 
-      def forceMegamorphicCallSites(): Unit =
+    def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
         withTestSize(1000) {
           array_find(array_reverse(array_insert()))
