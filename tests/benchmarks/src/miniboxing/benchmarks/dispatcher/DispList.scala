@@ -93,3 +93,42 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   }
   // </added for a quick test>
 }
+
+/*
+ * That's a lot of bytecode for constructing the class.
+ * TODO: Can we factor out some common functionalty?
+ */
+trait DispListFactoryInterface {
+  def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst]
+}
+
+class DispListFactoryInstance_J extends DispListFactoryInterface {
+  def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] =
+    new DispList_J(_head, _tail, disp)
+}
+
+object DispListFactory {
+  val factories = new Array[DispListFactoryInterface](10)
+
+  def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] = {
+    val tag = disp.tag
+    try {
+      val fact = factories(tag)
+      fact.newDispList_J(_head, _tail, disp)
+    } catch {
+      // factory creation is outside the critical path
+      case _: NullPointerException =>
+        try {
+          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispListFactory.this)
+          val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispListFactoryInstance_" + tag)
+          val inst  = clazz.newInstance().asInstanceOf[DispListFactoryInterface]
+          factories(tag) = inst
+          newDispList_J(_head, _tail, disp)
+        } catch {
+//          case cnf: ClassNotFoundException =>
+//            new DispList_J[T$inst](_head, _tail, disp)
+          case other: Throwable => throw other
+        }
+    }
+  }
+}

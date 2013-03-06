@@ -2,6 +2,8 @@ package miniboxing.benchmarks.dispatcher
 
 abstract class Dispatcher[T] {
   import miniboxing.runtime.MiniboxTypes._
+
+  def tag: Int
   def mbarray_new(len: Int): Any
   def mbarray_apply_minibox(array: Any, idx: Int): Minibox
   def mbarray_apply_box(array: Any, idx: Int): T
@@ -23,6 +25,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConstants._
     import miniboxing.runtime.MiniboxConversions._
 
+    def tag: Int = INT
     def mbarray_new(len: Int): Any = new Array[Int](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = IntToMinibox(array.asInstanceOf[Array[Int]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Int = array.asInstanceOf[Array[Int]](idx)
@@ -45,6 +48,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConstants._
     import miniboxing.runtime.MiniboxConversions._
 
+    def tag: Int = DOUBLE
     def mbarray_new(len: Int): Any = new Array[Double](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = DoubleToMinibox(array.asInstanceOf[Array[Double]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Double = array.asInstanceOf[Array[Double]](idx)
@@ -67,6 +71,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConstants._
     import miniboxing.runtime.MiniboxConversions._
 
+    def tag: Int = LONG
     def mbarray_new(len: Int): Any = new Array[Long](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = LongToMinibox(array.asInstanceOf[Array[Long]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Long = array.asInstanceOf[Array[Long]](idx)
