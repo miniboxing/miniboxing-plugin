@@ -220,8 +220,8 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
           list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
           array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
           list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
-          array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
-          list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
+//          array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
+//          list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
         }
       }
 
