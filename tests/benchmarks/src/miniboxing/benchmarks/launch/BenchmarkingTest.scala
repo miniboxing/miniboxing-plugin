@@ -23,7 +23,7 @@ object BenchmarkingTest extends ScalameterBenchTest
 //    List(1000)
   }
   def lastTag = "list.find"
-  def lastTraf = "generic"
+  def lastTraf = "generic mega"
 
   // run the tests:
   testIdeal()
