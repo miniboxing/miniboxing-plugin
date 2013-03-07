@@ -3,7 +3,6 @@ package miniboxing.runtime
 
 object MiniboxConversions {
   import MiniboxTypes._
-  import MiniboxConstants._
 
   /*
    * Conversions to and from Miniboxed representation and

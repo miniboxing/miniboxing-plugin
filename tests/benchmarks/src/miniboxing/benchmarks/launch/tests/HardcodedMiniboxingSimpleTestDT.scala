@@ -3,9 +3,9 @@ package miniboxing.benchmarks.launch.tests
 import org.scalameter.api._
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
-import miniboxing.benchmarks.hardcoded._
+import miniboxing.benchmarks.hardcoded.decisiontree._
 
-trait HardcodedMiniboxingSimple extends BaseTest {
+trait HardcodedMiniboxingSimpleDT extends BaseTest {
 
   private[this] object TestList {
     def list_insert(): MBList[Int] = {
@@ -56,21 +56,21 @@ trait HardcodedMiniboxingSimple extends BaseTest {
       b
     }
 
-    def list_insert_LONG(): MBList[Long] = {
-      var l: MBList[Long] = null
+    def list_insert_SHORT(): MBList[Short] = {
+      var l: MBList[Short] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Long](IntToMinibox(i), l, LONG)
+        l = new MBList_J[Short](IntToMinibox(i), l, SHORT)
         i += 1
       }
       l
     }
 
-    def list_hashCode_LONG(list: MBList[Long]): Int = {
+    def list_hashCode_SHORT(list: MBList[Short]): Int = {
       list.hashCode_J
     }
 
-    def list_find_LONG(l: MBList[Long]): Boolean = {
+    def list_find_SHORT(l: MBList[Short]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
@@ -107,26 +107,26 @@ trait HardcodedMiniboxingSimple extends BaseTest {
       b
     }
 
-    def array_insert_LONG(): MBResizableArray[Long] = {
-      val a: MBResizableArray[Long] = new MBResizableArray_J[Long](LONG)
+    def array_insert_SHORT(): MBResizableArray[Short] = {
+      val a: MBResizableArray[Short] = new MBResizableArray_J[Short](SHORT)
       var i = 0
       while (i < testSize) {
-        a.add_J(LongToMinibox(i))
+        a.add_J(IntToMinibox(i))
         i += 1
       }
       a
     }
 
-    def array_reverse_LONG(a: MBResizableArray[Long]): MBResizableArray[Long] = {
+    def array_reverse_SHORT(a: MBResizableArray[Short]): MBResizableArray[Short] = {
       a.reverse_J
       a
     }
 
-    def array_find_LONG(a: MBResizableArray[Long]): Boolean = {
+    def array_find_SHORT(a: MBResizableArray[Short]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(LongToMinibox(i)) // TODO: Does this cost much?
+        b = b ^ a.contains_J(IntToMinibox(i)) // TODO: Does this cost much?
         i += 10000
       }
       b
@@ -158,19 +158,19 @@ trait HardcodedMiniboxingSimple extends BaseTest {
     }
   }
 
-  def testHardcodedMiniboxingSimple(megamorphic: Boolean) = {
+  def testHardcodedMiniboxingSimpleDT(megamorphic: Boolean) = {
     import TestArray._
     import TestList._
 
-    val transformation = "miniboxed standard " + (if (megamorphic) "mega" else "mono")
+    val transformation = "miniboxed standard DT " + (if (megamorphic) "mega" else "mono")
 
     def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
         withTestSize(1000) {
           array_find(array_reverse(array_insert()))
           list_hashCode(list_insert()); list_find(list_insert())
-          array_find_LONG(array_reverse_LONG(array_insert_LONG()))
-          list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
+          array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
+          list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
           array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
           list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
         }

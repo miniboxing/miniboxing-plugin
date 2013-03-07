@@ -6,7 +6,11 @@ import tests._
 object BenchmarkingTest extends ScalameterBenchTest
                            with GenericBenchTest
                            with SpecializedBenchTest
-                           with HardcodedMiniboxingSimple
+                           with HardcodedMiniboxingSimpleFS // fullswitch
+                           with HardcodedMiniboxingSimpleSS // semiswitch
+                           with HardcodedMiniboxingSimpleDT // decision trees
+                           with HardcodedMiniboxingSimpleLI // linear
+                           with HardcodedMiniboxingSimpleNI // no inline
                            with HardcodedMiniboxingSimpleCL
                            with HardcodedMiniboxingDispatcherBenchTest
                            with HardcodedMiniboxingDispatcherBenchTestCL
@@ -16,7 +20,7 @@ object BenchmarkingTest extends ScalameterBenchTest
   lazy val testSizes = {
     //List(1000, 2000, 3000)
     List(1000000, 2000000, 3000000)
-//    List(100000)
+//    List(1000)
   }
   def lastTag = "list.find"
   def lastTraf = "generic"
@@ -27,8 +31,16 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingDispatch(true)
   testHardcodedMiniboxingDispatchClassLoader(false)
   testHardcodedMiniboxingDispatchClassLoader(true)
-  testHardcodedMiniboxingSimple(false)
-  testHardcodedMiniboxingSimple(true)
+  testHardcodedMiniboxingSimpleFS(false)
+  testHardcodedMiniboxingSimpleFS(true)
+  testHardcodedMiniboxingSimpleSS(false)
+  testHardcodedMiniboxingSimpleSS(true)
+//  testHardcodedMiniboxingSimpleDT(false) - can't compile, backend crashes
+//  testHardcodedMiniboxingSimpleDT(true)  - can't compile, backend crashes
+//  testHardcodedMiniboxingSimpleLI(false) - backend can't load bytecode
+//  testHardcodedMiniboxingSimpleLI(true)  - backend can't load bytecode
+  testHardcodedMiniboxingSimpleNI(false)
+  testHardcodedMiniboxingSimpleNI(true)
   testHardcodedMiniboxingSimpleClassLoader(false)
   testHardcodedMiniboxingSimpleClassLoader(true)
   testSpecialized(false)

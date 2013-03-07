@@ -1,7 +1,6 @@
 package miniboxing.benchmarks
 
 import miniboxing.plugin.minispec
-import miniboxing.runtime.MiniboxArray
 
 /**
  * The arrays are tricky since we need to use the natural representation for them.

@@ -1,10 +1,9 @@
-package miniboxing.benchmarks.hardcoded
+package miniboxing.benchmarks.hardcoded.linear
 
-import miniboxing.runtime.MiniboxArray._
+import miniboxing.runtime.MiniboxArray_Linear._
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
 import miniboxing.runtime.MiniboxTypeTagDispatch._
-import miniboxing.runtime.MiniboxArray
 import scala.Int.int2long
 
 /*
@@ -217,7 +216,7 @@ object MBResizableArrayFactory {
       case _: NullPointerException =>
         try {
           val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBResizableArrayFactoryInstance_" + T_TypeTag)
+          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.linear.MBResizableArrayFactoryInstance_" + T_TypeTag)
           val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
           factories(T_TypeTag) = inst
           newMBResizableArray_J(T_TypeTag)
