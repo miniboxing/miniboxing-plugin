@@ -79,8 +79,30 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       }
       b
     }
-  }
+    def list_insert_SHORT(): MBList[Short] = {
+      var l: MBList[Short] = null
+      var i = 0
+      while (i < testSize) {
+        l = new MBList_J[Short](IntToMinibox(i), l, SHORT)
+        i += 1
+      }
+      l
+    }
 
+    def list_hashCode_SHORT(list: MBList[Short]): Int = {
+      list.hashCode_J
+    }
+
+    def list_find_SHORT(l: MBList[Short]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains_J(IntToMinibox(i))
+        i += 10000
+      }
+      b
+    }
+  }
   private[this] object TestArray {
     def array_insert(): MBResizableArray[Int] = {
       val a: MBResizableArray[Int] = new MBResizableArray_J[Int](INT)
@@ -156,6 +178,31 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       }
       b
     }
+
+    def array_insert_SHORT(): MBResizableArray[Short] = {
+      val a: MBResizableArray[Short] = new MBResizableArray_J[Short](SHORT)
+      var i = 0
+      while (i < testSize) {
+        a.add_J(IntToMinibox(i))
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_SHORT(a: MBResizableArray[Short]): MBResizableArray[Short] = {
+      a.reverse_J
+      a
+    }
+
+    def array_find_SHORT(a: MBResizableArray[Short]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains_J(IntToMinibox(i)) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
   }
 
   def testHardcodedMiniboxingSimpleFS(megamorphic: Boolean) = {
@@ -173,6 +220,8 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
           list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
           array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
           list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
+          array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
+          list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
         }
       }
 
