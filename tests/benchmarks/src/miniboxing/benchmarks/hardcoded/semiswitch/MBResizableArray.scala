@@ -216,7 +216,7 @@ object MBResizableArrayFactory {
       case _: NullPointerException =>
         try {
           val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBResizableArrayFactoryInstance_" + T_TypeTag)
+          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.semiswitch.MBResizableArrayFactoryInstance_" + T_TypeTag)
           val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
           factories(T_TypeTag) = inst
           newMBResizableArray_J(T_TypeTag)

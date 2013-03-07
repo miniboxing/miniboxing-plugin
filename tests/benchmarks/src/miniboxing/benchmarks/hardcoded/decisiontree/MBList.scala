@@ -124,7 +124,7 @@ object MBListFactory {
       case _: NullPointerException =>
         try {
           val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.MBListFactoryInstance_" + T_TypeTag)
+          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.decisiontree.MBListFactoryInstance_" + T_TypeTag)
           val inst  = clazz.newInstance().asInstanceOf[MBListFactoryInterface]
           factories(T_TypeTag) = inst
           newMBList_J(_head, _tail, T_TypeTag)
