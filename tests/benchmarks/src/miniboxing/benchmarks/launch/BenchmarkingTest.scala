@@ -35,10 +35,10 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingSimpleFS(true)
   testHardcodedMiniboxingSimpleSS(false)
   testHardcodedMiniboxingSimpleSS(true)
-//  testHardcodedMiniboxingSimpleDT(false) - can't compile, backend crashes
-//  testHardcodedMiniboxingSimpleDT(true)  - can't compile, backend crashes
-//  testHardcodedMiniboxingSimpleLI(false) - backend can't load bytecode
-//  testHardcodedMiniboxingSimpleLI(true)  - backend can't load bytecode
+  testHardcodedMiniboxingSimpleDT(false)
+  testHardcodedMiniboxingSimpleDT(true)
+  testHardcodedMiniboxingSimpleLI(false)
+  testHardcodedMiniboxingSimpleLI(true)
   testHardcodedMiniboxingSimpleNI(false)
   testHardcodedMiniboxingSimpleNI(true)
   testHardcodedMiniboxingSimpleClassLoader(false)
