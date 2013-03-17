@@ -40,7 +40,7 @@ class Target_L[T$sp](val t: T$sp) extends Target[T$sp] {
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait TargetFactoryInterface {
+abstract class TargetFactoryInterface {
   def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst]
 }
 
@@ -49,26 +49,25 @@ class TargetFactoryInstance_J extends TargetFactoryInterface {
 }
 
 object TargetFactory {
-  val factories = new Array[TargetFactoryInterface](10)
+  val fact = new Array[TargetFactoryInterface](10)
 
-  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = {
+  @inline def newTarget_J[T$inst](t_J: Long, T_TypeTag: Byte): Target[T$inst] =
+    if (fact(T_TypeTag) == null)
+      createFactoryAndObject(T_TypeTag)(t_J, T_TypeTag)
+    else
+      fact(T_TypeTag).newTarget_J(t_J, T_TypeTag)
+
+  def createFactoryAndObject[T$inst](tag: Int)(t_J: Long, T_TypeTag: Byte): Target[T$inst] =
     try {
-      val fact = factories(T_TypeTag)
-      fact.newTarget_J(_t_J, T_TypeTag)
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetFactory.this)
+      val clazz = classloader.findClass("miniboxing.classloader.test.TargetFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[TargetFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newTarget_J(t_J, T_TypeTag)
     } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetFactory.this)
-          val clazz = classloader.findClass("miniboxing.classloader.test.TargetFactoryInstance_" + T_TypeTag)
-          val inst  = clazz.newInstance().asInstanceOf[TargetFactoryInterface]
-          factories(T_TypeTag) = inst
-          newTarget_J(_t_J, T_TypeTag)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new Target_J[T$inst](_t_J, T_TypeTag)
-          case other: Throwable => throw other
-        }
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new TargetFactoryInstance_J()
+        fact(tag).newTarget_J(t_J, T_TypeTag)
     }
-  }
 }

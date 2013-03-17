@@ -181,7 +181,7 @@ class DispResizableArray_J[Tsp: Manifest](disp: Dispatcher[Tsp]) extends DispRes
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait DispResizableArrayFactoryInterface {
+abstract class DispResizableArrayFactoryInterface {
   def newDispResizableArray_J[T$inst: Manifest](disp: Dispatcher[T$inst]): DispResizableArray[T$inst]
 }
 
@@ -191,27 +191,25 @@ class DispResizableArrayFactoryInstance_J extends DispResizableArrayFactoryInter
 }
 
 object DispResizableArrayFactory {
-  val factories = new Array[DispResizableArrayFactoryInterface](10)
+  val fact = new Array[DispResizableArrayFactoryInterface](10)
 
-  def newDispResizableArray_J[T$inst: Manifest](disp: Dispatcher[T$inst]): DispResizableArray[T$inst] = {
-    val tag = disp.tag
+  @inline def newDispResizableArray_J[T$inst: Manifest](disp: Dispatcher[T$inst]): DispResizableArray[T$inst] =
+    if (fact(disp.tag) == null)
+      createFactoryAndObject(disp.tag)(disp)
+    else
+      fact(disp.tag).newDispResizableArray_J(disp)
+
+  def createFactoryAndObject[T$inst: Manifest](tag: Int)(disp: Dispatcher[T$inst]): DispResizableArray[T$inst] =
     try {
-      val fact = factories(tag)
-      fact.newDispResizableArray_J(disp)
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispResizableArrayFactory.this)
+      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispResizableArrayFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[DispResizableArrayFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newDispResizableArray_J(disp)
     } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispResizableArrayFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispResizableArrayFactoryInstance_" + tag)
-          val inst  = clazz.newInstance().asInstanceOf[DispResizableArrayFactoryInterface]
-          factories(tag) = inst
-          newDispResizableArray_J(disp)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new DispResizableArray_J[T$inst](disp)
-          case other: Throwable => throw other
-        }
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new DispResizableArrayFactoryInstance_J()
+        fact(tag).newDispResizableArray_J(disp)
     }
-  }
 }

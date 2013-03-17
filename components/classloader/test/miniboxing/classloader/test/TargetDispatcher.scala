@@ -51,36 +51,34 @@ class TargetDispatcher_L[T$sp](val t: T$sp) extends TargetDispatcher[T$sp] {
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait TargetDispatcherFactoryInterface {
-  def newTargetDispatcher_J[T$inst](_t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst]
+abstract class TargetDispatcherFactoryInterface {
+  def newTargetDispatcher_J[T$inst](t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst]
 }
 
 class TargetDispatcherFactoryInstance_J extends TargetDispatcherFactoryInterface {
-  def newTargetDispatcher_J[T$inst](_t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst] = new TargetDispatcher_J(_t_J, dispatcher)
+  def newTargetDispatcher_J[T$inst](t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst] = new TargetDispatcher_J(t_J, dispatcher)
 }
 
 object TargetDispatcherFactory {
-  val factories = new Array[TargetDispatcherFactoryInterface](10)
+  val fact = new Array[TargetDispatcherFactoryInterface](10)
 
-  def newTargetDispatcher_J[T$inst](_t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst] = {
-    val tag = dispatcher.tag
+  @inline def newTargetDispatcher_J[T$inst](t_J: Long, disp: Dispatcher): TargetDispatcher[T$inst] =
+    if (fact(disp.tag) == null)
+      createFactoryAndObject(disp.tag)(t_J, disp)
+    else
+      fact(disp.tag).newTargetDispatcher_J(t_J, disp)
+
+  def createFactoryAndObject[T$inst](tag: Int)(t_J: Long, disp: Dispatcher): TargetDispatcher[T$inst] =
     try {
-      val fact = factories(tag)
-      fact.newTargetDispatcher_J(_t_J, dispatcher)
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetDispatcherFactory.this)
+      val clazz = classloader.findClass("miniboxing.classloader.test.TargetDispatcherFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[TargetDispatcherFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newTargetDispatcher_J(t_J, disp)
     } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetDispatcherFactory.this)
-          val clazz = classloader.findClass("miniboxing.classloader.test.TargetDispatcherFactoryInstance_" + tag)
-          val inst  = clazz.newInstance().asInstanceOf[TargetDispatcherFactoryInterface]
-          factories(tag) = inst
-          newTargetDispatcher_J(_t_J, dispatcher)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new TargetDispatcher_J[T$inst](_t_J, dispatcher)
-          case other: Throwable => throw other
-        }
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new TargetDispatcherFactoryInstance_J()
+        fact(tag).newTargetDispatcher_J(t_J, disp)
     }
-  }
 }

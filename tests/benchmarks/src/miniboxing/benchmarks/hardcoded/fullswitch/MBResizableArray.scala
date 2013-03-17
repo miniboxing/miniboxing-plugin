@@ -195,7 +195,7 @@ class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArra
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait MBResizableArrayFactoryInterface {
+abstract class MBResizableArrayFactoryInterface {
   def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst]
 }
 
@@ -204,27 +204,25 @@ class MBResizableArrayFactoryInstance_J extends MBResizableArrayFactoryInterface
 }
 
 object MBResizableArrayFactory {
+  val fact = new Array[MBResizableArrayFactoryInterface](10)
 
-  val factories = new Array[MBResizableArrayFactoryInterface](10)
+  @inline def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] =
+    if (fact(T_TypeTag) == null)
+      createFactoryAndObject(T_TypeTag)(T_TypeTag)
+    else
+      fact(T_TypeTag).newMBResizableArray_J(T_TypeTag)
 
-  def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] = {
+  def createFactoryAndObject[T$inst: Manifest](tag: Int)(T_TypeTag: Byte): MBResizableArray[T$inst] =
     try {
-      val fact = factories(T_TypeTag)
-      fact.newMBResizableArray_J(T_TypeTag)
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
+      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBResizableArrayFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newMBResizableArray_J(T_TypeTag)
     } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBResizableArrayFactoryInstance_" + T_TypeTag)
-          val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
-          factories(T_TypeTag) = inst
-          newMBResizableArray_J(T_TypeTag)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new MBResizableArray_J[T$inst](T_TypeTag)
-          case other: Throwable => throw other
-        }
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new MBResizableArrayFactoryInstance_J()
+        fact(tag).newMBResizableArray_J(T_TypeTag)
     }
-  }
 }
