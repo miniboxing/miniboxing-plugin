@@ -10,15 +10,15 @@ class List(val head: Int, val tail: List) {
     head.toString + (if (tail != null) (", " + tail.toString) else "")
 
   def contains(e: Int): Boolean = {
-    @annotation.tailrec def containsIntail(list: List): Boolean =
+    @annotation.tailrec def containsIntail(list: List, e: Int): Boolean =
       if (list.head == e)
         true
       else if (list.tail == null)
         false
       else
-        containsIntail(list.tail)
+        containsIntail(list.tail, e)
 
-    containsIntail(this)
+    containsIntail(this, e)
   }
 
   override def hashCode(): Int = {

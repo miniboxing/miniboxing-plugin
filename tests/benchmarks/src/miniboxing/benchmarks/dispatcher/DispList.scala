@@ -46,15 +46,15 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   def contains(e: Tsp): Boolean = contains_J(disp.box2minibox(e))
   def contains_J(e: Long): Boolean = {
 
-    @annotation.tailrec def containsTail(list: DispList[Tsp]): Boolean =
+    @annotation.tailrec def containsTail(list: DispList[Tsp], e: Long): Boolean =
       if (disp.mboxed_eqeq(list.head_J, e))
         true
       else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail_J)
+        containsTail(list.tail_J, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
 
   // hashCode
@@ -81,15 +81,15 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   def containsAny(e: Any): Boolean = containsAny_J(e)
   def containsAny_J(e: Any): Boolean = {
 
-    @annotation.tailrec def containsTail(list: DispList[Tsp]): Boolean =
+    @annotation.tailrec def containsTail(list: DispList[Tsp], e: Any): Boolean =
       if (disp.minibox2box(list.head_J) == e) // TODO this probably needs to be forwarded
         true
       else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail_J)
+        containsTail(list.tail_J, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
   // </added for a quick test>
 }
