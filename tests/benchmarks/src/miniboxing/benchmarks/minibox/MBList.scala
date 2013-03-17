@@ -10,15 +10,15 @@ class MBList[@minispec T](val head: T, val tail: MBList[T]) {
     head.toString + (if (tail != null) (", " + tail.toString) else "")
 
   def contains(e: T): Boolean = {
-    @annotation.tailrec def containsTail(list: MBList[T]): Boolean =
+    @annotation.tailrec def containsTail(list: MBList[T], e: T): Boolean =
       if (list.head == e)
         true
       else if (list.tail == null)
         false
       else
-        containsTail(list.tail)
+        containsTail(list.tail, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
 
   override def hashCode(): Int = {

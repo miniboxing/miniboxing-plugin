@@ -51,15 +51,15 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def contains(e: Tsp): Boolean = contains_J(box2minibox(e))
   def contains_J(e: Long): Boolean = {
 
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
+    @annotation.tailrec def containsTail(list: MBList[Tsp], e: Long): Boolean =
       if (mboxed_eqeq(list.head_J, e))
         true
       else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail_J)
+        containsTail(list.tail_J, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
 
   // hashCode
@@ -86,15 +86,15 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
   def containsAny(e: Any): Boolean = containsAny_J(e)
   def containsAny_J(e: Any): Boolean = {
 
-    @annotation.tailrec def containsTail(list: MBList[Tsp]): Boolean =
+    @annotation.tailrec def containsTail(list: MBList[Tsp], e: Any): Boolean =
       if (minibox2box(list.head_J, T_TypeTag) == e) // TODO this probably needs to be forwarded
         true
       else if (list.tail_J == null)
         false
       else
-        containsTail(list.tail_J)
+        containsTail(list.tail_J, e)
 
-    containsTail(this)
+    containsTail(this, e)
   }
   // </added for a quick test>
 }
