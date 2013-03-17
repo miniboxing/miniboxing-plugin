@@ -5,7 +5,7 @@ import miniboxing.runtime.MiniboxConversions._
 import miniboxing.runtime.MiniboxTypeTagDispatch._
 import miniboxing.classloader.MiniboxingClassLoader
 
-trait MBList[T] {
+abstract class MBList[T] {
   // accessors
   def head: T
   def head_J: Long
