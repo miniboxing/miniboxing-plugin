@@ -103,7 +103,7 @@ class MBList_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) extends MB
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait MBListFactoryInterface {
+abstract class MBListFactoryInterface {
   def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst]
 }
 
@@ -113,26 +113,26 @@ class MBListFactoryInstance_J extends MBListFactoryInterface {
 
 object MBListFactory {
 
-  val factories = new Array[MBListFactoryInterface](10)
+  val fact = new Array[MBListFactoryInterface](10)
 
-  def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] = {
-    try {
-      val fact = factories(T_TypeTag)
-      fact.newMBList_J(_head, _tail, T_TypeTag)
-    } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBListFactoryInstance_" + T_TypeTag)
-          val inst  = clazz.newInstance().asInstanceOf[MBListFactoryInterface]
-          factories(T_TypeTag) = inst
-          newMBList_J(_head, _tail, T_TypeTag)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new MBList_J[T$inst](_head, _tail, T_TypeTag)
-          case other: Throwable => throw other
-        }
-    }
+  @inline def newMBList_J[T$inst](_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] = {
+    if (fact(T_TypeTag) == null)
+      createFactoryAndObject(T_TypeTag)(_head, _tail, T_TypeTag)
+    else
+      fact(T_TypeTag).newMBList_J(_head, _tail, T_TypeTag)
   }
+
+  def createFactoryAndObject[T$inst](tag: Int)(_head: Long, _tail: MBList[T$inst], T_TypeTag: Byte): MBList[T$inst] =
+    try {
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBListFactory.this)
+      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBListFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[MBListFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newMBList_J(_head, _tail, T_TypeTag)
+    } catch {
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new MBListFactoryInstance_J()
+        fact(tag).newMBList_J(_head, _tail, T_TypeTag)
+    }
 }

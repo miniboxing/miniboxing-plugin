@@ -98,7 +98,7 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
  * That's a lot of bytecode for constructing the class.
  * TODO: Can we factor out some common functionalty?
  */
-trait DispListFactoryInterface {
+abstract class DispListFactoryInterface {
   def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst]
 }
 
@@ -108,27 +108,25 @@ class DispListFactoryInstance_J extends DispListFactoryInterface {
 }
 
 object DispListFactory {
-  val factories = new Array[DispListFactoryInterface](10)
+  val fact = new Array[DispListFactoryInterface](10)
 
-  def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] = {
-    val tag = disp.tag
+  @inline def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] =
+    if (fact(disp.tag) == null)
+      createFactoryAndObject(disp.tag)(_head, _tail, disp)
+    else
+      fact(disp.tag).newDispList_J(_head, _tail, disp)
+
+  def createFactoryAndObject[T$inst](tag: Int)(_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] =
     try {
-      val fact = factories(tag)
-      fact.newDispList_J(_head, _tail, disp)
+      val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispListFactory.this)
+      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispListFactoryInstance_" + tag)
+      val inst  = clazz.newInstance().asInstanceOf[DispListFactoryInterface]
+      fact(tag) = inst
+      fact(tag).newDispList_J(_head, _tail, disp)
     } catch {
-      // factory creation is outside the critical path
-      case _: NullPointerException =>
-        try {
-          val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispListFactory.this)
-          val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispListFactoryInstance_" + tag)
-          val inst  = clazz.newInstance().asInstanceOf[DispListFactoryInterface]
-          factories(tag) = inst
-          newDispList_J(_head, _tail, disp)
-        } catch {
-//          case cnf: ClassNotFoundException =>
-//            new DispList_J[T$inst](_head, _tail, disp)
-          case other: Throwable => throw other
-        }
+      // TODO: What exactly do we want to catch?
+      case other: Throwable =>
+        fact(tag) = new DispListFactoryInstance_J()
+        fact(tag).newDispList_J(_head, _tail, disp)
     }
-  }
 }
