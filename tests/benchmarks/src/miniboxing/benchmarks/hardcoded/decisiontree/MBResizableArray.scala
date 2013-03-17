@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.hardcoded.decisiontree
 
-import miniboxing.runtime.MiniboxArray_SemiSwitch._ // FIXME: Otherwise this crashes the Scala backend!
+import miniboxing.runtime.MiniboxArray_DecisionTrees._
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
 import miniboxing.runtime.MiniboxTypeTagDispatch._

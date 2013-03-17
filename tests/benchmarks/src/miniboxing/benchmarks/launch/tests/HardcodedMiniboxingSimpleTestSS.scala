@@ -103,6 +103,30 @@ trait HardcodedMiniboxingSimpleSS extends BaseTest {
       }
       b
     }
+
+    def list_insert_FLOAT(): MBList[Float] = {
+      var l: MBList[Float] = null
+      var i = 0
+      while (i < testSize) {
+        l = new MBList_J[Float](IntToMinibox(i), l, FLOAT)
+        i += 1
+      }
+      l
+    }
+
+    def list_hashCode_FLOAT(list: MBList[Float]): Int = {
+      list.hashCode_J
+    }
+
+    def list_find_FLOAT(l: MBList[Float]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ l.contains_J(IntToMinibox(i))
+        i += 10000
+      }
+      b
+    }
   }
 
   private[this] object TestArray {
@@ -181,7 +205,6 @@ trait HardcodedMiniboxingSimpleSS extends BaseTest {
       b
     }
 
-
     def array_insert_SHORT(): MBResizableArray[Short] = {
       val a: MBResizableArray[Short] = new MBResizableArray_J[Short](SHORT)
       var i = 0
@@ -198,6 +221,31 @@ trait HardcodedMiniboxingSimpleSS extends BaseTest {
     }
 
     def array_find_SHORT(a: MBResizableArray[Short]): Boolean = {
+      var i = 0
+      var b = true
+      while (i < testSize) {
+        b = b ^ a.contains_J(IntToMinibox(i)) // TODO: Does this cost much?
+        i += 10000
+      }
+      b
+    }
+
+    def array_insert_FLOAT(): MBResizableArray[Float] = {
+      val a: MBResizableArray[Float] = new MBResizableArray_J[Float](FLOAT)
+      var i = 0
+      while (i < testSize) {
+        a.add_J(IntToMinibox(i))
+        i += 1
+      }
+      a
+    }
+
+    def array_reverse_FLOAT(a: MBResizableArray[Float]): MBResizableArray[Float] = {
+      a.reverse_J
+      a
+    }
+
+    def array_find_FLOAT(a: MBResizableArray[Float]): Boolean = {
       var i = 0
       var b = true
       while (i < testSize) {
@@ -225,6 +273,8 @@ trait HardcodedMiniboxingSimpleSS extends BaseTest {
           list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
           array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
           list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
+          array_find_FLOAT(array_reverse_FLOAT(array_insert_FLOAT()))
+          list_hashCode_FLOAT(list_insert_FLOAT()); list_find_FLOAT(list_insert_FLOAT())
         }
       }
 
