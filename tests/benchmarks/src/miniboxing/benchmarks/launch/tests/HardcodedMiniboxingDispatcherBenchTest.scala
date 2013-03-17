@@ -176,7 +176,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
 
     def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
-        withTestSize(1000) {
+        withTestSize(megamorphicTestSize) {
           array_find(array_reverse(array_insert()))
           list_hashCode(list_insert()); list_find(list_insert())
           array_find_LONG(array_reverse_LONG(array_insert_LONG()))
