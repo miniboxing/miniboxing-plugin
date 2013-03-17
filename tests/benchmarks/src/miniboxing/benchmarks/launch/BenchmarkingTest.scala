@@ -20,17 +20,18 @@ object BenchmarkingTest extends ScalameterBenchTest
   lazy val testSizes = {
     //List(1000, 2000, 3000)
     List(1000000, 2000000, 3000000)
+    List(10000)
 //    List(1000)
   }
   def lastTag = "list.find"
   def lastTraf = "generic mega"
 
   // run the tests:
-  testIdeal()
+//  testIdeal()
 //  testHardcodedMiniboxingDispatch(false)
 //  testHardcodedMiniboxingDispatch(true)
-  testHardcodedMiniboxingDispatchClassLoader(false)
-  testHardcodedMiniboxingDispatchClassLoader(true)
+//  testHardcodedMiniboxingDispatchClassLoader(false)
+//  testHardcodedMiniboxingDispatchClassLoader(true)
 //  testHardcodedMiniboxingSimpleFS(false)
 //  testHardcodedMiniboxingSimpleFS(true)
 //  testHardcodedMiniboxingSimpleSS(false)
@@ -42,11 +43,11 @@ object BenchmarkingTest extends ScalameterBenchTest
 //  testHardcodedMiniboxingSimpleNI(false)
 //  testHardcodedMiniboxingSimpleNI(true)
   testHardcodedMiniboxingSimpleClassLoader(false)
-  testHardcodedMiniboxingSimpleClassLoader(true)
+//  testHardcodedMiniboxingSimpleClassLoader(true)
   testSpecialized(false)
-  testSpecialized(true)
+//  testSpecialized(true)
   testGeneric(false)
-  testGeneric(true)
+//  testGeneric(true)
 }
 
 

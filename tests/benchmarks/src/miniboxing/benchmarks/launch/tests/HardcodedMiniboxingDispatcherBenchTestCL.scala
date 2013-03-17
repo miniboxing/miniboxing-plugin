@@ -188,9 +188,9 @@ trait HardcodedMiniboxingDispatcherBenchTestCL extends BaseTest {
 
     var a: DispResizableArray[Int] = null
     var b: Boolean = true
-    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites(); forceDispInit(); () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites(); forceDispInit(); a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.find   ", _ => { forceMegamorphicCallSites(); forceDispInit(); a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
+//    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites(); forceDispInit(); () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
+//    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites(); forceDispInit(); a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
+//    test(transformation, "array.find   ", _ => { forceMegamorphicCallSites(); forceDispInit(); a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
 
     var l: DispList[Int] = null
     var i: Int = 0
