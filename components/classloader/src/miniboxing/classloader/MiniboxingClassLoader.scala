@@ -9,15 +9,9 @@ import java.util.{List => JList}
 import scala.collection.JavaConverters.asScalaBufferConverter
 import java.util.ListIterator
 import miniboxing.tools.asm.util._
-import miniboxing.tools.asm.tree.analysis.Analyzer
-import miniboxing.tools.asm.tree.analysis.BasicValue
-import miniboxing.tools.asm.tree.analysis.BasicVerifier
+import miniboxing.tools.asm.tree.analysis._
 import scala.collection.mutable.Map
-import miniboxing.tools.asm.optimiz.Util
-import miniboxing.tools.asm.optimiz.ConstantFolder
-import miniboxing.tools.asm.optimiz.UnreachableCode
-import miniboxing.tools.asm.optimiz.JumpReducer
-import miniboxing.tools.asm.optimiz.JumpChainsCollapser
+import miniboxing.tools.asm.optimiz._
 
 /** Taken from http://stackoverflow.com/questions/6366288/how-to-change-default-class-loader-in-java */
 class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
@@ -124,6 +118,10 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     val cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
     classNode.accept(cw);
     var classBytes = cw.toByteArray
+
+// DUMP CLASS
+//    val output = new FileOutputStream(new File("/tmp/class-file"))
+//    output.write(classBytes)
 
     classBytes
   }
