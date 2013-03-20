@@ -72,7 +72,7 @@ trait ScalameterBenchTest extends PerformanceTest
   def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit) = {
     performance of transformation in {
       measure method tag in {
-        using(sizes) config (exec.independentSamples -> 20) setUp {
+        using(sizes) config (exec.independentSamples -> 20, exec.jvmflags -> "-Xint") setUp {
           size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {
           teardown; size => testSize = 0
