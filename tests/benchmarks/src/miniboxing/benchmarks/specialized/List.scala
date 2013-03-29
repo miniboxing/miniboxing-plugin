@@ -2,10 +2,10 @@ package miniboxing.benchmarks.specialized
 
 class List[@specialized T](val head: T, val tail: List[T]) {
 
-  def length: Int = 1 + (if (tail != null) tail.length else 0)
+  def length(e: T): Int = 1 + (if (tail != null) tail.length(e) else 0)
 
-  override def toString =
-    head.toString + (if (tail != null) (", " + tail.toString) else "")
+  def toString(e: T): String =
+    head.toString + (if (tail != null) (", " + tail.toString(e)) else "")
 
 //  this was for the generic signature:
 //    def contains(e: Any) which was awfully slow
@@ -38,7 +38,7 @@ class List[@specialized T](val head: T, val tail: List[T]) {
     containsTail(this, e)
   }
 
-  override def hashCode(): Int = {
+  def hashCode(e: T): Int = {
     @annotation.tailrec def tailHash(list: List[T], or: Int): Int = {
       val headhash = list.head.hashCode
       if (list.tail == null)
@@ -50,6 +50,6 @@ class List[@specialized T](val head: T, val tail: List[T]) {
     tailHash(this, 0)
   }
 
-  def toString2: String = toString
+  def toString2(e: T): String = toString
 }
 

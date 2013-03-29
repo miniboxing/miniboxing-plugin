@@ -17,7 +17,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def list_hashCode(list: List[Int]): Int =
-      list.hashCode
+      list.hashCode(2)
 
     def list_find(l: List[Int]): Boolean = {
       var i = 0
@@ -40,7 +40,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def list_hashCode_DOUBLE(list: List[Double]): Int =
-      list.hashCode
+      list.hashCode(2.2)
 
     def list_find_DOUBLE(l: List[Double]): Boolean = {
       var i = 0
@@ -63,7 +63,7 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     def list_hashCode_LONG(list: List[Long]): Int =
-      list.hashCode
+      list.hashCode(2l)
 
     def list_find_LONG(l: List[Long]): Boolean = {
       var i = 0
@@ -173,13 +173,13 @@ trait SpecializedBenchTest extends BaseTest {
 
     var a: ResizableArray[Int] = null
     var b: Boolean = true
-    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites; () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites; a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
+    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites; () },                 a = array_insert(),   () => { assert(a.length(1) == testSize); a = null })
+    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites; a = array_insert() }, a = array_reverse(a), () => { assert(a.length(1) == testSize); a = null })
     test(transformation, "array.find   ", _ => { forceMegamorphicCallSites; a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
 
     var l: List[Int] = null
     var i: Int = 0
-    test(transformation, "list.insert  ", _ => { forceMegamorphicCallSites; () },                 l = list_insert(),    () => { assert(l.length == testSize); l = null })
+    test(transformation, "list.insert  ", _ => { forceMegamorphicCallSites; () },                 l = list_insert(),    () => { assert(l.length(1) == testSize); l = null })
     test(transformation, "list.hashCode", _ => { forceMegamorphicCallSites; l = list_insert() },  i = list_hashCode(l), () => { assert(i != 0); l = null })
     test(transformation, "list.find    ", _ => { forceMegamorphicCallSites; l = list_insert() },  b = list_find(l),     () => { assert(b == true); l = null })
   }

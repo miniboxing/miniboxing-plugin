@@ -15,7 +15,7 @@ class ResizableArray[@specialized T: Manifest] {
   var array: Array[T] = new Array[T](initialSize)
   var newarray: Array[T] = _
 
-  def extend(): Unit = {
+  def extend(elem: T): Unit = {
     if (elemCount == size) {
       var pos = 0
       newarray = new Array[T](2 * size)
@@ -29,7 +29,7 @@ class ResizableArray[@specialized T: Manifest] {
   }
 
   def add(elem: T) = {
-    extend()
+    extend(elem)
     array(elemCount) = elem
     elemCount += 1
   }
@@ -56,7 +56,7 @@ class ResizableArray[@specialized T: Manifest] {
     return false
   }
 
-  def length = elemCount
+  def length(e: T) = elemCount
 
   @inline final def setElement(p: Int, t: T) = {
     array(p) = t
