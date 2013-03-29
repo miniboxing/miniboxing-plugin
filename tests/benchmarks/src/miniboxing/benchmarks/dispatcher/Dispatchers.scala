@@ -4,7 +4,7 @@ abstract class Dispatcher[T] {
   import miniboxing.runtime.MiniboxTypes._
 
   def tag: Int
-  def mbarray_new(len: Int): Any
+  def mbarray_new(len: Int): Array[T]
   def mbarray_apply_minibox(array: Any, idx: Int): Minibox
   def mbarray_apply_box(array: Any, idx: Int): T
   def mbarray_update_minibox(array: Any, idx: Int, value: Minibox): Unit
@@ -26,7 +26,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConversions._
 
     def tag: Int = INT
-    def mbarray_new(len: Int): Any = new Array[Int](len)
+    def mbarray_new(len: Int): Array[Int] = new Array[Int](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = IntToMinibox(array.asInstanceOf[Array[Int]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Int = array.asInstanceOf[Array[Int]](idx)
     def mbarray_update_minibox(array: Any, idx: Int, value: Minibox): Unit = array.asInstanceOf[Array[Int]](idx) = MiniboxToInt(value)
@@ -49,7 +49,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConversions._
 
     def tag: Int = DOUBLE
-    def mbarray_new(len: Int): Any = new Array[Double](len)
+    def mbarray_new(len: Int): Array[Double] = new Array[Double](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = DoubleToMinibox(array.asInstanceOf[Array[Double]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Double = array.asInstanceOf[Array[Double]](idx)
     def mbarray_update_minibox(array: Any, idx: Int, value: Minibox): Unit = array.asInstanceOf[Array[Double]](idx) = MiniboxToDouble(value)
@@ -72,7 +72,7 @@ object Dispatchers {
     import miniboxing.runtime.MiniboxConversions._
 
     def tag: Int = LONG
-    def mbarray_new(len: Int): Any = new Array[Long](len)
+    def mbarray_new(len: Int): Array[Long] = new Array[Long](len)
     def mbarray_apply_minibox(array: Any, idx: Int): Minibox = LongToMinibox(array.asInstanceOf[Array[Long]](idx))
     def mbarray_apply_box(array: Any, idx: Int): Long = array.asInstanceOf[Array[Long]](idx)
     def mbarray_update_minibox(array: Any, idx: Int, value: Minibox): Unit = array.asInstanceOf[Array[Long]](idx) = MiniboxToLong(value)

@@ -3,7 +3,7 @@ package miniboxing.benchmarks.dispatcher
 trait DispList[T] {
   // accessors
   def head: T
-  def head_J: Long
+  def head_J(disp_m: Dispatcher[T]): Long
   def tail: DispList[T]
   def tail_J: DispList[T]
   // the getters are not specialized, as the constructor args are private[this]
@@ -13,22 +13,18 @@ trait DispList[T] {
   override def toString: String
   def toString_J: String
   def contains(e: T): Boolean
-  def contains_J(e: Long): Boolean
+  def contains_J(e: Long, disp_m: Dispatcher[T]): Boolean
   override def hashCode(): Int
   def hashCode_J(): Int
   def toString2: String
   def toString2_J: String
-  // <added for a quick test>
-  def containsAny(e: Any): Boolean
-  def containsAny_J(e: Any): Boolean
-  // </added for a quick test>
 }
 
 class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) extends DispList[Tsp] {
 
   // head
-  def head: Tsp = disp.minibox2box(head_J)
-  def head_J: Long = _head
+  def head: Tsp = disp.minibox2box(head_J(disp))
+  def head_J(disp_m: Dispatcher[Tsp]): Long = _head
 
   // tail
   def tail: DispList[Tsp] = tail_J
@@ -40,14 +36,14 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
 
   // toString
   override def toString = toString_J
-  def toString_J = disp.minibox2box(head_J).toString + (if (tail != null) (", " + tail.toString_J) else "")
+  def toString_J = disp.minibox2box(head_J(disp)).toString + (if (tail != null) (", " + tail.toString_J) else "")
 
   // contains
-  def contains(e: Tsp): Boolean = contains_J(disp.box2minibox(e))
-  def contains_J(e: Long): Boolean = {
+  def contains(e: Tsp): Boolean = contains_J(disp.box2minibox(e), disp)
+  def contains_J(e: Long, disp_m: Dispatcher[Tsp]): Boolean = {
 
     @annotation.tailrec def containsTail(list: DispList[Tsp], e: Long): Boolean =
-      if (disp.mboxed_eqeq(list.head_J, e))
+      if (disp.mboxed_eqeq(list.head_J(disp), e))
         true
       else if (list.tail_J == null)
         false
@@ -62,7 +58,7 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   def hashCode_J(): Int = {
 
     @annotation.tailrec def tailHash(list: DispList[Tsp], or: Int): Int = {
-      val headhash = disp.mboxed_hashhash(list.head_J)
+      val headhash = disp.mboxed_hashhash(list.head_J(disp))
       if (list.tail_J == null)
         headhash | or
       else
@@ -75,24 +71,59 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   // toString2
   def toString2: String = toString2_J
   def toString2_J: String = toString_J
+}
 
-  // <added for a quick test>
-  // contains: Any
-  def containsAny(e: Any): Boolean = containsAny_J(e)
-  def containsAny_J(e: Any): Boolean = {
+class DispList_L[Tsp](_head: Tsp, _tail: DispList[Tsp]) extends DispList[Tsp] {
 
-    @annotation.tailrec def containsTail(list: DispList[Tsp], e: Any): Boolean =
-      if (disp.minibox2box(list.head_J) == e) // TODO this probably needs to be forwarded
+  // head
+  def head: Tsp = _head
+  def head_J(disp_m: Dispatcher[Tsp]): Long = disp_m.box2minibox(head)
+
+  // tail
+  def tail: DispList[Tsp] = _tail
+  def tail_J: DispList[Tsp] = tail
+
+  // length
+  def length: Int = 1 + (if (tail != null) tail.length else 0)
+  def length_J: Int = length
+
+  // toString
+  override def toString = toString_J
+  def toString_J = head.toString + (if (tail != null) (", " + tail.toString_J) else "")
+
+  // contains
+  def contains(e: Tsp): Boolean = {
+    @annotation.tailrec def containsTail(list: DispList[Tsp], e: Tsp): Boolean =
+      if (list.head == e)
         true
-      else if (list.tail_J == null)
+      else if (list.tail == null)
         false
       else
-        containsTail(list.tail_J, e)
-
+        containsTail(list.tail, e)
     containsTail(this, e)
   }
-  // </added for a quick test>
+  def contains_J(e: Long, disp_m: Dispatcher[Tsp]): Boolean = contains(disp_m.minibox2box(e))
+
+  // hashCode
+  override def hashCode: Int = {
+
+    @annotation.tailrec def tailHash(list: DispList[Tsp], or: Int): Int = {
+      val headhash = list.head.hashCode
+      if (list.tail_J == null)
+        headhash | or
+      else
+        tailHash(list.tail_J, or | headhash >> 8)
+    }
+
+    tailHash(this, 0)
+  }
+  def hashCode_J: Int = hashCode()
+
+  // toString2
+  def toString2: String = toString
+  def toString2_J: String = toString2
 }
+
 
 /*
  * That's a lot of bytecode for constructing the class.

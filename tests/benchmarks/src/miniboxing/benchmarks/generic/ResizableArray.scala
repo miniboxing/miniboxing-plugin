@@ -58,9 +58,9 @@ class ResizableArray[T: Manifest] {
 
   def length = elemCount
 
-  def setElement(p: Int, t: T) = {
+  @inline final def setElement(p: Int, t: T) = {
     array(p) = t
   }
-  def getElement(p: Int): T = array(p)
+  @inline final def getElement(p: Int): T = array(p)
 }
 
