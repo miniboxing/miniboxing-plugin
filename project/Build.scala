@@ -70,4 +70,9 @@ object MiniboxingBuild extends Build {
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ asm)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classLoader) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ classLoader ++ scalaMeter) dependsOn(plugin, runtime, classloader)
+  // @Cristi: The project will be called "miniboxing-lib-bench". You can run it with "sbt miniboxing-lib-bench/run"
+  // I don't think we'll need the classloader, as only the array operations are affected by the megamorphic problem
+  // (well, the other Any methods that we rewire may also be affected but we don't really need them at this point)
+  // BTW, we'll use type tags, not the dispatchers, as they proved more stable.
+  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ scalaMeter) dependsOn (plugin, runtime)
 }
