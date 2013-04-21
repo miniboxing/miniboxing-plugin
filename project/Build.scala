@@ -8,6 +8,13 @@ object MiniboxingBuild extends Build {
 
   val scalaVer = "2.10.2-SNAPSHOT"
 
+  // http://stackoverflow.com/questions/6506377/how-to-get-list-of-dependency-jars-from-an-sbt-0-10-0-project
+  val getJars = TaskKey[Unit]("get-jars")
+  val getJarsTask = getJars <<= (target, fullClasspath in Runtime) map { (target, cp) =>
+    println("Target path is: "+target)
+    println("Full classpath is: "+cp.map(_.data).mkString(":"))
+  }
+
   val defaults = Defaults.defaultSettings ++ assemblySettings ++ Seq(
     scalaVersion := scalaVer,
     scalaBinaryVersion := "2.10",
@@ -35,6 +42,7 @@ object MiniboxingBuild extends Build {
       "org.scala-lang" % "scala-library" % scalaVer,
       "org.scala-lang" % "scala-reflect" % scalaVer,
       "org.scala-lang" % "scala-compiler" % scalaVer,
+      "org.scala-lang" % "scala-partest" % scalaVer, 
       "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
       "com.novocode" % "junit-interface" % "0.10-M2" % "test"
     ),
@@ -64,11 +72,25 @@ object MiniboxingBuild extends Build {
     )
   }
 
+  val correctnessTests = Seq(
+    getJarsTask,
+    fork in Test := true,
+    javaOptions in Test <+= (dependencyClasspath in Runtime) map { path =>
+      def isBoot(file: java.io.File) = 
+        ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
+        (file.toString contains "target/scala-2.10") // this makes me cry, seriously sbt...
+
+      val cp = "-Xbootclasspath/a:"+path.map(_.data).filter(isBoot).mkString(":")
+      println(cp)
+      cp
+    }
+  )
+
   lazy val _mboxing    = Project(id = "miniboxing",             base = file(".")) aggregate (runtime, plugin, classloader, tests, benchmarks)
   lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ asm)
-  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classLoader) dependsOn(plugin, runtime, classloader)
+  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classLoader ++ correctnessTests) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ classLoader ++ scalaMeter) dependsOn(plugin, runtime, classloader)
   // @Cristi: The project will be called "miniboxing-lib-bench". You can run it with "sbt miniboxing-lib-bench/run"
   // I don't think we'll need the classloader, as only the array operations are affected by the megamorphic problem
