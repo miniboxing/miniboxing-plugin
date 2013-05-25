@@ -19,6 +19,7 @@ trait MiniboxLogic {
    *  `Tsp`.
    */
   type TypeEnv = immutable.Map[Symbol, Type]
+  val EmptyTypeEnv: TypeEnv = Map.empty
 
   /**
    * A `PartialSpec` provides us information about the representation used

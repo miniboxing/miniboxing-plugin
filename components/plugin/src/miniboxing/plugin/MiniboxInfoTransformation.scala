@@ -143,10 +143,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr setFlag MINIBOXED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
           newMbr modifyInfo (info =>
-            subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)) match {
+            miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)) match {
               case MethodType(params, result) =>
                 val tagParams = typeTagMap.values map (_.cloneSymbol(newMbr, SYNTHETIC))
-                MethodType(info.params ++ tagParams, result)
+                MethodType(params ++ tagParams, result)
               case nmt: NullaryMethodType =>
                 nmt
             })
@@ -166,26 +166,44 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   /*
    * Substitute the type parameters with their value as given by the 'env'
-   * in the type 'tpe'. Also replace use only the specialized interface
-   * in signatures.
+   * in the type 'tpe'. The replacement is shallow, as the transformation
+   * doesn't go deep into the types:
+   *   class C[@minispec T]{
+   *     def foo: T = ???
+   *     def bar: List[T] = ???
+   *   }
+   * should produce:
+   *   class C_J[T$sp](T_Tag: Byte) extends C[T] {
+   *     def foo_L: Long       = ??? // <= notice we return long here
+   *     def bar_L: List[T$sp] = ??? // <= notice this is List[T$sp] instead of List[Long]
+   *                                 //    if the List class is miniboxed, List[T$sp] will actually be an interface
+   *                                 //    and it will be inherited by either List_L or List_J.
+   *     def foo: T$sp         = minibox2box(foo_L, T_Tag)
+   *     def bar: List[T$sp]   = minibox2box(bar_L, T_Tag)
+   *
+   *  This can be done in two steps:
+   *    1. going from T to T$sp, deep transformation (eg List[T] => List[T$sp])
+   *    2. going from T$sp to Long, shallow transformation (eg T$sp => Long, but List[T$sp] stays the same)
    */
-  private def subst(env: TypeEnv, tpe: Type): Type = {
-    val (keys, values) = env.toList.unzip
-    val substMap = new SubstTypeMap(keys, values) {
+  private def miniboxSubst(deepEnv: TypeEnv, shallowEnv: TypeEnv, tpe: Type) = {
+    // Deep transformation, which redirects T to T$sp
+    val (deepKeys, deepValues) = deepEnv.toList.unzip
+    val deepSubst = new SubstTypeMap(deepKeys, deepValues)
+
+    // Shallow transformation, which redirects T$sp to Long if T$sp represents a miniboxed value
+    val (shallowKeys, shallowValues) = shallowEnv.toList.unzip
+    val shallowSubst = new SubstTypeMap(shallowKeys, shallowValues) {
       override def mapOver(tp: Type): Type = tp match {
-        // TODO: Shallow type replacements.
-        //        This is probably redundant at this point -- we don't need to redirect the main class to the interface
-        //        case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
-        //          val iface = baseClass(sym)
-        //          TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
-        //        case TypeRef(pre, sym, args) if (sym == ArrayClass) =>
-        //          AnyClass.tpe // arrays are 'erased' to Any
+        case TypeRef(pre, sym, args) =>
+          shallowEnv.get(sym) match {
+            case Some(tpe) if args.isEmpty => tpe
+            case _ => tp // we don't want the mapper to go further inside the type
+          }
         case _ =>
           super.mapOver(tp)
       }
     }
-
-    substMap(tpe)
+    shallowSubst(deepSubst(tpe))
   }
 
   /*
@@ -238,9 +256,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * one overload for each representation, we only need to change the
      * type parameter symbols to the fresh ones (ifaceEnv).
      */
-    val implEnv: TypeEnv = spec map {
-      case (p, Boxed)     => (p, pmap(p).tpe)
-      case (p, Miniboxed) => (p, LongClass.tpe)
+    val implEnv: TypeEnv = spec flatMap {
+      case (p, Boxed)     => None // stays the same
+      case (p, Miniboxed) => Some((pmap(p), LongClass.tpe))
     }
     val ifaceEnv: TypeEnv = pmap mapValues (_.tpe)
 
@@ -249,7 +267,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * the tree transformer.
      */
     specializedClasses(clazz) ::= sClass
-    typeEnv(sClass) = implEnv
+    //typeEnv(sClass) = (ifaceEnv, implEnv)
     partialSpec(sClass) = spec
 
     // declarations inside the specialized class - to be filled in later
@@ -281,7 +299,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
        */
       assert(clazz.info.parents == List(AnyRefClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz.info.parents)
       val sParents = (clazz.info.parents ::: List(clazz.tpe)) map {
-        t => (subst(ifaceEnv, t))
+        t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t))
       }
 
       // parameters which are not fixed
@@ -310,15 +328,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
     for ((m, newMbr) <- newMembers) {
       newMbr setFlag MINIBOXED
       newMbr modifyInfo { info =>
-        val info1 = info.substThis(clazz, sClass)
+        // TODO: Is there any change we need to do aside from asSeenFrom? I would assume not.
+        val info2 = info.asSeenFrom(sClass.tpe, m.owner)
+//        val info1 = info.substThis(clazz, sClass)
+//        val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
         if (m.isConstructor) { // constructor - add type tags as parameters
-          MethodType(subst(implEnv, info1).params, newMbr.owner.tpe)
+          MethodType(info2.params, newMbr.owner.tpe)
         } else if (m.isTerm && !m.isMethod) {
-          if (m.isImplicit) info1 else {
-            subst(implEnv, info1)
-          }
+          if (m.isImplicit)
+            info2 // info1
+          else
+            info2
         } else {
-          subst(ifaceEnv, info1)
+          info2
         }
       }
       debug(sClass + " entering: " + newMbr)

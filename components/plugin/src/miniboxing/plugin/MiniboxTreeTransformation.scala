@@ -277,7 +277,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         tree = copyDefDef(defn)(rhs = newBody),
         oldThis = origMember.enclClass,
         newThis = specMember.enclClass,
-        env = typeEnv(specMember.owner)) // XXX: keep all parameters
+        env = typeEnv(specMember.owner)._1) // XXX: keep all parameters
+      assert(false, "TODO: This needs the cool miniboxSubst.")
 
       newBody
 
@@ -340,7 +341,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         copyValDef(defn)(rhs = newBody),
         origMember.enclClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner)) // XXX: keep all parameters
+        typeEnv(defSymbol.owner)._1) // XXX: keep all parameters
+      assert(false, "TODO: This needs the cool miniboxing substitution")
+      ???
     }
 
     /**
