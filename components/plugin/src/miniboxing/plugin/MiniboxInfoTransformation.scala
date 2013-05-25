@@ -6,7 +6,7 @@ import scala.collection.mutable.HashMap
 import scala.tools.nsc.typechecker.Analyzer
 
 trait MiniboxInfoTransformation extends InfoTransform {
-  self: MiniboxPhase with MiniboxLogic with MiniboxLogging with MiniboxSpecializationInfo  =>
+  self: MiniboxPhase with MiniboxLogic with MiniboxLogging with MiniboxSpecializationInfo =>
 
   import global._
   import Flags._
@@ -47,8 +47,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           log("-------------- ORIGINAL CLASS ----------------")
           log(clazz.defString)
-          for (decl <- clazz.info.decls)
-            log("  " + decl.defString)
+          for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
+            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
 
           // Create the actual specialized classes
           val classes = envs map (specializeClass(clazz, _))
@@ -56,17 +56,22 @@ trait MiniboxInfoTransformation extends InfoTransform {
           classes foreach { cls =>
             log("------------ SPEC CLASS ------------")
             log(cls.defString);
-            for (decl <- cls.info.decls)
-              log("  " + decl.defString)
+            for (decl <- cls.info.decls.toList.sortBy(_.nameString))
+              log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
           }
 
           // Now we remove the fields from the class and leave the getters and setters as abstract
           removeClassFields(clazz)
 
+          log("-------------- INTERFACE MEMBERS ----------------")
+          for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
+            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+
           log("-------------- TEMPLATE MEMBERS ----------------")
-          templateMembers foreach (m => println(m.fullName))
-          for ((m, info) <- memberSpecializationInfo)
-            debug("%s \t- %s".format(m.fullName, info))
+          for (decl <- templateMembers.toList.sortBy(_.nameString))
+            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+
+          sys.exit(0);
 
           tpe
         case _ =>
@@ -168,10 +173,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val (keys, values) = env.toList.unzip
     val substMap = new SubstTypeMap(keys, values) {
       override def mapOver(tp: Type): Type = tp match {
-//        This is probably redundant at this point -- we don't need to redirect the main class to the interface
-//        case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
-//          val iface = baseClass(sym)
-//          TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
+        //        This is probably redundant at this point -- we don't need to redirect the main class to the interface
+        //        case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
+        //          val iface = baseClass(sym)
+        //          TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
         case TypeRef(pre, sym, args) if (sym == ArrayClass) =>
           AnyClass.tpe // arrays are 'erased' to Any
         case _ =>
@@ -207,34 +212,34 @@ trait MiniboxInfoTransformation extends InfoTransform {
     clazz.setFlag(ABSTRACT)
   }
 
-//  /*
-//   * Creates the generic interface of the `clazz`. It contains the
-//   * methods of `clazz` with all their specialized overloads.
-//   */
-//  private def createGenericInterface(clazz: Symbol): Symbol = {
-//    val ifaceName = interfaceName(clazz.name)
-//    val iface: Symbol =
-//      clazz.owner.newClass(ifaceName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
-//
-//    // Copy the methods into the interface and replace the type parameters with fresh ones
-//    specializedInterface(clazz) = iface
-//    val pmap = ParamMap(clazz.typeParams, iface)
-//
-//    val ifaceDecls = newScope
-//    for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
-//      val d = decl.cloneSymbol(iface, decl.flags | MINIBOXED) modifyInfo substParams(pmap)
-//      // record the fact that the method `d` will not have an implementation
-//      memberSpecializationInfo(d) = Interface()
-//      ifaceDecls enter d
-//    }
-//    val interfaceType =
-//      // TODO: Parent types instead of AnyRef
-//      PolyType(pmap.values.toList, ClassInfoType(List(AnyRefClass.tpe), ifaceDecls, iface))
-//
-//    iface setInfo interfaceType
-//
-//    iface
-//  }
+  //  /*
+  //   * Creates the generic interface of the `clazz`. It contains the
+  //   * methods of `clazz` with all their specialized overloads.
+  //   */
+  //  private def createGenericInterface(clazz: Symbol): Symbol = {
+  //    val ifaceName = interfaceName(clazz.name)
+  //    val iface: Symbol =
+  //      clazz.owner.newClass(ifaceName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
+  //
+  //    // Copy the methods into the interface and replace the type parameters with fresh ones
+  //    specializedInterface(clazz) = iface
+  //    val pmap = ParamMap(clazz.typeParams, iface)
+  //
+  //    val ifaceDecls = newScope
+  //    for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
+  //      val d = decl.cloneSymbol(iface, decl.flags | MINIBOXED) modifyInfo substParams(pmap)
+  //      // record the fact that the method `d` will not have an implementation
+  //      memberSpecializationInfo(d) = Interface()
+  //      ifaceDecls enter d
+  //    }
+  //    val interfaceType =
+  //      // TODO: Parent types instead of AnyRef
+  //      PolyType(pmap.values.toList, ClassInfoType(List(AnyRefClass.tpe), ifaceDecls, iface))
+  //
+  //    iface setInfo interfaceType
+  //
+  //    iface
+  //  }
 
   /**
    * Specialize class `clazz`. `spec` gives the representation for the type parameters.
@@ -261,7 +266,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * type parameter symbols to the fresh ones (ifaceEnv).
      */
     val implEnv: TypeEnv = spec map {
-      case (p, Boxed) => (p, pmap(p).tpe)
+      case (p, Boxed)     => (p, pmap(p).tpe)
       case (p, Miniboxed) => (p, LongClass.tpe)
     }
     val ifaceEnv: TypeEnv = pmap mapValues (_.tpe)
@@ -321,7 +326,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           subst(ifaceEnv, info1)
         }
       }
-      debug(sClass +  " entering: " + newMbr)
+      debug(sClass + " entering: " + newMbr)
       sClassDecls enter newMbr
     }
 
@@ -407,9 +412,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
         }
         // Arrays are 'erased' to Any
       } else if (srcTypeSymbol == ArrayClass && tgtTypeSymbol == AnyClass) {
-          NoCast
-      } else if (srcTypeSymbol == AnyClass && tgtTypeSymbol == ArrayClass){
-          AsInstanceOfCast
+        NoCast
+      } else if (srcTypeSymbol == AnyClass && tgtTypeSymbol == ArrayClass) {
+        AsInstanceOfCast
       } else {
         log(wrapper + ": " + wrapper.tpe)
         log(target + ": " + target.tpe)

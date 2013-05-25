@@ -20,7 +20,7 @@ trait MiniboxSpecializationInfo {
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
   case class ForwardTo(method: Symbol, ret: CastInfo, params: List[CastInfo]) extends MethodInfo {
-    override def toString = "ForwardTo(" + method.fullName + ")"
+    override def toString = "ForwardTo(" + method + ")"
   }
   /*
    * We need to record how the parameters and the return value should be casted.
@@ -44,7 +44,7 @@ trait MiniboxSpecializationInfo {
    *  So, if the symbol is `apply`, the `method` will be `apply$mcII$sp`.
    */
   case class OverrideOfSpecializedMethod(method: Symbol) extends MethodInfo {
-    override def toString = "OverrideOfSpecializedMethod(" + method.fullName + ")"
+    override def toString = "OverrideOfSpecializedMethod(" + method + ")"
   }
 
   /**
@@ -56,7 +56,7 @@ trait MiniboxSpecializationInfo {
    */
   case class SpecializedImplementationOf(member: Symbol) extends MethodInfo {
     templateMembers += member
-    override def toString = "SpecializedImplementationOf2(" + member.fullName + ")"
+    override def toString = "SpecializedImplementationOf2(" + member + ")"
   }
 
   /**
@@ -64,7 +64,7 @@ trait MiniboxSpecializationInfo {
    * actual field.
    */
   case class FieldAccessor(field: Symbol) extends MethodInfo {
-    override def toString = "FieldAccessor(" + field.fullName + ")"
+    override def toString = "FieldAccessor(" + field + ")"
   }
 
   /**
