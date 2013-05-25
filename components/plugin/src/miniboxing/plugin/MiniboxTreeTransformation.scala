@@ -55,6 +55,20 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           }
 
         /*
+         * This is either a class that has nothing to do with miniboxing or that is the base
+         * class (now trait) for the specialization.
+         */
+        case Template(parents, self, body) if { afterMinibox(tree.symbol.enclClass.info); specializedBase(tree.symbol.enclClass) } =>
+          MethodBodiesCollector(tree)
+          val traitSym = tree.symbol.enclClass
+          val traitDecls = afterMinibox(traitSym.info).decls.toList
+          val traitCtor = localTyper.typed(DefDef(traitSym.primaryConstructor, Block(List(), Literal(Constant()))))
+          val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
+          localTyper.typedPos(tree.pos)(
+            treeCopy.Template(tree, parents, self,
+              atOwner(currentOwner)(transformTrees(traitCtor :: body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers))))
+
+        /*
          * The tree of a specialized class is empty for the moment, but we
          * have creates symbols for the methods - give them an empty body.
          *
@@ -62,11 +76,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * and specialized.
          */
         case Template(parents, self, body) =>
-          MethodBodiesCollector(tree)
+          println("DERIV: " + tree.symbol)
+          //MethodBodiesCollector(tree)
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           localTyper.typedPos(tree.pos)(
             treeCopy.Template(tree, parents, self,
               atOwner(currentOwner)(transformTrees(body ::: specMembers))))
+
+        /*
+         * A definition with empty body - add a body as prescribed by the
+         * `methodSpecializationInfo` data structure.
+         */
+        case ddef @ DefDef(mods, name, tparams, vparamss, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR =>
+          localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss, tpt, EmptyTree))
 
         /*
          * A definition with empty body - add a body as prescribed by the
@@ -184,6 +206,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Create implementation trees for specialized classes
      */
     private def createSpecializedClassesTrees(classdefs: List[Tree]): List[Tree] = {
+      // TODO: Create specialized classes
+      return Nil
       val buf = new mutable.ListBuffer[Tree]
       for (tree <- classdefs)
         tree match {

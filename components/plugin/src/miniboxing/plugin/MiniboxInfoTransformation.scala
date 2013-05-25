@@ -36,6 +36,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
      */
     if (isSpecializableClass(sym)) {
       log("Specializing " + sym + "...")
+
+      // mark this symbol as the base of a miniboxed hierarchy
+      specializedBase += sym
+
       tpe match {
         case PolyType(tArgs, ClassInfoType(parents, decls, typeSym)) =>
           val clazz = sym
@@ -228,7 +232,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
       if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
         decls unlink mbr
     }
-    clazz.setFlag(ABSTRACT)
+    // Add trait constructor and set the trait flag
+    clazz.info.decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
   }
 

@@ -104,11 +104,7 @@ trait MiniboxSpecializationInfo {
     }
   }
 
-//  /**
-//   * `specializedInterface(C)` is the interface `C_interface` extended by all
-//   * specialized versions of `C`
-//   */
-//  val specializedInterface = new mutable.HashMap[Symbol, Symbol]
+  val specializedBase = mutable.Set.empty[Symbol]
 
   /**
    * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
