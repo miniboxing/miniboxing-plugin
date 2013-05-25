@@ -233,7 +233,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       private def collect(member: Symbol, rhs: Tree, params: List[Symbol]) = {
         body(member) = (rhs, params)
         templateMembers -= member
-        println("collected " + member.fullName)
+        debug("collected " + member.fullName)
       }
 
       def getMethodBody(meth: Symbol) = body(meth)

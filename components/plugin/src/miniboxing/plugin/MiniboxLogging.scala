@@ -10,7 +10,7 @@ trait MiniboxLogging {
   lazy val flag_debug = sys.props.get("miniboxing.debug").isDefined
 
   def log(msg: => Any) = if (flag_log) println(msg.toString)
-  def debug(msg: => Any) = if (flag_log) println(msg.toString)
+  def debug(msg: => Any) = if (flag_debug) println(msg.toString)
 
   def printTree(label: Any, tree: global.Tree) = {
 //    val showTrees = global.settings.Xshowtrees.value

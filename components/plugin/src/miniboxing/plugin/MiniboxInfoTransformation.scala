@@ -138,7 +138,13 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr setFlag MINIBOXED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
           newMbr modifyInfo (info =>
-            subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)))
+            subst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)) match {
+              case MethodType(params, result) =>
+                val tagParams = typeTagMap.values map (_.cloneSymbol(newMbr, SYNTHETIC))
+                MethodType(info.params ++ tagParams, result)
+              case nmt: NullaryMethodType =>
+                nmt
+            })
 
           clazz.info.resultType.decls enter (newMbr)
         }
@@ -315,7 +321,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           subst(ifaceEnv, info1)
         }
       }
-      log(sClass +  " entering: " + newMbr)
+      debug(sClass +  " entering: " + newMbr)
       sClassDecls enter newMbr
     }
 
@@ -331,19 +337,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (m.isDeferred)
           memberSpecializationInfo(newMbr) = Interface()
 
+        //log(newMbr + " from " + m + " with " + spec)
         /* Check whether the method is the one that will carry the
          * implementation. If yes, find the original method from the original
          * class from which to copy the implementation. If no, find the method
          * that will have an implementation and forward to it.
          */
-        log(newMbr + " from " + m + " with " + spec)
         if (overloads(m)(spec) == m) {
           if (m.hasAccessorFlag) {
             memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(m) match {
               case Some(ForwardTo(original, _, _)) =>
                 FieldAccessor(newMembers(original.accessed))
               case _ =>
-                ???
+                global.error("Unaccounted case: " + memberSpecializationInfo.get(m)); ???
             }
           } else {
             memberSpecializationInfo.get(m) match {
@@ -407,9 +413,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
       } else {
         log(wrapper + ": " + wrapper.tpe)
         log(target + ": " + target.tpe)
+        log(srcTypeSymbol)
+        log(tgtTypeSymbol)
         log("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
         log(srcTypeSymbol + " --> " + tgtTypeSymbol)
-        sys.exit
+        ???
       }
 
     }

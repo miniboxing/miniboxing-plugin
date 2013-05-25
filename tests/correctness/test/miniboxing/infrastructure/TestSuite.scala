@@ -28,7 +28,12 @@ class TestSuite {
 
   // TODO: This needs to be general, it's currently a mess
   private[this] def pluginCompilerFlag() =
-    "-Xplugin:" + files(List("components", "plugin", "target", "scala-2.10"), ".jar").head.toString
+    try {
+      "-Xplugin:" + files(List("components", "plugin", "target", "scala-2.10"), ".jar").head.toString
+    } catch {
+      case x: NoSuchElementException =>
+        sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")
+    }
 
   @Test def testCompileOutput = {
     var failed = false
