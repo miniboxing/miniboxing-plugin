@@ -35,7 +35,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      *  and bridge methods
      */
     if (isSpecializableClass(sym)) {
-      println("Specializing " + sym + "...")
+      log("Specializing " + sym + "...")
       tpe match {
         case PolyType(tArgs, ClassInfoType(parents, decls, typeSym)) =>
           val clazz = sym
@@ -46,7 +46,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           widenClass(clazz, envs)
 
           log("-------------- ORIGINAL CLASS ----------------")
-          log(clazz.defString);
+          log(clazz.defString)
           for (decl <- clazz.info.decls)
             log("  " + decl.defString)
 
@@ -234,7 +234,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Specialize class `clazz`. `spec` gives the representation for the type parameters.
    */
   def specializeClass(clazz: Symbol, spec: PartialSpec): Symbol = {
-    val sClassName = specializedName(clazz.name, typeParamValues(clazz, spec)).toTypeName
+    val sParamValues = typeParamValues(clazz, spec)
+    val sClassName = specializedName(clazz.name, sParamValues).toTypeName
     val sClass = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags)
 
     sClass.sourceFile = clazz.sourceFile
@@ -287,7 +288,13 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // Copy the members of the original class to the specialized class.
     val newMembers: Map[Symbol, Symbol] =
-      (for (m <- clazz.info.members if m.owner == clazz) yield (m, m.cloneSymbol(sClass))).toMap
+      (for (m <- clazz.info.members if m.owner == clazz) yield {
+        val newMbr = m.cloneSymbol(sClass)
+        // for fields, we mangle names:
+        if (m.isTerm && !m.isMethod)
+          newMbr.name = specializedName(m.name, sParamValues)
+        (m, newMbr)
+      }).toMap
 
     // Record the new mapping for type tags to the fields carrying them
     val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag)) }
@@ -308,6 +315,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           subst(ifaceEnv, info1)
         }
       }
+      log(sClass +  " entering: " + newMbr)
       sClassDecls enter newMbr
     }
 
@@ -328,9 +336,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
          * class from which to copy the implementation. If no, find the method
          * that will have an implementation and forward to it.
          */
+        log(newMbr + " from " + m + " with " + spec)
         if (overloads(m)(spec) == m) {
           if (m.hasAccessorFlag) {
-            memberSpecializationInfo(newMbr) = FieldAccessor(newMembers(m.accessed))
+            memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(m) match {
+              case Some(ForwardTo(original, _, _)) =>
+                FieldAccessor(newMembers(original.accessed))
+              case _ =>
+                ???
+            }
           } else {
             memberSpecializationInfo.get(m) match {
               case Some(ForwardTo(original, _, _)) =>
