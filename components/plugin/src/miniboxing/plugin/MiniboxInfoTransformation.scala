@@ -173,12 +173,13 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val (keys, values) = env.toList.unzip
     val substMap = new SubstTypeMap(keys, values) {
       override def mapOver(tp: Type): Type = tp match {
+        // TODO: Shallow type replacements.
         //        This is probably redundant at this point -- we don't need to redirect the main class to the interface
         //        case TypeRef(pre, sym, args) if (isSpecializableClass(sym)) =>
         //          val iface = baseClass(sym)
         //          TypeRef(pre, iface, mapOverArgs(args, iface.typeParams))
-        case TypeRef(pre, sym, args) if (sym == ArrayClass) =>
-          AnyClass.tpe // arrays are 'erased' to Any
+        //        case TypeRef(pre, sym, args) if (sym == ArrayClass) =>
+        //          AnyClass.tpe // arrays are 'erased' to Any
         case _ =>
           super.mapOver(tp)
       }
@@ -200,46 +201,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
   /*
    * This removes fields and constructors from a class while leaving the
    * setters and getters in place. The effect is that the class automatically
-   * becomes a
+   * becomes an interface
    */
   private def removeClassFields(clazz: Symbol) = {
-    val decls = clazz.info.decls.cloneScope
+    val decls = clazz.info.decls //.cloneScope
     for (mbr <- decls) {
       mbr.setFlag(DEFERRED)
       if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
         decls unlink mbr
     }
     clazz.setFlag(ABSTRACT)
+    clazz.setFlag(TRAIT)
   }
-
-  //  /*
-  //   * Creates the generic interface of the `clazz`. It contains the
-  //   * methods of `clazz` with all their specialized overloads.
-  //   */
-  //  private def createGenericInterface(clazz: Symbol): Symbol = {
-  //    val ifaceName = interfaceName(clazz.name)
-  //    val iface: Symbol =
-  //      clazz.owner.newClass(ifaceName, clazz.pos, clazz.flags | INTERFACE | TRAIT | ABSTRACT)
-  //
-  //    // Copy the methods into the interface and replace the type parameters with fresh ones
-  //    specializedInterface(clazz) = iface
-  //    val pmap = ParamMap(clazz.typeParams, iface)
-  //
-  //    val ifaceDecls = newScope
-  //    for (decl <- clazz.info.decls if decl.isMethod && !decl.isConstructor) {
-  //      val d = decl.cloneSymbol(iface, decl.flags | MINIBOXED) modifyInfo substParams(pmap)
-  //      // record the fact that the method `d` will not have an implementation
-  //      memberSpecializationInfo(d) = Interface()
-  //      ifaceDecls enter d
-  //    }
-  //    val interfaceType =
-  //      // TODO: Parent types instead of AnyRef
-  //      PolyType(pmap.values.toList, ClassInfoType(List(AnyRefClass.tpe), ifaceDecls, iface))
-  //
-  //    iface setInfo interfaceType
-  //
-  //    iface
-  //  }
 
   /**
    * Specialize class `clazz`. `spec` gives the representation for the type parameters.
@@ -284,8 +257,30 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     // create the type of the new class
     val specializedInfoType: Type = {
-      // TODO: replace parents with the specialized version
-      val sParents = (clazz.info.parents) map {
+      /*
+       * for:
+       *   class C[@minispec T]
+       *   class D[@minispec T] extends C[T]
+       *
+       *      C
+       *    / | \
+       * C_L  |  C_J
+       *  |   |   |
+       *  |   D   |
+       *  | /   \ |
+       * D_L     D_J
+       *
+       * we should have:
+       *   trait C[@minispec T]
+       *   trait D[@minispec T] extends C[T]
+       *   ...
+       *   class D_L[T$sp] extends C_L[T$sp] with D[T$sp] // <= first the parents, adapted and then the interface
+       *                                                  // thankfully there's no type checking at this point as
+       *                                                  // we're creating types that are not valid (since a C and D
+       *                                                  // are still classes)
+       */
+      assert(clazz.info.parents == List(AnyRefClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz.info.parents)
+      val sParents = (clazz.info.parents ::: List(clazz.tpe)) map {
         t => (subst(ifaceEnv, t))
       }
 
