@@ -9,14 +9,14 @@ import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 
-trait MiniboxComponent extends 
+trait MiniboxComponent extends
     PluginComponent
-    with MiniboxLogic 
-    with MiniboxInfoTransformation 
-    with MiniboxLogging 
+    with MiniboxLogic
+    with MiniboxInfoTransformation
+    with MiniboxLogging
     with MiniboxTreeTransformation
     with MiniboxSpecializationInfo
-    with MiniboxingDefinitions
+    with MiniboxDefinitions
     with MiniboxPhase
 
 class Minibox(val global: Global) extends Plugin {
@@ -32,9 +32,9 @@ class Minibox(val global: Global) extends Plugin {
     val runsAfter = List("refchecks")
     val phaseName = Minibox.this.name
 
-    override var currentPhase : StdPhase = _ 
+    override var currentPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      currentPhase = new Phase(prev); 
+      currentPhase = new Phase(prev);
       currentPhase
     }
 
@@ -49,6 +49,6 @@ class Minibox(val global: Global) extends Plugin {
 
 trait MiniboxPhase extends PluginComponent {
   var currentPhase : StdPhase
-  def afterMinibox[T](op: => T): T = 
+  def afterMinibox[T](op: => T): T =
     global.afterPhase(currentPhase)(op)
 }

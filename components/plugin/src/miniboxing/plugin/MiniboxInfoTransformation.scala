@@ -71,7 +71,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           for (decl <- templateMembers.toList.sortBy(_.nameString))
             log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
 
-          sys.exit(0);
+          // sys.exit(0);
 
           tpe
         case _ =>

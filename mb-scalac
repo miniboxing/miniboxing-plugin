@@ -14,4 +14,25 @@ MINIBOXING_VERSION=0.1
 PLUGIN_JAR=$MINIBOXING_PATH/components/plugin/target/scala-$SCALA_VERSION/miniboxing-plugin_$SCALA_VERSION-$MINIBOXING_VERSION-SNAPSHOT.jar
 RUNTIME_JAR=$MINIBOXING_PATH/components/runtime/target/scala-$SCALA_VERSION/miniboxing-runtime_$SCALA_VERSION-$MINIBOXING_VERSION-SNAPSHOT.jar
 
-$SCALA_PATH/scalac -J-Dminiboxing.log=true -cp $RUNTIME_JAR:$PLUGIN_JAR -Xplugin:$PLUGIN_JAR $@
+function checkjar {
+  if [ ! -f "$1" ]
+  then
+    echo "The script is going to build the required jar file $1 by running \"sbt $2\" [5s until build]"
+    sleep 5
+    cd `pwd`/`dirname $0`
+    sbt $2
+    cd -
+    if [ ! -f "$1" ]
+    then
+      echo "The required jar file has not been built by sbt. Please run \"sbt $2\""
+      exit 1
+    else
+      echo "The required jar file was built."
+    fi
+  fi
+}
+
+checkjar $PLUGIN_JAR miniboxing-plugin/package
+checkjar $RUNTIME_JAR miniboxing-runtime/package
+
+$SCALA_PATH/scalac -J-Dminiboxing.log=true -bootclasspath $RUNTIME_JAR -cp $PLUGIN_JAR -Xplugin:$PLUGIN_JAR $@
