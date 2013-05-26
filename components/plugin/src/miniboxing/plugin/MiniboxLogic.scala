@@ -2,6 +2,9 @@ package miniboxing.plugin
 
 import scala.tools.nsc.Global
 
+/** TODO: Document this */
+case class MiniboxingTypeEnv[TypeEnv](shallowEnv: TypeEnv, deepEnv: TypeEnv)
+
 trait MiniboxLogic {
   self: MiniboxLogging =>
 

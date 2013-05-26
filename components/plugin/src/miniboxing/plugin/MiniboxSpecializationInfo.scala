@@ -124,7 +124,7 @@ trait MiniboxSpecializationInfo {
    * Type environment of a class:
    * Needed by the duplicator to replace the symbols in the old tree.
    */
-  val typeEnv = new mutable.HashMap[Symbol, (TypeEnv, TypeEnv)]
+  val typeEnv = new mutable.HashMap[Symbol, MiniboxingTypeEnv[TypeEnv]]
 
   /**
    * Partial specialization corresponding to a class.

@@ -272,7 +272,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * the tree transformer.
      */
     specializedClasses(clazz) ::= sClass
-    //typeEnv(sClass) = (ifaceEnv, implEnv)
+    typeEnv(sClass) = MiniboxingTypeEnv(deepEnv = ifaceEnv, shallowEnv = implEnv)
     partialSpec(sClass) = spec
 
     // declarations inside the specialized class - to be filled in later

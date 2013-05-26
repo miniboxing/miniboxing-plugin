@@ -15,7 +15,7 @@ import scala.tools.nsc.typechecker._
  *
  *  @author  Iulian Dragos
  *  @version 1.0
- * 
+ *
  *  Vlad Ureche: I have to branch duplicators so I can make changes to it to suit miniboxing
  *   -- extending Analyzer just to override newTyper is a major PITA. Need to redesign this away
  */
@@ -29,7 +29,7 @@ abstract class Duplicators extends Analyzer {
 
   var indent = 0;
 
-  // This is the only reason we inherit from Analyzer. TODO: Maybe there's a better way to do it... 
+  // This is the only reason we inherit from Analyzer. TODO: Maybe there's a better way to do it...
   override def newTyper(context: Context): Typer = newBodyDuplicator(context).asInstanceOf[Typer]
 
   def retyped(context: Context, tree: Tree): Tree = {
@@ -42,22 +42,22 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type]): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: MiniboxingTypeEnv[TypeEnv]): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
     } else resetClassOwners
 
-    envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
+    envSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
     debuglog("retyped with env: " + env)
     newBodyDuplicator(context).typed(tree)
   }
 
   def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
 
-  def retypedMethod(context: Context, tree: DefDef, oldThis: Symbol, newThis: Symbol, env: collection.Map[Symbol, Type]): Tree = {
+  def retypedMethod(context: Context, tree: DefDef, oldThis: Symbol, newThis: Symbol, env: MiniboxingTypeEnv[TypeEnv]): Tree = {
     this.env = env
-    this.envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
+    this.envSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
     (newBodyDuplicator(context)).retypedMethodMB(tree, oldThis, newThis)
   }
 
@@ -70,7 +70,7 @@ abstract class Duplicators extends Analyzer {
   private var newClassOwner: Symbol = _
   private var interfaceClass: Symbol = _
   private var envSubstitution: SubstTypeMap = _
-  private var env: collection.Map[Symbol, Type] = _
+  private var env: MiniboxingTypeEnv[TypeEnv] = _
 
   private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
     protected override def matches(sym1: Symbol, sym2: Symbol) =
@@ -92,7 +92,6 @@ abstract class Duplicators extends Analyzer {
       def apply(tpe: Type): Type = {
         mapOver(tpe)
       }
-
 
       override def mapOver(tpe: Type): Type = tpe match {
         case TypeRef(NoPrefix, sym, args) if sym.isTypeParameterOrSkolem =>
@@ -222,7 +221,7 @@ abstract class Duplicators extends Analyzer {
       newClassOwner = newThis
       invalidateAll(ddef.tparams)
 
-      // TODO: Invalidate method parameters 
+      // TODO: Invalidate method parameters
 
 //      ddef.symbol = NoSymbol
 //      enterSym(context, ddef)
@@ -357,7 +356,7 @@ abstract class Duplicators extends Analyzer {
           super.typed(tree, mode, pt)
 
 //        case Ident(_) if {
-//          // condition: the tree is of type T and the type is bound to the 
+//          // condition: the tree is of type T and the type is bound to the
 //              println("    => " + tree.tpe.typeSymbol)
 //              println("    => " + updateSym(tree.tpe.typeSymbol))
 //              println("    => " + fixType(tree.tpe))
@@ -365,7 +364,7 @@ abstract class Duplicators extends Analyzer {
 ////          val retyped = super.typed(Ident(updateSym(tree.symbol)))
 ////          val cond2 = (retyped.tpe.normalize.typeSymbol == global.definitions.LongClass)
 ////        } =>
-////          // box the 
+////          // box the
 
         case Select(th @ This(_), sel) if (oldClassOwner ne null) && (th.symbol == oldClassOwner) =>
           // log("selection on this, no type ascription required")
@@ -426,7 +425,7 @@ abstract class Duplicators extends Analyzer {
           // This leads to the following "funny" scenario: we have a value of abstract type T, which is updated to type
           // Tp, according to the minixboxing rules -- but the tree node expects T (tree.tpe = T) -- so the typer will
           // attempt to adapt Tp to T. In specialization, this works, as the specialized class exends the generic class,
-          // but in miniboxing it crashes, as there's no relation between T and Tp. 
+          // but in miniboxing it crashes, as there's no relation between T and Tp.
           // Solution: reset tree.tpe to null. Note that since the node inside has been erased of types, although using
           // fixType would yield the correct type, it would prevent the typer from recusing inside the tree node and
           // resolving symbols

@@ -3,8 +3,8 @@ package miniboxing.plugin
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.mutable
-
 import scala.tools.nsc.typechecker._
+import com.sun.org.apache.bcel.internal.util.ClassStack
 
 trait MiniboxTreeTransformation extends TypingTransformers {
   self: MiniboxComponent =>
@@ -23,7 +23,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     val duplicator = new {
       val global: MiniboxTreeTransformation.this.global.type = MiniboxTreeTransformation.this.global
-      val miniboxing: MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type } = MiniboxTreeTransformation.this.asInstanceOf[MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type }]
+      val miniboxing: MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type } =
+        MiniboxTreeTransformation.this.asInstanceOf[MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type }]
     } with Duplicators
     import global._
 
@@ -47,16 +48,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case PackageDef(pid, classdefs) =>
           atOwner(tree, tree.symbol) {
             val specClasses = createSpecializedClassesTrees(classdefs) map localTyper.typed
-            localTyper.typedPos(tree.pos)(
-              treeCopy.PackageDef(
-                tree,
-                pid,
-                transformStats(classdefs ::: specClasses, tree.symbol.moduleClass)))
+            val templates = transformStats(classdefs ::: specClasses, tree.symbol.moduleClass)
+            val packageTree = treeCopy.PackageDef(tree, pid, templates)
+            localTyper.typedPos(tree.pos)(packageTree)
           }
 
         /*
          * This is either a class that has nothing to do with miniboxing or that is the base
          * class (now trait) for the specialization.
+         *
+         * Also collect the bodies of the methods that need to be copied and specialized.
          */
         case Template(parents, self, body) if { afterMinibox(tree.symbol.enclClass.info); specializedBase(tree.symbol.enclClass) } =>
           MethodBodiesCollector(tree)
@@ -70,22 +71,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
         /*
          * The tree of a specialized class is empty for the moment, but we
-         * have creates symbols for the methods - give them an empty body.
-         *
-         * Meanwhile, collect the bodies of the methods that need to be copied
-         * and specialized.
+         * create symbols for the methods - give them an empty body.
          */
         case Template(parents, self, body) =>
-          println("DERIV: " + tree.symbol)
-          //MethodBodiesCollector(tree)
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
-          localTyper.typedPos(tree.pos)(
-            treeCopy.Template(tree, parents, self,
-              atOwner(currentOwner)(transformTrees(body ::: specMembers))))
+          val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
+          val templateDef = treeCopy.Template(tree, parents, self, memberDefs)
+          localTyper.typedPos(tree.pos)(templateDef)
 
         /*
-         * A definition with empty body - add a body as prescribed by the
-         * `methodSpecializationInfo` data structure.
+         * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR =>
           localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss, tpt, EmptyTree))
@@ -96,48 +91,49 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
           //println(tree.symbol + " ===> " + memberSpecializationInfo.apply(tree.symbol))
-          memberSpecializationInfo.apply(tree.symbol) match {
-
-            // Implement the getter or setter functionality
-            case FieldAccessor(field) =>
-              val rhs1 = ltypedpos(
-                if (tree.symbol.isGetter) {
-                  gen.mkAttributedRef(field)
-                } else {
-
-                  Assign(gen.mkAttributedRef(field),
-                    ltypedpos(Ident(vparamss.head.head.symbol)))
-                })
-              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
-
-            // copy the body of the `original` method
-            case SpecializedImplementationOf(original) =>
-              val newTree = addBody(tree, original)
-              localTyper.typedPos(tree.pos)(newTree)
-
-            // forward to the target methods, making casts as prescribed
-            case ForwardTo(target, retCast, paramCasts) =>
-              val rhs1 = vparamss match {
-                case Nil => gen.mkAttributedRef(target)
-                case vparams :: _ =>
-                  val params1 =
-                    ((vparams zip target.paramss.head) zip paramCasts) map {
-                      case ((p, t), paramCast) =>
-                        cast(Ident(p.symbol), t.tpe, paramCast)
-                    }
-                  gen.mkMethodCall(target, tparams map (_.tpe), params1)
-              }
-              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
-
-            case Interface() =>
-              tree
-
-            case OverrideOfSpecializedMethod(target) =>
-              sys.error("Not yet implemented!")
-
-            case info =>
-              sys.error("Unknown info type: " + info)
-          }
+          localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
+//          memberSpecializationInfo.apply(tree.symbol) match {
+//
+//            // Implement the getter or setter functionality
+//            case FieldAccessor(field) =>
+//              val rhs1 = ltypedpos(
+//                if (tree.symbol.isGetter) {
+//                  gen.mkAttributedRef(field)
+//                } else {
+//
+//                  Assign(gen.mkAttributedRef(field),
+//                    ltypedpos(Ident(vparamss.head.head.symbol)))
+//                })
+//              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
+//
+//            // copy the body of the `original` method
+//            case SpecializedImplementationOf(original) =>
+//              val newTree = addBody(tree, original)
+//              localTyper.typedPos(tree.pos)(newTree)
+//
+//            // forward to the target methods, making casts as prescribed
+//            case ForwardTo(target, retCast, paramCasts) =>
+//              val rhs1 = vparamss match {
+//                case Nil => gen.mkAttributedRef(target)
+//                case vparams :: _ =>
+//                  val params1 =
+//                    ((vparams zip target.paramss.head) zip paramCasts) map {
+//                      case ((p, t), paramCast) =>
+//                        cast(Ident(p.symbol), t.tpe, paramCast)
+//                    }
+//                  gen.mkMethodCall(target, tparams map (_.tpe), params1)
+//              }
+//              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
+//
+//            case Interface() =>
+//              tree
+//
+//            case OverrideOfSpecializedMethod(target) =>
+//              sys.error("Not yet implemented!")
+//
+//            case info =>
+//              sys.error("Unknown info type: " + info)
+//          }
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
@@ -176,7 +172,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       cinfo match {
         case NoCast => ttree
         case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
-
         case CastMiniboxToBox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
           ltypedpos(gen.mkMethodCall(minibox2box, List(ttree, tagref)))
@@ -206,29 +201,24 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Create implementation trees for specialized classes
      */
     private def createSpecializedClassesTrees(classdefs: List[Tree]): List[Tree] = {
-      // TODO: Create specialized classes
-      return Nil
       val buf = new mutable.ListBuffer[Tree]
       for (tree <- classdefs)
         tree match {
           case ClassDef(_, _, _, impl) =>
-            // force specialization - do we need this?
             afterMinibox(tree.symbol.info)
-            val sym1 = tree.symbol
             val classSymbol = tree.symbol
 
             if (isSpecializableClass(classSymbol)) {
               var sClasses: List[Symbol] = Nil
 
-              // no specialized classes yet
-              //sClasses ++= specializedClasses(classSymbol)
+              sClasses ++= specializedClasses(classSymbol)
 
               for (sClass <- sClasses) {
                 debug("creating class - " + sClass.name + ": " + sClass.parentSymbols)
                 val parents = sClass.info.parents map TypeTree
                 buf +=
                   ClassDef(sClass, atPos(impl.pos)(Template(parents, emptyValDef, List()))
-                    .setSymbol(sClass.newLocalDummy(sym1.pos))) setPos tree.pos
+                    .setSymbol(sClass.newLocalDummy(classSymbol.pos))) setPos tree.pos
               }
             }
           case _ =>
@@ -301,8 +291,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         tree = copyDefDef(defn)(rhs = newBody),
         oldThis = origMember.enclClass,
         newThis = specMember.enclClass,
-        env = typeEnv(specMember.owner)._1) // XXX: keep all parameters
-      assert(false, "TODO: This needs the cool miniboxSubst.")
+        env = typeEnv(specMember.owner)) // XXX: keep all parameters
 
       newBody
 
@@ -365,7 +354,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         copyValDef(defn)(rhs = newBody),
         origMember.enclClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner)._1) // XXX: keep all parameters
+        typeEnv(defSymbol.owner)) // XXX: keep all parameters
       assert(false, "TODO: This needs the cool miniboxing substitution")
       ???
     }
