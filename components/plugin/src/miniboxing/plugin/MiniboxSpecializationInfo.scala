@@ -19,7 +19,7 @@ trait MiniboxSpecializationInfo {
    *
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
-  case class ForwardTo(method: Symbol, ret: CastInfo, params: List[CastInfo]) extends MethodInfo {
+  case class ForwardTo(method: Symbol, ret: CastInfo, params: List[CastInfo], tags: List[Symbol]) extends MethodInfo {
     override def toString = "ForwardTo(" + method + ")"
   }
   /*
@@ -133,9 +133,16 @@ trait MiniboxSpecializationInfo {
 
   /**
    * Records for each of the specialized classes the type tag fields corresponding
-   * to each type parameter.
+   * to its specialized type parameters. These are global type tags, used in all
+   * members.
    */
-  val typeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
+  val globalTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
+  /**
+   * Records for each of the specialized classes the type tag fields corresponding
+   * to its specialized type parameters. These are local type tags, used in each
+   * member.
+   */
+  val localTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 
   /**
    * For each method of the original class and each partial specialization

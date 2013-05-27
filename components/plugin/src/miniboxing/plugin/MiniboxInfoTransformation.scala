@@ -75,7 +75,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           for (decl <- templateMembers.toList.sortBy(_.nameString))
             log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
 
-          // sys.exit(0);
+          sys.exit(0);
 
           tpe
         case _ =>
@@ -97,40 +97,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
     // we only specialize the members that are defined in the current class
     val members = clazz.info.members.filter(_.owner == clazz).toList
 
+    // TODO: Do we actually want to special-case constructors?
     val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
-    val ctors = members.filter(_.isConstructor)
     val getters = members.filter(_.isGetter)
     val setters = members.filter(_.isSetter)
     val fields = members.filter(m => m.isTerm && !m.isMethod)
-
-    /*
-     * Add type tag fields for each parameter. Will be copied in specialized
-     * subclasses.
-     *
-     * NOTE: We need type tag fields even for type parameters that
-     * don't use Miniboxed representation because we may forward form
-     * specialized overloads that receive Miniboxed arguments.
-     */
-    val typeTagMap: Map[Symbol, Symbol] =
-      (for (tparam <- clazz.typeParams) yield {
-        val sym = clazz.newValue(typeTagName(tparam), clazz.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal)
-        sym setInfo ByteClass.tpe
-        sym setFlag MINIBOXED
-
-        clazz.info.decls enter sym
-        (tparam, sym)
-      }).toMap
-    typeTags(clazz) = typeTagMap
-
-    // adding the type tags as constructor arguments
-    // TODO: add a new constructor which calls the previous one with 0,0,0
-    for (ctor <- ctors) {
-      ctor modifyInfo { info =>
-        // TODO: Treat curried constructors
-        val tagParams = typeTagMap.values map (_.cloneSymbol(ctor, SYNTHETIC))
-        MethodType(info.params ++ tagParams, clazz.tpe)
-      }
-    }
 
     // we make specialized overloads for every member of the original class
     for (member <- methods ::: getters ::: setters if (needsSpecialization(clazz, member))) {
@@ -149,12 +120,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr modifyInfo (info =>
             miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner)) match {
               case MethodType(params, result) =>
-                val tagParams = typeTagMap.values map (_.cloneSymbol(newMbr, SYNTHETIC))
+                // create local tags
+                val localTags =
+                  for (tparam <- clazz.typeParams if spec(tparam) == Miniboxed)
+                    yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                localTypeTags(newMbr) = localTags.toMap
+                val tagParams = localTags.map(_._2)
                 MethodType(params ++ tagParams, result)
               case nmt: NullaryMethodType =>
                 nmt
             })
-
           clazz.info.resultType.decls enter (newMbr)
         }
 
@@ -162,9 +137,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         overloads(newMbr) = overloadsOfMember
       }
 
-      for (spec <- specs; newMbr <- overloadsOfMember get spec) {
-        memberSpecializationInfo(newMbr) = genForwardingInfo(typeTagMap, newMbr, member)
-      }
+      for (spec <- specs; newMbr <- overloadsOfMember get spec)
+        memberSpecializationInfo(newMbr) = genForwardingInfo(localTypeTags.getOrElse(newMbr, Map.empty), newMbr, member, member)
     }
   }
 
@@ -313,11 +287,47 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
     sClass setInfo specializedInfoType
 
-    // TODO: remove the `evidence`: Manifest[T] field.
+    /*
+     * Add type tag fields for each parameter. Will be copied in specialized
+     * subclasses.
+     *
+     * NOTE: We need type tag fields even for type parameters that
+     * don't use Miniboxed representation because we may forward form
+     * specialized overloads that receive Miniboxed arguments.
+     */
+    val typeTagMap: List[(Symbol, Symbol)] =
+      (for (tparam <- clazz.typeParams if spec(tparam) == Miniboxed) yield {
+        val sym = sClass.newValue(typeTagName(tparam), sClass.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal)
+        sym setInfo ByteClass.tpe
+        sym setFlag MINIBOXED
+
+        sClassDecls enter sym
+        (tparam, sym)
+      })
+    // Record the new mapping for type tags to the fields carrying them
+    globalTypeTags(sClass) = typeTagMap.toMap
+
+    // adding the type tags as constructor arguments
+    // TODO: add a new constructor which calls the previous one with 0,0,0
+    // TODO: remove the `evidence`: Manifest[T] field(s).
+    for (ctor <- clazz.info.members.filter(sym => sym.owner == clazz && sym.isConstructor)) {
+      //log(clazz + " constructor " + ctor.defString)
+      val newCtor = ctor.cloneSymbol(sClass)
+      newCtor modifyInfo { info =>
+        val info0 = info.asSeenFrom(sClass.tpe, ctor.owner)
+        val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
+        val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
+        // TODO: Treat curried constructors
+        val tagParams = typeTagMap map (_._2.cloneSymbol(ctor, SYNTHETIC))
+        // TODO: Rename should be done deep, once curried constructors are supported
+        MethodType(tagParams.toList, MethodType(info2.params.map(sym => sym.setName(specializedName(sym.name, sParamValues))), sClass.tpe))
+      }
+      sClassDecls enter newCtor
+    }
 
     // Copy the members of the original class to the specialized class.
     val newMembers: Map[Symbol, Symbol] =
-      (for (m <- clazz.info.members if m.owner == clazz) yield {
+      (for (m <- clazz.info.members if m.owner == clazz && !m.isConstructor) yield {
         val newMbr = m.cloneSymbol(sClass)
         // for fields, we mangle names:
         if (m.isTerm && !m.isMethod)
@@ -325,25 +335,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
         (m, newMbr)
       }).toMap
 
-    // Record the new mapping for type tags to the fields carrying them
-    val typeTagMap = typeTags(clazz) map { case (p, tag) => (pmap(p), newMembers(tag)) }
-    typeTags(sClass) = typeTags(clazz) mapValues newMembers
 
     // Replace the info in the copied members to reflect their new class
-    for ((m, newMbr) <- newMembers) {
+    for ((m, newMbr) <- newMembers if !m.isConstructor) {
+
       newMbr setFlag MINIBOXED
       newMbr modifyInfo { info =>
-        // TODO: Is there any change we need to do aside from asSeenFrom? I would assume not.
-        val info1 = info.asSeenFrom(sClass.tpe, m.owner)
-//        val info1 = info.substThis(clazz, sClass)
+
+        val info0 = info.asSeenFrom(sClass.tpe, m.owner)
+        val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
         val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
-        if (m.isConstructor) { // constructor - add type tags as parameters
-          if (m.isPrimaryConstructor) {
-            // TODO: Rename should be done deep
-            MethodType(info2.params.map(sym => sym.setName(specializedName(sym.name, sParamValues))), info2.resultType)
-          } else
-            MethodType(info2.params, newMbr.owner.tpe)
-        } else if (m.isTerm && !m.isMethod) {
+
+        if (m.isTerm && !m.isMethod) {
           if (m.isImplicit)
             info2 // info1
           else
@@ -352,6 +355,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           info2
         }
       }
+
       debug(sClass + " entering: " + newMbr)
       sClassDecls enter newMbr
     }
@@ -377,14 +381,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (overloads(m)(spec) == m) {
           if (m.hasAccessorFlag) {
             memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(m) match {
-              case Some(ForwardTo(original, _, _)) =>
+              case Some(ForwardTo(original, _, _, _)) =>
                 FieldAccessor(newMembers(original.accessed))
               case _ =>
                 global.error("Unaccounted case: " + memberSpecializationInfo.get(m)); ???
             }
           } else {
             memberSpecializationInfo.get(m) match {
-              case Some(ForwardTo(original, _, _)) =>
+              case Some(ForwardTo(original, _, _, _)) =>
                 memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
               case Some(x) =>
                 global.error("Unaccounted case: " + x)
@@ -394,7 +398,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           }
         } else {
           val target = newMembers(overloads(m)(spec))
-          memberSpecializationInfo(newMbr) = genForwardingInfo(typeTagMap, newMbr, target)
+//          memberSpecializationInfo(newMbr) = genForwardingInfo(typeTagMap, newMbr, target)
         }
       }
     }
@@ -418,7 +422,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Generate the information about how arguments and return value should
    * be converted when forwarding to `target`.
    */
-  private def genForwardingInfo(tags: Map[Symbol, Symbol], wrapper: Symbol, target: Symbol): ForwardTo = {
+  private def genForwardingInfo(tags: Map[Symbol, Symbol], wrapper: Symbol, target: Symbol, original: Symbol): ForwardTo = {
     def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
       val srcTypeSymbol: Symbol = srcType.typeSymbol
       val tgtTypeSymbol: Symbol = tgtType.typeSymbol
@@ -450,15 +454,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
         log(srcTypeSymbol + " --> " + tgtTypeSymbol)
         ???
       }
-
     }
 
+    // TODO: only basic parameters should go here
     val paramCasts = (wrapper.tpe.paramTypes zip target.tpe.paramTypes) map {
       case (wtp, ttp) =>
         genCastInfo(wtp, ttp)
     }
     val retCast = genCastInfo(target.tpe.resultType, wrapper.tpe.resultType)
 
-    ForwardTo(target, retCast, paramCasts)
+    // TODO: add type tag forwarding info
+    ForwardTo(target, retCast, paramCasts, Nil)
   }
 }
