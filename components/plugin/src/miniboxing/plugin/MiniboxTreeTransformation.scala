@@ -138,7 +138,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
-              val newTree = addBody(tree, original)
+              val newTree = addValDefBody(tree, original)
               localTyper.typedPos(tree.pos)(newTree)
             case info =>
               sys.error("Unknown info type: " + info)
@@ -254,16 +254,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       def getFieldBody(fld: Symbol) = body(fld)._1
     }
 
-    /**
-     * Adds the body of the `member` as the rhs of the `defn` and
-     * replaces the parameters with fresh symbols in it.
-     */
-    private def addBody(defn: Tree, original: Symbol) =
-      defn match {
-        case v: ValDef => addValDefBody(v, original)
-        case d: DefDef => addDefDefBody(d, original)
-      }
-
     private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
       // original member
       val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
@@ -342,21 +332,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     private def addValDefBody(defn: Tree, origMember: Symbol): Tree = {
       val defSymbol = defn.symbol
-      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
+      val origBody = MethodBodiesCollector.getFieldBody(origMember);
       val origClass = origMember.owner
 
       var newBody = origBody.duplicate
-      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
-      newBody = adaptTypes(newBody)
+//      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
+//      newBody = adaptTypes(newBody)
 
       duplicator.retyped(
         localTyper.context1.asInstanceOf[duplicator.Context],
         copyValDef(defn)(rhs = newBody),
         origMember.enclClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner)) // XXX: keep all parameters
-      assert(false, "TODO: This needs the cool miniboxing substitution")
-      ???
+        typeEnv(defSymbol.owner))
     }
 
     /**

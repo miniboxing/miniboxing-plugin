@@ -48,8 +48,9 @@ abstract class Duplicators extends Analyzer {
       newClassOwner = newThis
     } else resetClassOwners
 
-    envSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
-    debuglog("retyped with env: " + env)
+    this.env = env
+    this.deepEnvSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
+    this.shallowEnvSubstitution = new ShallowSubstTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
     newBodyDuplicator(context).typed(tree)
   }
 
@@ -57,7 +58,8 @@ abstract class Duplicators extends Analyzer {
 
   def retypedMethod(context: Context, tree: DefDef, oldThis: Symbol, newThis: Symbol, env: MiniboxingTypeEnv[TypeEnv]): Tree = {
     this.env = env
-    this.envSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
+    this.deepEnvSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
+    this.shallowEnvSubstitution = new ShallowSubstTypeMap(env.shallowEnv.keysIterator.toList, env.shallowEnv.valuesIterator.toList)
     (newBodyDuplicator(context)).retypedMethodMB(tree, oldThis, newThis)
   }
 
@@ -69,8 +71,23 @@ abstract class Duplicators extends Analyzer {
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _
   private var interfaceClass: Symbol = _
-  private var envSubstitution: SubstTypeMap = _
+  private var deepEnvSubstitution: SubstTypeMap = _
+  private var shallowEnvSubstitution: SubstTypeMap = _
   private var env: MiniboxingTypeEnv[TypeEnv] = _
+
+  // TODO: Same thing is defined in MiniboxInfoTransformation -- need to clean this up
+  private class ShallowSubstTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
+    assert(to.length == from.length, "The Shallow Subst Map should be given equally sized lists of syms.")
+    override def mapOver(tp: Type): Type = tp match {
+      case TypeRef(pre, sym, args) =>
+        from.indexOf(sym) match {
+          case idx if idx != -1 && args.isEmpty => to(idx)
+          case _ => tp // we don't want the mapper to go further inside the type
+        }
+      case _ =>
+        tp // only overrides bare TypeRefs
+    }
+  }
 
   private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
     protected override def matches(sym1: Symbol, sym2: Symbol) =
@@ -144,7 +161,7 @@ abstract class Duplicators extends Analyzer {
 
     /** Fix the given type by replacing invalid symbols with the new ones. */
     def fixType(tpe: Type): Type = {
-      val tpe1 = envSubstitution(tpe)
+      val tpe1 = deepEnvSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
       val tpe3 = if (newClassOwner ne null) {
         tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
@@ -201,7 +218,7 @@ abstract class Duplicators extends Analyzer {
       stats.foreach(invalidate(_, owner))
     }
 
-    def retypedMethod(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
+    def retypedMethodMB(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
       oldClassOwner = oldThis
       newClassOwner = newThis
       invalidateAll(ddef.tparams)
@@ -211,21 +228,6 @@ abstract class Duplicators extends Analyzer {
       }
       ddef.symbol = NoSymbol
       enterSym(context, ddef)
-      debuglog("remapping this of " + oldClassOwner + " to " + newClassOwner)
-      typed(ddef)
-    }
-
-    /** Miniboxing-specific retypedMethod */
-    def retypedMethodMB(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
-      oldClassOwner = oldThis
-      newClassOwner = newThis
-      invalidateAll(ddef.tparams)
-
-      // TODO: Invalidate method parameters
-
-//      ddef.symbol = NoSymbol
-//      enterSym(context, ddef)
-      //logTree(ddef.symbol.toString, ddef)
       debuglog("remapping this of " + oldClassOwner + " to " + newClassOwner)
       typed(ddef)
     }
@@ -263,25 +265,21 @@ abstract class Duplicators extends Analyzer {
     override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
       indent += 1
       debug("  " * indent + " typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
-//      if (indent == 1) {
-//        debug("\n\n\n")
-//        logTree("duplicator:", tree)
-//      }
       debug("  " * indent + " in:  " + tree)
-
 
       val origtreesym = tree.symbol
       if (tree.hasSymbol && tree.symbol != NoSymbol
           && !tree.symbol.isLabel  // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
           && invalidSyms.isDefinedAt(tree.symbol)) {
-        debug("removed symbol " + tree.symbol)
+        debuglog("removed symbol " + tree.symbol)
         tree.symbol = NoSymbol
       }
 
-      val result = tree match {
+      /* Step 1 is exactly the same as specialization */
+      val tree1 = tree match {
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
-          ttree.tpe = fixType(ttree.tpe)
+          ttree.tpe = shallowEnvSubstitution(fixType(ttree.tpe))
           ttree
 
         case Block(stats, res) =>
@@ -351,29 +349,37 @@ abstract class Duplicators extends Analyzer {
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog("Ident to a lazy val " + tree + ", " + tree.symbol + " updated to " + origtreesym)
           tree.symbol = updateSym(origtreesym)
-          // TODO: Test with lazy vals if they work correctly
           tree.tpe = null
           super.typed(tree, mode, pt)
 
-//        case Ident(_) if {
-//          // condition: the tree is of type T and the type is bound to the
-//              println("    => " + tree.tpe.typeSymbol)
-//              println("    => " + updateSym(tree.tpe.typeSymbol))
-//              println("    => " + fixType(tree.tpe))
-////
-////          val retyped = super.typed(Ident(updateSym(tree.symbol)))
-////          val cond2 = (retyped.tpe.normalize.typeSymbol == global.definitions.LongClass)
-////        } =>
-////          // box the
-
         case Select(th @ This(_), sel) if (oldClassOwner ne null) && (th.symbol == oldClassOwner) =>
-          // log("selection on this, no type ascription required")
-          // we use the symbol name instead of the tree name because the symbol may have been
-          // name mangled, rendering the tree name obsolete
-          // log(tree)
-          val t = super.typed(atPos(tree.pos)(Select(This(newClassOwner), tree.symbol.name)), mode, pt)
-          // log("typed to: " + t + "; tpe = " + t.tpe + "; " + inspectTpe(t.tpe))
-          t
+          // We use the symbol name instead of the tree name because the symbol
+          // may have been name mangled, rendering the tree name obsolete.
+          // ...but you can't just do a Select on a name because if the symbol is
+          // overloaded, you will crash in the backend.
+          val memberByName  = newClassOwner.thisType.member(tree.symbol.name)
+          def nameSelection = Select(This(newClassOwner), tree.symbol.name)
+          val newTree = (
+            if (memberByName.isOverloaded) {
+              // Find the types of the overload alternatives as seen in the new class,
+              // and filter the list down to those which match the old type (after
+              // fixing the old type so it is seen as if from the new class.)
+              val typeInNewClass = fixType(oldClassOwner.info memberType tree.symbol)
+              val alts           = memberByName.alternatives
+              val memberTypes    = alts map (newClassOwner.info memberType _)
+              val memberString   = memberByName.defString
+              alts zip memberTypes filter (_._2 =:= typeInNewClass) match {
+                case ((alt, tpe)) :: Nil =>
+                  miniboxing.log(s"Arrested overloaded type in Duplicators, narrowing to ${alt.defStringSeenAs(tpe)}\n  Overload was: $memberString")
+                  Select(This(newClassOwner), alt)
+                case _ =>
+                  miniboxing.log(s"Could not disambiguate $memberString in Duplicators. Attempting name-based selection, but this may not end well...")
+                  nameSelection
+              }
+            }
+            else nameSelection
+          )
+          super.typed(atPos(tree.pos)(newTree), mode, pt)
 
         case This(_) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) =>
 //          val tree1 = Typed(This(newClassOwner), TypeTree(fixType(tree.tpe.widen)))
@@ -381,7 +387,7 @@ abstract class Duplicators extends Analyzer {
           val tree1 = This(newClassOwner)
           // log("tree1: " + tree1)
           debuglog("mapped " + tree + " to " + tree1)
-          super.typed(atPos(tree.pos)(tree1), mode, pt)
+          super.typedPos(tree.pos, mode, pt)(tree1)
 
         case This(_) =>
           debuglog("selection on this, plain: " + tree)
@@ -390,56 +396,75 @@ abstract class Duplicators extends Analyzer {
           val tree1 = super.typed(ntree, mode, pt)
           // log("plain this typed to: " + tree1)
           tree1
+/* no longer needed, because Super now contains a This(...)
+        case Super(qual, mix) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) =>
+          val tree1 = Super(qual, mix)
+          log("changed " + tree + " to " + tree1)
+          super.typed(atPos(tree.pos)(tree1))
+*/
+        case Match(scrut, cases) =>
+          val scrut1   = typed(scrut, EXPRmode | BYVALmode, WildcardType)
+          val scrutTpe = scrut1.tpe.widen
+          val cases1 = {
+            if (scrutTpe.isFinalType) cases filter {
+              case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
+                // the typed pattern is not incompatible with the scrutinee type
+                scrutTpe matchesPattern fixType(tpt.tpe)
+              case CaseDef(Typed(_, tpt), EmptyTree, body) =>
+                // the typed pattern is not incompatible with the scrutinee type
+                scrutTpe matchesPattern fixType(tpt.tpe)
+              case _ => true
+            }
+            // Without this, AnyRef specializations crash on patterns like
+            //   case _: Boolean => ...
+            // Not at all sure this is safe.
+            else if (scrutTpe <:< AnyRefClass.tpe)
+              cases filterNot (_.pat.tpe <:< AnyValClass.tpe)
+            else
+              cases
+          }
+
+          super.typed(atPos(tree.pos)(Match(scrut, cases1)), mode, pt)
 
         case EmptyTree =>
           // no need to do anything, in particular, don't set the type to null, EmptyTree.tpe_= asserts
           tree
 
         case _ =>
-          debug("Duplicators default case: " + tree.summaryString)
-          //debuglog(" ---> " + tree)
-//          val newTree = tree match {
-//            case Ident(_) if ((tree.tpe != null) && !(envSubstitution(tree.tpe) =:= tree.tpe)) =>
-//              // we might need to insert miniboxing calls around the identifier for example if it's a
-//              println("    => " + tree.tpe.typeSymbol)
-//              println("    => " + updateSym(tree.tpe.typeSymbol))
-//              println("    => " + fixType(tree.tpe))
-//
-////              val newType = TypeTree()
-////              newType.tpe = fixType(tree.tpe)
-////              val value = Ident(updateSym(origtreesym))
-////              val tag = Ident(miniboxing.typeTags(newClassOwner)(tree.tpe.typeSymbol))
-////              val boxed = Apply(TypeApply(Ident(minibox2box), List(newType)), List(value, tag))
-////              atPos(tree.pos)(boxed)
-//              tree
-//            case _ =>
-//              tree
-//          }
-
+          debuglog("Duplicators default case: " + tree.summaryString)
+          debuglog(" ---> " + tree)
           if (tree.hasSymbol && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
           }
-
-          // we are translating the generic class into the specialized class, but the two have nothing in common (the
-          // specialized class does not inherit from the generic class)
-          // This leads to the following "funny" scenario: we have a value of abstract type T, which is updated to type
-          // Tp, according to the minixboxing rules -- but the tree node expects T (tree.tpe = T) -- so the typer will
-          // attempt to adapt Tp to T. In specialization, this works, as the specialized class exends the generic class,
-          // but in miniboxing it crashes, as there's no relation between T and Tp.
-          // Solution: reset tree.tpe to null. Note that since the node inside has been erased of types, although using
-          // fixType would yield the correct type, it would prevent the typer from recusing inside the tree node and
-          // resolving symbols
-          tree.tpe = null
-
           val ntree = castType(tree, pt)
-          //logTree("default case: ", ntree.asInstanceOf[miniboxing.global.Tree])
-          //debuglog(ntree.summaryString)
           super.typed(ntree, mode, pt)
       }
 
-      debug("  " * indent + " out: " + result + " : " + result.tpe)
+//      /* Step 2 is specific to miniboxing => introduces conversions to and from miniboxed values */
+//      val treeTp = tree1.tpe
+//      val targTp = shallowEnvSubstitution(treeTp)
+//
+//      val tree2 =
+//        if (treeTp == definitions.LongClass.tpe)
+//          if (targTp == definitions.LongClass.tpe)
+//            tree1
+//          else
+//            // TODO: Un-minibox
+//            ???
+//        else
+//          if (targTp == definitions.LongClass.tpe)
+//            // TODO: Minibox
+//            ???
+//          else
+//            tree1
+//
+//      debug("  " * indent + " treeTp: " + treeTp + " => targTp " + targTp)
+
+      val tree2 = tree1
+
+      debug("  " * indent + " out: " + tree2 + " : " + tree2.tpe)
       indent -= 1
-      result
+      tree2
     }
 
   }
