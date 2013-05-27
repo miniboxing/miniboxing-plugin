@@ -338,7 +338,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
 //        val info1 = info.substThis(clazz, sClass)
         val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
         if (m.isConstructor) { // constructor - add type tags as parameters
-          MethodType(info2.params, newMbr.owner.tpe)
+          if (m.isPrimaryConstructor) {
+            // TODO: Rename should be done deep
+            MethodType(info2.params.map(sym => sym.setName(specializedName(sym.name, sParamValues))), info2.resultType)
+          } else
+            MethodType(info2.params, newMbr.owner.tpe)
         } else if (m.isTerm && !m.isMethod) {
           if (m.isImplicit)
             info2 // info1

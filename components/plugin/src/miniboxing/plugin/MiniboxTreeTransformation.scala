@@ -90,21 +90,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * `methodSpecializationInfo` data structure.
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
-          //println(tree.symbol + " ===> " + memberSpecializationInfo.apply(tree.symbol))
-          localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
-//          memberSpecializationInfo.apply(tree.symbol) match {
-//
-//            // Implement the getter or setter functionality
-//            case FieldAccessor(field) =>
-//              val rhs1 = ltypedpos(
-//                if (tree.symbol.isGetter) {
-//                  gen.mkAttributedRef(field)
-//                } else {
-//
-//                  Assign(gen.mkAttributedRef(field),
-//                    ltypedpos(Ident(vparamss.head.head.symbol)))
-//                })
-//              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
+          memberSpecializationInfo.apply(tree.symbol) match {
+            // Implement the getter or setter functionality
+            case FieldAccessor(field) =>
+              val rhs1 = ltypedpos(
+                if (tree.symbol.isGetter) {
+                  gen.mkAttributedRef(field)
+                } else {
+                  Assign(gen.mkAttributedRef(field),
+                    ltypedpos(Ident(vparamss.head.head.symbol)))
+                })
+              localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 //
 //            // copy the body of the `original` method
 //            case SpecializedImplementationOf(original) =>
@@ -131,9 +127,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 //            case OverrideOfSpecializedMethod(target) =>
 //              sys.error("Not yet implemented!")
 //
-//            case info =>
+            case info =>
+              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
 //              sys.error("Unknown info type: " + info)
-//          }
+          }
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
