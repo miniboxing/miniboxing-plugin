@@ -336,6 +336,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val origClass = origMember.owner
 
       var newBody = origBody.duplicate
+      // TODO: Don't forget to re-enable these 2:
 //      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
 //      newBody = adaptTypes(newBody)
 
