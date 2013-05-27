@@ -334,9 +334,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
       newMbr setFlag MINIBOXED
       newMbr modifyInfo { info =>
         // TODO: Is there any change we need to do aside from asSeenFrom? I would assume not.
-        val info2 = info.asSeenFrom(sClass.tpe, m.owner)
+        val info1 = info.asSeenFrom(sClass.tpe, m.owner)
 //        val info1 = info.substThis(clazz, sClass)
-//        val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
+        val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
         if (m.isConstructor) { // constructor - add type tags as parameters
           MethodType(info2.params, newMbr.owner.tpe)
         } else if (m.isTerm && !m.isMethod) {
