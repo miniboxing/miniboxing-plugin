@@ -107,19 +107,62 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 })
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
-//            // forward to the target methods, making casts as prescribed
-//            case ForwardTo(target, retCast, paramCasts) =>
-//              val rhs1 = vparamss match {
-//                case Nil => gen.mkAttributedRef(target)
-//                case vparams :: _ =>
-//                  val params1 =
-//                    ((vparams zip target.paramss.head) zip paramCasts) map {
-//                      case ((p, t), paramCast) =>
-//                        cast(Ident(p.symbol), t.tpe, paramCast)
-//                    }
-//                  gen.mkMethodCall(target, tparams map (_.tpe), params1)
-//              }
-//              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
+            // forward to the target methods, making casts as prescribed
+            case ForwardTo(ttagArgs, target, retCast, paramCasts) =>
+
+              def separateTypeTagArgsInTree(args: List[List[Tree]]): (List[Tree], List[List[Tree]]) = {
+                args match {
+                  case ttargs :: rest if ttargs.forall(_.symbol.name.toString.contains("_TypeTag")) =>
+                    (ttargs, rest)
+                  case _ =>
+                    (Nil, args)
+                }
+              }
+
+              def separateTypeTagArgsInType(tpe: Type): (List[Symbol], Type) =
+                tpe match {
+                  case MethodType(ttargs, tpe) if ttargs.forall(_.name.toString.contains("_TypeTag")) =>
+                    (ttargs, tpe)
+                  case _ =>
+                    (Nil, tpe)
+                }
+
+              val (ttagWrapperArgs, paramss) = separateTypeTagArgsInTree(vparamss)
+              val (ttagFormalArgs, targetTpe) = separateTypeTagArgsInType(target.tpe)
+              val targetParams = targetTpe.paramss match {
+                case pars :: _ => pars
+                case _ => Nil
+              }
+
+              println("\n")
+              println("TREE: " + tree)
+              println("TARGET: " + target.defString)
+              println("FORWARD: " + memberSpecializationInfo.apply(tree.symbol))
+
+              def callWithTypeTags = {
+                ttagArgs match {
+                  case Nil =>
+                    gen.mkAttributedRef(target)
+                  case _ =>
+                    gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)))
+                }
+              }
+
+              val rhs1 = paramss match {
+                case Nil =>
+                  callWithTypeTags
+                case vparams :: _ =>
+                  val params1 =
+                    ((vparams zip targetParams) zip paramCasts) map {
+                      case ((p, t), paramCast) =>
+                        cast(Ident(p.symbol), t.tpe, paramCast)
+                    }
+                  gen.mkMethodCall(callWithTypeTags, params1)
+              }
+
+              println("RHS: " + rhs1)
+
+              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
 
 //            // copy the body of the `original` method
 //            case SpecializedImplementationOf(original) =>
@@ -338,6 +381,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val origClass = origMember.owner
 
       var newBody = origBody.duplicate
+//      newBody = newBody.substituteThis(origMember.owner, typed(gen.mkAttributedThis(defn.symbol.owner)))
       // TODO: Don't forget to re-enable these 2:
 //      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
 //      newBody = adaptTypes(newBody)
