@@ -19,8 +19,8 @@ trait MiniboxSpecializationInfo {
    *
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
-  case class ForwardTo(method: Symbol, ret: CastInfo, params: List[CastInfo], tags: List[Symbol]) extends MethodInfo {
-    override def toString = "ForwardTo(" + method + ")"
+  case class ForwardTo(tagParams: List[Symbol], method: Symbol, ret: CastInfo, params: List[CastInfo]) extends MethodInfo {
+    //override def toString = "ForwardTo(" + method + ")"
   }
   /*
    * We need to record how the parameters and the return value should be casted.
