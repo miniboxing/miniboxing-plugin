@@ -75,8 +75,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
           for (decl <- templateMembers.toList.sortBy(_.nameString))
             log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
 
-          sys.exit(0);
-
           tpe
         case _ =>
           log("Not specializing: " + sym)
@@ -316,6 +314,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     for (ctor <- clazz.info.members.filter(sym => sym.owner == clazz && sym.isConstructor)) {
       //log(clazz + " constructor " + ctor.defString)
       val newCtor = ctor.cloneSymbol(sClass)
+      newCtor setFlag MINIBOXED
       newCtor modifyInfo { info =>
         val info0 = info.asSeenFrom(sClass.tpe, ctor.owner)
         val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
@@ -326,6 +325,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         // TODO: Rename should be done deep, once curried constructors are supported
         MethodType(tagParams.toList, MethodType(info2.params.map(sym => sym.setName(specializedName(sym.name, sParamValues))), sClass.tpe))
       }
+      memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
       sClassDecls enter newCtor
     }
 
@@ -334,8 +334,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
       (for (m <- clazz.info.members if m.owner == clazz && !m.isConstructor) yield {
         val newMbr = m.cloneSymbol(sClass)
         // for fields, we mangle names:
-        if (m.isTerm && !m.isMethod)
+        if (m.isTerm && !m.isMethod) {
           newMbr.name = specializedName(m.name, sParamValues)
+        }
         (m, newMbr)
       }).toMap
 
@@ -347,10 +348,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
       newMbr modifyInfo { info =>
 
         val info0 = info.asSeenFrom(sClass.tpe, m.owner)
-        //val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
-        //val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
+        val info1 = info0.substThis(clazz, sClass)
+        val info2 =
+          if (m.isTerm && !m.isMethod)
+            miniboxSubst(ifaceEnv, implEnv, info1)
+          else
+            info1
 
-        info0
+        info2
       }
 
       localTypeTags(newMbr) = localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._1)).zip(newMbr.info.params).toMap

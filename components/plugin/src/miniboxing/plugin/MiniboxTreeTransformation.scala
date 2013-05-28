@@ -93,12 +93,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           memberSpecializationInfo.apply(tree.symbol) match {
             // Implement the getter or setter functionality
             case FieldAccessor(field) =>
+              val localTypeArgs = localTypeTags(tree.symbol)
+              val allArgs = tree.symbol.tpe.paramss.flatten
+              val mthArgs = allArgs.drop(localTypeArgs.size)
+              println(ddef)
+              println(mthArgs)
               val rhs1 = ltypedpos(
                 if (tree.symbol.isGetter) {
                   gen.mkAttributedRef(field)
                 } else {
                   Assign(gen.mkAttributedRef(field),
-                    ltypedpos(Ident(vparamss.head.head.symbol)))
+                    ltypedpos(Ident(mthArgs.head)))
                 })
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
