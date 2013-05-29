@@ -319,10 +319,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val info0 = info.asSeenFrom(sClass.tpe, ctor.owner)
         val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
         val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
-        // TODO: Treat curried constructors
         val tagParams = typeTagMap map (_._2.cloneSymbol(ctor, SYNTHETIC))
         localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
-        // TODO: Rename should be done deep, once curried constructors are supported
         def transformArgs(tpe: Type): Type = tpe match {
           case MethodType(params, ret) =>
             MethodType(tpe.params.map(sym => if (sym.isImplicit) sym else sym.setName(specializedName(sym.name, sParamValues))), transformArgs(ret))
