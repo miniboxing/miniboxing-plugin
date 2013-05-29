@@ -21,11 +21,37 @@ trait MiniboxTreeTransformation extends TypingTransformers {
    */
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
-    val duplicator = new {
+    /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
+    class Duplicator(casts: Map[Symbol, Type]) extends {
       val global: MiniboxTreeTransformation.this.global.type = MiniboxTreeTransformation.this.global
       val miniboxing: MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type } =
         MiniboxTreeTransformation.this.asInstanceOf[MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type }]
-    } with Duplicators
+    } with Duplicators {
+      private val (castfrom, castto) = casts.unzip
+      private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
+
+      class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
+        override def castType(tree: Tree, pt: Type): Tree = {
+          // log(" expected type: " + pt)
+          // log(" tree type: " + tree.tpe)
+          tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
+          // log(" tree type: " + tree.tpe)
+          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
+            val casttpe = CastMap(tree.tpe)
+            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
+            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
+            else tree
+          } else tree
+          ntree.tpe = null
+          ntree
+        }
+      }
+
+      protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
+    }
+
+    val duplicator = new Duplicator(Map.empty)
+
     import global._
 
     def afterMinibox[T](f: => T): T = atPhase(ownPhase.next)(f)
@@ -325,8 +351,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         context = localTyper.context1.asInstanceOf[duplicator.Context],
         tree = copyDefDef(defn)(rhs = newBody),
         oldThis = origMember.enclClass,
-        newThis = specMember.enclClass,
-        env = typeEnv(specMember.owner)) // XXX: keep all parameters
+        newThis = specMember.enclClass)
+        // env = typeEnv(specMember.owner).deepEnv) // XXX: keep all parameters
 
       newBody
 
@@ -375,23 +401,23 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     }
 
 
-    private def addValDefBody(defn: Tree, origMember: Symbol): Tree = {
-      val defSymbol = defn.symbol
+    private def addValDefBody(tree: Tree, origMember: Symbol): Tree = {
+      val defSymbol = tree.symbol
       val origBody = MethodBodiesCollector.getFieldBody(origMember);
       val origClass = origMember.owner
 
-      var newBody = origBody.duplicate
-//      newBody = newBody.substituteThis(origMember.owner, typed(gen.mkAttributedThis(defn.symbol.owner)))
-      // TODO: Don't forget to re-enable these 2:
-//      newBody = (new replaceLocalCalls(currentClass, origClass))(newBody)
-//      newBody = adaptTypes(newBody)
+      val tree1 = deriveValDef(tree)(_ => origBody.duplicate)
+      debuglog("now typing: " + tree1 + " in " + tree.symbol.owner.fullName)
 
-      duplicator.retyped(
-        localTyper.context1.asInstanceOf[duplicator.Context],
-        copyValDef(defn)(rhs = newBody),
-        origMember.enclClass,
+      val d = new Duplicator(Map.empty)
+      val newValDef = d.retyped(
+        localTyper.context1.asInstanceOf[d.Context],
+        tree1,
+        origClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner))
+        typeEnv(defSymbol.owner).deepEnv
+      )
+      deriveValDef(newValDef)(transform)
     }
 
     /**

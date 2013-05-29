@@ -27,11 +27,6 @@ abstract class Duplicators extends Analyzer {
   import global._
   import definitions.{ AnyRefClass, AnyValClass }
 
-  var indent = 0;
-
-  // This is the only reason we inherit from Analyzer. TODO: Maybe there's a better way to do it...
-  override def newTyper(context: Context): Typer = newBodyDuplicator(context).asInstanceOf[Typer]
-
   def retyped(context: Context, tree: Tree): Tree = {
     resetClassOwners
     (newBodyDuplicator(context)).typed(tree)
@@ -42,26 +37,25 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: MiniboxingTypeEnv[TypeEnv]): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type]): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
     } else resetClassOwners
 
-    this.env = env
-    this.deepEnvSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
-    this.shallowEnvSubstitution = new ShallowSubstTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
+    envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
+    debuglog("retyped with env: " + env)
     newBodyDuplicator(context).typed(tree)
   }
 
-  def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
+  protected def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
 
-  def retypedMethod(context: Context, tree: DefDef, oldThis: Symbol, newThis: Symbol, env: MiniboxingTypeEnv[TypeEnv]): Tree = {
-    this.env = env
-    this.deepEnvSubstitution = new SubstSkolemsTypeMap(env.deepEnv.keysIterator.toList, env.deepEnv.valuesIterator.toList)
-    this.shallowEnvSubstitution = new ShallowSubstTypeMap(env.shallowEnv.keysIterator.toList, env.shallowEnv.valuesIterator.toList)
-    (newBodyDuplicator(context)).retypedMethodMB(tree, oldThis, newThis)
-  }
+  def retypedMethod(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol): Tree =
+    (newBodyDuplicator(context)).retypedMethod(tree.asInstanceOf[DefDef], oldThis, newThis)
+
+  /** Return the special typer for duplicate method bodies. */
+  override def newTyper(context: Context): Typer =
+    newBodyDuplicator(context)
 
   private def resetClassOwners() {
     oldClassOwner = null
@@ -70,24 +64,7 @@ abstract class Duplicators extends Analyzer {
 
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _
-  private var interfaceClass: Symbol = _
-  private var deepEnvSubstitution: SubstTypeMap = _
-  private var shallowEnvSubstitution: SubstTypeMap = _
-  private var env: MiniboxingTypeEnv[TypeEnv] = _
-
-  // TODO: Same thing is defined in MiniboxInfoTransformation -- need to clean this up
-  private class ShallowSubstTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
-    assert(to.length == from.length, "The Shallow Subst Map should be given equally sized lists of syms.")
-    override def mapOver(tp: Type): Type = tp match {
-      case TypeRef(pre, sym, args) =>
-        from.indexOf(sym) match {
-          case idx if idx != -1 && args.isEmpty => to(idx)
-          case _ => tp // we don't want the mapper to go further inside the type
-        }
-      case _ =>
-        tp // only overrides bare TypeRefs
-    }
-  }
+  private var envSubstitution: SubstTypeMap = _
 
   private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
     protected override def matches(sym1: Symbol, sym2: Symbol) =
@@ -115,8 +92,7 @@ abstract class Duplicators extends Analyzer {
           var sym1 = context.scope.lookup(sym.name)
           if (sym1 eq NoSymbol) {
             // try harder (look in outer scopes)
-            // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but is defined in
-            // the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
+            // with virtpatmat, this can happen when the sym is referenced in the scope of a LabelDef but is defined in the scope of an outer DefDef (e.g., in AbstractPartialFunction's andThen)
             BodyDuplicator.super.silent(_.typedType(Ident(sym.name))) match {
               case SilentResultValue(t) =>
                 sym1 = t.symbol
@@ -154,6 +130,7 @@ abstract class Duplicators extends Analyzer {
           } else
             super.mapOver(tpe)
 
+
         case _ =>
           super.mapOver(tpe)
       }
@@ -161,7 +138,7 @@ abstract class Duplicators extends Analyzer {
 
     /** Fix the given type by replacing invalid symbols with the new ones. */
     def fixType(tpe: Type): Type = {
-      val tpe1 = deepEnvSubstitution(tpe)
+      val tpe1 = envSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
       val tpe3 = if (newClassOwner ne null) {
         tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
@@ -201,7 +178,6 @@ abstract class Duplicators extends Analyzer {
             vdef.symbol = newsym
             debuglog("newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
-            // println(t.symbol.id)
 
           case DefDef(_, name, tparams, vparamss, _, rhs) =>
             // invalidate parameters
@@ -218,7 +194,7 @@ abstract class Duplicators extends Analyzer {
       stats.foreach(invalidate(_, owner))
     }
 
-    def retypedMethodMB(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
+    def retypedMethod(ddef: DefDef, oldThis: Symbol, newThis: Symbol): Tree = {
       oldClassOwner = oldThis
       newClassOwner = newThis
       invalidateAll(ddef.tparams)
@@ -263,10 +239,7 @@ abstract class Duplicators extends Analyzer {
      *  namer/typer handle them, or Idents that refer to them.
      */
     override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
-      indent += 1
-      debug("  " * indent + " typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
-      debug("  " * indent + " in:  " + tree)
-
+      debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
       if (tree.hasSymbol && tree.symbol != NoSymbol
           && !tree.symbol.isLabel  // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
@@ -275,11 +248,10 @@ abstract class Duplicators extends Analyzer {
         tree.symbol = NoSymbol
       }
 
-      /* Step 1 is exactly the same as specialization */
-      val tree1 = tree match {
+      tree match {
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
-          ttree.tpe = shallowEnvSubstitution(fixType(ttree.tpe))
+          ttree.tpe = fixType(ttree.tpe)
           ttree
 
         case Block(stats, res) =>
@@ -302,11 +274,10 @@ abstract class Duplicators extends Analyzer {
           super.typed(ddef, mode, pt)
 
         case vdef @ ValDef(mods, name, tpt, rhs) =>
-          println("\n\n\nvdef fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol + " and " + invalidSyms)
+          // log("vdef fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol + " and " + invalidSyms)
           //if (mods.hasFlag(Flags.LAZY)) vdef.symbol.resetFlag(Flags.MUTABLE) // Martin to Iulian: lazy vars can now appear because they are no longer boxed; Please check that deleting this statement is OK.
           vdef.tpt.tpe = fixType(vdef.tpt.tpe)
           vdef.tpe = null
-          println(vdef)
           super.typed(vdef, mode, pt)
 
         case ldef @ LabelDef(name, params, rhs) =>
@@ -353,7 +324,15 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
           super.typed(tree, mode, pt)
 
-        case Select(th @ This(_), sel) if (oldClassOwner ne null) && (th.symbol == oldClassOwner) =>
+        case Select(th @ This(_), sel) =>
+          if (!(oldClassOwner ne null) || !(th.symbol == oldClassOwner)) {
+            println(oldClassOwner ne null)
+            println(th.symbol == oldClassOwner)
+            println(th.symbol)
+            println(oldClassOwner)
+            ???
+          }
+
           // We use the symbol name instead of the tree name because the symbol
           // may have been name mangled, rendering the tree name obsolete.
           // ...but you can't just do a Select on a name because if the symbol is
@@ -432,40 +411,18 @@ abstract class Duplicators extends Analyzer {
           tree
 
         case _ =>
-          debuglog("Duplicators default case: " + tree.summaryString)
-          debuglog(" ---> " + tree)
+          // debuglog("Duplicators default case: " + tree.summaryString)
+          // debuglog(" ---> " + tree + "\n  :" + tree.tpe)
           if (tree.hasSymbol && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
           }
+          debuglog("before cast: " + tree + "\n  :" + tree.tpe)
           val ntree = castType(tree, pt)
-          super.typed(ntree, mode, pt)
+          debuglog("after cast: " + ntree + "\n  :" + ntree.tpe)
+          val res = super.typed(ntree, mode, pt)
+          debuglog("after type: " + ntree + "\n  :" + ntree.tpe)
+          res
       }
-
-//      /* Step 2 is specific to miniboxing => introduces conversions to and from miniboxed values */
-//      val treeTp = tree1.tpe
-//      val targTp = shallowEnvSubstitution(treeTp)
-//
-//      val tree2 =
-//        if (treeTp == definitions.LongClass.tpe)
-//          if (targTp == definitions.LongClass.tpe)
-//            tree1
-//          else
-//            // TODO: Un-minibox
-//            ???
-//        else
-//          if (targTp == definitions.LongClass.tpe)
-//            // TODO: Minibox
-//            ???
-//          else
-//            tree1
-//
-//      debug("  " * indent + " treeTp: " + treeTp + " => targTp " + targTp)
-
-      val tree2 = tree1
-
-      debug("  " * indent + " out: " + tree2 + " : " + tree2.tpe)
-      indent -= 1
-      tree2
     }
 
   }

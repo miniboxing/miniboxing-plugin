@@ -334,7 +334,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       (for (m <- clazz.info.members if m.owner == clazz && !m.isConstructor) yield {
         val newMbr = m.cloneSymbol(sClass)
         // for fields, we mangle names:
-        if (m.isTerm && !m.isMethod) {
+        if (m.isTerm && !m.isMethod && !m.isImplicit) {
           newMbr.name = specializedName(m.name, sParamValues)
         }
         (m, newMbr)
