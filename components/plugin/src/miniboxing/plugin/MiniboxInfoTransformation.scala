@@ -323,7 +323,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val tagParams = typeTagMap map (_._2.cloneSymbol(ctor, SYNTHETIC))
         localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
         // TODO: Rename should be done deep, once curried constructors are supported
-        MethodType(tagParams.toList, MethodType(info2.params.map(sym => sym.setName(specializedName(sym.name, sParamValues))), sClass.tpe))
+        def transformArgs(tpe: Type): Type = tpe match {
+          case MethodType(params, ret) =>
+            MethodType(tpe.params.map(sym => if (sym.isImplicit) sym else sym.setName(specializedName(sym.name, sParamValues))), transformArgs(ret))
+          case TypeRef(_, _, _) =>
+            sClass.tpe
+          case _ =>
+            tpe
+        }
+        MethodType(tagParams.toList, transformArgs(info2))
       }
       memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
       sClassDecls enter newCtor
