@@ -324,8 +324,7 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
           super.typed(tree, mode, pt)
 
-        case Select(th @ This(_), sel) if (!(oldClassOwner ne null) || !(th.symbol == oldClassOwner))=>
-
+        case Select(th @ This(_), sel) if (oldClassOwner ne null) && (th.symbol == oldClassOwner) =>
           // We use the symbol name instead of the tree name because the symbol
           // may have been name mangled, rendering the tree name obsolete.
           // ...but you can't just do a Select on a name because if the symbol is
