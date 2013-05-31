@@ -164,7 +164,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR =>
-          localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss, tpt, EmptyTree))
+          localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List() ::: vparamss, tpt, EmptyTree))
 
         /*
          * A definition with empty body - add a body as prescribed by the
@@ -215,8 +215,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
               def callWithTypeTags = {
                 ttagArgs match {
-//                  case Nil =>
-//                    gen.mkAttributedRef(target)
+                  case Nil =>
+                    gen.mkAttributedRef(target)
                   case _ =>
                     gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)))
                 }

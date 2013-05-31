@@ -139,8 +139,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
         overloads(newMbr) = overloadsOfMember
       }
 
-      member.modifyInfo(info => MethodType(List(), info))
-
       for (spec <- specs; newMbr <- overloadsOfMember get spec)
         memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
     }
