@@ -27,7 +27,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   class ImplementationAdapter(from: List[Symbol],
                               to: List[Symbol],
                               targetClass: Symbol,
-                              addressFields: Boolean) extends TreeSymSubstituter(from, to) {
+                              addressFields: Boolean,
+                              makePublicAtAll: Boolean) extends TreeSymSubstituter(from, to) {
     override val symSubst = new SubstSymMap(from, to) {
       override def matches(sym1: Symbol, sym2: Symbol) =
         if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
@@ -38,7 +39,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       (currentClass == sym.owner.enclClass) && (currentClass != targetClass)
 
     private def shouldMakePublic(sym: Symbol): Boolean =
-      sym.hasFlag(PRIVATE | PROTECTED) && (addressFields || !nme.isLocalName(sym.name))
+      makePublicAtAll && sym.hasFlag(PRIVATE | PROTECTED) && (addressFields || !nme.isLocalName(sym.name))
 
     /** All private members that are referenced are made protected,
      *  in order to be accessible from specialized subclasses.
@@ -368,9 +369,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
 
       private def collect(member: Symbol, rhs: Tree, params: List[List[Symbol]]) = {
-        body(member) = (rhs, params)
+        body(member) = (rhs.duplicate, params)
         templateMembers -= member
-        debug("collected " + member.fullName)
+        debug("collected " + member.fullName + ":")
+        debug("  " + rhs)
       }
 
       def getMethodBody(meth: Symbol) = body(meth)
@@ -441,7 +443,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         parameters.flatten ::: origtparams,
         vparamss.flatten.map(_.symbol) ::: newtparams,
         source.enclClass,
-        false) // don't make private fields public
+        false, false) // don't make private fields public
 
       val newBody = symSubstituter(body.duplicate)
       tpt.tpe = tpt.tpe.substSym(oldtparams, newtparams)

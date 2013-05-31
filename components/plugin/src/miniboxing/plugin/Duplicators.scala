@@ -53,6 +53,9 @@ abstract class Duplicators extends Analyzer {
 
     debug("retyping: " + tree)
     debug("with args: " + mboxedArgs)
+    debug("with old this: " + oldThis)
+    debug("with new this: " + newThis)
+    debug("tree: " + showRaw(tree))
     debug()
 
     debuglog("retyped with env: " + env)

@@ -339,7 +339,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
         def transformArgs(tpe: Type): Type = tpe match {
           case MethodType(params, ret) =>
-            MethodType(tpe.params.map(sym => if (sym.isImplicit) sym else sym.setName(specializedName(sym.name, sParamValues))), transformArgs(ret))
+            MethodType(tpe.params, transformArgs(ret))
           case TypeRef(_, _, _) =>
             sClass.tpe
           case _ =>
@@ -357,9 +357,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
       (for (m <- clazz.info.members if m.owner == clazz && !m.isConstructor) yield {
         val newMbr = m.cloneSymbol(sClass)
         // for fields, we mangle names:
-        if (m.isTerm && !m.isMethod && !m.isImplicit) {
-          newMbr.name = specializedName(m.name, sParamValues)
-        }
+//        if (m.isTerm && !m.isMethod && !m.isImplicit) {
+//          newMbr.name = specializedName(m.name, sParamValues)
+//        }
         if (m.isMethod) {
           if (base(m) == m)
             base(newMbr) = newMbr
