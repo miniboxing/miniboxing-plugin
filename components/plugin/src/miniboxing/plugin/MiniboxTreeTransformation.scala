@@ -87,14 +87,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
         override def castType(tree: Tree, pt: Type): Tree = {
-          val earlyTpe = tree.tpe
+          // log(" expected type: " + pt)
+          // log(" tree type: " + tree.tpe)
           tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
-          println(f"[cast] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
-          val ntree =
-            if (tree.tpe != null && !(tree.tpe <:< pt) && pt =:= LongClass.tpe)
-              gen.mkMethodCall(box2minibox, List(tree))
-            else
-              tree
+          // log(" tree type: " + tree.tpe)
+          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
+            val casttpe = CastMap(tree.tpe)
+            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
+            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
+            else tree
+          } else tree
           ntree.tpe = null
           ntree
         }

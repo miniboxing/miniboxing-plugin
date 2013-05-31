@@ -27,6 +27,9 @@ abstract class Duplicators extends Analyzer {
   import global._
   import definitions.{ AnyClass, AnyRefClass, AnyValClass, LongClass }
 
+  var indent = 0
+  var treen = 0
+
   def retyped(context: Context, tree: Tree): Tree = {
     resetClassOwners
     (newBodyDuplicator(context)).typed(tree)
@@ -48,9 +51,9 @@ abstract class Duplicators extends Analyzer {
     miniboxedSyms = mboxedArgs
     miniboxedTags = mboxedTags
 
-    println("retyping: " + tree)
-    println("with args: " + mboxedArgs)
-    println()
+    debug("retyping: " + tree)
+    debug("with args: " + mboxedArgs)
+    debug()
 
     debuglog("retyped with env: " + env)
     newBodyDuplicator(context).typed(tree)
@@ -261,8 +264,12 @@ abstract class Duplicators extends Analyzer {
         debuglog("removed symbol " + tree.symbol)
         tree.symbol = NoSymbol
       }
-
-      tree match {
+      val treen = Duplicators.this.treen
+      val indent = Duplicators.this.treen
+      debug("  " * indent + " ==> (" + treen + ") " + tree + " pt = " + pt)
+      Duplicators.this.indent += 1
+      Duplicators.this.treen += 1
+      val tree1 = tree match {
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
           ttree.tpe = fixType(ttree.tpe)
@@ -332,12 +339,6 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
           super.typed(tree, mode, pt)
 
-//        // Miniboxed value being used
-//        case Apply(Select(Ident(sym), method), args) if miniboxedSyms.map(_._1).contains(tree.symbol) && pt == AnyClass.tpe =>
-//          // Any method called on a miniboxed value should force it to be un-miniboxed
-//          val boxed = typed(Ident(sym)) // should cause it to become boxed
-//          super.typed(Apply(Select(boxed, method), args))
-
         // Miniboxed value being used
         case Ident(_) if miniboxedSyms.map(_._1).contains(tree.symbol) && boxing =>
           // Any reference to a miniboxed symbol should be transformed to a boxed symbol
@@ -345,7 +346,6 @@ abstract class Duplicators extends Analyzer {
           boxing = false
           val tpeS = miniboxedSyms.find(_._1 == tree.symbol).get._2.typeSymbol
           val ident = super.typed(miniboxedTags(tpeS))
-          println(gen.mkMethodCall(Ident(minibox2box), List(tpeS.tpe), List(tree, ident)))
           val res = super.typed(gen.mkMethodCall(Ident(minibox2box), List(tree, ident)))
           boxing = true
           res
@@ -429,19 +429,25 @@ abstract class Duplicators extends Analyzer {
           tree
 
         case _ =>
-           debuglog("Duplicators default case: " + tree.summaryString)
-           debuglog(" ---> " + tree + "\n  :" + tree.tpe)
+          debuglog("Duplicators default case: " + tree.summaryString)
+          debuglog(" ---> " + tree + "\n  :" + tree.tpe)
           if (tree.hasSymbol && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
           }
 //          debuglog("before cast: " + tree + "\n  :" + tree.tpe)
           val ntree = castType(tree, pt)
 //          debuglog("after cast: " + ntree + "\n  :" + ntree.tpe)
+          debug("  " * indent + "     (" + treen + ") typing with ?")
           val res = super.typed(ntree, mode, WildcardType)
+          debug("  " * indent + "     (" + treen + ") typed with ? " + tree + ": " + tree.tpe + " => " + res)
+          debug("  " * indent + "     (" + treen + ") " + (res.tpe != null) + " && " + !(res.tpe <:< pt) + " && " + (miniboxedEnv(res.tpe) == pt) + ": " + res.tpe + "!= null && !(" + res.tpe + " <:< " + pt + ") && (" + miniboxedEnv(res.tpe) + " == " + pt + ")")
           val res2 =
             if (res.tpe != null && !(res.tpe <:< pt) && (miniboxedEnv(res.tpe) == pt)) {
-              println(f"  [cast!] ")
-              super.typed(gen.mkMethodCall(box2minibox, List(tree)), mode, pt)
+              val ntree = gen.mkMethodCall(box2minibox, List(tree))
+              debug("  " * indent + "     (" + treen + ") typing " + ntree + " with pt = " + pt)
+              val ntree2 = super.typed(ntree, mode, pt)
+              debug("  " * indent + "     (" + treen + ") typing " + ntree2 + " with tp = " + ntree2.tpe)
+              ntree2
             }
             else
               res
@@ -449,6 +455,9 @@ abstract class Duplicators extends Analyzer {
 //          debuglog("after type: " + ntree + "\n  :" + ntree.tpe)
           res2
       }
+      Duplicators.this.indent -= 1
+      debug("  " * indent + " <== (" + treen + ") " + tree1 + " tp = " + tree1.tpe)
+      tree1
     }
   }
 }
