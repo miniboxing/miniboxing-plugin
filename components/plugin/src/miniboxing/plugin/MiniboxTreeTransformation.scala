@@ -87,10 +87,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
         override def castType(tree: Tree, pt: Type): Tree = {
-          // log(" expected type: " + pt)
-          // log(" tree type: " + tree.tpe)
+          val earlyTpe = tree.tpe
           tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
-          // log(" tree type: " + tree.tpe)
+          debuglog(f"[cast] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
           val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
             val casttpe = CastMap(tree.tpe)
             if (casttpe <:< pt) gen.mkCast(tree, casttpe)
@@ -384,7 +383,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def duplicateBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
       val symbol = tree.symbol
-      val meth   = addBody(tree, source)
+      val meth = addBody(tree, source)
 
       val d = new Duplicator(castmap)
       debuglog("-->d DUPLICATING: " + meth)
@@ -393,7 +392,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         meth,
         source.enclClass,
         symbol.enclClass,
-        typeEnv(symbol.owner).deepEnv // TODO!!
+        typeEnv(symbol.owner).deepEnv,
+        typeEnv(symbol.owner).shallowEnv,
+        miniboxedArgs(symbol)
       )
     }
 
@@ -445,80 +446,80 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       copyDefDef(tree)(rhs = newBody)
     }
 
-    private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
-      // original member
-      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
-      val origClass = origMember.owner
-      // specialized member
-      val specMember = defn.symbol
-
-      /*
-       * There are a couple of transformations that we need to perform to specialize the code. All of these
-       * transformations should leave the tree behaving the same as before and should keep its types consistent
-       *
-       * (1) transform all references to miniboxed parameters into calls to `minibox2box[T](longValue, typeTag)`
-       *     TODO: Do we need to do anything about object parameters?
-       * (2) shortcut array operations, Any operations (like hashCode) to the non-boxing variants
-       * (3) rewire calls to specialized overloads instead of the generic methods
-       *     rewire member accesses to access the specialized members
-       * (4) rewire calls to go against the interface instead of the class
-       *     TODO: Decide whether we really need this
-       * (5) create new symbols in the tree for labels, locally-defined values etc.
-       * (6) rewire super calls
-       */
-      var newBody = origBody.duplicate
-      newBody = duplicator.retypedMethod(
-        context = localTyper.context1.asInstanceOf[duplicator.Context],
-        tree = copyDefDef(defn)(rhs = newBody),
-        oldThis = origMember.enclClass,
-        newThis = specMember.enclClass)
-        // env = typeEnv(specMember.owner).deepEnv) // XXX: keep all parameters
-
-      newBody
-
+//    private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
+//      // original member
+//      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
+//      val origClass = origMember.owner
+//      // specialized member
+//      val specMember = defn.symbol
+//
 //      /*
-//       * Most of the work of the tree transformer is done here.
-//       * We need to adapt the body of the generic class to use the value
-//       * representation of the current (specialized) class.
+//       * There are a couple of transformations that we need to perform to specialize the code. All of these
+//       * transformations should leave the tree behaving the same as before and should keep its types consistent
 //       *
-//       * In order to achieve this we must:
-//       * - insert type tag dispatching methods instead of the methods
-//       *   from `Array` and `Any` classes
-//       * - rewire method calls to use the overloads specialized for this
-//       *   representation
-//       * - replace all method selections to use the interface rather than
-//       *   the generic class
-//       * - insert conversions between boxed, miniboxed and natural representation
-//       *   of primitive values.
-//       * - redirect super calls
+//       * (1) transform all references to miniboxed parameters into calls to `minibox2box[T](longValue, typeTag)`
+//       *     TODO: Do we need to do anything about object parameters?
+//       * (2) shortcut array operations, Any operations (like hashCode) to the non-boxing variants
+//       * (3) rewire calls to specialized overloads instead of the generic methods
+//       *     rewire member accesses to access the specialized members
+//       * (4) rewire calls to go against the interface instead of the class
+//       *     TODO: Decide whether we really need this
+//       * (5) create new symbols in the tree for labels, locally-defined values etc.
+//       * (6) rewire super calls
 //       */
 //      var newBody = origBody.duplicate
-//      newBody = adaptTypes(newBody)
+//      newBody = duplicator.retypedMethod(
+//        context = localTyper.context1.asInstanceOf[duplicator.Context],
+//        tree = copyDefDef(defn)(rhs = newBody),
+//        oldThis = origMember.enclClass,
+//        newThis = specMember.enclClass)
+//        // env = typeEnv(specMember.owner).deepEnv) // XXX: keep all parameters
 //
+//      newBody
+//
+////      /*
+////       * Most of the work of the tree transformer is done here.
+////       * We need to adapt the body of the generic class to use the value
+////       * representation of the current (specialized) class.
+////       *
+////       * In order to achieve this we must:
+////       * - insert type tag dispatching methods instead of the methods
+////       *   from `Array` and `Any` classes
+////       * - rewire method calls to use the overloads specialized for this
+////       *   representation
+////       * - replace all method selections to use the interface rather than
+////       *   the generic class
+////       * - insert conversions between boxed, miniboxed and natural representation
+////       *   of primitive values.
+////       * - redirect super calls
+////       */
+////      var newBody = origBody.duplicate
+////      newBody = adaptTypes(newBody)
+////
+//////      if (defn.symbol.name.toString == "contains_J")
+//////        logTree(defSymbol.fullName + " before: ", origBody)
+//////      // debugging
+//////      val printtypes = settings.printtypes.value
+//////      settings.printtypes.value = true
+//////      println(defSymbol + ":\n" + asString(newBody))
+//////      settings.printtypes.value = printtypes
+//////      // end debugging
+////
+////      newBody = propagateMiniboxedParameters(newBody)
+////
+////
+////        val res = (new replaceLocalCalls(currentClass, origClass))( {
+////          if (defn.symbol.name.toString == "contains_J")
+////            logTree(defSymbol.fullName + " after: ", result)
+////          result
+////        }
+////      )
+////
 ////      if (defn.symbol.name.toString == "contains_J")
-////        logTree(defSymbol.fullName + " before: ", origBody)
-////      // debugging
-////      val printtypes = settings.printtypes.value
-////      settings.printtypes.value = true
-////      println(defSymbol + ":\n" + asString(newBody))
-////      settings.printtypes.value = printtypes
-////      // end debugging
-//
-//      newBody = propagateMiniboxedParameters(newBody)
-//
-//
-//        val res = (new replaceLocalCalls(currentClass, origClass))( {
-//          if (defn.symbol.name.toString == "contains_J")
-//            logTree(defSymbol.fullName + " after: ", result)
-//          result
-//        }
-//      )
-//
-//      if (defn.symbol.name.toString == "contains_J")
-//        logTree(defSymbol.fullName + " finally: ", res)
-//
-//      res
-    }
+////        logTree(defSymbol.fullName + " finally: ", res)
+////
+////      res
+//    }
 
 
     private def addValDefBody(tree: Tree, origMember: Symbol): Tree = {
@@ -535,7 +536,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         tree1,
         origClass,
         defSymbol.enclClass,
-        typeEnv(defSymbol.owner).deepEnv
+        typeEnv(defSymbol.owner).deepEnv,
+        typeEnv(defSymbol.owner).shallowEnv,
+        Nil // A field does not take values
       )
       deriveValDef(newValDef)(transform)
     }

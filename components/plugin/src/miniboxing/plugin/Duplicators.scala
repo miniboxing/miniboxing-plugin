@@ -37,13 +37,20 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type]): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type], mboxEnv: Map[Symbol, Type], mboxedArgs: List[Symbol]): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
     } else resetClassOwners
 
     envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
+    miniboxedEnv = new SubstSkolemsTypeMap(mboxEnv.keysIterator.toList, mboxEnv.valuesIterator.toList) // can be deep, we don't care
+    miniboxedSyms = mboxedArgs
+
+    println("retyping: " + tree)
+    println("with args: " + mboxedArgs)
+    println()
+
     debuglog("retyped with env: " + env)
     newBodyDuplicator(context).typed(tree)
   }
@@ -61,6 +68,10 @@ abstract class Duplicators extends Analyzer {
     oldClassOwner = null
     newClassOwner = null
   }
+
+  // Miniboxed values to be transformed
+  private var miniboxedSyms: List[Symbol] = Nil
+  private var miniboxedEnv: TypeMap = new TypeMap { def apply(tp: Type) = tp }
 
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _

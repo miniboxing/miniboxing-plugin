@@ -117,7 +117,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr setFlag MINIBOXED
           newMbr setName (specializedName(member.name, typeParamValues(clazz, spec)))
           newMbr modifyInfo (info => {
-            val info0 = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
+            val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
             val localTags =
               for (tparam <- clazz.typeParams if spec(tparam) == Miniboxed)
                 yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
@@ -130,9 +130,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 case nmt: NullaryMethodType =>
                   MethodType(tagParams, nmt.resultType)
               }
+            miniboxedArgs(newMbr) = mbArgs
             info1
           })
           clazz.info.resultType.decls enter (newMbr)
+        } else {
+          miniboxedArgs(newMbr) = Nil
         }
 
         overloadsOfMember(spec) = newMbr
@@ -166,13 +169,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
    *    1. going from T to T$sp, deep transformation (eg List[T] => List[T$sp])
    *    2. going from T$sp to Long, shallow transformation (eg T$sp => Long, but List[T$sp] stays the same)
    */
-  private def miniboxSubst(deepEnv: TypeEnv, shallowEnv: TypeEnv, tpe: Type) = {
+  private def miniboxSubst(deepEnv: TypeEnv, shallowEnv: TypeEnv, tpe: Type): (Type, List[Symbol]) = {
     // Deep transformation, which redirects T to T$sp
     val (deepKeys, deepValues) = deepEnv.toList.unzip
     val deepSubst = new SubstTypeMap(deepKeys, deepValues)
 
     // Shallow transformation, which redirects T$sp to Long if T$sp represents a miniboxed value
     val (shallowKeys, shallowValues) = shallowEnv.toList.unzip
+    var mboxedParams = List[Symbol]()
+
     val shallowSubst = new SubstTypeMap(shallowKeys, shallowValues) {
       override def mapOver(tp: Type): Type = tp match {
         case TypeRef(pre, sym, args) =>
@@ -180,11 +185,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
             case Some(tpe) if args.isEmpty => tpe
             case _ => tp // we don't want the mapper to go further inside the type
           }
+        case MethodType(params, result) =>
+          val paramTypes = params.map(_.tpe)
+          val params1 = mapOver(params)
+          mboxedParams :::= (params1 zip paramTypes).collect({ case (p1, t) if p1.tpe == LongClass.tpe && t != LongClass.tpe => p1 })
+          val result1 = this(result)
+          if ((params1 eq params) && (result1 eq result)) tp
+          else copyMethodType(tp, params1, result1.substSym(params, params1))
         case _ =>
           super.mapOver(tp)
       }
     }
-    shallowSubst(deepSubst(tpe))
+
+    (shallowSubst(deepSubst(tpe)), mboxedParams)
   }
 
   /*
@@ -281,7 +294,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
        */
       assert(clazz.info.parents == List(AnyRefClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz.info.parents)
       val sParents = (clazz.info.parents ::: List(clazz.tpe)) map {
-        t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t))
+        // TODO: This probably won't work, as we have to take the parent's miniboxed fields into account
+        t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t)._1)
       }
 
       // parameters which are not fixed
@@ -320,7 +334,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       newCtor modifyInfo { info =>
         val info0 = info.asSeenFrom(sClass.tpe, ctor.owner)
         val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
-        val info2 = miniboxSubst(ifaceEnv, implEnv, info1)
+        val (info2, mboxedArgs) = miniboxSubst(ifaceEnv, implEnv, info1)
         val tagParams = typeTagMap map (_._2.cloneSymbol(ctor, SYNTHETIC))
         localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
         def transformArgs(tpe: Type): Type = tpe match {
@@ -331,6 +345,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           case _ =>
             tpe
         }
+        miniboxedArgs(newCtor) = mboxedArgs
         MethodType(tagParams.toList, transformArgs(info2))
       }
       memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
@@ -365,9 +380,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val info1 = info0.substThis(clazz, sClass)
         val info2 =
           if (m.isTerm && !m.isMethod)
-            miniboxSubst(ifaceEnv, implEnv, info1)
+            // TODO: We assume we access these values via accessors anyway
+            miniboxSubst(ifaceEnv, implEnv, info1)._1
           else
             info1
+
+        val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
+        val oldParams = miniboxedArgs.getOrElse(m, Nil)
+        miniboxedArgs(newMbr) = oldParams.map(paramUpdate)
 
         info2
       }
