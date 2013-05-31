@@ -429,17 +429,25 @@ abstract class Duplicators extends Analyzer {
           tree
 
         case _ =>
-          // debuglog("Duplicators default case: " + tree.summaryString)
-          // debuglog(" ---> " + tree + "\n  :" + tree.tpe)
+           debuglog("Duplicators default case: " + tree.summaryString)
+           debuglog(" ---> " + tree + "\n  :" + tree.tpe)
           if (tree.hasSymbol && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
           }
-          debuglog("before cast: " + tree + "\n  :" + tree.tpe)
+//          debuglog("before cast: " + tree + "\n  :" + tree.tpe)
           val ntree = castType(tree, pt)
-          debuglog("after cast: " + ntree + "\n  :" + ntree.tpe)
-          val res = super.typed(ntree, mode, pt)
-          debuglog("after type: " + ntree + "\n  :" + ntree.tpe)
-          res
+//          debuglog("after cast: " + ntree + "\n  :" + ntree.tpe)
+          val res = super.typed(ntree, mode, WildcardType)
+          val res2 =
+            if (res.tpe != null && !(res.tpe <:< pt) && (miniboxedEnv(res.tpe) == pt)) {
+              println(f"  [cast!] ")
+              super.typed(gen.mkMethodCall(box2minibox, List(tree)), mode, pt)
+            }
+            else
+              res
+
+//          debuglog("after type: " + ntree + "\n  :" + ntree.tpe)
+          res2
       }
     }
   }

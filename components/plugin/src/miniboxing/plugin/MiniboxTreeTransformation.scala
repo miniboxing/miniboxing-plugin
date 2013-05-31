@@ -91,10 +91,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
           println(f"[cast] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
           val ntree =
-            if (tree.tpe != null && (miniboxedEnv(tree.tpe) == pt)) {
-              println(f"  [done] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
+            if (tree.tpe != null && !(tree.tpe <:< pt) && pt =:= LongClass.tpe)
               gen.mkMethodCall(box2minibox, List(tree))
-            }
             else
               tree
           ntree.tpe = null
