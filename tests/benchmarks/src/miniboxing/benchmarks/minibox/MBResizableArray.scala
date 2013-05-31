@@ -22,7 +22,7 @@ class MBResizableArray[@minispec T: Manifest] {
       var pos = 0
       newarray = new Array[T](initialSize) // MiniboxArray.newArray[T](2 * size)
       while(pos < size) {
-        newarray.asInstanceOf[Array[T]](pos) = array.asInstanceOf[Array[T]](pos)
+        newarray(pos) = array(pos)
         pos += 1
       }
       array = newarray
@@ -32,7 +32,7 @@ class MBResizableArray[@minispec T: Manifest] {
 
   def add(elem: T) = {
     extend()
-    array.asInstanceOf[Array[T]](elemCount) = elem
+    array(elemCount) = elem
     elemCount += 1
   }
 
@@ -61,9 +61,9 @@ class MBResizableArray[@minispec T: Manifest] {
   def length: Int = elemCount
 
   @inline final def setElement(p: Int, t: T) = {
-    array.asInstanceOf[Array[T]](p) = t
+    array(p) = t
   }
-  @inline final def getElement(p: Int): T = array.asInstanceOf[Array[T]](p)
+  @inline final def getElement(p: Int): T = array(p)
 
   override def toString() = {
     var pos = 0
