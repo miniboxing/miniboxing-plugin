@@ -143,7 +143,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             val specClasses = createSpecializedClassesTrees(classdefs) map localTyper.typed
             val templates = transformStats(classdefs ::: specClasses, tree.symbol.moduleClass)
             val packageTree = treeCopy.PackageDef(tree, pid, templates)
-            localTyper.typedPos(tree.pos)(packageTree)
+            super.transform(localTyper.typedPos(tree.pos)(packageTree))
           }
 
         /*
@@ -158,9 +158,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val traitDecls = afterMinibox(traitSym.info).decls.toList
           val traitCtor = localTyper.typed(DefDef(traitSym.primaryConstructor, Block(List(), Literal(Constant()))))
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
-          localTyper.typedPos(tree.pos)(
+          super.transform(localTyper.typedPos(tree.pos)(
             treeCopy.Template(tree, parents, self,
-              atOwner(currentOwner)(transformTrees(traitCtor :: body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers))))
+              atOwner(currentOwner)(transformTrees(traitCtor :: body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers)))))
 
         /*
          * The tree of a specialized class is empty for the moment, but we
@@ -170,7 +170,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
           val templateDef = treeCopy.Template(tree, parents, self, memberDefs)
-          localTyper.typedPos(tree.pos)(templateDef)
+          super.transform(localTyper.typedPos(tree.pos)(templateDef))
 
         /*
          * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
@@ -183,7 +183,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * `methodSpecializationInfo` data structure.
          */
         case ddef @ DefDef(mods, name, tparams, vparamss, tpt, EmptyTree) if hasInfo(ddef) =>
-          memberSpecializationInfo.apply(tree.symbol) match {
+          val res = memberSpecializationInfo.apply(tree.symbol) match {
             // Implement the getter or setter functionality
             case FieldAccessor(field) =>
               val localTypeArgs = localTypeTags(tree.symbol)
@@ -224,7 +224,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   gen.mkMethodCall(callWithTypeTags, params1)
               }
 
-              localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
+              super.transform(localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast))))
 
             // copy the body of the `original` method
             case SpecializedImplementationOf(target) =>
@@ -237,19 +237,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             case Interface() =>
               tree
 
-            case OverrideOfSpecializedMethod(target) =>
-              sys.error("Not yet implemented!")
-
             case info =>
-              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
+              super.transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???))))))
               sys.error("Unknown info type: " + info)
           }
+          super.transform(res)
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
               val newTree = addValDefBody(tree, original)
-              localTyper.typedPos(tree.pos)(newTree)
+              super.transform(localTyper.typedPos(tree.pos)(newTree))
             case info =>
               sys.error("Unknown info type: " + info)
           }
@@ -259,7 +257,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           debug(" => overriding constructor in " + tree.symbol.ownerChain.reverse.map(_.nameString).mkString(".") + ":\n" + tree)
           val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
           debug(" <= " + result)
-          result
+          super.transform(result)
 
 //        /*
 //         * Array creation in miniboxed code is written by the user as:
