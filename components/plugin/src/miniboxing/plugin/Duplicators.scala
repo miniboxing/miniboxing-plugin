@@ -25,7 +25,7 @@ abstract class Duplicators extends Analyzer {
 
   import miniboxing._
   import global._
-  import definitions.{ AnyRefClass, AnyValClass }
+  import definitions.{ AnyClass, AnyRefClass, AnyValClass, LongClass }
 
   def retyped(context: Context, tree: Tree): Tree = {
     resetClassOwners
@@ -37,7 +37,7 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type], mboxEnv: Map[Symbol, Type], mboxedArgs: List[Symbol]): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type], mboxEnv: Map[Symbol, Type], mboxedArgs: List[(Symbol, Type)], mboxedTags: Map[Symbol, Tree]): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
@@ -46,6 +46,7 @@ abstract class Duplicators extends Analyzer {
     envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
     miniboxedEnv = new SubstSkolemsTypeMap(mboxEnv.keysIterator.toList, mboxEnv.valuesIterator.toList) // can be deep, we don't care
     miniboxedSyms = mboxedArgs
+    miniboxedTags = mboxedTags
 
     println("retyping: " + tree)
     println("with args: " + mboxedArgs)
@@ -70,8 +71,10 @@ abstract class Duplicators extends Analyzer {
   }
 
   // Miniboxed values to be transformed
-  private var miniboxedSyms: List[Symbol] = Nil
-  private var miniboxedEnv: TypeMap = new TypeMap { def apply(tp: Type) = tp }
+  var miniboxedSyms: List[(Symbol, Type)] = Nil
+  var miniboxedEnv: TypeMap = new TypeMap { def apply(tp: Type) = tp }
+  var miniboxedTags: Map[Symbol, Tree] = _
+  var boxing = true
 
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _
@@ -329,6 +332,24 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
           super.typed(tree, mode, pt)
 
+//        // Miniboxed value being used
+//        case Apply(Select(Ident(sym), method), args) if miniboxedSyms.map(_._1).contains(tree.symbol) && pt == AnyClass.tpe =>
+//          // Any method called on a miniboxed value should force it to be un-miniboxed
+//          val boxed = typed(Ident(sym)) // should cause it to become boxed
+//          super.typed(Apply(Select(boxed, method), args))
+
+        // Miniboxed value being used
+        case Ident(_) if miniboxedSyms.map(_._1).contains(tree.symbol) && boxing =>
+          // Any reference to a miniboxed symbol should be transformed to a boxed symbol
+          // boxing/unboxing can later be eliminated using peephole optimizations
+          boxing = false
+          val tpeS = miniboxedSyms.find(_._1 == tree.symbol).get._2.typeSymbol
+          val ident = super.typed(miniboxedTags(tpeS))
+          println(gen.mkMethodCall(Ident(minibox2box), List(tpeS.tpe), List(tree, ident)))
+          val res = super.typed(gen.mkMethodCall(Ident(minibox2box), List(tree, ident)))
+          boxing = true
+          res
+
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog("Ident to a lazy val " + tree + ", " + tree.symbol + " updated to " + origtreesym)
           tree.symbol = updateSym(origtreesym)
@@ -379,12 +400,6 @@ abstract class Duplicators extends Analyzer {
           val tree1 = super.typed(ntree, mode, pt)
           // log("plain this typed to: " + tree1)
           tree1
-/* no longer needed, because Super now contains a This(...)
-        case Super(qual, mix) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) =>
-          val tree1 = Super(qual, mix)
-          log("changed " + tree + " to " + tree1)
-          super.typed(atPos(tree.pos)(tree1))
-*/
         case Match(scrut, cases) =>
           val scrut1   = typed(scrut, EXPRmode | BYVALmode, WildcardType)
           val scrutTpe = scrut1.tpe.widen
@@ -427,7 +442,6 @@ abstract class Duplicators extends Analyzer {
           res
       }
     }
-
   }
 }
 

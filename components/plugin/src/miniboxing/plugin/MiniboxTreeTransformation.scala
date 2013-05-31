@@ -89,13 +89,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         override def castType(tree: Tree, pt: Type): Tree = {
           val earlyTpe = tree.tpe
           tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
-          debuglog(f"[cast] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
-          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
-            val casttpe = CastMap(tree.tpe)
-            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
-            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
-            else tree
-          } else tree
+          println(f"[cast] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
+          val ntree =
+            if (tree.tpe != null && (miniboxedEnv(tree.tpe) == pt)) {
+              println(f"  [done] ${earlyTpe}%15s => ${tree.tpe}%15s     for " + tree)
+              gen.mkMethodCall(box2minibox, List(tree))
+            }
+            else
+              tree
           ntree.tpe = null
           ntree
         }
@@ -104,7 +105,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
-    val duplicator = new Duplicator(Map.empty)
+    def typeTagTrees(symbol: Symbol) =
+      localTypeTags(symbol).map({case (t, tag) => (t, Ident(tag))}) ++ globalTypeTags(symbol.owner).map({case (t, tag) => (t, Select(This(symbol.owner), tag))})
 
     import global._
 
@@ -394,7 +396,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         symbol.enclClass,
         typeEnv(symbol.owner).deepEnv,
         typeEnv(symbol.owner).shallowEnv,
-        miniboxedArgs(symbol)
+        miniboxedArgs(symbol),
+        typeTagTrees(symbol)
       )
     }
 
@@ -538,7 +541,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         defSymbol.enclClass,
         typeEnv(defSymbol.owner).deepEnv,
         typeEnv(defSymbol.owner).shallowEnv,
-        Nil // A field does not take values
+        Nil, // A field does not take values
+        typeTagTrees(defSymbol)
       )
       deriveValDef(newValDef)(transform)
     }

@@ -159,6 +159,6 @@ trait MiniboxSpecializationInfo {
   /**
    * The set of miniboxed arguments a member takes
    */
-  val miniboxedArgs = new mutable.HashMap[Symbol, List[Symbol]]
+  val miniboxedArgs = new mutable.HashMap[Symbol, List[(Symbol, Type)]]
 }
 

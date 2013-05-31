@@ -169,14 +169,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
    *    1. going from T to T$sp, deep transformation (eg List[T] => List[T$sp])
    *    2. going from T$sp to Long, shallow transformation (eg T$sp => Long, but List[T$sp] stays the same)
    */
-  private def miniboxSubst(deepEnv: TypeEnv, shallowEnv: TypeEnv, tpe: Type): (Type, List[Symbol]) = {
+  private def miniboxSubst(deepEnv: TypeEnv, shallowEnv: TypeEnv, tpe: Type): (Type, List[(Symbol, Type)]) = {
     // Deep transformation, which redirects T to T$sp
     val (deepKeys, deepValues) = deepEnv.toList.unzip
     val deepSubst = new SubstTypeMap(deepKeys, deepValues)
 
     // Shallow transformation, which redirects T$sp to Long if T$sp represents a miniboxed value
     val (shallowKeys, shallowValues) = shallowEnv.toList.unzip
-    var mboxedParams = List[Symbol]()
+    var mboxedParams = List[(Symbol, Type)]()
 
     val shallowSubst = new SubstTypeMap(shallowKeys, shallowValues) {
       override def mapOver(tp: Type): Type = tp match {
@@ -188,7 +188,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         case MethodType(params, result) =>
           val paramTypes = params.map(_.tpe)
           val params1 = mapOver(params)
-          mboxedParams :::= (params1 zip paramTypes).collect({ case (p1, t) if p1.tpe == LongClass.tpe && t != LongClass.tpe => p1 })
+          mboxedParams :::= (params1 zip paramTypes).collect({ case (p1, t) if p1.tpe == LongClass.tpe && t != LongClass.tpe => (p1, t) })
           val result1 = this(result)
           if ((params1 eq params) && (result1 eq result)) tp
           else copyMethodType(tp, params1, result1.substSym(params, params1))
@@ -387,7 +387,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
         val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
         val oldParams = miniboxedArgs.getOrElse(m, Nil)
-        miniboxedArgs(newMbr) = oldParams.map(paramUpdate)
+        miniboxedArgs(newMbr) = oldParams.map({ case (s, t) => (paramUpdate(s), pmap(t.typeSymbol).tpe)})
 
         info2
       }

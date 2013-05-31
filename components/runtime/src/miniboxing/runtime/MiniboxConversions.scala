@@ -9,28 +9,28 @@ object MiniboxConversions {
    * the natural representation provided that we know the type
    * statically
    */
-  @inline final def MiniboxToUnit(l: Minibox): Unit = ()
-  @inline final def MiniboxToBoolean(l: Minibox): Boolean = (l != 0)
-  @inline final def MiniboxToByte(l: Minibox): Byte = l.toByte
-  @inline final def MiniboxToChar(l: Minibox): Char = l.toChar
-  @inline final def MiniboxToShort(l: Minibox): Short = l.toShort
-  @inline final def MiniboxToInt(l: Minibox): Int = l.toInt
-  @inline final def MiniboxToLong(l: Minibox): Long = l.toLong
-  @inline final def MiniboxToFloat(l: Minibox): Float =
+  @inline final def MiniboxToUnit(l: Long): Unit = ()
+  @inline final def MiniboxToBoolean(l: Long): Boolean = (l != 0)
+  @inline final def MiniboxToByte(l: Long): Byte = l.toByte
+  @inline final def MiniboxToChar(l: Long): Char = l.toChar
+  @inline final def MiniboxToShort(l: Long): Short = l.toShort
+  @inline final def MiniboxToInt(l: Long): Int = l.toInt
+  @inline final def MiniboxToLong(l: Long): Long = l.toLong
+  @inline final def MiniboxToFloat(l: Long): Float =
     java.lang.Float.intBitsToFloat(l.toInt)
-  @inline final def MiniboxToDouble(l: Minibox): Double =
+  @inline final def MiniboxToDouble(l: Long): Double =
     java.lang.Double.longBitsToDouble(l)
 
-  @inline final def UnitToMinibox(u: Unit): Minibox = 0
-  @inline final def BooleanToMinibox(b: Boolean): Minibox = if (b) 1 else 0
-  @inline final def ByteToMinibox(b: Byte): Minibox = b.toLong
-  @inline final def CharToMinibox(c: Char): Minibox = c.toLong
-  @inline final def ShortToMinibox(s: Short): Minibox = s.toLong
-  @inline final def IntToMinibox(i: Int): Minibox = i.toLong
-  @inline final def LongToMinibox(l: Long): Minibox = l
-  @inline final def DoubleToMinibox(d: Double): Minibox =
+  @inline final def UnitToMinibox(u: Unit): Long = 0
+  @inline final def BooleanToMinibox(b: Boolean): Long = if (b) 1 else 0
+  @inline final def ByteToMinibox(b: Byte): Long = b.toLong
+  @inline final def CharToMinibox(c: Char): Long = c.toLong
+  @inline final def ShortToMinibox(s: Short): Long = s.toLong
+  @inline final def IntToMinibox(i: Int): Long = i.toLong
+  @inline final def LongToMinibox(l: Long): Long = l
+  @inline final def DoubleToMinibox(d: Double): Long =
     java.lang.Double.doubleToRawLongBits(d)
-  @inline final def FloatToMinibox(f: Float): Minibox =
+  @inline final def FloatToMinibox(f: Float): Long =
     java.lang.Float.floatToRawIntBits(f).toLong
 
 
@@ -46,7 +46,7 @@ object MiniboxConversions {
    * As a workaround, in our test examples we manually insert minibox2box
    * in such places.
    */
-  @inline final def minibox2box[T](l: Minibox, tag: Tag ) : T = {
+  @inline final def minibox2box[T](l: Long, tag: Tag) : T = {
     val ret: Any = tag.asInstanceOf[Byte] match {
       // See https://issues.scala-lang.org/browse/SI-6956
       case 0 /* UNIT */ => ()
@@ -67,7 +67,7 @@ object MiniboxConversions {
    *  We do not need to return the type tag also since it is known in the
    *  calling context.
    */
-  @inline final def box2minibox(a: Any): Minibox = a match {
+  @inline final def box2minibox(a: Any): Long = a match {
     case b : Boolean => if (b) 1 else 0
     case b : Byte => b.toLong
     case u : Unit => 0
