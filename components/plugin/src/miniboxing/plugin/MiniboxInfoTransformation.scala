@@ -4,6 +4,7 @@ import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.collection.mutable.HashMap
 import scala.tools.nsc.typechecker.Analyzer
+import com.sun.org.apache.xerces.internal.dom.DeepNodeListImpl
 
 trait MiniboxInfoTransformation extends InfoTransform {
   self: MiniboxPhase with MiniboxLogic with MiniboxLogging with MiniboxSpecializationInfo =>
@@ -137,6 +138,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         overloadsOfMember(spec) = newMbr
         overloads(newMbr) = overloadsOfMember
       }
+
+      member.modifyInfo(info => MethodType(List(), info))
 
       for (spec <- specs; newMbr <- overloadsOfMember get spec)
         memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)

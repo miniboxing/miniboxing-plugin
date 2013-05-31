@@ -15,11 +15,66 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
 
+  /** A tree symbol substituter that substitutes on type skolems.
+   *  If a type parameter is a skolem, it looks for the original
+   *  symbol in the 'from' and maps it to the corresponding new
+   *  symbol. The new symbol should probably be a type skolem as
+   *  well (not enforced).
+   *
+   *  All private members are made protected in order to be accessible from
+   *  specialized classes.
+   */
+  class ImplementationAdapter(from: List[Symbol],
+                              to: List[Symbol],
+                              targetClass: Symbol,
+                              addressFields: Boolean) extends TreeSymSubstituter(from, to) {
+    override val symSubst = new SubstSymMap(from, to) {
+      override def matches(sym1: Symbol, sym2: Symbol) =
+        if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
+        else sym1 eq sym2
+    }
+
+    private def isAccessible(sym: Symbol): Boolean =
+      (currentClass == sym.owner.enclClass) && (currentClass != targetClass)
+
+    private def shouldMakePublic(sym: Symbol): Boolean =
+      sym.hasFlag(PRIVATE | PROTECTED) && (addressFields || !nme.isLocalName(sym.name))
+
+    /** All private members that are referenced are made protected,
+     *  in order to be accessible from specialized subclasses.
+     */
+    override def transform(tree: Tree): Tree = tree match {
+      case Select(qual, name) =>
+        val sym = tree.symbol
+        if (sym.isPrivate) debuglog(
+          "seeing private member %s, currentClass: %s, owner: %s, isAccessible: %b, isLocalName: %b".format(
+            sym, currentClass, sym.owner.enclClass, isAccessible(sym), nme.isLocalName(sym.name))
+        )
+        if (shouldMakePublic(sym) && !isAccessible(sym)) {
+          debuglog("changing private flag of " + sym)
+          sym.makeNotPrivate(sym.owner)
+        }
+        super.transform(tree)
+
+      case _ =>
+        super.transform(tree)
+    }
+  }
+
   /**
    * The tree transformer that adds the trees for the specialized classes inside
    * the current package.
    */
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+
+    def reportError[T](body: =>T)(handler: TypeError => T): T =
+      try body
+      catch {
+        case te: TypeError =>
+          reporter.error(te.pos, te.msg)
+          (new Exception()).printStackTrace()
+          handler(te)
+      }
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type]) extends {
@@ -122,8 +177,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               val localTypeArgs = localTypeTags(tree.symbol)
               val allArgs = tree.symbol.tpe.paramss.flatten
               val mthArgs = allArgs.drop(localTypeArgs.size)
-              println(ddef)
-              println(mthArgs)
               val rhs1 = ltypedpos(
                 if (tree.symbol.isGetter) {
                   gen.mkAttributedRef(field)
@@ -160,15 +213,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 case _ => Nil
               }
 
-              println("\n")
-              println("TREE: " + tree)
-              println("TARGET: " + target.defString)
-              println("FORWARD: " + memberSpecializationInfo.apply(tree.symbol))
-
               def callWithTypeTags = {
                 ttagArgs match {
-                  case Nil =>
-                    gen.mkAttributedRef(target)
+//                  case Nil =>
+//                    gen.mkAttributedRef(target)
                   case _ =>
                     gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)))
                 }
@@ -186,23 +234,26 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   gen.mkMethodCall(callWithTypeTags, params1)
               }
 
-              println("RHS: " + rhs1)
-
               localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast)))
 
-//            // copy the body of the `original` method
-//            case SpecializedImplementationOf(original) =>
-//              val newTree = addBody(tree, original)
-//              localTyper.typedPos(tree.pos)(newTree)
-//
-//            case Interface() =>
-//              tree
-//
-//            case OverrideOfSpecializedMethod(target) =>
-//              sys.error("Not yet implemented!")
-//
-            case info =>
-              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
+            // copy the body of the `original` method
+            case SpecializedImplementationOf(target) =>
+              // we have an rhs, specialize it
+              def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
+//              val tree1 = reportTypeError {
+              val tree1 = duplicateBody(ddef, target)
+//              }
+              debuglog("implementation: " + tree1)
+              deriveDefDef(tree1)(transform)
+
+            case Interface() =>
+              tree
+
+            case OverrideOfSpecializedMethod(target) =>
+              sys.error("Not yet implemented!")
+
+//            case info =>
+//              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
 //              sys.error("Unknown info type: " + info)
           }
 
@@ -302,11 +353,11 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * for copying inside the methods that are specialized implementations of them.
      */
     private object MethodBodiesCollector extends Traverser {
-      private val body = mutable.HashMap[Symbol, (Tree, List[Symbol])]()
+      private val body = mutable.HashMap[Symbol, (Tree, List[List[Symbol]])]()
 
       override def traverse(tree: Tree) = tree match {
-        case DefDef(_, _, _, vparams :: _, _, rhs) if (templateMembers(tree.symbol)) =>
-          collect(tree.symbol, rhs, vparams map (_.symbol))
+        case DefDef(_, _, _, vparamss, _, rhs) if (templateMembers(tree.symbol)) =>
+          collect(tree.symbol, rhs, vparamss.map(_.map(_.symbol)))
         case DefDef(_, _, _, Nil, _, rhs) if (templateMembers(tree.symbol)) =>
           collect(tree.symbol, rhs, Nil)
         case ValDef(mods, name, tpt, rhs) if templateMembers(tree.symbol) =>
@@ -315,7 +366,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           super.traverse(tree)
       }
 
-      private def collect(member: Symbol, rhs: Tree, params: List[Symbol]) = {
+      private def collect(member: Symbol, rhs: Tree, params: List[List[Symbol]]) = {
         body(member) = (rhs, params)
         templateMembers -= member
         debug("collected " + member.fullName)
@@ -323,6 +374,70 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       def getMethodBody(meth: Symbol) = body(meth)
       def getFieldBody(fld: Symbol) = body(fld)._1
+    }
+
+    /** Duplicate the body of the given method `tree` to the new symbol `source`.
+     *
+     *  Knowing that the method can be invoked only in the `castmap` type environment,
+     *  this method will insert casts for all the expressions of types mappend in the
+     *  `castmap`.
+     */
+    private def duplicateBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
+      val symbol = tree.symbol
+      val meth   = addBody(tree, source)
+
+      val d = new Duplicator(castmap)
+      debuglog("-->d DUPLICATING: " + meth)
+      d.retyped(
+        localTyper.context1.asInstanceOf[d.Context],
+        meth,
+        source.enclClass,
+        symbol.enclClass,
+        typeEnv(symbol.owner).deepEnv // TODO!!
+      )
+    }
+
+    /** Put the body of 'source' as the right hand side of the method 'tree'.
+     *  The destination method gets fresh symbols for type and value parameters,
+     *  and the body is updated to the new symbols, and owners adjusted accordingly.
+     *  However, if the same source tree is used in more than one place, full re-typing
+     *  is necessary. @see method duplicateBody
+     */
+    private def addBody(tree: DefDef, source: Symbol): DefDef = {
+      val symbol = tree.symbol
+      debuglog("specializing body of" + symbol.defString)
+      val DefDef(_, _, tparams, tags :: vparamss, tpt, _) = tree
+      val env = typeEnv(symbol.owner).deepEnv // TODO
+      val boundTvars = env.keySet
+      val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
+      if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)
+        debuglog("substituting " + origtparams + " for " + symbol.typeParams)
+
+      // skolemize type parameters
+      val oldtparams = tparams map (_.symbol)
+      val newtparams = deriveFreshSkolems(oldtparams)
+      map2(tparams, newtparams)(_ setSymbol _)
+
+      // create fresh symbols for value parameters to hold the skolem types
+      // val newSyms = cloneSymbolsAtOwnerAndModify(vparamss.flatten.map(_.symbol), symbol, _.substSym(oldtparams, newtparams))
+
+      // replace value and type parameters of the old method with the new ones
+      // log("Adding body for " + tree.symbol + " - origtparams: " + origtparams + "; tparams: " + tparams)
+      // log("Type vars of: " + source + ": " + source.typeParams)
+      // log("Type env of: " + tree.symbol + ": " + boundTvars)
+      // log("newtparams: " + newtparams)
+      val (body, parameters) = MethodBodiesCollector.getMethodBody(source)
+
+      val symSubstituter = new ImplementationAdapter(
+        parameters.flatten ::: origtparams,
+        vparamss.flatten.map(_.symbol) ::: newtparams,
+        source.enclClass,
+        false) // don't make private fields public
+
+      val newBody = symSubstituter(body.duplicate)
+      tpt.tpe = tpt.tpe.substSym(oldtparams, newtparams)
+
+      copyDefDef(tree)(rhs = newBody)
     }
 
     private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
