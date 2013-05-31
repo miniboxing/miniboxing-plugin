@@ -106,6 +106,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
+    def separateTypeTagArgsInTree(args: List[List[Tree]]): (List[Tree], List[List[Tree]]) = args match {
+      case ttargs :: rest if ttargs.forall(_.symbol.name.toString.contains("_TypeTag")) => (ttargs, rest)
+      case _ => (Nil, args)
+    }
+
+    def separateTypeTagArgsInType(tpe: Type): (List[Symbol], Type) = tpe match {
+      case MethodType(ttargs, tpe) if ttargs.forall(_.name.toString.contains("_TypeTag")) => (ttargs, tpe)
+      case _ => (Nil, tpe)
+    }
+
     def typeTagTrees(symbol: Symbol) =
       localTypeTags(symbol).map({case (t, tag) => (t, Ident(tag))}) ++ globalTypeTags(symbol.owner).map({case (t, tag) => (t, Select(This(symbol.owner), tag))})
 
@@ -190,24 +200,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
             // forward to the target methods, making casts as prescribed
             case ForwardTo(ttagArgs, target, retCast, paramCasts) =>
-
-              def separateTypeTagArgsInTree(args: List[List[Tree]]): (List[Tree], List[List[Tree]]) = {
-                args match {
-                  case ttargs :: rest if ttargs.forall(_.symbol.name.toString.contains("_TypeTag")) =>
-                    (ttargs, rest)
-                  case _ =>
-                    (Nil, args)
-                }
-              }
-
-              def separateTypeTagArgsInType(tpe: Type): (List[Symbol], Type) =
-                tpe match {
-                  case MethodType(ttargs, tpe) if ttargs.forall(_.name.toString.contains("_TypeTag")) =>
-                    (ttargs, tpe)
-                  case _ =>
-                    (Nil, tpe)
-                }
-
               val (ttagWrapperArgs, paramss) = separateTypeTagArgsInTree(vparamss)
               val (ttagFormalArgs, targetTpe) = separateTypeTagArgsInType(target.tpe)
               val targetParams = targetTpe.paramss match {
@@ -215,18 +207,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 case _ => Nil
               }
 
-              def callWithTypeTags = {
+              def callWithTypeTags =
                 ttagArgs match {
-                  case Nil =>
-                    gen.mkAttributedRef(target)
-                  case _ =>
-                    gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)))
+                  case Nil =>  gen.mkAttributedRef(target)
+                  case _ => gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)))
                 }
-              }
 
               val rhs1 = paramss match {
-                case Nil =>
-                  callWithTypeTags
+                case Nil =>  callWithTypeTags
                 case vparams :: _ =>
                   val params1 =
                     ((vparams zip targetParams) zip paramCasts) map {
@@ -242,9 +230,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             case SpecializedImplementationOf(target) =>
               // we have an rhs, specialize it
               def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
-//              val tree1 = reportTypeError {
               val tree1 = duplicateBody(ddef, target)
-//              }
               debuglog("implementation: " + tree1)
               deriveDefDef(tree1)(transform)
 
@@ -254,9 +240,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             case OverrideOfSpecializedMethod(target) =>
               sys.error("Not yet implemented!")
 
-//            case info =>
-//              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
-//              sys.error("Unknown info type: " + info)
+            case info =>
+              localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???)))))
+              sys.error("Unknown info type: " + info)
           }
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
@@ -274,6 +260,87 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
           debug(" <= " + result)
           result
+
+//        /*
+//         * Array creation in miniboxed code is written by the user as:
+//         *   Manifest[T].newArray[T](len)
+//         * and we rewrite it to:
+//         *   MiniboxArray.internal_newArray(len, tagOfT)
+//         */
+//        case Apply(TypeApply(meth, tpe :: Nil), len :: Nil) if (tree.symbol == newArray) =>
+//          localTyper.typedPos(tree.pos)(
+//            gen.mkMethodCall(internal_newArray, List(transform(len), getTag(tpe))))
+//
+//        // array_length with tag-based dispatch
+//        case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
+//          localTyper.typedPos(tree.pos)(
+//            gen.mkMethodCall(array_length, List(transform(qual))))
+//
+//        case Apply(fn, args) =>
+//          val methodSym = tree.symbol
+//
+//          // box the arguments if necessary
+//          val newArgs =
+//            (methodSym.tpe.paramTypes zip transformTrees(args)) map {
+//              case (paramType, arg) =>
+//                if (paramType == AnyClass.tpe && isMiniboxed(arg.tpe.typeSymbol))
+//                  box(arg)
+//                else
+//                  arg
+//            }
+//
+//          fn match {
+//            case sel @ Select(qual, meth) =>
+//              var newTree: Tree = null
+//
+//              /*
+//               * Dispatch on a variable of type T:
+//               *  - for hashCode and ##, use an optimized function
+//               *  - for the rest, box
+//               */
+//              if (isMiniboxed(qual)) {
+//                if (methodSym == Any_##) {
+//                  newTree = gen.mkMethodCall(tag_##, packedMB(transform(qual)) ::: Nil)
+//                } else if (methodSym == Any_hashCode) {
+//                  newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
+//                } else if (methodSym == Any_== && args.size == 1 && isMiniboxed(args(0))) {
+//                  if (qual.tpe.typeSymbol == args(0).tpe.typeSymbol) {
+//                    // the types are known to be equal
+//                    newTree = gen.mkMethodCall(tag_==,
+//                      asMB(transform(qual)) :: asMB(transform(args(0))) :: Nil)
+//                  } else {
+//                    newTree = gen.mkMethodCall(tag_==,
+//                      packedMB(transform(qual)) ::: packedMB(args(0)))
+//                  }
+//                } else {
+//                  newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
+//                }
+//              }
+//
+//              /*
+//               * TODO: For array access instructions, use the static methods from
+//               * MiniboxTypeTagDispatch
+//               */
+//              if (methodSym == Array_apply && isMiniboxedArray(qual)) {
+//                val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
+//                val pos = newArgs(0)
+//                newTree = gen.mkMethodCall(array_apply,
+//                  transform(qual1) :: pos :: miniboxedArrayTag(qual) :: Nil)
+//              }
+//              if (methodSym == Array_update && isMiniboxedArray(qual)) {
+//                val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
+//                val pos = newArgs(0)
+//                val elem = newArgs(1)
+//                newTree = gen.mkMethodCall(array_update,
+//                  transform(qual1) :: pos :: asMB(elem) :: miniboxedArrayTag(qual) :: Nil)
+//              }
+//
+//              if (newTree == null)
+//                newTree = treeCopy.Apply(tree, transform(fn), newArgs)
+//              localTyper.typed(atPos(tree.pos)(newTree))
+//            case _ =>
+//              localTyper.typed(atPos(tree.pos)(treeCopy.Apply(tree, transform(fn), newArgs)))
+//          }
 
         case _ =>
           super.transform(tree)
@@ -298,7 +365,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
         case CastMiniboxToBox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
-          ltypedpos(gen.mkMethodCall(minibox2box, List(ttree, tagref)))
+          ltypedpos(gen.mkMethodCall(minibox2box, List(tpe), List(ttree, tagref)))
         case CastBoxToMinibox =>
           ltypedpos(gen.mkMethodCall(box2minibox, List(ttree)))
       }
@@ -451,82 +518,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       copyDefDef(tree)(rhs = newBody)
     }
 
-//    private def addDefDefBody(defn: Tree, origMember: Symbol): Tree = {
-//      // original member
-//      val (origBody, origParams) = MethodBodiesCollector.getMethodBody(origMember);
-//      val origClass = origMember.owner
-//      // specialized member
-//      val specMember = defn.symbol
-//
-//      /*
-//       * There are a couple of transformations that we need to perform to specialize the code. All of these
-//       * transformations should leave the tree behaving the same as before and should keep its types consistent
-//       *
-//       * (1) transform all references to miniboxed parameters into calls to `minibox2box[T](longValue, typeTag)`
-//       *     TODO: Do we need to do anything about object parameters?
-//       * (2) shortcut array operations, Any operations (like hashCode) to the non-boxing variants
-//       * (3) rewire calls to specialized overloads instead of the generic methods
-//       *     rewire member accesses to access the specialized members
-//       * (4) rewire calls to go against the interface instead of the class
-//       *     TODO: Decide whether we really need this
-//       * (5) create new symbols in the tree for labels, locally-defined values etc.
-//       * (6) rewire super calls
-//       */
-//      var newBody = origBody.duplicate
-//      newBody = duplicator.retypedMethod(
-//        context = localTyper.context1.asInstanceOf[duplicator.Context],
-//        tree = copyDefDef(defn)(rhs = newBody),
-//        oldThis = origMember.enclClass,
-//        newThis = specMember.enclClass)
-//        // env = typeEnv(specMember.owner).deepEnv) // XXX: keep all parameters
-//
-//      newBody
-//
-////      /*
-////       * Most of the work of the tree transformer is done here.
-////       * We need to adapt the body of the generic class to use the value
-////       * representation of the current (specialized) class.
-////       *
-////       * In order to achieve this we must:
-////       * - insert type tag dispatching methods instead of the methods
-////       *   from `Array` and `Any` classes
-////       * - rewire method calls to use the overloads specialized for this
-////       *   representation
-////       * - replace all method selections to use the interface rather than
-////       *   the generic class
-////       * - insert conversions between boxed, miniboxed and natural representation
-////       *   of primitive values.
-////       * - redirect super calls
-////       */
-////      var newBody = origBody.duplicate
-////      newBody = adaptTypes(newBody)
-////
-//////      if (defn.symbol.name.toString == "contains_J")
-//////        logTree(defSymbol.fullName + " before: ", origBody)
-//////      // debugging
-//////      val printtypes = settings.printtypes.value
-//////      settings.printtypes.value = true
-//////      println(defSymbol + ":\n" + asString(newBody))
-//////      settings.printtypes.value = printtypes
-//////      // end debugging
-////
-////      newBody = propagateMiniboxedParameters(newBody)
-////
-////
-////        val res = (new replaceLocalCalls(currentClass, origClass))( {
-////          if (defn.symbol.name.toString == "contains_J")
-////            logTree(defSymbol.fullName + " after: ", result)
-////          result
-////        }
-////      )
-////
-////      if (defn.symbol.name.toString == "contains_J")
-////        logTree(defSymbol.fullName + " finally: ", res)
-////
-////      res
-//    }
-
-
     private def addValDefBody(tree: Tree, origMember: Symbol): Tree = {
       val defSymbol = tree.symbol
       val origBody = MethodBodiesCollector.getFieldBody(origMember);
@@ -549,247 +540,63 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       deriveValDef(newValDef)(transform)
     }
 
-    /**
-     * In the `_J` class, we should not be calling the generic methods, but
-     * the `_J` version of it. Replace the symbol for the methods in the generic
-     * class with the symbols of the corresponding methods in the interface.
-     */
-    private class replaceLocalCalls(sClass: Symbol, clazz: Symbol) extends Transformer {
-      val spec: PartialSpec = partialSpec(sClass)
-      def apply(tree: Tree): Tree = transform(tree)
-      override def transform(tree: Tree): Tree = {
-        val mbr = tree.symbol
-        //logTree("before", tree)
-        val result = tree match {
-          /*
-           * `Select` nodes use the symbols for methods from the original class.
-           * Change them to use the interface.
-           *
-           * TODO: do the same in the generic class.
-           */
-//          case Select(obj, meth) if (mbr.owner == clazz && mbr.isMethod) =>
-//            debug(" *** " + meth + " : " + sClass)
-//            val iface = specializedInterface(clazz)
-//            // use the most specific overload
-//            val methName =
-//              if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr)
-//                overloads(mbr)(spec).name
-//              else
-//                meth
-//            debug("  *  " + methName)
+//    private object adaptTypes extends Transformer {
+//      /*
+//       * Returns the code to box around some tree
+//       */
+//      private def box(tree: Tree) = localTyper.typed(
+//        gen.mkMethodCall(minibox2box, packedMB(tree)))
 //
-//            // Mr. Typer will insert an unwanted Apply node here in case of no-params functions
-//            // No thanks Mr. Typer, keep them to yourself!
-//            typed(Select(obj, iface.tpe.decl(methName))) match {
-//              case Apply(tree, List()) => tree
-//              case tree => tree
-//            }
-
-          case _ => super.transform(tree)
-        }
-        //logTree("after", result)
-        result
-      }
-
-
-//      override def transform(tree: Tree): Tree = {
-//        val mbr = tree.symbol
-//        tree match {
-//          /*
-//           * `Select` nodes use the symbols for methods from the original class.
-//           * Change them to use the interface.
-//           *
-//           * TODO: do the same in the generic class.
-//           */
-//          case Select(obj, meth) if mbr.owner == clazz =>
-//            val newBody =
-//              if (mbr.isMethod) {
-//                debug(" *** " + meth + " : " + sClass)
-//                val iface = specializedInterface(clazz)
-//                // use the most specific overload
-//                val methName =
-//                  if ((overloads isDefinedAt mbr) && overloads(mbr)(spec) != mbr)
-//                    overloads(mbr)(spec).name
-//                  else
-//                    meth
-//                debug("  *  " + methName)
-//                Select(transform(obj), iface.tpe.decl(methName))
-//              } else
-//                Select(transform(obj), sClass.tpe.decl(meth))
+//      /*
+//       * Tells whether a tree computes a value that will be stored on Long and
+//       * will have a type tag.
+//       */
+//      private def isMiniboxed(t: Tree): Boolean = isMiniboxed(t.tpe)
+//      private def isMiniboxed(typ: Type): Boolean = isMiniboxed(typ.typeSymbol)
 //
-//            typed(newBody)
-//          case _: Select | _: Ident | _: This =>
-//            tree.tpe = null
-//            typed(tree)
-//          case _ => super.transform(tree)
+//      private def isMiniboxed(typs: Symbol): Boolean = {
+//        val currentClass = MiniboxTreeTransformer.this.currentClass
+//        partialSpec(currentClass).get(typs) match {
+//          case Some(Miniboxed) => true
+//          case _ => false
 //        }
 //      }
-    }
-
-    /**
-     * When copying the code from the generic class to the specialized one,
-     * we need to convert type parameters to the uniform representation: Long
-     * and to replace code that treats them as instances of Any.
-     *
-     * NOTE: In the standard implementation of specialization such casts
-     * are done during erasure, but in our case we need to look at the type
-     * Manifest when boxing/unboxing, so a custom transformation needs to be
-     * done.
-     */
-    private object adaptTypes extends Transformer {
-      def apply(tree: Tree): Tree = transform(tree)
-
-      override def transform(tree: Tree): Tree = {
-        curTree = tree
-        tree match {
-
-          /*
-           * Array creation in miniboxed code is written by the user as:
-           *   Manifest[T].newArray[T](len)
-           * and we rewrite it to:
-           *   MiniboxArray.internal_newArray(len, tagOfT)
-           */
-          case Apply(TypeApply(meth, tpe :: Nil), len :: Nil) if (tree.symbol == newArray) =>
-            localTyper.typedPos(tree.pos)(
-              gen.mkMethodCall(internal_newArray, List(transform(len), getTag(tpe))))
-
-          // array_length with tag-based dispatch
-          case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
-            localTyper.typedPos(tree.pos)(
-              gen.mkMethodCall(array_length, List(transform(qual))))
-
-          case Apply(fn, args) =>
-            val methodSym = tree.symbol
-
-            // box the arguments if necessary
-            val newArgs =
-              (methodSym.tpe.paramTypes zip transformTrees(args)) map {
-                case (paramType, arg) =>
-                  if (paramType == AnyClass.tpe && isMiniboxed(arg.tpe.typeSymbol))
-                    box(arg)
-                  else
-                    arg
-              }
-
-            fn match {
-              case sel @ Select(qual, meth) =>
-                var newTree: Tree = null
-
-                /*
-                 * Dispatch on a variable of type T:
-                 *  - for hashCode and ##, use an optimized function
-                 *  - for the rest, box
-                 */
-                if (isMiniboxed(qual)) {
-                  if (methodSym == Any_##) {
-                    newTree = gen.mkMethodCall(tag_##, packedMB(transform(qual)) ::: Nil)
-                  } else if (methodSym == Any_hashCode) {
-                    newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
-                  } else if (methodSym == Any_== && args.size == 1 && isMiniboxed(args(0))) {
-                    if (qual.tpe.typeSymbol == args(0).tpe.typeSymbol) {
-                      // the types are known to be equal
-                      newTree = gen.mkMethodCall(tag_==,
-                        asMB(transform(qual)) :: asMB(transform(args(0))) :: Nil)
-                    } else {
-                      newTree = gen.mkMethodCall(tag_==,
-                        packedMB(transform(qual)) ::: packedMB(args(0)))
-                    }
-                  } else {
-                    newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
-                  }
-                }
-
-                /*
-                 * TODO: For array access instructions, use the static methods from
-                 * MiniboxTypeTagDispatch
-                 */
-                if (methodSym == Array_apply && isMiniboxedArray(qual)) {
-                  val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
-                  val pos = newArgs(0)
-                  newTree = gen.mkMethodCall(array_apply,
-                    transform(qual1) :: pos :: miniboxedArrayTag(qual) :: Nil)
-                }
-                if (methodSym == Array_update && isMiniboxedArray(qual)) {
-                  val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
-                  val pos = newArgs(0)
-                  val elem = newArgs(1)
-                  newTree = gen.mkMethodCall(array_update,
-                    transform(qual1) :: pos :: asMB(elem) :: miniboxedArrayTag(qual) :: Nil)
-                }
-
-                if (newTree == null)
-                  newTree = treeCopy.Apply(tree, transform(fn), newArgs)
-                localTyper.typed(atPos(tree.pos)(newTree))
-              case _ =>
-                localTyper.typed(atPos(tree.pos)(treeCopy.Apply(tree, transform(fn), newArgs)))
-            }
-
-          // Insert a cast if necessary
-          case Assign(lhs, rhs) if (lhs.tpe == AnyClass.tpe && isMiniboxed(rhs)) =>
-            localTyper.typed(atPos(tree.pos)(Assign(lhs, box(transform(rhs)))))
-
-          case _ =>
-            //          println("descending into: " + tree.printingPrefix + " " + tree)
-            super.transform(tree)
-        }
-      }
-      /*
-       * Returns the code to box around some tree
-       */
-      private def box(tree: Tree) = localTyper.typed(
-        gen.mkMethodCall(minibox2box, packedMB(tree)))
-
-      /*
-       * Tells whether a tree computes a value that will be stored on Long and
-       * will have a type tag.
-       */
-      private def isMiniboxed(t: Tree): Boolean = isMiniboxed(t.tpe)
-      private def isMiniboxed(typ: Type): Boolean = isMiniboxed(typ.typeSymbol)
-
-      private def isMiniboxed(typs: Symbol): Boolean = {
-        val currentClass = MiniboxTreeTransformer.this.currentClass
-        partialSpec(currentClass).get(typs) match {
-          case Some(Miniboxed) => true
-          case _ => false
-        }
-      }
-
-      private def isMiniboxedArray(qual: Tree): Boolean =
-        qual.tpe.underlying.typeArgs exists isMiniboxed
-
-      private def miniboxedArrayTag(qual: Tree) = {
-        val currentClass = MiniboxTreeTransformer.this.currentClass
-        val tparam = qual.tpe.underlying.typeArgs(0).typeSymbol
-        val tag = ??? //typeTags(currentClass)(tparam)
-        localTyper.typed(gen.mkAttributedRef(tag))
-      }
-
-      private def getTag(tpe: Tree) = {
-        val currentClass = MiniboxTreeTransformer.this.currentClass
-        val tparam = tpe.symbol
-        val tag = ??? //typeTags(currentClass)(tparam)
-        localTyper.typed(gen.mkAttributedRef(tag))
-      }
-
-      /*
-       * Converts a tree that has type `T` whith Minispeced annotation to
-       * a packed representation: a Long representing the value and a
-       * Byte representing the type.
-       */
-      private def packedMB(t: Tree) = {
-        assert(isMiniboxed(t))
-        val currentClass = MiniboxTreeTransformer.this.currentClass
-        val tag = ??? //typeTags(currentClass)(t.tpe.typeSymbol)
-
-        List(gen.mkAsInstanceOf(t, LongClass.tpe, true, false),
-          localTyper.typed(gen.mkAttributedRef(tag)))
-      }
-
-      private def asMB(t: Tree) = {
-        gen.mkAsInstanceOf(t, LongClass.tpe, true, false)
-      }
-
-    }
+//
+//      private def isMiniboxedArray(qual: Tree): Boolean =
+//        qual.tpe.underlying.typeArgs exists isMiniboxed
+//
+//      private def miniboxedArrayTag(qual: Tree) = {
+//        val currentClass = MiniboxTreeTransformer.this.currentClass
+//        val tparam = qual.tpe.underlying.typeArgs(0).typeSymbol
+//        val tag = ??? //typeTags(currentClass)(tparam)
+//        localTyper.typed(gen.mkAttributedRef(tag))
+//      }
+//
+//      private def getTag(tpe: Tree) = {
+//        val currentClass = MiniboxTreeTransformer.this.currentClass
+//        val tparam = tpe.symbol
+//        val tag = ??? //typeTags(currentClass)(tparam)
+//        localTyper.typed(gen.mkAttributedRef(tag))
+//      }
+//
+//      /*
+//       * Converts a tree that has type `T` whith Minispeced annotation to
+//       * a packed representation: a Long representing the value and a
+//       * Byte representing the type.
+//       */
+//      private def packedMB(t: Tree) = {
+//        assert(isMiniboxed(t))
+//        val currentClass = MiniboxTreeTransformer.this.currentClass
+//        val tag = ??? //typeTags(currentClass)(t.tpe.typeSymbol)
+//
+//        List(gen.mkAsInstanceOf(t, LongClass.tpe, true, false),
+//          localTyper.typed(gen.mkAttributedRef(tag)))
+//      }
+//
+//      private def asMB(t: Tree) = {
+//        gen.mkAsInstanceOf(t, LongClass.tpe, true, false)
+//      }
+//    }
 
   }
 
