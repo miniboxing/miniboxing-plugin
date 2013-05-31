@@ -137,6 +137,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
         overloadsOfMember(spec) = newMbr
         overloads(newMbr) = overloadsOfMember
+        base(newMbr) = member
       }
 
       for (spec <- specs; newMbr <- overloadsOfMember get spec)
@@ -343,6 +344,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
         // for fields, we mangle names:
         if (m.isTerm && !m.isMethod && !m.isImplicit) {
           newMbr.name = specializedName(m.name, sParamValues)
+        }
+        if (m.isMethod) {
+          if (base(m) == m)
+            base(newMbr) = newMbr
+          else
+            base(newMbr) = m // TODO: This is not right...
         }
         (m, newMbr)
       }).toMap

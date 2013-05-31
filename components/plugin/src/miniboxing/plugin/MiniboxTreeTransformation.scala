@@ -405,8 +405,13 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def addBody(tree: DefDef, source: Symbol): DefDef = {
       val symbol = tree.symbol
-      debuglog("specializing body of" + symbol.defString)
-      val DefDef(_, _, tparams, tags :: vparamss, tpt, _) = tree
+      debuglog("specializing body of " + symbol.defString)
+      val (tparams, tags, vparamss, tpt) = tree match {
+        case DefDef(_, _, tparams, tags :: vparamss, tpt, _) if base.getOrElse(symbol, NoSymbol) != symbol =>
+          (tparams, tags, vparamss, tpt)
+        case DefDef(_, _, tparams, vparamss, tpt, _) if base.getOrElse(symbol, NoSymbol) == symbol =>
+          (tparams, Nil, vparamss, tpt)
+      }
       val env = typeEnv(symbol.owner).deepEnv // TODO
       val boundTvars = env.keySet
       val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))

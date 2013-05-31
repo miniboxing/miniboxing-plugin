@@ -150,5 +150,7 @@ trait MiniboxSpecializationInfo {
    */
   val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
+
+  val base = new mutable.HashMap[Symbol, Symbol]
 }
 
