@@ -377,10 +377,10 @@ abstract class Duplicators extends Analyzer {
               val memberString   = memberByName.defString
               alts zip memberTypes filter (_._2 =:= typeInNewClass) match {
                 case ((alt, tpe)) :: Nil =>
-                  miniboxing.log(s"Arrested overloaded type in Duplicators, narrowing to ${alt.defStringSeenAs(tpe)}\n  Overload was: $memberString")
+                  miniboxing.debug(s"Arrested overloaded type in Duplicators, narrowing to ${alt.defStringSeenAs(tpe)}\n  Overload was: $memberString")
                   Select(This(newClassOwner), alt)
                 case _ =>
-                  miniboxing.log(s"Could not disambiguate $memberString in Duplicators. Attempting name-based selection, but this may not end well...")
+                  miniboxing.debug(s"Could not disambiguate $memberString in Duplicators. Attempting name-based selection, but this may not end well...")
                   nameSelection
               }
             }
