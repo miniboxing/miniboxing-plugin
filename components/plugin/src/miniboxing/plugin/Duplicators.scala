@@ -300,9 +300,22 @@ abstract class Duplicators extends Analyzer {
         case vdef @ ValDef(mods, name, tpt, rhs) =>
           // log("vdef fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol + " and " + invalidSyms)
           //if (mods.hasFlag(Flags.LAZY)) vdef.symbol.resetFlag(Flags.MUTABLE) // Martin to Iulian: lazy vars can now appear because they are no longer boxed; Please check that deleting this statement is OK.
-          vdef.tpt.tpe = fixType(vdef.tpt.tpe)
-          vdef.tpe = null
-          super.typed(vdef, mode, pt)
+          val tp = fixType(tree.symbol.tpe)
+          val tpm = miniboxedEnv(tp)
+          if (tpm =:= LongClass.tpe) {
+            val rhs2 = gen.mkMethodCall(box2minibox, List(rhs))
+            val tpt2 = tpt.setType(LongClass.tpe)
+            var nvdef: Tree = copyValDef(vdef)(mods, name, tpt2, rhs2)
+            nvdef.symbol = vdef.symbol.modifyInfo(miniboxedEnv)
+            nvdef.tpe = null
+            nvdef = super.typed(nvdef, mode, pt)
+            miniboxedSyms ::= (nvdef.symbol, tp)
+            nvdef
+          } else {
+            vdef.tpt.tpe = fixType(vdef.tpt.tpe)
+            vdef.tpe = null
+            super.typed(vdef, mode, pt)
+          }
 
         case ldef @ LabelDef(name, params, rhs) =>
           // log("label def: " + ldef)
@@ -341,17 +354,6 @@ abstract class Duplicators extends Analyzer {
           tree.symbol = updateSym(tree.symbol)
           tree.tpe = null
           super.typed(tree, mode, pt)
-
-        // Miniboxed value being used
-        case Ident(_) if miniboxedSyms.map(_._1).contains(tree.symbol) && boxing =>
-          // Any reference to a miniboxed symbol should be transformed to a boxed symbol
-          // boxing/unboxing can later be eliminated using peephole optimizations
-          boxing = false
-          val tpeS = miniboxedSyms.find(_._1 == tree.symbol).get._2.typeSymbol
-          val ident = super.typed(miniboxedTags(tpeS))
-          val res = super.typed(gen.mkMethodCall(Ident(minibox2box), List(tree, ident)))
-          boxing = true
-          res
 
         case Ident(_) if (origtreesym ne null) && origtreesym.isLazy =>
           debuglog("Ident to a lazy val " + tree + ", " + tree.symbol + " updated to " + origtreesym)
@@ -432,7 +434,7 @@ abstract class Duplicators extends Analyzer {
           tree
 
         case _ =>
-          debuglog("Duplicators default case: " + tree.summaryString)
+          debuglog("Duplicators default case: " + tree)
           debuglog(" ---> " + tree + "\n  :" + tree.tpe)
           if (tree.hasSymbol && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
@@ -451,6 +453,15 @@ abstract class Duplicators extends Analyzer {
               val ntree2 = super.typed(ntree, mode, pt)
               debug("  " * indent + "     (" + treen + ") typing " + ntree2 + " with tp = " + ntree2.tpe)
               ntree2
+            } else if (res.isInstanceOf[Ident] && miniboxedSyms.map(_._1).contains(res.symbol) && boxing) {
+              // Any reference to a miniboxed symbol should be transformed to a boxed symbol
+              // boxing/unboxing can later be eliminated using peephole optimizations
+              boxing = false
+              val tpeSym = miniboxedSyms.find(_._1 == tree.symbol).get._2.typeSymbol
+              val ident = super.typed(miniboxedTags(tpeSym))
+              val res = super.typed(gen.mkMethodCall(minibox2box, List(tpeSym.tpe), List(tree, ident)))
+              boxing = true
+              res
             }
             else
               res
