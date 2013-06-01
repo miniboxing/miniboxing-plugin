@@ -2,8 +2,8 @@ import miniboxing.plugin.minispec
 
 /**
  * We can distinguish 5 cases:
- * (1) selecting the method from the current object (this) ==> 
- *     we use the partial specialization info and type tags from the current method 
+ * (1) selecting the method from the current object (this) ==>
+ *     we use the partial specialization info and type tags from the current method
  * (2) selecting a method from a specialized interface with type parameters
  *     2.1. fixed, specializable (Int, Long)
  *     2.2. fixed, not specializable (String)
