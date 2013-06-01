@@ -262,7 +262,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
         case Apply(Select(qual, fn), args) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
           val oldMethodSym = tree.symbol
-          val oldMethodTpe = oldMethodSym.tpe
+          val oldMethodType = oldMethodSym.tpe
 
           val tree1 =
             memberSpecializationInfo.get(currentMethod) match {
@@ -274,19 +274,37 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 // 1. Get the partial specialization
                 extractSpec(tree, qual.tpe) match {
                   case Some((pspec, ttags)) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
-                    println("WILL REDIRECT")
+                    println("\n\nWILL REDIRECT")
                     println(pspec + "  " + ttags + " ==> " + overloads(oldMethodSym)(pspec).defString)
                     val newMethodSym = overloads(oldMethodSym)(pspec)
-                    val (tags, newMethodTpe) = separateTypeTagArgsInType(newMethodSym.tpe)
+                    val (tags, newMethodType) = separateTypeTagArgsInType(newMethodSym.tpe)
 
                     // 2. Generate type tags
                     val tagMapInv = localTypeTags(newMethodSym).map(_.swap).toMap
-                    val tagTrees = tags.map(tagMapInv andThen ttags)
-                    val ttApplication = gen.mkMethodCall(qual, newMethodSym, List(), tagTrees)
-                    println(ttApplication)
+                    val tagTrees = tags.map(tagMapInv andThen ttags).map(localTyper.typed(_))
+                    val tagApp = localTyper.typed(gen.mkMethodCall(qual, newMethodSym, List(), tagTrees))
+                    println(tagApp)
 
                     // 3. Adapt arguments
-
+                    assert(newMethodType.paramss.length == 1, "Cannot handle curried params. May be relaxed later.")
+                    val baseMethod = overloads(newMethodSym)(pspec map { case (p, _) => (p, Boxed)})
+                    val newArgs =
+                      for((pForm, pAct) <- newMethodType.params zip args) yield {
+                        // pAct is always encoded using boxing
+                        // pForm may be encoded using either miniboxing OR boxing
+                        println(pForm.tpe + " ==> " + pAct)
+                        if ((pForm.tpe == LongTpe) &&(pAct.tpe != LongTpe))
+                          localTyper.typed(gen.mkMethodCall(box2minibox, List(pAct)))
+                        else
+                          pAct
+                      }
+                    val applyTree =
+                      if (newArgs.isEmpty)
+                        tagApp // created by the previous call to mkMethodCall
+                      else
+                        gen.mkMethodCall(tagApp, newArgs)
+                    println(applyTree)
+                    val apply = localTyper.typed(applyTree)
 
                     // 4. Adapt return type
 
