@@ -264,7 +264,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case Apply(sel @ Select(qual, fn), args) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
           val oldMethodSym = tree.symbol
           val oldMethodType = sel.tpe
-
           val tree1 =
             memberSpecializationInfo.get(currentMethod) match {
               case Some(spec: ForwardTo) =>
@@ -276,26 +275,28 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 // 1. Get the partial specialization
                 extractSpec(tree, qual.tpe) match {
                   case Some((pspec, tagTrees)) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
-                    // println("\n\nWILL REDIRECT: " + tree)
+                    // println("\n\n")
+                    println("WILL REDIRECT METHOD: " + tree)
                     // println("    FROM: " + oldMethodSym.defString)
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     // println("    TO:   " + newMethodSym.defString)
                     // println(pspec + "  " + tagTrees + " ==> " + newMethodSym.defString)
                     rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, args, pspec, tagTrees ++ standardTypeTagTrees)
-                  case _ =>
+                  case other =>
                     tree
                 }
             }
-          tree1
+          super.transform(tree1)
 
-        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if specializedClasses.isDefinedAt(qual.symbol) =>
+        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if specializedClasses.isDefinedAt(qual.tpe.typeSymbol)=>
           val oldClassCtor = ctor.symbol
           val tree1 = cl.tpe match {
             case TypeRef(pre, oldClass, targs) =>
               extractSpec(tree, cl.tpe, true) match {
                 case Some((pspec, tagTrees)) if !isAllAnyRef(pspec) =>
                   assert(specializedClasses(oldClass).isDefinedAt(pspec) && overloads.isDefinedAt(ctor.symbol) && overloads(ctor.symbol).isDefinedAt(pspec))
-                  // println("\n\nWILL REDIRECT: " + tree)
+                  // println("\n\n")
+                  println("WILL REDIRECT NEW: " + tree)
                   val newClass = specializedClasses(oldClass)(pspec)
                   val newClassCtor = overloads(oldClassCtor)(pspec)
                   val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
@@ -310,32 +311,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   val newClass = specializedClasses(oldClass)(allAnyRefSpec)
                   val newClassCtor = overloads(oldClassCtor)(allAnyRefSpec)
                   val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
-                  gen.mkMethodCall(newQual, newClassCtor, List(), args)
+                  gen.mkMethodCall(gen.mkMethodCall(newQual, newClassCtor, List(), List()), args)
                 case None =>
-                  global.reporter.warning(tree.pos, "Unable to rewire constructor, this will probably lead to invalid bytecode.")
+                  global.reporter.error(tree.pos, "Unable to rewire constructor, this will probably lead to invalid bytecode.")
                   tree
               }
             case _ =>
               global.reporter.error(tree.pos, "Unsupported new operation.")
               tree
           }
-          localTyper.typed(tree1)
+          super.transform(localTyper.typed(tree1))
 
-//        /*
-//         * Array creation in miniboxed code is written by the user as:
-//         *   Manifest[T].newArray[T](len)
-//         * and we rewrite it to:
-//         *   MiniboxArray.internal_newArray(len, tagOfT)
-//         */
-//        case Apply(TypeApply(meth, tpe :: Nil), len :: Nil) if (tree.symbol == newArray) =>
-//          localTyper.typedPos(tree.pos)(
-//            gen.mkMethodCall(internal_newArray, List(transform(len), getTag(tpe))))
-//
-//        // array_length with tag-based dispatch
-//        case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
-//          localTyper.typedPos(tree.pos)(
-//            gen.mkMethodCall(array_length, List(transform(qual))))
-//
         case _ =>
           super.transform(tree)
       }

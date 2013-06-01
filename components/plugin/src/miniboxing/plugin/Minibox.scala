@@ -15,6 +15,7 @@ trait MiniboxComponent extends
     with MiniboxInfoTransformation
     with MiniboxLogging
     with MiniboxTreeTransformation
+    with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
     with MiniboxDefinitions
     with MiniboxPhase
@@ -41,7 +42,9 @@ class Minibox(val global: Global) extends Plugin {
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
-        afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
+        val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
+        val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
+        tree2
       }
     }
   }
