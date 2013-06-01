@@ -68,6 +68,14 @@ object MiniboxTypeTagDispatch {
   @inline final def mboxed_eqeq(x: Minibox, y: Minibox): Boolean =
     x == y
 
+  // non-overloaded:
+  @inline final def mboxed_eqeq_tag(x: Minibox, xtag: Tag, y: Minibox, ytag: Tag) =
+    mboxed_eqeq(x, xtag, y, ytag)
+
+  // non-overloaded:
+  @inline final def mboxed_eqeq_notag(x: Minibox, y: Minibox) =
+    mboxed_eqeq(x, y)
+
   /*
    * Implementation that takes care of the primitive semantics
    */

@@ -79,4 +79,21 @@ object MiniboxConversions {
     case d : Double => java.lang.Double.doubleToRawLongBits(d)
     case _ => sys.error("Trying to unbox a reference type")
   }
+
+  /*
+   *  Used in the rewiring, to keep the type and tag on all types
+   */
+  @inline final def box2minibox_tt[T](a: T, tag: Tag): Long = a match {
+    case b : Boolean => if (b) 1 else 0
+    case b : Byte => b.toLong
+    case u : Unit => 0
+    case c : Char => c.toLong
+    case s : Short => s.toLong
+    case i : Int => i.toLong
+    case l : Long => l
+    case f : Float => java.lang.Float.floatToRawIntBits(f).toLong
+    case d : Double => java.lang.Double.doubleToRawLongBits(d)
+    case _ => sys.error("Trying to unbox a reference type")
+  }
+
 }

@@ -320,69 +320,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           }
           localTyper.typed(tree1)
 
-//          // box the arguments if necessary
-//          val newArgs =
-//            (methodSym.tpe.paramTypes zip transformTrees(args)) map {
-//              case (paramType, arg) =>
-//                if (paramType == AnyClass.tpe && isMiniboxed(arg.tpe.typeSymbol))
-//                  box(arg)
-//                else
-//                  arg
-//            }
-//
-//          fn match {
-//            case sel @ Select(qual, meth) =>
-//              var newTree: Tree = null
-//
-//              /*
-//               * Dispatch on a variable of type T:
-//               *  - for hashCode and ##, use an optimized function
-//               *  - for the rest, box
-//               */
-//              if (isMiniboxed(qual)) {
-//                if (methodSym == Any_##) {
-//                  newTree = gen.mkMethodCall(tag_##, packedMB(transform(qual)) ::: Nil)
-//                } else if (methodSym == Any_hashCode) {
-//                  newTree = gen.mkMethodCall(tag_hashCode, packedMB(transform(qual)) ::: Nil)
-//                } else if (methodSym == Any_== && args.size == 1 && isMiniboxed(args(0))) {
-//                  if (qual.tpe.typeSymbol == args(0).tpe.typeSymbol) {
-//                    // the types are known to be equal
-//                    newTree = gen.mkMethodCall(tag_==,
-//                      asMB(transform(qual)) :: asMB(transform(args(0))) :: Nil)
-//                  } else {
-//                    newTree = gen.mkMethodCall(tag_==,
-//                      packedMB(transform(qual)) ::: packedMB(args(0)))
-//                  }
-//                } else {
-//                  newTree = gen.mkMethodCall(box(transform(qual)), methodSym, Nil, newArgs)
-//                }
-//              }
-//
-//              /*
-//               * TODO: For array access instructions, use the static methods from
-//               * MiniboxTypeTagDispatch
-//               */
-//              if (methodSym == Array_apply && isMiniboxedArray(qual)) {
-//                val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
-//                val pos = newArgs(0)
-//                newTree = gen.mkMethodCall(array_apply,
-//                  transform(qual1) :: pos :: miniboxedArrayTag(qual) :: Nil)
-//              }
-//              if (methodSym == Array_update && isMiniboxedArray(qual)) {
-//                val TypeApply(Select(qual1, _), _) = qual // get rid of the cast
-//                val pos = newArgs(0)
-//                val elem = newArgs(1)
-//                newTree = gen.mkMethodCall(array_update,
-//                  transform(qual1) :: pos :: asMB(elem) :: miniboxedArrayTag(qual) :: Nil)
-//              }
-//
-//              if (newTree == null)
-//                newTree = treeCopy.Apply(tree, transform(fn), newArgs)
-//              localTyper.typed(atPos(tree.pos)(newTree))
-//            case _ =>
-//              localTyper.typed(atPos(tree.pos)(treeCopy.Apply(tree, transform(fn), newArgs)))
-//          }
-//
 //        /*
 //         * Array creation in miniboxed code is written by the user as:
 //         *   Manifest[T].newArray[T](len)
@@ -686,57 +623,5 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       )
       deriveValDef(newValDef)(transform)
     }
-
-//    /*
-//     * Returns the code to box around some tree
-//     */
-//    private def box(tree: Tree) = localTyper.typed(
-//      gen.mkMethodCall(minibox2box, packedMB(tree)))
-//
-//    private def isMiniboxed(t: Tree): Boolean = isMiniboxed(t.tpe)
-//    private def isMiniboxed(typ: Type): Boolean = isMiniboxed(typ.typeSymbol)
-//    private def isMiniboxed(typs: Symbol): Boolean = {
-//      val currentClass = MiniboxTreeTransformer.this.currentClass
-//      partialSpec(currentClass).get(typs) match {
-//        case Some(Miniboxed) => true
-//        case _ => false
-//      }
-//    }
-//
-//    private def isMiniboxedArray(qual: Tree): Boolean =
-//      qual.tpe.underlying.typeArgs exists isMiniboxed
-//
-//    private def miniboxedArrayTag(qual: Tree) = {
-//      val currentClass = MiniboxTreeTransformer.this.currentClass
-//      val tparam = qual.tpe.underlying.typeArgs(0).typeSymbol
-//      val tag = ??? //typeTags(currentClass)(tparam)
-//      localTyper.typed(gen.mkAttributedRef(tag))
-//    }
-//
-//    private def getTag(tpe: Tree) = {
-//      val currentClass = MiniboxTreeTransformer.this.currentClass
-//      val tparam = tpe.symbol
-//      val tag = ??? //typeTags(currentClass)(tparam)
-//      localTyper.typed(gen.mkAttributedRef(tag))
-//    }
-//
-//    /*
-//     * Converts a tree that has type `T` whith Minispeced annotation to
-//     * a packed representation: a Long representing the value and a
-//     * Byte representing the type.
-//     */
-//    private def packedMB(t: Tree) = {
-//      assert(isMiniboxed(t))
-//      val currentClass = MiniboxTreeTransformer.this.currentClass
-//      val tag = ??? //typeTags(currentClass)(t.tpe.typeSymbol)
-//
-//      List(gen.mkAsInstanceOf(t, LongClass.tpe, true, false),
-//        localTyper.typed(gen.mkAttributedRef(tag)))
-//    }
-//
-//    private def asMB(t: Tree) = {
-//      gen.mkAsInstanceOf(t, LongClass.tpe, true, false)
-//    }
   }
-
 }
