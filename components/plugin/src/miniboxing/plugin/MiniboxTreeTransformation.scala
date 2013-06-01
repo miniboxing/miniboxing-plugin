@@ -261,8 +261,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           super.transform(result)
 
         case Apply(Select(qual, fn), args) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
-          val methodSym = tree.symbol
-
+          val oldMethodSym = tree.symbol
+          val oldMethodTpe = oldMethodSym.tpe
 
           val tree1 =
             memberSpecializationInfo.get(currentMethod) match {
@@ -273,10 +273,23 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               case _ =>
                 // 1. Get the partial specialization
                 extractSpec(tree, qual.tpe) match {
-                  case Some((pspec, ttags)) if !isAllAnyRef(pspec) =>
+                  case Some((pspec, ttags)) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     println("WILL REDIRECT")
-                    println(pspec + "  " + ttags + " ==> " + overloads(methodSym)(pspec).defString)
-                    //(new Exception()).printStackTrace
+                    println(pspec + "  " + ttags + " ==> " + overloads(oldMethodSym)(pspec).defString)
+                    val newMethodSym = overloads(oldMethodSym)(pspec)
+                    val (tags, newMethodTpe) = separateTypeTagArgsInType(newMethodSym.tpe)
+
+                    // 2. Generate type tags
+                    val tagMapInv = localTypeTags(newMethodSym).map(_.swap).toMap
+                    val tagTrees = tags.map(tagMapInv andThen ttags)
+                    val ttApplication = gen.mkMethodCall(qual, newMethodSym, List(), tagTrees)
+                    println(ttApplication)
+
+                    // 3. Adapt arguments
+
+
+                    // 4. Adapt return type
+
                     localTyper.typed(gen.mkMethodCall(Predef_identity, List(tree)))
                   case _ =>
                     tree
