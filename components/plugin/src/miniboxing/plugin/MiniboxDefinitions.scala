@@ -4,6 +4,7 @@ trait MiniboxDefinitions {
   this: MiniboxInfoTransformation =>
 
   import global._
+  import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
   // array ops
@@ -24,7 +25,7 @@ trait MiniboxDefinitions {
   lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversions")
   // type tag conversions
   lazy val minibox2box       =  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
-  lazy val box2minibox       =  definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox"))
+  lazy val box2minibox       =  definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
   // direct conversions
   lazy val x2minibox = Map(
       UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("UnitToMinibox")),
@@ -49,4 +50,16 @@ trait MiniboxDefinitions {
       FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToFloat"))
     )
 
+  lazy val standardTypeTagTrees = Map(
+      UnitClass ->    Literal(Constant(UNIT)),
+      BooleanClass -> Literal(Constant(BOOLEAN)),
+      ByteClass ->    Literal(Constant(BYTE)),
+      CharClass ->    Literal(Constant(CHAR)),
+      ShortClass ->   Literal(Constant(SHORT)),
+      IntClass ->     Literal(Constant(INT)),
+      LongClass ->    Literal(Constant(LONG)),
+      DoubleClass ->  Literal(Constant(DOUBLE)),
+      FloatClass ->   Literal(Constant(FLOAT)),
+      NothingClass -> Literal(Constant(REFERENCE))
+    )
 }

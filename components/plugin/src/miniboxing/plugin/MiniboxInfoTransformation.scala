@@ -95,6 +95,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
   def widenClass(clazz: Symbol, specs: List[PartialSpec]) = {
 
     baseClass(clazz) = clazz
+    typeParamMap(clazz) = clazz.info.typeParams.map((p: Symbol) => (p, p)).toMap
 
     // we only specialize the members that are defined in the current class
     val members = clazz.info.members.filter(_.owner == clazz).toList
@@ -481,7 +482,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass) {
         CastMiniboxToBox(wrapperTags(tgtTypeSymbol))
       } else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass) {
-        CastBoxToMinibox
+        CastBoxToMinibox(wrapperTags(srcTypeSymbol))
       } else if (srcTypeSymbol == tgtTypeSymbol) {
         if (srcType == tgtType) NoCast
         else {

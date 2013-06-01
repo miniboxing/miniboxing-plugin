@@ -27,7 +27,7 @@ trait MiniboxSpecializationInfo {
    */
   sealed class CastInfo
   case class CastMiniboxToBox(tag: Symbol) extends CastInfo
-  case object CastBoxToMinibox extends CastInfo
+  case class CastBoxToMinibox(tag: Symbol) extends CastInfo
   case object NoCast extends CastInfo
   case object AsInstanceOfCast extends CastInfo
 

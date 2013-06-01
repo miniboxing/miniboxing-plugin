@@ -25,7 +25,7 @@ abstract class Duplicators extends Analyzer {
 
   import miniboxing._
   import global._
-  import definitions.{ AnyClass, AnyRefClass, AnyValClass, LongClass }
+  import definitions.{ AnyClass, AnyRefClass, AnyValClass, LongClass, LongTpe }
 
   var indent = 0
   var treen = 0
@@ -302,8 +302,8 @@ abstract class Duplicators extends Analyzer {
           //if (mods.hasFlag(Flags.LAZY)) vdef.symbol.resetFlag(Flags.MUTABLE) // Martin to Iulian: lazy vars can now appear because they are no longer boxed; Please check that deleting this statement is OK.
           val tp = fixType(tree.symbol.tpe)
           val tpm = miniboxedEnv(tp)
-          if (tpm =:= LongClass.tpe) {
-            val rhs2 = gen.mkMethodCall(box2minibox, List(rhs))
+          if ((tpm =:= LongTpe) && !(tp =:= LongTpe)) {
+            val rhs2 = gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))
             val tpt2 = tpt.setType(LongClass.tpe)
             var nvdef: Tree = copyValDef(vdef)(mods, name, tpt2, rhs2)
             nvdef.symbol = vdef.symbol.modifyInfo(miniboxedEnv)
@@ -448,7 +448,7 @@ abstract class Duplicators extends Analyzer {
           debug("  " * indent + "     (" + treen + ") " + (res.tpe != null) + " && " + !(res.tpe <:< pt) + " && " + (miniboxedEnv(res.tpe) == pt) + ": " + res.tpe + "!= null && !(" + res.tpe + " <:< " + pt + ") && (" + miniboxedEnv(res.tpe) + " == " + pt + ")")
           val res2 =
             if (res.tpe != null && !(res.tpe <:< pt) && (miniboxedEnv(res.tpe) == pt)) {
-              val ntree = gen.mkMethodCall(box2minibox, List(tree))
+              val ntree = gen.mkMethodCall(box2minibox, List(res.tpe), List(tree, miniboxedTags(res.tpe.typeSymbol)))
               debug("  " * indent + "     (" + treen + ") typing " + ntree + " with pt = " + pt)
               val ntree2 = super.typed(ntree, mode, pt)
               debug("  " * indent + "     (" + treen + ") typing " + ntree2 + " with tp = " + ntree2.tpe)
