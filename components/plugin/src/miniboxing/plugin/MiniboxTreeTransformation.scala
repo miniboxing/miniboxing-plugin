@@ -269,6 +269,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               case Some(spec: ForwardTo) =>
                 // don't touch forwarders, they're correctly generated the first time
                 // although it may be interesting to use this logic to generate forwarders too
+                // TODO: Can this be done?
                 tree
               case _ =>
                 // 1. Get the partial specialization
@@ -279,51 +280,45 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     // println("    TO:   " + newMethodSym.defString)
                     // println(pspec + "  " + tagTrees + " ==> " + newMethodSym.defString)
-                    val (tags, newMethodType) = separateTypeTagArgsInType(newMethodSym.tpe)
-
-                    // 2. Generate type tags
-                    val tagMapInv = localTypeTags(newMethodSym).map(_.swap).toMap
-                    val tagArgs = tags.map(tagMapInv andThen tagTrees)
-                    val tagApp = gen.mkMethodCall(qual, newMethodSym, List(), tagArgs)
-                    //println(tagApp)
-
-                    // 3. Adapt arguments
-                    assert(newMethodType.paramss.length == 1, "Cannot handle curried params. May be relaxed later.")
-                    val newArgs =
-                      for((pForm, pAct) <- newMethodType.params zip args) yield {
-                        // pAct is always encoded using boxing
-                        // pForm may be encoded using either miniboxing OR boxing
-                        //println(pForm.tpe + " ==> " + pAct)
-                        if ((pForm.tpe == LongTpe) &&(pAct.tpe != LongTpe))
-                          gen.mkMethodCall(box2minibox, List(pAct))
-                        else
-                          pAct
-                      }
-                    val applyTree =
-                      if (newArgs.isEmpty)
-                        tagApp // created by the previous call to mkMethodCall
-                      else
-                        gen.mkMethodCall(tagApp, newArgs)
-                    //println(applyTree)
-                    val apply = applyTree
-
-                    // 4. Adapt return type
-                    //println("res: " + newMethodType.resultType + " ==> " + tree.tpe)
-                    val unpackedTree =
-                      (newMethodType.resultType, oldMethodType.resultType) match {
-                        case (`LongTpe`, other) if other != LongTpe =>
-                          gen.mkMethodCall(minibox2box, List(other), List(apply, tagTrees(other.typeSymbol)))
-                        case _ =>
-                          apply
-                      }
-                    val unpacked = localTyper.typed(unpackedTree)
-                    //println(unpacked + ": " + unpacked.tpe + " (before: " + tree.tpe + ")")
-                    unpacked
+                    rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, args, pspec, tagTrees)
                   case _ =>
                     tree
                 }
             }
           tree1
+
+        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if specializedClasses.isDefinedAt(qual.symbol) =>
+          val oldClassCtor = ctor.symbol
+          val tree1 = cl.tpe match {
+            case TypeRef(pre, oldClass, targs) =>
+              extractSpec(tree, cl.tpe, true) match {
+                case Some((pspec, tagTrees)) if !isAllAnyRef(pspec) =>
+                  assert(specializedClasses(oldClass).isDefinedAt(pspec) && overloads.isDefinedAt(ctor.symbol) && overloads(ctor.symbol).isDefinedAt(pspec))
+                  // println("\n\nWILL REDIRECT: " + tree)
+                  val newClass = specializedClasses(oldClass)(pspec)
+                  val newClassCtor = overloads(oldClassCtor)(pspec)
+                  val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
+                  // println("    FROM: " + oldClass.defString)
+                  // println("    TO:   " + newClass.defString)
+                  // println("redirect to: " + newClass)
+                  // println(pspec + "  " + tagTrees + " ==> " + newClassCtor.defString)
+                  // println()
+                  rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, args, pspec, tagTrees, tagTranslator = typeParamMap(newClass))
+                case Some(_) =>
+                  val allAnyRefSpec = oldClass.typeParams.map(t => (t, Boxed)).toMap
+                  val newClass = specializedClasses(oldClass)(allAnyRefSpec)
+                  val newClassCtor = overloads(oldClassCtor)(allAnyRefSpec)
+                  val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
+                  gen.mkMethodCall(newQual, newClassCtor, List(), args)
+                case None =>
+                  global.reporter.warning(tree.pos, "Unable to rewire constructor, this will probably lead to invalid bytecode.")
+                  tree
+              }
+            case _ =>
+              global.reporter.error(tree.pos, "Unsupported new operation.")
+              tree
+          }
+          localTyper.typed(tree1)
 
 //          // box the arguments if necessary
 //          val newArgs =
@@ -408,7 +403,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
     }
 
-    def extractSpec(qual: Tree, qualTpe: Type): Option[(PartialSpec, Map[Symbol, Tree])] = {
+    def extractSpec(qual: Tree, qualTpe: Type, localTypeTags: Boolean = false): Option[(PartialSpec, Map[Symbol, Tree])] = {
       val pSpec = partialSpec.getOrElse(currentClass, Map.empty)
       val typeTags = typeTagTrees(currentMethod)
       qualTpe match {
@@ -419,8 +414,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case TypeRef(pre, clazz, args) if specializedClasses.isDefinedAt(clazz) =>
           import miniboxing.runtime.MiniboxConstants._
           val adapter = (baseClass(clazz).typeParams zip clazz.typeParams).toMap.withDefault((x: Symbol) => x)
-          Some((clazz.info.typeParams zip args).map({ ent =>
-            val res = ent match {
+          Some((clazz.info.typeParams zip args).map({ case (tp, arg) =>
+            val res = (tp, arg) match {
               // case (2.1)
               case (p, tpe) if pSpec.isDefinedAt(p) && typeTags.isDefinedAt(tpe.typeSymbol) =>
                 ((p, pSpec(p)), (p, typeTags(tpe.typeSymbol)))
@@ -446,6 +441,56 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           // unknown
           None
       }
+    }
+
+    def rewiredMethodCall(
+          qual: Tree,
+          oldMethodSym: Symbol,
+          oldMethodType: Type,
+          newMethodSym: Symbol,
+          args: List[Tree],
+          pspec: PartialSpec,
+          tagTrees: Map[Symbol, Tree],
+          tagTranslator: Function1[Symbol, Symbol] = (x: Symbol) => x): Tree = {
+      // 1. Generate type tags
+      val (tags, newMethodType) = separateTypeTagArgsInType(newMethodSym.tpe)
+      val tagMapInv = localTypeTags(newMethodSym).map(_.swap).toMap
+      val tagArgs = tags.map(tagMapInv andThen tagTranslator andThen tagTrees)
+      val tagApp = gen.mkMethodCall(qual, newMethodSym, List(), tagArgs)
+      //println(tagApp)
+
+      // 2. Adapt arguments
+      assert(newMethodType.paramss.length == 1, "Cannot handle curried params. May be relaxed later.")
+      val newArgs =
+        for((pForm, pAct) <- newMethodType.params zip args) yield {
+          // pAct is always encoded using boxing
+          // pForm may be encoded using either miniboxing OR boxing
+          //println(pForm.tpe + " ==> " + pAct)
+          if ((pForm.tpe == LongTpe) &&(pAct.tpe != LongTpe))
+            gen.mkMethodCall(box2minibox, List(pAct))
+          else
+            pAct
+        }
+      val applyTree =
+        if (newArgs.isEmpty)
+          tagApp // created by the previous call to mkMethodCall
+        else
+          gen.mkMethodCall(tagApp, newArgs)
+      //println(applyTree)
+      val apply = applyTree
+
+      // 3. Adapt return type
+      //println("res: " + newMethodType.resultType + " ==> " + tree.tpe)
+      val unpackedTree =
+        (newMethodType.resultType, oldMethodType.resultType) match {
+          case (`LongTpe`, other) if other != LongTpe =>
+            gen.mkMethodCall(minibox2box, List(other), List(apply, tagTrees(other.typeSymbol)))
+          case _ =>
+            apply
+        }
+      val unpacked = localTyper.typed(unpackedTree)
+      //println(unpacked + ": " + unpacked.tpe + " (before: " + tree.tpe + ")")
+      unpacked
     }
 
 
@@ -504,7 +549,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             if (isSpecializableClass(classSymbol)) {
               var sClasses: List[Symbol] = Nil
 
-              sClasses ++= specializedClasses(classSymbol)
+              sClasses ++= specializedClasses(classSymbol).values.toList.sortBy(_.name.toString)
 
               for (sClass <- sClasses) {
                 debug("creating class - " + sClass.name + ": " + sClass.parentSymbols)

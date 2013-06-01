@@ -247,6 +247,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * of the current specialized version.
      */
     val pmap = ParamMap(clazz.typeParams, sClass)
+    typeParamMap(sClass) = pmap.map(_.swap).toMap
 
     /*
      * When copying information from the original class, we need to change
@@ -265,7 +266,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
      * Insert the newly created symbol in our various maps that are used by
      * the tree transformer.
      */
-    specializedClasses(clazz) ::= sClass
+    specializedClasses.get(clazz) match {
+      case Some(map) => map += spec -> sClass
+      case None => specializedClasses(clazz) = collection.mutable.HashMap(spec -> sClass)
+    }
     typeEnv(sClass) = MiniboxingTypeEnv(deepEnv = ifaceEnv, shallowEnv = implEnv)
     partialSpec(sClass) = spec //.map({ case (t, enc) => (pmap(t), enc)})
 
@@ -303,7 +307,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
 
       // parameters which are not fixed
-      val newTParams: List[Symbol] = pmap.values.toList
+      val newTParams: List[Symbol] = clazz.typeParams.map(pmap)
       GenPolyType(newTParams, ClassInfoType(sParents, sClassDecls, sClass))
     }
     sClass setInfo specializedInfoType
@@ -350,6 +354,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
             tpe
         }
         miniboxedArgs(newCtor) = mboxedArgs
+        overloads.get(ctor) match {
+          case Some(map) => map += spec -> newCtor
+          case None => overloads(ctor) = collection.mutable.HashMap(spec -> newCtor)
+        }
         MethodType(tagParams.toList, transformArgs(info2))
       }
       memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)

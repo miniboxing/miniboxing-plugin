@@ -111,7 +111,7 @@ trait MiniboxSpecializationInfo {
    * version of `C` w.r.t. that environment.
    */
   val specializedClasses =
-    new mutable.HashMap[Symbol, List[Symbol]] withDefaultValue (List())
+    new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]] withDefaultValue (mutable.HashMap())
 
   /**
    * `baseClass` is the inverse of specializedClass: for each specialized class it
@@ -160,5 +160,10 @@ trait MiniboxSpecializationInfo {
    * The set of miniboxed arguments a member takes
    */
   val miniboxedArgs = new mutable.HashMap[Symbol, List[(Symbol, Type)]]
+
+  /**
+   * Map from original type parameters to new type parameters
+   */
+  val typeParamMap = new mutable.HashMap[Symbol, ParamMap]
 }
 
