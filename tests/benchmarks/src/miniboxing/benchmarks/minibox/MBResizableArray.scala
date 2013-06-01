@@ -20,7 +20,7 @@ class MBResizableArray[@minispec T](mf: Manifest[T])  {
   def extend(): Unit = {
     if (elemCount == size) {
       var pos = 0
-      newarray = mf.newArray(initialSize)
+      newarray = mf.newArray(2 * size)
       while(pos < size) {
         newarray(pos) = array(pos)
         pos += 1

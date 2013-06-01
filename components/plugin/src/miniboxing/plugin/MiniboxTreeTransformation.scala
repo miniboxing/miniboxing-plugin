@@ -116,9 +116,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       case _ => (Nil, tpe)
     }
 
-    def typeTagTrees(symbol: Symbol) =
+    def typeTagTrees(symbol: Symbol = currentMethod) =
       localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
-      globalTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Select(This(symbol.owner), tag))}) ++
+      globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
       standardTypeTagTrees
 
     import global._
@@ -276,12 +276,13 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 extractSpec(tree, qual.tpe) match {
                   case Some((pspec, tagTrees)) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     // println("\n\n")
-                    println("WILL REDIRECT METHOD: " + tree)
                     // println("    FROM: " + oldMethodSym.defString)
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     // println("    TO:   " + newMethodSym.defString)
                     // println(pspec + "  " + tagTrees + " ==> " + newMethodSym.defString)
-                    rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, args, pspec, tagTrees ++ standardTypeTagTrees)
+                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, args, pspec, tagTrees ++ standardTypeTagTrees)
+                    stats("redirecting new: " + tree + " ==> " + tree1)
+                    tree1
                   case other =>
                     tree
                 }
@@ -296,7 +297,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 case Some((pspec, tagTrees)) if !isAllAnyRef(pspec) =>
                   assert(specializedClasses(oldClass).isDefinedAt(pspec) && overloads.isDefinedAt(ctor.symbol) && overloads(ctor.symbol).isDefinedAt(pspec))
                   // println("\n\n")
-                  println("WILL REDIRECT NEW: " + tree)
                   val newClass = specializedClasses(oldClass)(pspec)
                   val newClassCtor = overloads(oldClassCtor)(pspec)
                   val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
@@ -305,7 +305,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   // println("redirect to: " + newClass)
                   // println(pspec + "  " + tagTrees + " ==> " + newClassCtor.defString)
                   // println()
-                  rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, args, pspec, tagTrees ++ standardTypeTagTrees, tagTranslator = typeParamMap(newClass))
+                  val tree1 = rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, args, pspec, tagTrees ++ standardTypeTagTrees, tagTranslator = typeParamMap(newClass))
+                  stats("redirecting new: " + tree + " ==> " + tree1)
+                  tree1
                 case Some(_) =>
                   val allAnyRefSpec = oldClass.typeParams.map(t => (t, Boxed)).toMap
                   val newClass = specializedClasses(oldClass)(allAnyRefSpec)
@@ -318,6 +320,65 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               }
             case _ =>
               global.reporter.error(tree.pos, "Unsupported new operation.")
+              tree
+          }
+          super.transform(localTyper.typed(tree1))
+
+        // Array application
+        case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
+          val tags = typeTagTrees()
+          val tree1 = array.tpe.typeArgs match {
+            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+              val tag = tags(tpe.typeSymbol)
+              val tree1 = gen.mkMethodCall(mbarray_apply, List(array, pos, tag))
+              val tree2 = gen.mkMethodCall(minibox2box, List(tpe), List(tree1, tag))
+              stats("rewrote array apply: " + tree + " ==> " + tree2)
+              tree2
+            case _ =>
+              tree
+          }
+          super.transform(localTyper.typed(tree1))
+
+        // Array update
+        case Apply(update @ Select(array, _), List(pos, element)) if update.symbol == Array_update =>
+          val tags = typeTagTrees()
+          val tree1 = array.tpe.typeArgs match {
+            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+              val tag = tags(tpe.typeSymbol)
+              val tree1 = gen.mkMethodCall(box2minibox, List(tpe), List(element, tag))
+              val tree2 = gen.mkMethodCall(mbarray_update, List(array, pos, tree1, tag))
+              stats("rewrote array update: " + tree + " ==> " + tree2)
+              tree2
+            case _ =>
+              tree
+          }
+          super.transform(localTyper.typed(tree1))
+
+        // Array new
+        case Apply(newArray @ Select(manifest, _), List(size)) if newArray.symbol == Manifest_newArray =>
+          val tags = typeTagTrees()
+          val tree1 = manifest.tpe.widen.typeArgs match {
+            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+              val tag = tags(tpe.typeSymbol)
+              val tree1 = gen.mkMethodCall(mbarray_new, List(size, tag))
+              //val tree2 = gen.mkAsInstanceOf(tree1, tree.tpe)
+              stats("rewrote array new: " + tree + " ==> " + tree1)
+              tree1
+            case _ =>
+              tree
+          }
+          super.transform(localTyper.typed(tree1))
+
+        // Array length
+        case length @ Select(array, _) if length.symbol == Array_length =>
+          val tags = typeTagTrees()
+          val tree1 = array.tpe.typeArgs match {
+            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+              val tag = tags(tpe.typeSymbol)
+              val tree1 = gen.mkMethodCall(mbarray_length, List(array, tag))
+              stats("rewrote array length: " + tree + " ==> " + tree1)
+              tree1
+            case _ =>
               tree
           }
           super.transform(localTyper.typed(tree1))

@@ -9,10 +9,10 @@ trait MiniboxDefinitions {
 
   // array ops
   lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray_FullSwitch")
-  lazy val array_update = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("array_update"))
-  lazy val array_apply  = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("array_apply"))
-  lazy val array_length = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("array_length"))
-  lazy val array_new    = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("array_new"))
+  lazy val mbarray_update = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_update_minibox"))
+  lazy val mbarray_apply  = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_apply_minibox"))
+  lazy val mbarray_length = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_length"))
+  lazy val mbarray_new    = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_new"))
 
   // Any ops
   lazy val TagDipatchObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxTypeTagDispatch")
@@ -62,4 +62,7 @@ trait MiniboxDefinitions {
       FloatClass ->   Literal(Constant(FLOAT)),
       NothingClass -> Literal(Constant(REFERENCE))
     )
+
+  // Manifest's newArray
+  lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
 }

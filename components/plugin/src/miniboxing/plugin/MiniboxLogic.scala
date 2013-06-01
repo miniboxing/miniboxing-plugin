@@ -90,7 +90,7 @@ trait MiniboxLogic {
 
   def needsSpecialization(clazz: Symbol, method: Symbol) = true
 
-  def isAllAnyRef(env: PartialSpec) = env.forall(_._2 == Boxed)
+  def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
 
   /**
    * Tells whether a class must be specialized by looking at the annotations
