@@ -53,7 +53,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           log("-------------- ORIGINAL CLASS ----------------")
           log(clazz.defString)
           for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
 
           // Create the actual specialized classes
           val classes = envs map (specializeClass(clazz, _))
@@ -62,7 +62,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             log("------------ SPEC CLASS ------------")
             log(cls.defString);
             for (decl <- cls.info.decls.toList.sortBy(_.nameString))
-              log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+              log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
           }
 
           // Now we remove the fields from the class and leave the getters and setters as abstract
@@ -70,11 +70,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           log("-------------- INTERFACE MEMBERS ----------------")
           for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
 
           log("-------------- TEMPLATE MEMBERS ----------------")
           for (decl <- templateMembers.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%80s    => ${memberSpecializationInfo.get(decl)}")
+            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
 
           tpe
         case _ =>
