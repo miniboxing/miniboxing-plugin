@@ -93,6 +93,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * specialized versions.
    */
   def widenClass(clazz: Symbol, specs: List[PartialSpec]) = {
+
+    baseClass(clazz) = clazz
+
     // we only specialize the members that are defined in the current class
     val members = clazz.info.members.filter(_.owner == clazz).toList
 
@@ -237,6 +240,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     sClass.sourceFile = clazz.sourceFile
     currentRun.symSource(sClass) = clazz.sourceFile
+    baseClass(sClass) = clazz
 
     /*
      * `pmap` is a map from the parameters of the original class to those
@@ -263,7 +267,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      */
     specializedClasses(clazz) ::= sClass
     typeEnv(sClass) = MiniboxingTypeEnv(deepEnv = ifaceEnv, shallowEnv = implEnv)
-    partialSpec(sClass) = spec
+    partialSpec(sClass) = spec //.map({ case (t, enc) => (pmap(t), enc)})
 
     // declarations inside the specialized class - to be filled in later
     val sClassDecls = newScope

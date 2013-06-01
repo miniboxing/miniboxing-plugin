@@ -233,7 +233,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
               val tree1 = duplicateBody(ddef, target)
               debuglog("implementation: " + tree1)
-              deriveDefDef(tree1)(transform)
+              tree1
 
             case Interface() =>
               tree
@@ -263,11 +263,26 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case Apply(Select(qual, fn), args) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
           val methodSym = tree.symbol
 
-          // 1. Get the partial specialization
-          val spec = extractSpec(qual.tpe)
-//          println(qual.tpe + "  " + qual.tpe.getClass)
-//          println(tree + "\n   " + spec)
-          super.transform(tree)
+
+          val tree1 =
+            memberSpecializationInfo.get(currentMethod) match {
+              case Some(spec: ForwardTo) =>
+                // don't touch forwarders, they're correctly generated the first time
+                // although it may be interesting to use this logic to generate forwarders too
+                tree
+              case _ =>
+                // 1. Get the partial specialization
+                extractSpec(tree, qual.tpe) match {
+                  case Some((pspec, ttags)) if !isAllAnyRef(pspec) =>
+                    println("WILL REDIRECT")
+                    println(pspec + "  " + ttags + " ==> " + overloads(methodSym)(pspec).defString)
+                    //(new Exception()).printStackTrace
+                    localTyper.typed(gen.mkMethodCall(Predef_identity, List(tree)))
+                  case _ =>
+                    tree
+                }
+            }
+          tree1
 
 //          // box the arguments if necessary
 //          val newArgs =
@@ -352,34 +367,41 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
     }
 
-    def extractSpec(qualTpe: Type): Option[(PartialSpec, Map[Symbol, Tree])] = {
+    def extractSpec(qual: Tree, qualTpe: Type): Option[(PartialSpec, Map[Symbol, Tree])] = {
       val pSpec = partialSpec.getOrElse(currentClass, Map.empty)
       val typeTags = typeTagTrees(currentMethod)
       qualTpe match {
         case ThisType(cls) => //if baseClass.isDefinedAt(cls) =>
           Some(pSpec, typeTags)
         case SingleType(pre, x) =>
-          extractSpec(qualTpe.widen)
+          extractSpec(qual, qualTpe.widen)
         case TypeRef(pre, clazz, args) if specializedClasses.isDefinedAt(clazz) =>
           import miniboxing.runtime.MiniboxConstants._
-          Some((clazz.info.typeParams zip args).map({
-            // case (2.1)
-            case (p, tpe) if (pSpec.get(tpe.typeSymbol).isDefined) => ((p, pSpec(tpe.typeSymbol)), (tpe.typeSymbol, typeTags(tpe.typeSymbol)))
-            // case (2.3)
-            case (p, `UnitTpe`)    => ((p, Miniboxed), (p, Literal(Constant(UNIT))))
-            case (p, `BooleanTpe`) => ((p, Miniboxed), (p, Literal(Constant(BOOLEAN))))
-            case (p, `ByteTpe`)    => ((p, Miniboxed), (p, Literal(Constant(BYTE))))
-            case (p, `ShortTpe`)   => ((p, Miniboxed), (p, Literal(Constant(SHORT))))
-            case (p, `CharTpe`)    => ((p, Miniboxed), (p, Literal(Constant(CHAR))))
-            case (p, `IntTpe`)     => ((p, Miniboxed), (p, Literal(Constant(INT))))
-            case (p, `LongTpe`)    => ((p, Miniboxed), (p, Literal(Constant(LONG))))
-            case (p, `FloatTpe`)   => ((p, Miniboxed), (p, Literal(Constant(FLOAT))))
-            case (p, `DoubleTpe`)  => ((p, Miniboxed), (p, Literal(Constant(DOUBLE))))
-            // case (2.2)
-            // case (2.4)
-            case (p, _) => ((p, Boxed), (p, Literal(Constant(REFERENCE))))
+          val adapter = (baseClass(clazz).typeParams zip clazz.typeParams).toMap.withDefault((x: Symbol) => x)
+          Some((clazz.info.typeParams zip args).map({ ent =>
+            val res = ent match {
+              // case (2.1)
+              case (p, tpe) if pSpec.isDefinedAt(p) && typeTags.isDefinedAt(tpe.typeSymbol) =>
+                ((p, pSpec(p)), (p, typeTags(tpe.typeSymbol)))
+              // case (2.3)
+              case (p, `UnitTpe`)    => ((p, Miniboxed), (p, Literal(Constant(UNIT))))
+              case (p, `BooleanTpe`) => ((p, Miniboxed), (p, Literal(Constant(BOOLEAN))))
+              case (p, `ByteTpe`)    => ((p, Miniboxed), (p, Literal(Constant(BYTE))))
+              case (p, `ShortTpe`)   => ((p, Miniboxed), (p, Literal(Constant(SHORT))))
+              case (p, `CharTpe`)    => ((p, Miniboxed), (p, Literal(Constant(CHAR))))
+              case (p, `IntTpe`)     => ((p, Miniboxed), (p, Literal(Constant(INT))))
+              case (p, `LongTpe`)    => ((p, Miniboxed), (p, Literal(Constant(LONG))))
+              case (p, `FloatTpe`)   => ((p, Miniboxed), (p, Literal(Constant(FLOAT))))
+              case (p, `DoubleTpe`)  => ((p, Miniboxed), (p, Literal(Constant(DOUBLE))))
+              // case (2.2)
+              // case (2.4)
+              case (p, _) => ((p, Boxed), (p, Literal(Constant(REFERENCE))))
+            }
+//            println(res)
+            res
           }).unzip match { case (ps, tt) => (ps.toMap, tt.toMap)} )
         case _ =>
+//          println("None: " + showRaw(qualTpe))
           // unknown
           None
       }
