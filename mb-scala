@@ -19,7 +19,7 @@ function checkjar {
   then
     echo "The script is going to build the required jar file $1 by running \"sbt $2\" [5s until build]"
     sleep 5
-    cd `pwd`/`dirname $0`
+    cd $MINIBOXING_PATH
     sbt $2
     cd -
     if [ ! -f "$1" ]
