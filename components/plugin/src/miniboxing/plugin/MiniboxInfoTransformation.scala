@@ -307,7 +307,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
        *                                                  // we're creating types that are not valid (since a C and D
        *                                                  // are still classes)
        */
-      assert(clazz.info.parents == List(AnyRefClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz.info.parents)
+      // Scala 2.10.0 is pretty eager to dealias :(
+      assert(clazz.info.parents == List(AnyRefClass.tpe) || clazz.info.parents == List(ObjectClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz.info.parents)
       val sParents = (clazz.info.parents ::: List(clazz.tpe)) map {
         // TODO: This probably won't work, as we have to take the parent's miniboxed fields into account
         t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t)._1)
