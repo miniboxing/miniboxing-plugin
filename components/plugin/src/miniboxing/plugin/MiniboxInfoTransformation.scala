@@ -36,7 +36,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
      *  and bridge methods
      */
     if (isSpecializableClass(sym)) {
-      log("Specializing " + sym + "...")
+      log("Specializing " + sym + "...\n")
 
       // mark this symbol as the base of a miniboxed hierarchy
       specializedBase += sym
@@ -50,31 +50,35 @@ trait MiniboxInfoTransformation extends InfoTransform {
           // For each method in the original class, add its specialized overloads
           widenClass(clazz, envs)
 
-          log("-------------- ORIGINAL CLASS ----------------")
-          log(clazz.defString)
-          for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
+//          log("-------------- ORIGINAL CLASS ----------------")
+//          log(clazz.defString)
+//          for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
+//            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
 
           // Create the actual specialized classes
           val classes = envs map (specializeClass(clazz, _))
 
-          classes foreach { cls =>
-            log("------------ SPEC CLASS ------------")
-            log(cls.defString);
-            for (decl <- cls.info.decls.toList.sortBy(_.nameString))
-              log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
-          }
-
           // Now we remove the fields from the class and leave the getters and setters as abstract
           removeClassFields(clazz)
 
-          log("-------------- INTERFACE MEMBERS ----------------")
+          log("  // interface:")
+          log("  " + clazz.defString + " {")
           for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
+            log(f"    ${decl.defString}%-70s")
+          log("  }\n")
 
-          log("-------------- TEMPLATE MEMBERS ----------------")
-          for (decl <- templateMembers.toList.sortBy(_.nameString))
-            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
+          classes foreach { cls =>
+            log("  // specialized class:")
+            log("  " + cls.defString + " {")
+            for (decl <- cls.info.decls.toList.sortBy(_.nameString))
+              log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
+            log("  }\n")
+          }
+          log("\n\n")
+
+//          log("-------------- TEMPLATE MEMBERS ----------------")
+//          for (decl <- templateMembers.toList.sortBy(_.nameString))
+//            log(f"  ${decl.defString}%-70s => ${memberSpecializationInfo.get(decl)}")
 
           tpe
         case _ =>
