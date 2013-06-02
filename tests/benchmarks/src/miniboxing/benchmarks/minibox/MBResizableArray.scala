@@ -11,11 +11,11 @@ import miniboxing.plugin.minispec
  *  - local array variables are not supported
  */
 class MBResizableArray[@minispec T](mf: Manifest[T])  {
-  private final val initialSize = 4
-  private var size: Int = initialSize
-  private var elemCount: Int = 0
-  private var array: Array[T] = mf.newArray(initialSize)
-  private var newarray: Array[T] = _
+  final val initialSize = 4
+  var size: Int = initialSize
+  var elemCount: Int = 0
+  var array: Array[T] = mf.newArray(initialSize)
+  var newarray: Array[T] = _
 
   def extend(): Unit = {
     if (elemCount == size) {

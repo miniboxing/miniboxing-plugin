@@ -38,21 +38,10 @@ trait MiniboxPeepholeTransformation extends TypingTransformers {
           assert(tag1.symbol == tag2.symbol, "Peephole optimization checks: reduced type tags should be identical.")
           super.transform(inner)
 
-//        /*
-//         * Array creation in miniboxed code is written by the user as:
-//         *   Manifest[T].newArray[T](len)
-//         * and we rewrite it to:
-//         *   MiniboxArray.internal_newArray(len, tagOfT)
-//         */
-//        case Apply(TypeApply(meth, tpe :: Nil), len :: Nil) if (tree.symbol == newArray) =>
-//          localTyper.typedPos(tree.pos)(
-//            gen.mkMethodCall(internal_newArray, List(transform(len), getTag(tpe))))
-//
-//        // array_length with tag-based dispatch
-//        case Select(qual, meth) if isMiniboxedArray(qual) && tree.symbol == Array_length =>
-//          localTyper.typedPos(tree.pos)(
-//            gen.mkMethodCall(array_length, List(transform(qual))))
-//
+//        case Apply(Select(Apply(TypeApply(b2m, List(tpt1)), List(val1, tag1)), Any_==), args) if b2m.symbol == box2minibox =>
+//          println("XXX")
+//          super.transform(tree)
+
         case _ =>
           super.transform(tree)
       }
