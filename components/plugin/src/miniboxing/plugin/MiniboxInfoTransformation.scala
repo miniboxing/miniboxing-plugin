@@ -229,6 +229,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     // Add trait constructor and set the trait flag
     clazz.info.decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
+    clazz.setFlag(INTERFACE)
+    clazz.setFlag(ABSTRACT)
   }
 
   /**
