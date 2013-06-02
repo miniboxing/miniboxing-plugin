@@ -350,21 +350,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           }
           super.transform(localTyper.typed(tree1))
 
-//        // Equals on miniboxed values
-//        case Apply(Select(qual, fun), args) if tree.symbol == Any_== =>
-//          val tags = typeTagTrees()
-//          val tpe = qual.tpe
-//          val tree1 = tags.get(tpe.widen.typeSymbol) match {
-//            case Some(tag) => // miniboxed value, good to know
-//              val tree1 = gen.mkMethodCall(box2minibox, List(tpe), List(qual, tag))
-//              val tree2 = gen.mkMethodCall(tag_==, args)
-//              stats("rewrote ==: " + tree + " ==> " + tree2)
-//              tree2
-//            case _ =>
-//              tree
-//          }
-//          super.transform(localTyper.typed(tree1))
-
         // Array application
         case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
           val tags = typeTagTrees()

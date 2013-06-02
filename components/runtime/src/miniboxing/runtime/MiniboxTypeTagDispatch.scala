@@ -56,6 +56,13 @@ object MiniboxTypeTagDispatch {
    * Equality between miniboxed values. Optimized for the case when they have
    * the same type.
    */
+  @inline final def mboxed_eqeq(x: Minibox, xtag: Tag, other: Any): Boolean =
+    minibox2box(x, xtag) == other
+
+  /*
+   * Equality between miniboxed values. Optimized for the case when they have
+   * the same type.
+   */
   @inline final def mboxed_eqeq(x: Minibox, xtag: Tag, y: Minibox, ytag: Tag): Boolean =
     if (xtag == ytag)
       x == y
@@ -67,6 +74,10 @@ object MiniboxTypeTagDispatch {
    */
   @inline final def mboxed_eqeq(x: Minibox, y: Minibox): Boolean =
     x == y
+
+  // non-overloaded:
+  @inline final def mboxed_eqeq_other(x: Minibox, xtag: Tag, other: Any) =
+    mboxed_eqeq(x, xtag, other)
 
   // non-overloaded:
   @inline final def mboxed_eqeq_tag(x: Minibox, xtag: Tag, y: Minibox, ytag: Tag) =

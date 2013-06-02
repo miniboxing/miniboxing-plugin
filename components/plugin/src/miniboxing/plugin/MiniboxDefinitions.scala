@@ -17,6 +17,7 @@ trait MiniboxDefinitions {
   // Any ops
   lazy val TagDipatchObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxTypeTagDispatch")
   lazy val tag_hashCode = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_hashCode"))
+  lazy val other_==     = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_other"))
   lazy val tag_==       = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_tag"))
   lazy val notag_==     = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_notag"))
   lazy val tag_toString = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_toString"))
@@ -65,4 +66,7 @@ trait MiniboxDefinitions {
 
   // Manifest's newArray
   lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
+
+  // Manifest's newArray
+  lazy val Long_==           = definitions.getMember(LongClass, newTermName("$eq$eq"))
 }
