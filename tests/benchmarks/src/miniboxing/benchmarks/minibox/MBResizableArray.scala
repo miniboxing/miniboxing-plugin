@@ -1,4 +1,4 @@
-package miniboxing.benchmarks
+package miniboxing.benchmarks.minibox
 
 import miniboxing.plugin.minispec
 
