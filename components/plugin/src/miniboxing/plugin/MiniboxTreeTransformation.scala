@@ -261,7 +261,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           debug(" <= " + result)
           super.transform(result)
 
-        case Apply(sel @ Select(qual, fn), args) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
+        case Apply(sel @ Select(qual, fn), args) if { afterMinibox(sel.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
           val oldMethodSym = tree.symbol
           val oldMethodType = sel.tpe
           val tree1 =
@@ -288,7 +288,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        case Select(qual, fn) if base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol =>
+        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
           val oldMethodSym = tree.symbol
           val oldMethodType = tree.tpe
           val tree1 =
@@ -315,7 +315,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if specializedClasses.isDefinedAt(qual.tpe.typeSymbol)=>
+        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) }=>
           val oldClassCtor = ctor.symbol
           val tree1 = cl.tpe match {
             case TypeRef(pre, oldClass, targs) =>
