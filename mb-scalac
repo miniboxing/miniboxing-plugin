@@ -35,4 +35,4 @@ function checkjar {
 checkjar $PLUGIN_JAR miniboxing-plugin/package
 checkjar $RUNTIME_JAR miniboxing-runtime/package
 
-$SCALA_PATH/scalac -J-Dminiboxing.log=true -bootclasspath $RUNTIME_JAR -cp $PLUGIN_JAR -Xplugin:$PLUGIN_JAR $@
+$SCALA_PATH/scalac -J-Dminiboxing.log=true -bootclasspath $RUNTIME_JAR:$PLUGIN_JAR -Xplugin:$PLUGIN_JAR $@
