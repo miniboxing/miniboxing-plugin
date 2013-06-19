@@ -5,6 +5,7 @@ import java.io.{ File => JFile }
 import scala.tools.nsc.io._
 import scala.tools.partest.nest.FileUtil._
 import java.io.FileNotFoundException
+import difflib._;
 
 /* Taken from: [[https://github.com/nicolasstucki/specialized/commit/f7ee90610d0052cb3607cef138051575db3c2eb9]] */
 class TestSuite {
@@ -13,7 +14,7 @@ class TestSuite {
     val cwd = sys.props.get("user.dir").getOrElse(".")
     val res = dirs.foldLeft(Path(new JFile(cwd)))((path, dir) => path / dir)
     System.err.println("Picking tests from: " + res)
-    res.jfile.listFiles().filter(_.getName().endsWith(ext))
+    res.jfile.listFiles().filter(_.getName().endsWith(ext)).sortBy(_.getName())
   }
 
   private[this] def replaceExtension(source: JFile, ext: String) =
@@ -45,16 +46,22 @@ class TestSuite {
       // source code:
       val code =       File(source).slurp
       val flags =      pluginFlag + " " + slurp(replaceExtension(source, "flags"))
-      val exp_output = slurp(replaceExtension(source, "check"))
+      val expect = slurp(replaceExtension(source, "check"))
       val output = new CompileTest(code, flags).compilationOutput()
-      // this stopped working due to incorrect deps: compareContents(output.split("\n"), exp_output.split("\n"))
-      val diff = output != exp_output
+      import scala.collection.JavaConversions._
+      val output_lines = asJavaList(output.split("\n").toList)
+      val expect_lines = asJavaList(expect.split("\n").toList)
+      val sdiff = DiffUtils.diff(expect_lines, output_lines)
+      val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
-      if (diff) {
-         System.err.println("\n\n\nDifference in test for: " + source)
-         System.err.println("\nCompiler output:\n" + output)
-         System.err.println("\nExpected output:\n" + exp_output)
-         failed = true
+      if (sdiff.getDeltas().size() != 1) {
+        System.err.println("\n\n\nDifference in test for: " + source)
+        System.err.println("\nDiff: ")
+        for (line <- udiff)
+          System.err.println(line)
+        System.err.println("\nCompiler output:\n" + output)
+        System.err.println("\nExpected output:\n" + expect)
+        failed = true
       }
     }
 

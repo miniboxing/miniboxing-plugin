@@ -63,14 +63,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           log("  // interface:")
           log("  " + clazz.defString + " {")
-          for (decl <- clazz.info.decls.toList.sortBy(_.nameString))
+          for (decl <- clazz.info.decls.toList.sortBy(_.defString))
             log(f"    ${decl.defString}%-70s")
           log("  }\n")
 
           classes foreach { cls =>
             log("  // specialized class:")
             log("  " + cls.defString + " {")
-            for (decl <- cls.info.decls.toList.sortBy(_.nameString))
+            for (decl <- cls.info.decls.toList.sortBy(_.defString))
               log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
             log("  }\n")
           }

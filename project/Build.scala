@@ -44,6 +44,7 @@ object MiniboxingBuild extends Build {
       "org.scala-lang" % "scala-compiler" % scalaVer,
       "org.scala-lang" % "scala-partest" % scalaVer, 
       "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+      "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1",
       "com.novocode" % "junit-interface" % "0.10-M2" % "test"
     ),
     parallelExecution in Test := false,
