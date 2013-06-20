@@ -1,3 +1,5 @@
+package miniboxing.tests.compile
+
 import miniboxing.plugin.minispec
 
 class CCC[@minispec T](val t: T) {

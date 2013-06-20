@@ -543,7 +543,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def createMethodTrees(sClass: Symbol): List[Tree] = {
       val mbrs = new mutable.ListBuffer[Tree]
-      for (m <- sClass.info.decls if m hasFlag MINIBOXED) {
+      for (m <- sClass.info.decls.toList.sortBy(_.defString) if m hasFlag MINIBOXED) {
         debug("creating empty tree for " + m.fullName)
         if (m.isMethod) {
           mbrs += atPos(m.pos)(DefDef(m, { paramss => EmptyTree }))

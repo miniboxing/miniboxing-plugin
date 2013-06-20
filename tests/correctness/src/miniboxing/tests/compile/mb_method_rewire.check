@@ -1,0 +1,44 @@
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile {
+  abstract trait TR[@miniboxing.plugin.minispec T >: Nothing <: Any] extends scala.AnyRef {
+    def /*TR*/$init$(): Unit = {
+      ()
+    };
+    def foo(t: T): T;
+    def bar(t: miniboxing.tests.compile.TR[T]): T;
+    def bar_J(T_TypeTag: Byte)(t: miniboxing.tests.compile.TR[T]): Long;
+    def foo_J(T_TypeTag: Byte)(t: Long): Long
+  };
+  object Test extends scala.AnyRef {
+    def <init>(): miniboxing.tests.compile.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def test[T >: Nothing <: Any]: T = {
+      MiniboxConversions.this.minibox2box[Int](new miniboxing.tests.compile.TR_J[Int](5).foo_J(5)(MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)), 5);
+      new miniboxing.tests.compile.TR_L[String]()().foo("xxx");
+      new miniboxing.tests.compile.TR_L[T]()().foo(scala.this.Predef.???)
+    }
+  };
+  class TR_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.TR[Tsp] {
+    def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.TR_J[Tsp] = {
+      TR_J.super.<init>();
+      ()
+    };
+    def bar(t: miniboxing.tests.compile.TR[Tsp]): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR_J.this.bar_J(TR_J.this.T_TypeTag)(t), TR_J.this.T_TypeTag);
+    def bar_J(T_TypeTag: Byte)(t: miniboxing.tests.compile.TR[Tsp]): Long = t.foo_J(T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???, 9));
+    def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR_J.this.foo_J(TR_J.this.T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Tsp](t, TR_J.this.T_TypeTag)), TR_J.this.T_TypeTag);
+    def foo_J(T_TypeTag: Byte)(t: Long): Long = TR_J.this.foo_J(T_TypeTag)(t);
+    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+  };
+  class TR_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.TR[Tsp] {
+    def <init>()(): miniboxing.tests.compile.TR_L[Tsp] = {
+      TR_L.super.<init>();
+      ()
+    };
+    def bar(t: miniboxing.tests.compile.TR[Tsp]): Tsp = t.foo(scala.this.Predef.???);
+    def bar_J(T_TypeTag: Byte)(t: miniboxing.tests.compile.TR[Tsp]): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.bar(t), T_TypeTag);
+    def foo(t: Tsp): Tsp = TR_L.this.foo(t);
+    def foo_J(T_TypeTag: Byte)(t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+  }
+}

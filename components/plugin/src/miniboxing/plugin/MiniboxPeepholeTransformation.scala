@@ -69,6 +69,11 @@ trait MiniboxPeepholeTransformation extends TypingTransformers {
           val tree1 = gen.mkMethodCall(tag_toString, List(val1, tag1))
           super.transform(localTyper.typed(tree1))
 
+        // TODO: Transform:
+        //  - no-effect minibox2box and box2minibox
+        //  - known tag minibox2box and box2minibox
+        //  - known tag and value minibox2box and box2minibox
+
         case _ =>
           super.transform(tree)
       }
