@@ -1,4 +1,4 @@
-package miniboxing.bugs
+package miniboxing.tests.compile
 import miniboxing.plugin.minispec
 
 class BUG2[@minispec T](tail: BUG2[T]) {

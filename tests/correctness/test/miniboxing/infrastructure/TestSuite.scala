@@ -41,7 +41,7 @@ class TestSuite {
     val pluginFlag = pluginCompilerFlag()
 
     for (source <- files(List("tests", "correctness", "src", "miniboxing", "tests", "compile"), ".scala")) {
-      System.err.println(s"Running ${source.toString}")
+      System.err.print(s"Compiling ${source.toString} ... ")
 
       // source code:
       val code =       File(source).slurp
@@ -49,12 +49,14 @@ class TestSuite {
       val expect = slurp(replaceExtension(source, "check"))
       val output = new CompileTest(code, flags).compilationOutput()
       import scala.collection.JavaConversions._
-      val output_lines = asJavaList(output.split("\n").toList)
-      val expect_lines = asJavaList(expect.split("\n").toList)
+      def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
+      val output_lines = asJavaList(output.split("\n").toList.map(stripTrailingWS))
+      val expect_lines = asJavaList(expect.split("\n").toList.map(stripTrailingWS))
       val sdiff = DiffUtils.diff(expect_lines, output_lines)
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
-      if (sdiff.getDeltas().size() != 1) {
+      if (sdiff.getDeltas().size() != 0) {
+        System.err.println("[FAIL]")
         System.err.println("\n\n\nDifference in test for: " + source)
         System.err.println("\nDiff: ")
         for (line <- udiff)
@@ -62,7 +64,8 @@ class TestSuite {
         System.err.println("\nCompiler output:\n" + output)
         System.err.println("\nExpected output:\n" + expect)
         failed = true
-      }
+      } else
+        System.err.println("[ OK ]")
     }
 
     assert(!failed, "Some tests failed.")
