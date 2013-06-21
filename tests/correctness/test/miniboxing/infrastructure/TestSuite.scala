@@ -57,12 +57,13 @@ class TestSuite {
 
       if (sdiff.getDeltas().size() != 0) {
         System.err.println("[FAIL]")
-        System.err.println("\n\n\nDifference in test for: " + source)
-        System.err.println("\nDiff: ")
+        //System.err.println("\nDifference in test for: " + source)
+        System.err.println("Diff: ")
         for (line <- udiff)
           System.err.println(line)
-        System.err.println("\nCompiler output:\n" + output)
-        System.err.println("\nExpected output:\n" + expect)
+        //System.err.println("\nCompiler output:\n" + output)
+        //System.err.println("\nExpected output:\n" + expect)
+        System.err.println("\n\n")
         failed = true
       } else
         System.err.println("[ OK ]")

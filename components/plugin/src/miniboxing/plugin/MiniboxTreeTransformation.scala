@@ -647,13 +647,18 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val d = new Duplicator(castmap)
       debuglog("-->d DUPLICATING: " + tree1)
-      d.retyped(
+      val tree2 = d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
         tree1,
         source.enclClass,
         symbol.enclClass,
         miniboxedEnvDeep
       )
+
+      val specializer = new MiniboxTreeSpecializer(unit, Nil, miniboxedTypeTags, miniboxedEnvShallow)
+      val tree3 = specializer.transform(tree2)
+
+      tree3
     }
 
     /** Put the body of 'source' as the right hand side of the method 'tree'.

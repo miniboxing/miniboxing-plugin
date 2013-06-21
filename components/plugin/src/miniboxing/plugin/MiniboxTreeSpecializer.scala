@@ -38,7 +38,6 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
       override def transform(tree: Tree) = tree match {
         case i: Ident if miniboxedArgs.contains(i.symbol) =>
           val sym = i.symbol
-          val idx = miniboxedArgs.indexOf(sym)
           val tsp = miniboxedSyms.find(_._1 == sym).get._2
           val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
           val tag = miniboxedTags(tsp.typeSymbol)
@@ -89,7 +88,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
     import global._
     import definitions._
-    override def transform(tree: Tree): Tree = tree
+    override def transform(tree: Tree): Tree = boxingTransform(tree)
 
     def boxingTransform(tree: Tree): Tree = {
       // printing vars:
@@ -98,24 +97,31 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
       debug("  " * indent + "     (" + treen + ") tree: " + tree.toString.replaceAll("\n", "\n" + "  " * indent))
 
       val res = tree match {
-//        case vdef @ ValDef(mods, name, tpt, rhs) =>
-//          val tp = tree.symbol.tpe
-//          val tpm = miniboxedEnv(tp)
-//          if ((tpm =:= LongTpe) && !(tp =:= LongTpe)) {
-//            // TODO: Do this
-//            val rhs2 = gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))
-//            val tpt2 = tpt.setType(LongClass.tpe)
-//            var nvdef: Tree = copyValDef(vdef)(mods, name, tpt2, rhs2)
-//            nvdef.symbol = vdef.symbol.modifyInfo(miniboxedEnv)
-//            nvdef.tpe = null
-//            nvdef = localTyper.typed(nvdef)
-//            miniboxedSyms ::= (nvdef.symbol, tp)
-//            nvdef
-//          } else {
-//            deriveValDef(vdef)(boxingTransform)
-//          }
-//        case id: Ident =>
-//          ???
+        case vdef @ ValDef(mods, name, tpt, rhs) =>
+          val tp = tree.symbol.tpe
+          val tpm = miniboxedEnv(tp)
+//          println(vdef)
+//          println(tp)
+//          println(tpm)
+          if ((tpm =:= LongTpe) && !(tp =:= LongTpe)) {
+            // TODO: Do this
+            val rhs2 = gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))
+            val tpt2 = tpt.setType(LongClass.tpe)
+            var nvdef: Tree = copyValDef(vdef)(mods, name, tpt2, rhs2)
+            nvdef.symbol = vdef.symbol.modifyInfo(miniboxedEnv)
+            nvdef.tpe = null
+            nvdef = localTyper.typed(nvdef)
+            miniboxedSyms ::= (nvdef.symbol, tp)
+            nvdef
+            localTyper.typed(nvdef)
+          } else {
+            localTyper.typed(deriveValDef(vdef)(boxingTransform))
+          }
+        case i: Ident if miniboxedSyms.exists(_._1 == i.symbol) =>
+          val sym = i.symbol
+          val tsp = miniboxedSyms.find(_._1 == sym).get._2
+          val tag = miniboxedTags(tsp.typeSymbol)
+          localTyper.typed(gen.mkMethodCall(minibox2box, List(tsp), List(gen.mkAttributedIdent(sym), tag)))
         case other => super.transform(other)
       }
       debug("  " * indent + "     (" + treen + ") res:  " + res.toString.replaceAll("\n", "\n" + "  " * indent))
