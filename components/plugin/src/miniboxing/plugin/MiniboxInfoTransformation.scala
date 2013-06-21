@@ -351,7 +351,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val info0 = info.asSeenFrom(sClass.tpe, ctor.owner)
         val info1 = info0.substThis(clazz, sClass) // Is this still necessary?
         val (info2, mboxedArgs) = miniboxSubst(ifaceEnv, implEnv, info1)
-        val tagParams = typeTagMap map (_._2.cloneSymbol(ctor, SYNTHETIC))
+        val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor, SYNTHETIC))
         localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
         def transformArgs(tpe: Type): Type = tpe match {
           case MethodType(params, ret) =>
