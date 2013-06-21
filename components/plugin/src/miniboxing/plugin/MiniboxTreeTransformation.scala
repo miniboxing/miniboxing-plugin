@@ -232,7 +232,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             case SpecializedImplementationOf(target) =>
               // we have an rhs, specialize it
               def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
-              val tree1 = duplicateBody(ddef, target)
+              val tree1 = specializeDefDefBody(ddef, target)
               debuglog("implementation: " + tree1)
               tree1
 
@@ -618,21 +618,41 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      *  this method will insert casts for all the expressions of types mappend in the
      *  `castmap`.
      */
-    private def duplicateBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
+    private def specializeDefDefBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
+      val meth = addDefDefBody(tree, source)
+
+      duplicateBody(meth, source, castmap)
+    }
+
+    private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty) = {
+
       val symbol = tree.symbol
-      val meth = addBody(tree, source)
+      val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Nil)
+      val miniboxedEnvDeep = typeEnv(symbol.owner).deepEnv
+      val miniboxedEnvShallow = typeEnv(symbol.owner).shallowEnv
+      val miniboxedTypeTags = typeTagTrees(symbol)
+
+      debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
+      val currentReturn = symbol.tpe.finalResultType
+      val originalReturn = source.tpe.finalResultType
+      val miniboxedReturn = ((currentReturn =:= LongTpe) && !(originalReturn =:= LongTpe))
+      debug(s"miniboxedReturn: current:${currentReturn} original:${originalReturn} miniboxedReturn:${miniboxedReturn}")
+      if (miniboxedReturn) {
+        assert(miniboxedEnvShallow(miniboxedEnvDeep(originalReturn.typeSymbol).typeSymbol) =:= LongTpe,
+            s"Mismatching return type: current: ${currentReturn}, original: ${originalReturn}, typeEnv: ${miniboxedEnvShallow}")
+      }
+
+      val preparer = new MiniboxTreePreparer(unit, miniboxedSyms, miniboxedEnvDeep, miniboxedTypeTags, miniboxedReturn)
+      val tree1 = preparer.transform(tree)
 
       val d = new Duplicator(castmap)
-      debuglog("-->d DUPLICATING: " + meth)
+      debuglog("-->d DUPLICATING: " + tree1)
       d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
-        meth,
+        tree1,
         source.enclClass,
         symbol.enclClass,
-        typeEnv(symbol.owner).deepEnv,
-        typeEnv(symbol.owner).shallowEnv,
-        miniboxedArgs(symbol),
-        typeTagTrees(symbol)
+        miniboxedEnvDeep
       )
     }
 
@@ -642,7 +662,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      *  However, if the same source tree is used in more than one place, full re-typing
      *  is necessary. @see method duplicateBody
      */
-    private def addBody(tree: DefDef, source: Symbol): DefDef = {
+    private def addDefDefBody(tree: DefDef, source: Symbol): DefDef = {
       val symbol = tree.symbol
       debuglog("specializing body of " + symbol.defString)
       val (tparams, tags, vparamss, tpt) = tree match {
@@ -692,18 +712,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val tree1 = deriveValDef(tree)(_ => origBody.duplicate)
       debuglog("now typing: " + tree1 + " in " + tree.symbol.owner.fullName)
 
-      val d = new Duplicator(Map.empty)
-      val newValDef = d.retyped(
-        localTyper.context1.asInstanceOf[d.Context],
-        tree1,
-        origClass,
-        defSymbol.enclClass,
-        typeEnv(defSymbol.owner).deepEnv,
-        typeEnv(defSymbol.owner).shallowEnv,
-        Nil, // A field does not take values
-        typeTagTrees(defSymbol)
-      )
-      deriveValDef(newValDef)(transform)
+      duplicateBody(tree1, origMember)
     }
   }
 }

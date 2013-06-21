@@ -15,6 +15,7 @@ trait MiniboxComponent extends
     with MiniboxInfoTransformation
     with MiniboxLogging
     with MiniboxTreeTransformation
+    with MiniboxTreeSpecializer
     with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
     with MiniboxDefinitions
@@ -81,4 +82,7 @@ trait MiniboxPhase extends PluginComponent {
 
   def afterMinibox[T](op: => T): T =
     global.afterPhase(currentPhase)(op)
+
+  def beforeMinibox[T](op: => T): T =
+    global.beforePhase(currentPhase)(op)
 }
