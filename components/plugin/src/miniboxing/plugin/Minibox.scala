@@ -54,6 +54,7 @@ class Minibox(val global: Global) extends Plugin {
 
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks")
+    //override val runsRightAfter = Some("specialize")
     val phaseName = Minibox.this.name
 
     def flag_log = Minibox.this.flag_log
@@ -71,6 +72,7 @@ class Minibox(val global: Global) extends Plugin {
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
         val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
+        tree2.foreach(tree => assert(tree.tpe != null, tree))
         tree2
       }
     }

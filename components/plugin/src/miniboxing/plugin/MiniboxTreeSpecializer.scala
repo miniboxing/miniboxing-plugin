@@ -22,24 +22,31 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
     import global._
     override def transform(tree: Tree): Tree = tree match {
       case ddef@DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
-        deriveDefDef(ddef)(rhs => miniboxReturn(boxArgs.transform(rhs)))
+        localTyper.typed(deriveDefDef(ddef)(rhs => miniboxReturn(boxArgs(rhs))))
       case vdef@ValDef(mods, name, tpt, rhs) =>
-        deriveValDef(vdef)(rhs => miniboxReturn(boxArgs.transform(rhs)))
+        localTyper.typed(deriveValDef(vdef)(rhs => miniboxReturn(boxArgs(rhs))))
       case _ =>
         sys.error("incorrect use of miniboxed tree preparer")
     }
 
     val miniboxedArgs = miniboxedSyms.map(_._1)
-    val miniboxedDeepEnvInv = miniboxedDeepEnv.map({ case (p, t) => (t, p.tpe)})
-    val miniboxedTrees =
-      for ((sym, tp) <- miniboxedSyms) yield {
-        val tree = gen.mkMethodCall(minibox2box, List(miniboxedDeepEnvInv(tp)), List(gen.mkAttributedIdent(sym), miniboxedTags(tp.typeSymbol)))
-        println(tree)
-        localTyper.typed(tree)
-      }
+    val miniboxedDeepEnvInv = miniboxedDeepEnv.map({ case (p, t) => (t.typeSymbol, p)})
 
     /** Wrap miniboxed arguments in minibox2box already */
-    object boxArgs extends TreeSubstituter(miniboxedArgs, miniboxedTrees)
+    object boxArgs extends Transformer {
+      def apply(tree: Tree) = transform(tree)
+      override def transform(tree: Tree) = tree match {
+        case i: Ident if miniboxedArgs.contains(i.symbol) =>
+          val sym = i.symbol
+          val idx = miniboxedArgs.indexOf(sym)
+          val tsp = miniboxedSyms.find(_._1 == sym).get._2
+          val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
+          val tag = miniboxedTags(tsp.typeSymbol)
+          localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
+        case _ =>
+          super.transform(tree)
+      }
+    }
 
     /** Wrap the return type in a box2minibox if necessary */
     def miniboxReturn(tree: Tree): Tree =
@@ -82,7 +89,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
     import global._
     import definitions._
-    override def transform(tree: Tree): Tree = boxingTransform(tree)
+    override def transform(tree: Tree): Tree = tree
 
     def boxingTransform(tree: Tree): Tree = {
       // printing vars:
