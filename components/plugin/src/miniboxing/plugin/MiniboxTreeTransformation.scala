@@ -315,7 +315,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) }=>
+        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
           val oldClassCtor = ctor.symbol
           val tree1 = cl.tpe match {
             case TypeRef(pre, oldClass, targs) =>

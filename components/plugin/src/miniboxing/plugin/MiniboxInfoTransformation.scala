@@ -13,6 +13,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
   import Flags._
   import definitions._
 
+  var makeTrait = false
+
   /**
    * This function receives (among others) the symbol for a parameterized type
    * which we call "the generic class" or "the original class". Based on this
@@ -86,6 +88,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
           tpe
       }
     } else tpe
+
+  def makeTraits() {
+    for (clazz <- specializedBase) {
+      clazz.setFlag(INTERFACE)
+      clazz.setFlag(ABSTRACT)
+    }
+    makeTrait = true
+  }
 
   /**
    * For each method in the original class and each partial specialization
@@ -233,8 +243,13 @@ trait MiniboxInfoTransformation extends InfoTransform {
     // Add trait constructor and set the trait flag
     clazz.info.decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
-    clazz.setFlag(INTERFACE)
-    clazz.setFlag(ABSTRACT)
+    // This needs to be delayed until trees have been duplicated, else
+    // it will create pretty ugly problems since the new C is not a valid
+    // instantiation, since C becomes an abstract class
+    if (makeTrait) {
+      clazz.setFlag(INTERFACE)
+      clazz.setFlag(ABSTRACT)
+    }
   }
 
   /**
