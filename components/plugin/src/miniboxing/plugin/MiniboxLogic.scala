@@ -2,11 +2,8 @@ package miniboxing.plugin
 
 import scala.tools.nsc.Global
 
-/** TODO: Document this */
-case class MiniboxingTypeEnv[TypeEnv](shallowEnv: TypeEnv, deepEnv: TypeEnv)
-
 trait MiniboxLogic {
-  self: MiniboxLogging =>
+  self: MiniboxComponent =>
 
   val global: Global
   import global._
@@ -48,13 +45,6 @@ trait MiniboxLogic {
 
     envs.map((types: List[SpecInfo]) => (tParams zip types).toMap)
   }
-
-//  /**
-//   * Creates the name of the interface which corresponds to class `className`
-//   */
-//  def interfaceName(className: Name): TypeName = {
-//    newTypeName(className.toString + "_interface")
-//  }
 
   /**
    * Specialize name for the two list of types.
@@ -100,6 +90,27 @@ trait MiniboxLogic {
     !clazz.typeParams.isEmpty &&
     (clazz.typeParams forall (_ hasAnnotation MinispecedClass))
 
-
   final val MINIBOXED = 1L << 46 // we define our own flag
+
+  /** TODO: Document this */
+  case class MiniboxingTypeEnv(shallowEnv: TypeEnv, deepEnv: TypeEnv)
+
+  object PartialSpec {
+    def fromType(tpe: TypeRef): PartialSpec = tpe match {
+      case TypeRef(pre, sym, args) =>
+        val tparams = afterMinibox(sym.info).typeParams
+        map2(tparams, args) {
+          case (p, `UnitTpe`)    => (p, Miniboxed)
+          case (p, `BooleanTpe`) => (p, Miniboxed)
+          case (p, `ByteTpe`)    => (p, Miniboxed)
+          case (p, `ShortTpe`)   => (p, Miniboxed)
+          case (p, `CharTpe`)    => (p, Miniboxed)
+          case (p, `IntTpe`)     => (p, Miniboxed)
+          case (p, `LongTpe`)    => (p, Miniboxed)
+          case (p, `FloatTpe`)   => (p, Miniboxed)
+          case (p, `DoubleTpe`)  => (p, Miniboxed)
+          case (p, _)            => (p, Boxed)
+        }.toMap
+    }
+  }
 }

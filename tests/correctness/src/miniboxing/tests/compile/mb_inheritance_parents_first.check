@@ -1,0 +1,48 @@
+Specializing class C...
+
+  // interface:
+  trait C[T] extends AnyRef {
+    def $init$(): Unit
+  }
+
+  // specialized class:
+  class C_J[Tsp] extends C[Tsp] {
+    def <init>(val T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.C_J[Tsp] // is a specialized implementation of constructor C
+    private[this] val T_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class C_L[Tsp] extends C[Tsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.C_L[Tsp]          // is a specialized implementation of constructor C
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile.inheritance {
+  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+    def /*C*/$init$(): Unit = {
+      ()
+    }
+  };
+  class D extends miniboxing.tests.compile.inheritance.C_J[Int] {
+    def <init>(): miniboxing.tests.compile.inheritance.D = {
+      D.super.<init>();
+      ()
+    }
+  };
+  class C_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.C[Tsp] {
+    def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.C_J[Tsp] = {
+      C_J.super.<init>();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+  };
+  class C_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.C[Tsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.C_L[Tsp] = {
+      C_L.super.<init>();
+      ()
+    }
+  }
+}

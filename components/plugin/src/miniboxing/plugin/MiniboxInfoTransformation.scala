@@ -24,7 +24,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           afterMinibox(parents map (_.typeSymbol.info))
 
         val parents1 = parents mapConserve specializedType
-        val newScope = newScopeWith(specializeClass(clazz, typeEnv(clazz)) /* ++ specialOverrides(clazz) */: _*)
+        val newScope = newScopeWith(specializeClass(clazz, typeEnv.getOrElse(clazz, MiniboxingTypeEnv(Map.empty, Map.empty))) /* ++ specialOverrides(clazz) */: _*)
         // If tparams.isEmpty, this is just the ClassInfoType.
         GenPolyType(tparams, ClassInfoType(parents1, newScope, clazz))
       case _ =>
@@ -32,29 +32,20 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
   }
 
-  // TODO
   lazy val specializedType: TypeMap =
     new TypeMap {
-      def apply(tp: Type): Type = tp
+      override def apply(tp: Type): Type = tp match {
+        case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
+          val pre1 = this(pre)
+          // when searching for a specialized class, take care to map all
+          // type parameters that are subtypes of AnyRef to AnyRef
+          specializedClasses(sym).get(PartialSpec.fromType(tref)) match {
+            case Some(sym1) => typeRef(pre1, sym1, args)
+            case None       => typeRef(pre1, sym, args)
+          }
+        case _ => tp
+      }
     }
-//    new TypeMap {
-//      override def apply(tp: Type): Type = tp match {
-//        case TypeRef(pre, sym, args) if args.nonEmpty =>
-//          val pre1 = this(pre)
-//          // when searching for a specialized class, take care to map all
-//          // type parameters that are subtypes of AnyRef to AnyRef
-//          val args1 = map2(args, sym.info.typeParams)((tp, orig) =>
-//            if (isSpecializedAnyRefSubtype(tp, orig)) AnyRefClass.tpe
-//            else tp
-//          )
-//          specializedClass.get((sym, TypeEnv.fromSpecialization(sym, args1))) match {
-//            case Some(sym1) => typeRef(pre1, sym1, survivingArgs(sym, args))
-//            case None       => typeRef(pre1, sym, args)
-//          }
-//        case _ => tp
-//      }
-//    }
-
 
   def makeTraits() {
     for (clazz <- specializedBase) {
@@ -220,13 +211,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
   }
 
 
-  def specializeClass(clazz: Symbol, outerEnv: MiniboxingTypeEnv[TypeEnv]): List[Symbol] = {
+  def specializeClass(clazz: Symbol, outerEnv: MiniboxingTypeEnv): List[Symbol] = {
 
-    // TODO: Remove partialSpec in favor of environments
-
+    // TODO: Decide what we need: PartialSpec or MiniboxingTypeEnv?
     def specializeClass1(spec: PartialSpec): Symbol = {
       val sParamValues = typeParamValues(clazz, spec)
       val sClassName = specializedName(clazz.name, sParamValues).toTypeName
+      val bytecodeClass = clazz.owner.info.decl(sClassName)
+      bytecodeClass.info // TODO: we have 5054 here, but even this doesn't work
       val sClass = clazz.owner.newClass(sClassName, clazz.pos, clazz.flags)
 
       sClass.sourceFile = clazz.sourceFile

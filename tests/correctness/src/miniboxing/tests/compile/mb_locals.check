@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait LocalValuesHandling[@miniboxing.plugin.minispec T >: Nothing <: Any] extends scala.AnyRef {
+  abstract trait LocalValuesHandling[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
     def /*LocalValuesHandling*/$init$(): Unit = {
       ()
     };
