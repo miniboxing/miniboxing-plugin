@@ -320,25 +320,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-//        case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args) if { afterMinibox(sup.tpe.typeSymbol.info); sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents) } =>
-//          val oldInitSym = sup.symbol
-//          val oldInitTpe = sup.tpe // do we want the instantiated type?
-//          val qual = localTyper.typedOperator(Select(Super(ths, name) setPos sup.pos, nme.CONSTRUCTOR) setPos sel.pos)
-//          val newInitSym = qual.symbol
-//          val newInitTpe = qual.tpe
-//          val typeTags = separateTypeTagArgsInType(newInitTpe)
-//          println(typeTags)
-//          println(localTypeTags(newInitSym).map(_.swap).toMap)
-//          val first = localTypeTags(newInitSym).map(_.swap).toMap.toList.head._2
-//          println(first)
-//          val strange = currentClass.info.memberInfo(first)
-//          val instantiation = currentClass.info.baseType(first.owner)
-//          println(instantiation.typeSymbol.typeParams)
-//          println(instantiation.typeArgs)
-//          println("xxx: \"" + showRaw(strange) + "\"")
-//          //rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, args, ???, ???)
-//
-//          tree
+        case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args) if { afterMinibox(sup.tpe.typeSymbol.info); sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents) } =>
+          val oldInitSym = sup.symbol
+          val oldInitTpe = sup.tpe // do we want the instantiated type?
+          val qual = localTyper.typed(Super(ths, name) setPos sup.pos)
+          val init = localTyper.typedOperator(Select(qual, nme.CONSTRUCTOR))
+          val newInitSym = init.symbol
+          val newInitTpe = currentClass.info.memberInfo(newInitSym)
+          localTyper.typed(rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform)))
 
         case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
           val oldClassCtor = ctor.symbol

@@ -28,7 +28,7 @@ package miniboxing.tests.compile.inheritance {
   };
   class D extends miniboxing.tests.compile.inheritance.C_J[Int] {
     def <init>(): miniboxing.tests.compile.inheritance.D = {
-      D.super.<init>();
+      D.super.<init>(5);
       ()
     }
   };
