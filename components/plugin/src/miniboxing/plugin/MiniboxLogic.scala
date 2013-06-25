@@ -39,21 +39,20 @@ trait MiniboxLogic {
    */
   def specializations(tParams: List[Symbol]): List[PartialSpec] = {
     var envs: List[List[SpecInfo]] = List(Nil)
+    val mboxTParams = tParams.filter(_.hasAnnotation(MinispecedClass))
 
-    for (tParam <- tParams)
+    for (tParam <- mboxTParams)
       if (tParam.hasAnnotation(MinispecedClass))
         envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
-      else
-        envs = envs.flatMap(rest => List(Boxed :: rest))
 
-    envs.map((types: List[SpecInfo]) => (tParams zip types).toMap)
+    envs.map((types: List[SpecInfo]) => (mboxTParams zip types).toMap)
   }
 
   /**
    * Specialize name for the two list of types.
    */
   def specializedName(name: Name, types: List[Type]): TermName = {
-    if (nme.INITIALIZER == name || (types.isEmpty))
+    if (nme.CONSTRUCTOR == name || (types.isEmpty))
       name
     else if (nme.isSetterName(name))
       nme.getterToSetter(specializedName(nme.setterToGetter(name), types))
@@ -76,7 +75,7 @@ trait MiniboxLogic {
   }
 
   def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
-    clazz.typeParams.map(env) map {
+    clazz.typeParams.filter(_.hasFlag(MINIBOXED)).map(env) map {
       case Boxed => AnyRefClass.tpe
       case Miniboxed => LongClass.tpe
     }
@@ -102,18 +101,21 @@ trait MiniboxLogic {
     def fromType(tpe: TypeRef): PartialSpec = tpe match {
       case TypeRef(pre, sym, args) =>
         val tparams = afterMinibox(sym.info).typeParams
-        map2(tparams, args) {
-          case (p, `UnitTpe`)    => (p, Miniboxed)
-          case (p, `BooleanTpe`) => (p, Miniboxed)
-          case (p, `ByteTpe`)    => (p, Miniboxed)
-          case (p, `ShortTpe`)   => (p, Miniboxed)
-          case (p, `CharTpe`)    => (p, Miniboxed)
-          case (p, `IntTpe`)     => (p, Miniboxed)
-          case (p, `LongTpe`)    => (p, Miniboxed)
-          case (p, `FloatTpe`)   => (p, Miniboxed)
-          case (p, `DoubleTpe`)  => (p, Miniboxed)
-          case (p, _)            => (p, Boxed)
-        }.toMap
+        ((tparams zip args) flatMap { (pair: (Symbol, Type)) =>
+          pair match {
+            case (p, _) if !(p hasFlag MINIBOXED) => None
+            case (p, `UnitTpe`)    => Some((p, Miniboxed))
+            case (p, `BooleanTpe`) => Some((p, Miniboxed))
+            case (p, `ByteTpe`)    => Some((p, Miniboxed))
+            case (p, `ShortTpe`)   => Some((p, Miniboxed))
+            case (p, `CharTpe`)    => Some((p, Miniboxed))
+            case (p, `IntTpe`)     => Some((p, Miniboxed))
+            case (p, `LongTpe`)    => Some((p, Miniboxed))
+            case (p, `FloatTpe`)   => Some((p, Miniboxed))
+            case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+            case (p, _)            => Some((p, Boxed))
+          }
+        }).toMap
     }
   }
 }

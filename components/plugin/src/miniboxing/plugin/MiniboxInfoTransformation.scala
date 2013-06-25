@@ -95,7 +95,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           newMbr modifyInfo (info => {
             val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
             val localTags =
-              for (tparam <- clazz.typeParams if spec(tparam) == Miniboxed)
+              for (tparam <- clazz.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                 yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
             localTypeTags(newMbr) = localTags.toMap
             val tagParams = localTags.map(_._2)
@@ -270,7 +270,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // Add type tag fields for each parameter. Will be copied in specialized
       // subclasses.
       val typeTagMap: List[(Symbol, Symbol)] =
-        (for (tparam <- clazz.typeParams if spec(tparam) == Miniboxed) yield {
+        (for (tparam <- clazz.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed) yield {
           val sym = sClass.newValue(typeTagName(tparam), sClass.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal)
           sym setInfo ByteClass.tpe
           sym setFlag MINIBOXED
@@ -407,6 +407,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
 
     val specs = if (isSpecializableClass(clazz)) specializations(clazz.info.typeParams) else Nil
+    specs.map(_.map(_._1.setFlag(MINIBOXED)))
 
     if (specs.nonEmpty) {
       log("Specializing " + clazz + "...\n")

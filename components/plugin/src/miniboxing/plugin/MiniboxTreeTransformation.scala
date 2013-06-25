@@ -346,7 +346,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             case TypeRef(pre, oldClass, targs) =>
               extractSpec(cl.tpe, currentMethod, currentClass) match {
                 case Some(pspec) if !isAllAnyRef(pspec) =>
-                  assert(specializedClasses(oldClass).isDefinedAt(pspec) && overloads.isDefinedAt(ctor.symbol) && overloads(ctor.symbol).isDefinedAt(pspec))
+                  assert(specializedClasses(oldClass).isDefinedAt(pspec))
+                  assert(overloads.isDefinedAt(ctor.symbol))
+                  assert(overloads(ctor.symbol).isDefinedAt(pspec))
                   // println("\n\n")
                   val newClass = specializedClasses(oldClass)(pspec)
                   val newClassCtor = overloads(oldClassCtor)(pspec)
@@ -360,7 +362,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   stats("redirecting new: " + tree + " ==> " + tree1)
                   tree1
                 case Some(_) =>
-                  val allAnyRefSpec = oldClass.typeParams.map(t => (t, Boxed)).toMap
+                  val allAnyRefSpec = oldClass.typeParams.filter(_ hasFlag MINIBOXED).map(t => (t, Boxed)).toMap
                   val newClass = specializedClasses(oldClass)(allAnyRefSpec)
                   val newClassCtor = overloads(oldClassCtor)(allAnyRefSpec)
                   val newQual = New(TypeTree(TypeRef(pre, newClass, targs)))
@@ -449,31 +451,35 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case TypeRef(pre, clazz, args) if specializedClasses.isDefinedAt(clazz) =>
           import miniboxing.runtime.MiniboxConstants._
           val tparams = afterMinibox(clazz.info).typeParams
-          Some(map2(tparams, args) {
-            // case (2.3)
-            case (p, `UnitTpe`)    => (p, Miniboxed)
-            case (p, `BooleanTpe`) => (p, Miniboxed)
-            case (p, `ByteTpe`)    => (p, Miniboxed)
-            case (p, `ShortTpe`)   => (p, Miniboxed)
-            case (p, `CharTpe`)    => (p, Miniboxed)
-            case (p, `IntTpe`)     => (p, Miniboxed)
-            case (p, `LongTpe`)    => (p, Miniboxed)
-            case (p, `FloatTpe`)   => (p, Miniboxed)
-            case (p, `DoubleTpe`)  => (p, Miniboxed)
-            // case (2.1)
-            // case (2.2)
-            // case (2.4)
-            case (p, tpe) if baseClass.isDefinedAt(inClass) =>
-              val instantiatedBaseClass = inClass.info.baseType(baseClass(inClass))
-              val instantiationMapper = (instantiatedBaseClass.typeArgs.map(_.typeSymbol).zip(instantiatedBaseClass.typeSymbol.typeParams)).toMap
-              val baseTParam = instantiationMapper(tpe.typeSymbol)
-              if (pSpec.isDefinedAt(baseTParam))
-                (p, pSpec(baseTParam))
-              else
-                (p, Boxed)
-            case (p, _) =>
-                (p, Boxed)
-          }.toMap)
+          val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
+            pair match {
+              // case (2.3)
+              case (p, _) if !(p hasFlag MINIBOXED) => None
+              case (p, `UnitTpe`)    => Some((p, Miniboxed))
+              case (p, `BooleanTpe`) => Some((p, Miniboxed))
+              case (p, `ByteTpe`)    => Some((p, Miniboxed))
+              case (p, `ShortTpe`)   => Some((p, Miniboxed))
+              case (p, `CharTpe`)    => Some((p, Miniboxed))
+              case (p, `IntTpe`)     => Some((p, Miniboxed))
+              case (p, `LongTpe`)    => Some((p, Miniboxed))
+              case (p, `FloatTpe`)   => Some((p, Miniboxed))
+              case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+              // case (2.1)
+              // case (2.2)
+              // case (2.4)
+              case (p, tpe) if baseClass.isDefinedAt(inClass) =>
+                val instantiatedBaseClass = inClass.info.baseType(baseClass(inClass))
+                val instantiationMapper = (instantiatedBaseClass.typeArgs.map(_.typeSymbol).zip(instantiatedBaseClass.typeSymbol.typeParams)).toMap
+                val baseTParam = instantiationMapper(tpe.typeSymbol)
+                if (pSpec.isDefinedAt(baseTParam))
+                  Some((p, pSpec(baseTParam)))
+                else
+                  Some((p, Boxed))
+              case (p, _) =>
+                  Some((p, Boxed))
+            }
+          }
+          Some(spec.toMap)
         case _ =>
           // unknown
           None
