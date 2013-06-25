@@ -1,0 +1,54 @@
+Specializing class UhOh...
+
+  // interface:
+  trait UhOh[X, Y] extends AnyRef {
+    def $init$(): Unit
+    def foo(x: X,y: Y): X
+    def foo_LJ(val Y_TypeTag: Byte)(x: X,y: Long): X
+  }
+
+  // specialized class:
+  class UhOh_LJ[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
+    def <init>(val Y_TypeTag: Byte)(): miniboxing.tests.compile.UhOh_LJ[Xsp,Ysp] // is a specialized implementation of constructor UhOh
+    def foo(x: Xsp,y: Ysp): Xsp                                            // is a forwarder to method foo_LJ
+    def foo_LJ(val Y_TypeTag: Byte)(x: Xsp,y: Long): Xsp                   // is a specialized implementation of method foo
+    private[this] val Y_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class UhOh_LL[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
+    def <init>()(): miniboxing.tests.compile.UhOh_LL[Xsp,Ysp]              // is a specialized implementation of constructor UhOh
+    def foo(x: Xsp,y: Ysp): Xsp                                            // is a specialized implementation of method foo
+    def foo_LJ(val Y_TypeTag: Byte)(x: Xsp,y: Long): Xsp                   // is a forwarder to method foo
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile {
+  abstract trait UhOh[@miniboxing.plugin.minispec X >: Nothing <: Any, Y >: Nothing <: Any] extends AnyRef {
+    def /*UhOh*/$init$(): Unit = {
+      ()
+    };
+    def foo(x: X, y: Y): X;
+    def foo_LJ(Y_TypeTag: Byte)(x: X, y: Long): X
+  };
+  class UhOh_LJ[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
+    def <init>(Y_TypeTag: Byte)(): miniboxing.tests.compile.UhOh_LJ[Xsp,Ysp] = {
+      UhOh_LJ.super.<init>();
+      ()
+    };
+    def foo(x: Xsp, y: Ysp): Xsp = UhOh_LJ.this.foo_LJ(UhOh_LJ.this.Y_TypeTag)(x, MiniboxConversions.this.box2minibox_tt[Ysp](y, UhOh_LJ.this.Y_TypeTag));
+    def foo_LJ(Y_TypeTag: Byte)(x: Xsp, y: Long): Xsp = UhOh_LJ.this.foo_LJ(Y_TypeTag)(x, y);
+    <synthetic> <paramaccessor> private[this] val Y_TypeTag: Byte = _
+  };
+  class UhOh_LL[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
+    def <init>()(): miniboxing.tests.compile.UhOh_LL[Xsp,Ysp] = {
+      UhOh_LL.super.<init>();
+      ()
+    };
+    def foo(x: Xsp, y: Ysp): Xsp = UhOh_LL.this.foo(x, y);
+    def foo_LJ(Y_TypeTag: Byte)(x: Xsp, y: Long): Xsp = UhOh_LL.this.foo(x, MiniboxConversions.this.minibox2box[Ysp](y, Y_TypeTag))
+  }
+}

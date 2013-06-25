@@ -41,7 +41,10 @@ trait MiniboxLogic {
     var envs: List[List[SpecInfo]] = List(Nil)
 
     for (tParam <- tParams)
-      envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
+      if (tParam.hasAnnotation(MinispecedClass))
+        envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
+      else
+        envs = envs.flatMap(rest => List(Boxed :: rest))
 
     envs.map((types: List[SpecInfo]) => (tParams zip types).toMap)
   }
@@ -88,7 +91,7 @@ trait MiniboxLogic {
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
     !clazz.typeParams.isEmpty &&
-    (clazz.typeParams forall (_ hasAnnotation MinispecedClass))
+    (clazz.typeParams exists (_ hasAnnotation MinispecedClass))
 
   final val MINIBOXED = 1L << 46 // we define our own flag
 
