@@ -9,6 +9,13 @@ package miniboxing.tests.compile {
     def bar_J(T_TypeTag: Byte)(t: miniboxing.tests.compile.TR[T]): Long;
     def foo_J(T_TypeTag: Byte)(t: Long): Long
   };
+  abstract trait RT[@miniboxing.plugin.minispec U >: Nothing <: Any] extends AnyRef {
+    def /*RT*/$init$(): Unit = {
+      ()
+    };
+    def test(u: U): U;
+    def test_J(U_TypeTag: Byte)(u: Long): Long
+  };
   object Test extends AnyRef {
     def <init>(): miniboxing.tests.compile.Test.type = {
       Test.super.<init>();
@@ -40,5 +47,28 @@ package miniboxing.tests.compile {
     def bar_J(T_TypeTag: Byte)(t: miniboxing.tests.compile.TR[Tsp]): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.bar(t), T_TypeTag);
     def foo(t: Tsp): Tsp = TR_L.this.foo(t);
     def foo_J(T_TypeTag: Byte)(t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+  };
+  class RT_J[Usp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.RT[Usp] {
+    def <init>(U_TypeTag: Byte)(): miniboxing.tests.compile.RT_J[Usp] = {
+      RT_J.super.<init>();
+      ()
+    };
+    def test(u: Usp): Usp = MiniboxConversions.this.minibox2box[Usp](RT_J.this.test_J(RT_J.this.U_TypeTag)(MiniboxConversions.this.box2minibox_tt[Usp](u, RT_J.this.U_TypeTag)), RT_J.this.U_TypeTag);
+    def test_J(U_TypeTag: Byte)(u: Long): Long = {
+      val tr: miniboxing.tests.compile.TR[Usp] = new miniboxing.tests.compile.TR_J[Usp](U_TypeTag);
+      tr.foo_J(U_TypeTag)(u)
+    };
+    <synthetic> <paramaccessor> private[this] val U_TypeTag: Byte = _
+  };
+  class RT_L[Usp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.RT[Usp] {
+    def <init>()(): miniboxing.tests.compile.RT_L[Usp] = {
+      RT_L.super.<init>();
+      ()
+    };
+    def test(u: Usp): Usp = {
+      val tr: miniboxing.tests.compile.TR[Usp] = new miniboxing.tests.compile.TR_L[Usp]()();
+      tr.foo(u)
+    };
+    def test_J(U_TypeTag: Byte)(u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT_L.this.test(MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag)), U_TypeTag)
   }
 }
