@@ -23,29 +23,37 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (tparams.isEmpty)
           afterMinibox(parents map (_.typeSymbol.info))
 
-        val parents1 = parents mapConserve specializedType
-        val newScope = newScopeWith(specializeClass(clazz, typeEnv.getOrElse(clazz, MiniboxingTypeEnv(Map.empty, Map.empty))) /* ++ specialOverrides(clazz) */: _*)
-        // If tparams.isEmpty, this is just the ClassInfoType.
-        GenPolyType(tparams, ClassInfoType(parents1, newScope, clazz))
+        specializeClass(clazz, cinfo, typeEnv.getOrElse(clazz, MiniboxingTypeEnv(Map.empty, Map.empty)))
       case _ =>
         tpe
     }
   }
 
-  lazy val specializedType: TypeMap =
-    new TypeMap {
-      override def apply(tp: Type): Type = tp match {
-        case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
-          val pre1 = this(pre)
-          // when searching for a specialized class, take care to map all
-          // type parameters that are subtypes of AnyRef to AnyRef
-          specializedClasses(sym).get(PartialSpec.fromType(tref)) match {
-            case Some(sym1) => typeRef(pre1, sym1, args)
-            case None       => typeRef(pre1, sym, args)
-          }
-        case _ => tp
-      }
+  lazy val specializeTypeMap: TypeMap = new SpecializeTypeMap
+
+  class SpecializeTypeMap extends TypeMap {
+    def pspec(tref: TypeRef) = PartialSpec.fromType(tref)
+    override def apply(tp: Type): Type = tp match {
+      case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
+        val pre1 = this(pre)
+        afterMinibox(sym.info)
+        specializedClasses(sym).get(pspec(tref)) match {
+          case Some(sym1) => typeRef(pre1, sym1, args)
+          case None       => typeRef(pre1, sym, args)
+        }
+      case _ => tp
     }
+  }
+
+  def specializeTypeMapInContext(except: Symbol)(spec: PartialSpec) = new SpecializeTypeMap {
+    override def pspec(tref: TypeRef) = PartialSpec.fromTypeInContext(tref, spec)
+    override def apply(tp: Type): Type = tp match {
+      case tref@TypeRef(pre, sym, args) if sym == except =>
+        tref
+      case _ =>
+        super.apply(tp)
+    }
+  }
 
   def makeTraits() {
     for (clazz <- specializedBase) {
@@ -64,7 +72,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Now the original class becomes a template for creating the interface and the
    * specialized versions.
    */
-  def widenClass(clazz: Symbol, specs: List[PartialSpec]) = {
+  def widenClass(clazz: Symbol, specs: List[PartialSpec]): List[Symbol] = {
 
     baseClass(clazz) = clazz
     typeParamMap(clazz) = clazz.info.typeParams.map((p: Symbol) => (p, p)).toMap
@@ -77,6 +85,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val getters = members.filter(_.isGetter)
     val setters = members.filter(_.isSetter)
     val fields = members.filter(m => m.isTerm && !m.isMethod)
+
+    var newMembers = List[Symbol]()
 
     // we make specialized overloads for every member of the original class
     for (member <- methods ::: getters ::: setters if (needsSpecialization(clazz, member))) {
@@ -109,7 +119,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             miniboxedArgs(newMbr) = mbArgs
             info1
           })
-          clazz.info.resultType.decls enter (newMbr)
+          newMembers ::= newMbr
         } else {
           miniboxedArgs(newMbr) = Nil
         }
@@ -122,6 +132,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
       for (spec <- specs; newMbr <- overloadsOfMember get spec)
         memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
     }
+
+    clazz.info.decls.toList ++ newMembers
   }
 
   /*
@@ -191,30 +203,30 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * setters and getters in place. The effect is that the class automatically
    * becomes an interface
    */
-  private def removeClassFields(clazz: Symbol) = {
-    val decls = clazz.info.decls //.cloneScope
+  private def removeClassFields(clazz: Symbol, decls1: Scope): Scope = {
+    val decls = decls1.cloneScope
     for (mbr <- decls) {
       mbr.setFlag(DEFERRED)
       if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
         decls unlink mbr
     }
     // Add trait constructor and set the trait flag
-    clazz.info.decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
+    decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
     // This needs to be delayed until trees have been duplicated, else
-    // it will create pretty ugly problems since the new C is not a valid
-    // instantiation, since C becomes an abstract class
+    // instantiation will fail, since C becomes an abstract class
     if (makeTrait) {
       clazz.setFlag(INTERFACE)
       clazz.setFlag(ABSTRACT)
     }
+    decls
   }
 
 
-  def specializeClass(clazz: Symbol, outerEnv: MiniboxingTypeEnv): List[Symbol] = {
+  def specializeClass(clazz: Symbol, tpe: ClassInfoType, outerEnv: MiniboxingTypeEnv): Type = {
 
     // TODO: Decide what we need: PartialSpec or MiniboxingTypeEnv?
-    def specializeClass1(spec: PartialSpec): Symbol = {
+    def specializeClass1(spec: PartialSpec, decls: Scope): Symbol = {
       val sParamValues = typeParamValues(clazz, spec)
       val sClassName = specializedName(clazz.name, sParamValues).toTypeName
       val bytecodeClass = clazz.owner.info.decl(sClassName)
@@ -253,13 +265,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val sClassDecls = newScope
 
       // create the type of the new class
-      // TODO!
+      // note: we need no special treatment of parent classes,
+      // as they will be transformed for the specialized classes only
+      val localSpec: PartialSpec = spec.map({ case (t, sp) => (pmap(t), sp)})
+      val specializeParents = specializeTypeMapInContext(clazz)(localSpec)
       val specializedInfoType: Type = {
-        assert(clazz.info.parents == List(AnyRefClass.tpe) || clazz.info.parents == List(ObjectClass.tpe), "TODO: Here we should also perform parent rewiring: D_L extends C_L, not simply C: parents: " + clazz + " parents: " + clazz.info.parents)
         val sParents = (clazz.info.parents ::: List(clazz.tpe)) map {
-          // TODO: This probably won't work, as we have to take the parent's miniboxed fields into account
           t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t)._1)
-        }
+        } map specializeParents
 
         // parameters which are not fixed
         val newTParams: List[Symbol] = clazz.typeParams.map(pmap)
@@ -282,7 +295,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       globalTypeTags(sClass) = typeTagMap.toMap
 
       // adding the type tags as constructor arguments
-      for (ctor <- clazz.info.members.filter(sym => sym.owner == clazz && sym.isConstructor)) {
+      for (ctor <- decls.filter(sym => sym.owner == clazz && sym.isConstructor)) {
         val newCtor = ctor.cloneSymbol(sClass)
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
@@ -312,7 +325,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       // Copy the members of the original class to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
-        (for (mbr <- clazz.info.members if mbr.owner == clazz && !mbr.isConstructor) yield {
+        (for (mbr <- decls.toList if mbr.owner == clazz && !mbr.isConstructor) yield {
           val newMbr = mbr.cloneSymbol(sClass)
           if (mbr.isMethod) {
             if (base(mbr) == mbr)
@@ -413,7 +426,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       log("Specializing " + clazz + "...\n")
 
       // step1: widen the class
-      widenClass(clazz, specs)
+      val scope1 = newScopeWith(widenClass(clazz, specs): _*)
 
       // mark this symbol as the base of a miniboxed hierarchy
       specializedBase += clazz
@@ -421,7 +434,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // step2: create subclasses
       val classes = specs map {
         env =>
-        val spc      = specializeClass1(env)
+        val spc      = specializeClass1(env, scope1)
         val existing = clazz.owner.info.decl(spc.name)
 
         // a symbol for the specialized class already exists if there's a classfile for it.
@@ -429,15 +442,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
         if (existing != NoSymbol)
           clazz.owner.info.decls.unlink(existing)
 
+        // TODO: overrides in the specialized class
         afterMinibox(clazz.owner.info.decls enter spc)
 
         spc
       }
 
-      removeClassFields(clazz)
+      val scope2 = removeClassFields(clazz, scope1)
       log("  // interface:")
       log("  " + clazz.defString + " {")
-      for (decl <- clazz.info.decls.toList.sortBy(_.defString))
+      for (decl <- scope2.toList.sortBy(_.defString))
         log(f"    ${decl.defString}%-70s")
         log("  }\n")
 
@@ -451,9 +465,20 @@ trait MiniboxInfoTransformation extends InfoTransform {
       log("\n\n")
 
       clazz.resetFlag(FINAL)
-    }
 
-    clazz.info.decls.toList
+      val parents1 =
+        if ((tpe.parents.size == 1) && (tpe.parents.head =:= AnyRefTpe))
+          tpe.parents
+        else
+          AnyRefTpe :: tpe.parents
+
+      GenPolyType(clazz.info.typeParams, ClassInfoType(parents1, scope2, clazz))
+    } else {
+      // TODO: overrides in the specialized class
+      val newScope = newScopeWith(tpe.decls.toList /* ++ specialOverrides(clazz) */: _*)
+      val parents1 = tpe.parents map specializeTypeMap
+      GenPolyType(clazz.info.typeParams, ClassInfoType(parents1, newScope, clazz))
+    }
   }
 
   /**
@@ -472,11 +497,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       } else if (srcTypeSymbol == tgtTypeSymbol) {
         if (srcType == tgtType) NoCast
         else {
-          /*
-           * We have something like Foo[T] vs Foo[Long] which will be the same
-           * after erasure. For now, just pretend that they are the same.
-           */
-          AsInstanceOfCast
+          // We have something like Foo[T] vs Foo[Long] which will be the same
+          // after erasure. For now, just pretend that they are the same.
+          // - we should not have this case anymore.
+          ??? // AsInstanceOfCast
         }
         // Arrays are 'erased' to Any
       } else if (srcTypeSymbol == ArrayClass && tgtTypeSymbol == AnyClass) {

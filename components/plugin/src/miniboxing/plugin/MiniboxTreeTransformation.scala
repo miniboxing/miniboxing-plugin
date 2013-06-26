@@ -142,8 +142,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          */
         case PackageDef(pid, classdefs) =>
           atOwner(tree, tree.symbol) {
-            val specClasses = createSpecializedClassesTrees(classdefs) map localTyper.typed
-            val templates = transformStats(classdefs ::: specClasses, tree.symbol.moduleClass)
+            val specClassesTpls = createSpecializedClassesTrees(classdefs)
+            val specClassesTped = specClassesTpls map localTyper.typed
+            val templates = transformStats(classdefs ::: specClassesTped, tree.symbol.moduleClass)
             val packageTree = treeCopy.PackageDef(tree, pid, templates)
             localTyper.typedPos(tree.pos)(packageTree)
           }

@@ -98,7 +98,12 @@ trait MiniboxLogic {
   case class MiniboxingTypeEnv(shallowEnv: TypeEnv, deepEnv: TypeEnv)
 
   object PartialSpec {
-    def fromType(tpe: TypeRef): PartialSpec = tpe match {
+
+    // used if the current class is not miniboxed
+    def fromType(tpe: TypeRef): PartialSpec = fromTypeInContext(tpe, Map.empty)
+
+    // used if the current class is miniboxed
+    def fromTypeInContext(tpe: TypeRef, pspec: PartialSpec): PartialSpec = tpe match {
       case TypeRef(pre, sym, args) =>
         val tparams = afterMinibox(sym.info).typeParams
         ((tparams zip args) flatMap { (pair: (Symbol, Type)) =>
@@ -113,7 +118,7 @@ trait MiniboxLogic {
             case (p, `LongTpe`)    => Some((p, Miniboxed))
             case (p, `FloatTpe`)   => Some((p, Miniboxed))
             case (p, `DoubleTpe`)  => Some((p, Miniboxed))
-            case (p, _)            => Some((p, Boxed))
+            case (p, tpe)          => Some((p, pspec.getOrElse(tpe.typeSymbol, Boxed)))
           }
         }).toMap
     }
