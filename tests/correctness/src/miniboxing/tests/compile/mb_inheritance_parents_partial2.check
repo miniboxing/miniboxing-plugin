@@ -1,0 +1,109 @@
+Specializing class FF1...
+
+  // interface:
+  abstract trait FF1[T, R] extends AnyRef {
+    def $init$(): Unit
+  }
+
+  // specialized class:
+  class FF1_JJ[Tsp, Rsp] extends FF1[Tsp,Rsp] {
+    def <init>(val T_TypeTag: Byte,val R_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Rsp] // is a specialized implementation of constructor FF1
+    private[this] val R_TypeTag: Byte                                      // no info
+    private[this] val T_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class FF1_LJ[Tsp, Rsp] extends FF1[Tsp,Rsp] {
+    def <init>(val R_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Rsp] // is a specialized implementation of constructor FF1
+    private[this] val R_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class FF1_JL[Tsp, Rsp] extends FF1[Tsp,Rsp] {
+    def <init>(val T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_JL[Tsp,Rsp] // is a specialized implementation of constructor FF1
+    private[this] val T_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class FF1_LL[Tsp, Rsp] extends FF1[Tsp,Rsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.FF1_LL[Tsp,Rsp]   // is a specialized implementation of constructor FF1
+  }
+
+
+
+
+Specializing class PPredicate...
+
+  // interface:
+  abstract trait PPredicate[T] extends FF1[T,Boolean] {
+    def $init$(): Unit
+  }
+
+  // specialized class:
+  class PPredicate_J[Tsp] extends FF1_JJ[Tsp,Boolean] with PPredicate[Tsp] {
+    def <init>(val T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] // is a specialized implementation of constructor PPredicate
+    private[this] val T_TypeTag: Byte                                      // no info
+  }
+
+  // specialized class:
+  class PPredicate_L[Tsp] extends FF1_LJ[Tsp,Boolean] with PPredicate[Tsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.PPredicate_L[Tsp] // is a specialized implementation of constructor PPredicate
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile.inheritance {
+  abstract trait FF1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec R >: Nothing <: Any] extends AnyRef {
+    def /*FF1*/$init$(): Unit = {
+      ()
+    }
+  };
+  abstract trait PPredicate[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+    def /*PPredicate*/$init$(): Unit = {
+      ()
+    }
+  };
+  class FF1_JJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
+    def <init>(T_TypeTag: Byte, R_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Rsp] = {
+      FF1_JJ.super.<init>();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val R_TypeTag: Byte = _;
+    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+  };
+  class FF1_JL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
+    def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_JL[Tsp,Rsp] = {
+      FF1_JL.super.<init>();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+  };
+  class FF1_LJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
+    def <init>(R_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Rsp] = {
+      FF1_LJ.super.<init>();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val R_TypeTag: Byte = _
+  };
+  class FF1_LL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.FF1_LL[Tsp,Rsp] = {
+      FF1_LL.super.<init>();
+      ()
+    }
+  };
+  class PPredicate_J[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
+    def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] = {
+      PPredicate_J.super.<init>(T_TypeTag, 1)();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+  };
+  class PPredicate_L[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.PPredicate_L[Tsp] = {
+      PPredicate_L.super.<init>(1)();
+      ()
+    }
+  }
+}
