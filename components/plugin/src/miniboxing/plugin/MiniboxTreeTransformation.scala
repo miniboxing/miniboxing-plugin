@@ -335,11 +335,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             // Someday I will rewrite that damn typer! I spend one entire day to find out that a
             // Select(Super(_, _), _) is typed differently from a Super(_, _)...
             val init = localTyper.typedOperator(Select(Super(ths, name) setPos sup.pos, nme.CONSTRUCTOR))
-            val Select(qual, _) = init
             val newInitSym = init.symbol
             val newInitTpe = currentClass.info.memberInfo(newInitSym)
-            val tree1 = localTyper.typed(rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform)))
-            tree1
+            if (newInitSym == oldInitSym)
+              tree
+            else {
+              val Select(qual, _) = init
+              val tree1 = rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform))
+              localTyper.typed(tree1)
+            }
 
         case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
           val oldClassCtor = ctor.symbol

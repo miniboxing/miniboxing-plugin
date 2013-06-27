@@ -123,6 +123,13 @@ trait MiniboxSpecializationInfo {
     new mutable.HashMap[Symbol, Symbol]
 
   /**
+   * `defferredTypeTags` keeps a list of members that represent type tags
+   * in a trait -- unlike type tags in a class, which are fields, these are
+   * methods which the inheriting class overrides
+   */
+  val deferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+
+  /**
    * Type environment of a class:
    * Needed by the duplicator to replace the symbols in the old tree.
    */
