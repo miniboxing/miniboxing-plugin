@@ -42,7 +42,7 @@ class TestSuite {
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
     // use carefully:
-    //UPDATE_CHECKFILE = true
+//    UPDATE_CHECKFILE = true
 
     for (source <- files(List("tests", "correctness", "src", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(s"Compiling ${source.toString} ... ")
@@ -61,22 +61,25 @@ class TestSuite {
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
       if (sdiff.getDeltas().size() != 0) {
-        System.err.println("[FAIL]")
-        //System.err.println("\nDifference in test for: " + source)
-        System.err.println("Diff: ")
-        for (line <- udiff)
-          System.err.println(line)
-        //System.err.println("\nCompiler output:\n" + output)
-        //System.err.println("\nExpected output:\n" + expect)
-        System.err.println("\n\n")
         if (UPDATE_CHECKFILE) {
           System.err.println("UPDATING CHECKFILE: " + check_file)
           Some(new PrintWriter(check_file)).foreach{p => p.write(output_lines.mkString("\n")); p.close}
-        }
-        failed = true
+        } else
+          System.err.println("[FAIL]")
+          //System.err.println("\nDifference in test for: " + source)
+          System.err.println("Diff: ")
+          for (line <- udiff)
+            System.err.println(line)
+            //System.err.println("\nCompiler output:\n" + output)
+            //System.err.println("\nExpected output:\n" + expect)
+            System.err.println("\n\n")
+          failed = true
       } else
         System.err.println("[ OK ]")
     }
+
+    if (UPDATE_CHECKFILE)
+      System.err.println("\n\nUPDATE_CHECKFILE is turned ON! Don't forget to turn if off!!!\n\n")
 
     assert(!failed, "Some tests failed.")
   }

@@ -67,9 +67,9 @@ trait MiniboxLogic {
    * The name of the field carrying the type tag of corresponding to a type
    * parameter `tparam`
    */
-  def typeTagName(tparam: Symbol): TermName = {
-    tparam.name.append("_TypeTag").toTermName
-  }
+  def typeTagName(tparam: Symbol): TermName =
+    newTermName(tparam.owner.nameString + "_" + tparam.nameString + "_TypeTag")
+
   def isTypeTagField(field: Symbol): Boolean = {
     field.name.endsWith("_TypeTag")
   }

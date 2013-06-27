@@ -6,8 +6,8 @@ Specializing class CC...
 
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
-    def <init>(val T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
-    private[this] val T_TypeTag: Byte                                      // no info
+    def <init>(val CC_T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
+    private[this] val CC_T_TypeTag: Byte                                   // no info
   }
 
   // specialized class:
@@ -28,11 +28,11 @@ package miniboxing.tests.compile.inheritance {
     }
   };
   class CC_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.CC[Tsp] {
-    def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
+    def <init>(CC_T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
       CC_J.super.<init>();
       ()
     };
-    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _
+    <synthetic> <paramaccessor> private[this] val CC_T_TypeTag: Byte = _
   };
   class CC_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.CC[Tsp] {
     def <init>()(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {
