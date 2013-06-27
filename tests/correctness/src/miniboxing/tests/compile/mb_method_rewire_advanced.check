@@ -1,7 +1,7 @@
 Specializing class UhOh...
 
   // interface:
-  trait UhOh[X, Y] extends AnyRef {
+  abstract trait UhOh[X, Y] extends AnyRef {
     def $init$(): Unit
     def foo(x: X,y: Y): X
     def foo_J(val X_TypeTag: Byte)(x: Long,y: Y): Long
@@ -28,7 +28,7 @@ Specializing class UhOh...
 Specializing class OhUh...
 
   // interface:
-  trait OhUh[U] extends AnyRef {
+  abstract trait OhUh[U] extends AnyRef {
     def $init$(): Unit
     def test: U
     def test_J(val U_TypeTag: Byte): Long
@@ -110,7 +110,7 @@ package miniboxing.tests.compile {
     };
     def test: Usp = MiniboxConversions.this.minibox2box[Usp](OhUh_J.this.test_J(OhUh_J.this.U_TypeTag), OhUh_J.this.U_TypeTag);
     def test_J(U_TypeTag: Byte): Long = {
-      val tr: miniboxing.tests.compile.UhOh[Usp,Int] = new miniboxing.tests.compile.UhOh_J[Usp,Int](U_TypeTag);
+      val tr: miniboxing.tests.compile.UhOh[Usp,Int] = new miniboxing.tests.compile.UhOh_J[Usp,Int](U_TypeTag)();
       tr.foo_J(U_TypeTag)(OhUh_J.this.u_J(U_TypeTag), 3)
     };
     <accessor> <paramaccessor> def u: Usp = MiniboxConversions.this.minibox2box[Usp](OhUh_J.this.u_J(OhUh_J.this.U_TypeTag), OhUh_J.this.U_TypeTag);

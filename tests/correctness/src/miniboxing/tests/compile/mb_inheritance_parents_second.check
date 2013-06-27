@@ -1,7 +1,7 @@
 Specializing class CC...
 
   // interface:
-  trait CC[T] extends AnyRef {
+  abstract trait CC[T] extends AnyRef {
     def $init$(): Unit
   }
 
@@ -28,7 +28,7 @@ package miniboxing.tests.compile.inheritance {
   };
   class DC[U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CC_L[U] {
     def <init>(): miniboxing.tests.compile.inheritance.DC[U] = {
-      DC.super.<init>();
+      DC.super.<init>()();
       ()
     }
   };

@@ -22,7 +22,7 @@ package miniboxing.tests.compile {
       ()
     };
     def test[T >: Nothing <: Any]: T = {
-      MiniboxConversions.this.minibox2box[Int](new miniboxing.tests.compile.TR_J[Int](5).foo_J(5)(MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)), 5);
+      MiniboxConversions.this.minibox2box[Int](new miniboxing.tests.compile.TR_J[Int](5)().foo_J(5)(MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)), 5);
       new miniboxing.tests.compile.TR_L[String]()().foo("xxx");
       new miniboxing.tests.compile.TR_L[T]()().foo(scala.this.Predef.???)
     }
@@ -55,7 +55,7 @@ package miniboxing.tests.compile {
     };
     def test(u: Usp): Usp = MiniboxConversions.this.minibox2box[Usp](RT_J.this.test_J(RT_J.this.U_TypeTag)(MiniboxConversions.this.box2minibox_tt[Usp](u, RT_J.this.U_TypeTag)), RT_J.this.U_TypeTag);
     def test_J(U_TypeTag: Byte)(u: Long): Long = {
-      val tr: miniboxing.tests.compile.TR[Usp] = new miniboxing.tests.compile.TR_J[Usp](U_TypeTag);
+      val tr: miniboxing.tests.compile.TR[Usp] = new miniboxing.tests.compile.TR_J[Usp](U_TypeTag)();
       tr.foo_J(U_TypeTag)(u)
     };
     <synthetic> <paramaccessor> private[this] val U_TypeTag: Byte = _

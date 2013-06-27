@@ -1,7 +1,7 @@
 Specializing class CCC...
 
   // interface:
-  trait CCC[T] extends AnyRef {
+  abstract trait CCC[T] extends AnyRef {
     def $init$(): Unit
   }
 
@@ -22,7 +22,7 @@ Specializing class CCC...
 Specializing class DDD...
 
   // interface:
-  trait DDD[U] extends CCC[U] {
+  abstract trait DDD[U] extends CCC[U] {
     def $init$(): Unit
   }
 
@@ -67,14 +67,14 @@ package miniboxing.tests.compile.inheritance {
   };
   class DDD_J[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCC_J[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
     def <init>(U_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.DDD_J[Usp] = {
-      DDD_J.super.<init>();
+      DDD_J.super.<init>(U_TypeTag)();
       ()
     };
     <synthetic> <paramaccessor> private[this] val U_TypeTag: Byte = _
   };
   class DDD_L[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCC_L[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
     def <init>()(): miniboxing.tests.compile.inheritance.DDD_L[Usp] = {
-      DDD_L.super.<init>();
+      DDD_L.super.<init>()();
       ()
     }
   }

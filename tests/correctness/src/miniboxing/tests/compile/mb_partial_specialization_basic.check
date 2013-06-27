@@ -1,7 +1,7 @@
 Specializing class UhOh1...
 
   // interface:
-  trait UhOh1[X, Y] extends AnyRef {
+  abstract trait UhOh1[X, Y] extends AnyRef {
     def $init$(): Unit
     def foo(x: X,y: Y): X
     def foo_J(val X_TypeTag: Byte)(x: Long,y: Y): Long

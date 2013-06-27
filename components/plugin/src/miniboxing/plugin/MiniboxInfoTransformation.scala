@@ -12,8 +12,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
   import Flags._
   import definitions._
 
-  var makeTrait = false
-
   /** Type transformation. It is applied to all symbols, compiled or loaded.
    *  If it is a 'no-specialization' run, it is applied only to loaded symbols. */
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
@@ -53,14 +51,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
       case _ =>
         super.apply(tp)
     }
-  }
-
-  def makeTraits() {
-    for (clazz <- specializedBase) {
-      clazz.setFlag(INTERFACE)
-      clazz.setFlag(ABSTRACT)
-    }
-    makeTrait = true
   }
 
   /**
@@ -215,10 +205,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     clazz.setFlag(TRAIT)
     // This needs to be delayed until trees have been duplicated, else
     // instantiation will fail, since C becomes an abstract class
-    if (makeTrait) {
-      clazz.setFlag(INTERFACE)
-      clazz.setFlag(ABSTRACT)
-    }
+    clazz.setFlag(INTERFACE)
+    clazz.setFlag(ABSTRACT)
     decls
   }
 

@@ -72,7 +72,6 @@ class Minibox(val global: Global) extends Plugin {
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
         val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
-        makeTraits()
         tree2.foreach(tree => assert(tree.tpe != null, tree))
         tree2
       }

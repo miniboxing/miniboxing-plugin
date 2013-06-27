@@ -174,7 +174,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case Template(parents, self, body) =>
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
-          // parents for trait:
           val parents1 = map2(currentOwner.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
           val templateDef = treeCopy.Template(tree, parents1, self, memberDefs)
           localTyper.typedPos(tree.pos)(templateDef)
@@ -321,14 +320,26 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args) if { afterMinibox(sup.tpe.typeSymbol.info); sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents) } =>
-          val oldInitSym = sup.symbol
-          val oldInitTpe = sup.tpe // do we want the instantiated type?
-          val qual = localTyper.typed(Super(ths, name) setPos sup.pos)
-          val init = localTyper.typedOperator(Select(qual, nme.CONSTRUCTOR))
-          val newInitSym = init.symbol
-          val newInitTpe = currentClass.info.memberInfo(newInitSym)
-          localTyper.typed(rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform)))
+        case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args)
+          if {
+            afterMinibox(sup.tpe.typeSymbol.info)
+            // either the parents changed, or class is specialized (specialized classes
+            // don't exist before minibox, thus their parents don't *change* but *appear*)
+            (sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents)) || baseClass.isDefinedAt(sup.symbol) && (baseClass(sup.symbol) != sup.symbol) &&
+            // don't rewire super constructor if the parent is AnyRef
+            // TODO: Shouldn't this be done for any non-specialized class?
+            !(sup.symbol.info.parents.head =:= AnyRefTpe)
+          } =>
+            val oldInitSym = sup.symbol
+            val oldInitTpe = sup.tpe // do we want the instantiated type?
+            // Someday I will rewrite that damn typer! I spend one entire day to find out that a
+            // Select(Super(_, _), _) is typed differently from a Super(_, _)...
+            val init = localTyper.typedOperator(Select(Super(ths, name) setPos sup.pos, nme.CONSTRUCTOR))
+            val Select(qual, _) = init
+            val newInitSym = init.symbol
+            val newInitTpe = currentClass.info.memberInfo(newInitSym)
+            val tree1 = localTyper.typed(rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform)))
+            tree1
 
         case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
           val oldClassCtor = ctor.symbol
@@ -501,10 +512,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       // 2. Adapt arguments
       assert(argTypes.paramss.length <= 1, "Cannot handle curried params. May be relaxed later.")
       val apply =
-        if (args != null)
-        {
+        if (args != null) {
           val newArgs =
-            for((pForm, pAct) <- argTypes.params zip args) yield {
+            for((pForm, pAct) <- (argTypes.params zip args)) yield {
               // pAct is always encoded using boxing
               // pForm may be encoded using either miniboxing OR boxing
               //println(pForm.tpe + " ==> " + pAct)
@@ -514,12 +524,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               else
                 pAct
             }
-          val applyTree =
-            if (newArgs.isEmpty)
-              tagApp // created by the previous call to mkMethodCall
-            else
-              gen.mkMethodCall(tagApp, newArgs)
-          //println(applyTree)
+          val applyTree = gen.mkMethodCall(tagApp, newArgs)
           applyTree
         } else
           tagApp
@@ -675,13 +680,25 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val d = new Duplicator(castmap)
       debuglog("-->d DUPLICATING: " + tree1)
-      val tree2 = d.retyped(
+
+      // Duplicator chokes on retyping new C if C is marked as abstract
+      // but we need this in the backend, else we're generating invalid
+      // flags for the entire class - for better or worse we adapt just
+      // before calling the duplicator, and get back for specialization
+      for (clazz <- specializedBase)
+        clazz.resetFlag(ABSTRACT)
+
+      val tree2 = beforeMinibox(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
         tree1,
         source.enclClass,
         symbol.enclClass,
         miniboxedEnvDeep
-      )
+      ))
+
+      // get back flags
+      for (clazz <- specializedBase)
+        clazz.setFlag(ABSTRACT)
 
       val specializer = new MiniboxTreeSpecializer(unit, Nil, miniboxedTypeTags, miniboxedEnvShallow)
       val tree3 = specializer.transform(tree2)
