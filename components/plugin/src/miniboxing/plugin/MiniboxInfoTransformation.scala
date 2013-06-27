@@ -194,7 +194,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         decls unlink mbr
     }
     // Add trait constructor and set the trait flag
-    decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
+    // decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
     // This needs to be delayed until trees have been duplicated, else
     // instantiation will fail, since C becomes an abstract class
@@ -253,7 +253,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
       afterMinibox(spec setInfo specializedInfoType)
 
-      deferredTypeTags(origin) = HashMap()
+      deferredTypeTags(spec) = HashMap()
       // Add type tag fields for each parameter. Will be copied in specialized
       // subclasses.
       val typeTagMap: List[(Symbol, Symbol)] =
@@ -265,8 +265,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
               spec.newValue(typeTagName(tparam), spec.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
           sym setFlag MINIBOXED
-          if (origin.isTrait)
+          if (origin.isTrait) {
             deferredTypeTags(spec) += pmap(tparam) -> sym
+            memberSpecializationInfo(sym) = Interface()
+          }
 
           specScope enter sym
           (pmap(tparam), sym)

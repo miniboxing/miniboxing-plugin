@@ -2,7 +2,6 @@ Specializing class CCC...
 
   // interface:
   abstract trait CCC[T] extends AnyRef {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -23,7 +22,6 @@ Specializing class DDD...
 
   // interface:
   abstract trait DDD[U] extends CCC[U] {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -42,16 +40,8 @@ Specializing class DDD...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait CCC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*CCC*/$init$(): Unit = {
-      ()
-    }
-  };
-  abstract trait DDD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends AnyRef {
-    def /*DDD*/$init$(): Unit = {
-      ()
-    }
-  };
+  abstract trait CCC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
+  abstract trait DDD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends AnyRef;
   class CCC_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.CCC[Tsp] {
     def <init>(T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CCC_J[Tsp] = {
       CCC_J.super.<init>();

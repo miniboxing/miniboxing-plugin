@@ -2,7 +2,6 @@ Specializing class MBList...
 
   // interface:
   abstract trait MBList[T] extends AnyRef {
-    def $init$(): Unit
     def contains(e: T): Boolean
     def contains_J(val T_TypeTag: Byte)(e: Long): Boolean
     def length: Int
@@ -80,9 +79,6 @@ Specializing class MBList...
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.benchmarks.minibox {
   abstract trait MBList[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*MBList*/$init$(): Unit = {
-      ()
-    };
     <stable> <accessor> <paramaccessor> def head: T;
     <stable> <accessor> <paramaccessor> def tail: miniboxing.benchmarks.minibox.MBList[T];
     def length: Int;

@@ -2,7 +2,6 @@ Specializing class F1...
 
   // interface:
   abstract trait F1[T, R] extends AnyRef {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -34,11 +33,7 @@ Specializing class F1...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait F1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec R >: Nothing <: Any] extends AnyRef {
-    def /*F1*/$init$(): Unit = {
-      ()
-    }
-  };
+  abstract trait F1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec R >: Nothing <: Any] extends AnyRef;
   class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Boolean] {
     def <init>(): miniboxing.tests.compile.inheritance.Predicate[T] = {
       Predicate.super.<init>(1)();

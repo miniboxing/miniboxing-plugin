@@ -2,7 +2,6 @@ Specializing class UhOh1...
 
   // interface:
   abstract trait UhOh1[X, Y] extends AnyRef {
-    def $init$(): Unit
     def foo(x: X,y: Y): X
     def foo_J(val X_TypeTag: Byte)(x: Long,y: Y): Long
   }
@@ -28,9 +27,6 @@ Specializing class UhOh1...
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait UhOh1[@miniboxing.plugin.minispec X >: Nothing <: Any, Y >: Nothing <: Any] extends AnyRef {
-    def /*UhOh1*/$init$(): Unit = {
-      ()
-    };
     def foo(x: X, y: Y): X;
     def foo_J(X_TypeTag: Byte)(x: Long, y: Y): Long
   };

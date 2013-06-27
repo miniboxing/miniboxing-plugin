@@ -1,0 +1,26 @@
+Specializing trait C...
+
+  // interface:
+  abstract trait C[T] extends AnyRef {
+  }
+
+  // specialized class:
+  abstract trait C_J[Tsp] extends C[Tsp] {
+    def T_TypeTag(): Byte                                                  // is an interface method
+  }
+
+  // specialized class:
+  abstract trait C_L[Tsp] extends C[Tsp] {
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile.inheritance.traits {
+  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
+  abstract trait C_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
+    <synthetic> def T_TypeTag(): Byte
+  };
+  abstract trait C_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp]
+}

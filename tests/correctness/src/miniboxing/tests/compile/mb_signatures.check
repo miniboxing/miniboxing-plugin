@@ -2,7 +2,6 @@ Specializing class C...
 
   // interface:
   abstract trait C[T] extends AnyRef {
-    def $init$(): Unit
     def u: T
     def u_J(val T_TypeTag: Byte): Long
     def x: T

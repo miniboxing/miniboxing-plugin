@@ -5,7 +5,8 @@ import java.io.{ File => JFile }
 import scala.tools.nsc.io._
 import scala.tools.partest.nest.FileUtil._
 import java.io.FileNotFoundException
-import difflib._;
+import difflib._
+import java.io.PrintWriter
 
 /* Taken from: [[https://github.com/nicolasstucki/specialized/commit/f7ee90610d0052cb3607cef138051575db3c2eb9]] */
 class TestSuite {
@@ -39,14 +40,18 @@ class TestSuite {
   @Test def testCompileOutput = {
     var failed = false
     val pluginFlag = pluginCompilerFlag()
+    var UPDATE_CHECKFILE = false
+    // use carefully:
+    //UPDATE_CHECKFILE = true
 
     for (source <- files(List("tests", "correctness", "src", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(s"Compiling ${source.toString} ... ")
 
       // source code:
-      val code =       File(source).slurp
-      val flags =      pluginFlag + " " + slurp(replaceExtension(source, "flags"))
-      val expect = slurp(replaceExtension(source, "check"))
+      val code = File(source).slurp
+      val flags = pluginFlag + " " + slurp(replaceExtension(source, "flags"))
+      val check_file = replaceExtension(source, "check")
+      val expect = slurp(check_file)
       val output = new CompileTest(code, flags).compilationOutput()
       import scala.collection.JavaConversions._
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
@@ -64,6 +69,10 @@ class TestSuite {
         //System.err.println("\nCompiler output:\n" + output)
         //System.err.println("\nExpected output:\n" + expect)
         System.err.println("\n\n")
+        if (UPDATE_CHECKFILE) {
+          System.err.println("UPDATING CHECKFILE: " + check_file)
+          Some(new PrintWriter(check_file)).foreach{p => p.write(output_lines.mkString("\n")); p.close}
+        }
         failed = true
       } else
         System.err.println("[ OK ]")

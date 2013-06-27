@@ -159,13 +159,12 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           MethodBodiesCollector(tree)
           val traitSym = tree.symbol.enclClass
           val traitDecls = afterMinibox(traitSym.info).decls.toList
-          val traitCtor = localTyper.typed(DefDef(traitSym.primaryConstructor, Block(List(), Literal(Constant()))))
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           // parents for trait:
           val parents1 = map2(traitSym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
           super.transform(localTyper.typedPos(tree.pos)(
             treeCopy.Template(tree, parents1, self,
-              atOwner(currentOwner)(transformTrees(traitCtor :: body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers)))))
+              atOwner(currentOwner)(transformTrees(body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers)))))
 
         /*
          * The tree of a specialized class is empty for the moment, but we

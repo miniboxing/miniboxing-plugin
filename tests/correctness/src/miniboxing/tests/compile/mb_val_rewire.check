@@ -1,16 +1,10 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait ArgumentRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*ArgumentRewire*/$init$(): Unit = {
-      ()
-    };
     def test(t: T): T;
     def test_J(T_TypeTag: Byte)(t: Long): Long
   };
   abstract trait LocalRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*LocalRewire*/$init$(): Unit = {
-      ()
-    };
     def test(t: T): T;
     def test_J(T_TypeTag: Byte)(t: Long): Long
   };

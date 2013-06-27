@@ -2,7 +2,6 @@ Specializing class C...
 
   // interface:
   abstract trait C[T] extends AnyRef {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -21,11 +20,7 @@ Specializing class C...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*C*/$init$(): Unit = {
-      ()
-    }
-  };
+  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
   class D extends miniboxing.tests.compile.inheritance.C_J[Int] {
     def <init>(): miniboxing.tests.compile.inheritance.D = {
       D.super.<init>(5)();

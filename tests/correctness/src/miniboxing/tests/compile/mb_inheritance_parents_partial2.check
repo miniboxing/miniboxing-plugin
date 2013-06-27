@@ -2,7 +2,6 @@ Specializing class FF1...
 
   // interface:
   abstract trait FF1[T, R] extends AnyRef {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -36,7 +35,6 @@ Specializing class PPredicate...
 
   // interface:
   abstract trait PPredicate[T] extends FF1[T,Boolean] {
-    def $init$(): Unit
   }
 
   // specialized class:
@@ -55,16 +53,8 @@ Specializing class PPredicate...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait FF1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec R >: Nothing <: Any] extends AnyRef {
-    def /*FF1*/$init$(): Unit = {
-      ()
-    }
-  };
-  abstract trait PPredicate[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    def /*PPredicate*/$init$(): Unit = {
-      ()
-    }
-  };
+  abstract trait FF1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec R >: Nothing <: Any] extends AnyRef;
+  abstract trait PPredicate[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
   class FF1_JJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
     def <init>(T_TypeTag: Byte, R_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Rsp] = {
       FF1_JJ.super.<init>();
