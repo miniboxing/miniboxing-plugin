@@ -118,6 +118,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     def typeTagTrees(symbol: Symbol = currentMethod) =
       localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
+      deferredTypeTags.getOrElse(symbol, Map.empty).map({case (t, method) => (t, {gen.mkMethodCall(method, List())})}) ++
       globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
       standardTypeTagTrees
 
@@ -160,7 +161,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val traitSym = tree.symbol.enclClass
           val traitDecls = afterMinibox(traitSym.info).decls.toList
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
-          // parents for trait:
           val parents1 = map2(traitSym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
           super.transform(localTyper.typedPos(tree.pos)(
             treeCopy.Template(tree, parents1, self,
@@ -239,8 +239,13 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               debuglog("implementation: " + tree1)
               tree1
 
-            case Interface() =>
+            case _: Interface | _ : DeferredTypeTag =>
               tree
+
+            case DeferredTypeTagImplementation(tparam) =>
+              val tagTrees = typeTagTrees(currentClass)
+              val localTParam = tparam.tpe.asSeenFrom(currentClass.info.prefix, currentClass).typeSymbol
+              super.transform(localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam)))))
 
             case info =>
               super.transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, vparamss, tpt, localTyper.typed(Block(Ident(Predef_???))))))
@@ -329,8 +334,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             // TODO: Shouldn't this be done for any non-specialized class?
             !(sup.symbol.info.parents.head =:= AnyRefTpe)
           } =>
-            val oldInitSym = sup.symbol
-            val oldInitTpe = sup.tpe // do we want the instantiated type?
+            val oldInitSym = sel.symbol
+            val oldInitTpe = sel.tpe // do we want the instantiated type?
             // Someday I will rewrite that damn typer! I spend one entire day to find out that a
             // Select(Super(_, _), _) is typed differently from a Super(_, _)...
             val init = localTyper.typedOperator(Select(Super(ths, name) setPos sup.pos, nme.CONSTRUCTOR))

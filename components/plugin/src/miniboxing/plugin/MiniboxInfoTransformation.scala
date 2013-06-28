@@ -20,103 +20,40 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val tparams  = tpe.typeParams
         if (tparams.isEmpty)
           afterMinibox(parents map (_.typeSymbol.info))
-
         specialize(origin, cinfo, typeEnv.getOrElse(origin, MiniboxingTypeEnv(Map.empty, Map.empty)))
       case _ =>
         tpe
     }
   }
 
-  lazy val specializeTypeMap: TypeMap = new SpecializeTypeMap
 
-  class SpecializeTypeMap extends TypeMap {
-    def pspec(tref: TypeRef) = PartialSpec.fromType(tref)
+  class SpecializeTypeMap(current: Symbol) extends TypeMap {
+    def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref)
     override def apply(tp: Type): Type = tp match {
       case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
         val pre1 = this(pre)
         afterMinibox(sym.info)
-        specializedClasses(sym).get(pspec(tref)) match {
-          case Some(sym1) => typeRef(pre1, sym1, args)
+        specializedClasses(sym).get(extractPSpec(tref)) match {
+          case Some(sym1) =>
+            val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
+            deferredTypeTags(current) ++= deferredTypeTags(sym1) map { case (tparam, method) => (localTParamMap(tparam), method) }
+            typeRef(pre1, sym1, args)
           case None       => typeRef(pre1, sym, args)
         }
       case _ => tp
     }
   }
 
-  def specializeTypeMapInContext(except: Symbol)(spec: PartialSpec) = new SpecializeTypeMap {
-    override def pspec(tref: TypeRef) = PartialSpec.fromTypeInContext(tref, spec)
+  def specializeParentsTypeMapForGeneric(current: Symbol) = new SpecializeTypeMap(current)
+
+  def specializeParentsTypeMapForSpec(spec: Symbol, origin: Symbol, pspec: PartialSpec) = new SpecializeTypeMap(spec) {
+    override def extractPSpec(tref: TypeRef) = PartialSpec.fromTypeInContext(tref, pspec)
     override def apply(tp: Type): Type = tp match {
-      case tref@TypeRef(pre, sym, args) if sym == except =>
+      case tref@TypeRef(pre, sym, args) if sym == origin =>
         tref
       case _ =>
         super.apply(tp)
     }
-  }
-
-  def widenClassOrTrait(origin: Symbol, specs: List[PartialSpec]): List[Symbol] = {
-
-    baseClass(origin) = origin
-    typeParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
-    deferredTypeTags(origin) = HashMap()
-    specializedClasses(origin) = HashMap()
-
-    // we only specialize the members that are defined in the current class
-    val members = origin.info.members.filter(_.owner == origin).toList
-
-    // TODO: Do we actually want to special-case constructors?
-    val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
-    val getters = members.filter(_.isGetter)
-    val setters = members.filter(_.isSetter)
-    val fields = members.filter(m => m.isTerm && !m.isMethod)
-
-    var newMembers = List[Symbol]()
-
-    // we make specialized overloads for every member of the original class
-    for (member <- methods ::: getters ::: setters if (needsSpecialization(origin, member))) {
-      val overloadsOfMember = new HashMap[PartialSpec, Symbol]
-      for (spec <- specs) {
-        var newMbr = member
-        if (!isAllAnyRef(spec)) {
-          val env: TypeEnv = spec map {
-            case (p, v) => (p, if (v == Boxed) p.tpe else LongClass.tpe)
-          }
-
-          newMbr = member.cloneSymbol(origin)
-
-          newMbr setFlag MINIBOXED
-          newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
-          newMbr modifyInfo (info => {
-            val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
-            val localTags =
-              for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
-                yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
-            localTypeTags(newMbr) = localTags.toMap
-            val tagParams = localTags.map(_._2)
-            val info1 =
-              info0 match {
-                case mt: MethodType =>
-                  MethodType(tagParams, mt)
-                case nmt: NullaryMethodType =>
-                  MethodType(tagParams, nmt.resultType)
-              }
-            miniboxedArgs(newMbr) = mbArgs
-            info1
-          })
-          newMembers ::= newMbr
-        } else {
-          miniboxedArgs(newMbr) = Nil
-        }
-
-        overloadsOfMember(spec) = newMbr
-        overloads(newMbr) = overloadsOfMember
-        base(newMbr) = member
-      }
-
-      for (spec <- specs; newMbr <- overloadsOfMember get spec)
-        memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
-    }
-
-    origin.info.decls.toList ++ newMembers
   }
 
   /*
@@ -206,8 +143,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
   def specialize(origin: Symbol, originTpe: ClassInfoType, outerEnv: MiniboxingTypeEnv): Type = {
 
-    // TODO: Decide what we need: PartialSpec or MiniboxingTypeEnv?
     def specialize1(pspec: PartialSpec, decls: Scope): Symbol = {
+
       val specParamValues = typeParamValues(origin, pspec)
       val specName = specializedName(origin.name, specParamValues).toTypeName
       val bytecodeClass = origin.owner.info.decl(specName)
@@ -237,11 +174,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       // declarations inside the specialized class - to be filled in later
       val specScope = newScope
+      deferredTypeTags(spec) = HashMap()
 
       // create the type of the new class
       val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
-      // TODO: When we inherit from specialized traits, we need to add deferredTypeTag entries
-      val specializeParents = specializeTypeMapInContext(origin)(localPspec)
+      val specializeParents = specializeParentsTypeMapForSpec(spec, origin, localPspec)
       val specializedInfoType: Type = {
         val sParents = (origin.info.parents ::: List(origin.tpe)) map {
           t => (miniboxSubst(ifaceEnv, EmptyTypeEnv, t)._1)
@@ -253,21 +190,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
       afterMinibox(spec setInfo specializedInfoType)
 
-      deferredTypeTags(spec) = HashMap()
-      // Add type tag fields for each parameter. Will be copied in specialized
-      // subclasses.
+      // Add type tag fields for each parameter. Will be copied in specialized subclasses.
       val typeTagMap: List[(Symbol, Symbol)] =
         (for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed) yield {
           val sym =
             if (origin.isTrait)
-              spec.newMethodSymbol(typeTagName(tparam), spec.pos, SYNTHETIC).setInfo(MethodType(List(), ByteTpe))
+              spec.newMethodSymbol(typeTagName(tparam), spec.pos, 0).setInfo(MethodType(List(), ByteTpe))
             else
               spec.newValue(typeTagName(tparam), spec.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
           sym setFlag MINIBOXED
           if (origin.isTrait) {
             deferredTypeTags(spec) += pmap(tparam) -> sym
-            memberSpecializationInfo(sym) = Interface()
+            memberSpecializationInfo(sym) = DeferredTypeTag(tparam)
           }
 
           specScope enter sym
@@ -278,7 +213,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       globalTypeTags(spec) = typeTagMap.toMap
 
       // adding the type tags as constructor arguments
-      for (ctor <- decls.filter(sym => sym.isConstructor || sym.isMixinConstructor)) {
+      for (ctor <- decls.filter(sym => sym.name == nme.CONSTRUCTOR)) {
         val newCtor = ctor.cloneSymbol(spec)
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
@@ -337,6 +272,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
           val oldParams = miniboxedArgs.getOrElse(m, Nil)
+
           miniboxedArgs(newMbr) = oldParams.map({ case (s, t) => (paramUpdate(s), pmap(t.typeSymbol).tpe)})
 
           info2
@@ -401,7 +337,86 @@ trait MiniboxInfoTransformation extends InfoTransform {
       spec
     }
 
+    def widen(specs: List[PartialSpec]): List[Symbol] = {
 
+      baseClass(origin) = origin
+      typeParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
+      deferredTypeTags(origin) = HashMap()
+      specializedClasses(origin) = HashMap()
+
+      // we only specialize the members that are defined in the current class
+      val members = origin.info.members.filter(_.owner == origin).toList
+
+      // TODO: Do we actually want to special-case constructors?
+      val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
+      val getters = members.filter(_.isGetter)
+      val setters = members.filter(_.isSetter)
+      val fields = members.filter(m => m.isTerm && !m.isMethod)
+
+      var newMembers = List[Symbol]()
+
+      // we make specialized overloads for every member of the original class
+      for (member <- methods ::: getters ::: setters if (needsSpecialization(origin, member))) {
+        val overloadsOfMember = new HashMap[PartialSpec, Symbol]
+        for (spec <- specs) {
+          var newMbr = member
+          if (!isAllAnyRef(spec)) {
+            val env: TypeEnv = spec map {
+              case (p, v) => (p, if (v == Boxed) p.tpe else LongClass.tpe)
+            }
+
+            newMbr = member.cloneSymbol(origin)
+
+            newMbr setFlag MINIBOXED
+            newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
+            newMbr modifyInfo (info => {
+              val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
+              val localTags =
+                for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
+                  yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+              localTypeTags(newMbr) = localTags.toMap
+              val tagParams = localTags.map(_._2)
+              val info1 =
+                info0 match {
+                  case mt: MethodType =>
+                    MethodType(tagParams, mt)
+                  case nmt: NullaryMethodType =>
+                    MethodType(tagParams, nmt.resultType)
+                }
+              miniboxedArgs(newMbr) = mbArgs
+              info1
+            })
+            newMembers ::= newMbr
+          } else {
+            miniboxedArgs(newMbr) = Nil
+          }
+
+          overloadsOfMember(spec) = newMbr
+          overloads(newMbr) = overloadsOfMember
+          base(newMbr) = member
+        }
+
+        for (spec <- specs; newMbr <- overloadsOfMember get spec)
+          memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
+      }
+
+      origin.info.decls.toList ++ newMembers
+    }
+
+    // add members derived from deferred type tags
+    def addDeferredTypeTagImpls(origin: Symbol, scope: Scope) =
+      if (!origin.isTrait) {
+        val deferredTags = deferredTypeTags(origin)
+        // classes satisfy the deferred tags immediately, no need to keep them
+        for ((tparam, method) <- deferredTags) {
+          val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
+          memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
+          scope enter impl
+        }
+        deferredTypeTags(origin).clear()
+      }
+
+    // begin specialize
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
     specs.map(_.map(_._1.setFlag(MINIBOXED)))
 
@@ -409,7 +424,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       log("Specializing " + origin + "...\n")
 
       // step1: widen the class or trait
-      val scope1 = newScopeWith(widenClassOrTrait(origin, specs): _*)
+      val scope1 = newScopeWith(widen(specs): _*)
 
       // mark this symbol as the base of a miniboxed hierarchy
       specializedBase += origin
@@ -449,18 +464,21 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       origin.resetFlag(FINAL)
 
-      val parents1 =
-        if ((originTpe.parents.size == 1) && (originTpe.parents.head =:= AnyRefTpe))
-          originTpe.parents
-        else
-          AnyRefTpe :: originTpe.parents
+      // for traits resulting from classes inheriting eachother we need to insert an artificial AnyRef parent
+      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size == 1) && (originTpe.parents.head =:= AnyRefTpe))
+      val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
+      val parents1 = artificialAnyRef ::: originTpe.parents
+      addDeferredTypeTagImpls(origin, scope2)
 
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope2, origin))
     } else {
       // TODO: overrides in the specialized class
-      val newScope = newScopeWith(originTpe.decls.toList /* ++ specialOverrides(origin) */: _*)
+      deferredTypeTags(origin) = HashMap()
+      val scope1 = newScopeWith(originTpe.decls.toList /* ++ specialOverrides(origin) */: _*)
+      val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, newScope, origin))
+      addDeferredTypeTagImpls(origin, scope1)
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope1, origin))
     }
   }
 

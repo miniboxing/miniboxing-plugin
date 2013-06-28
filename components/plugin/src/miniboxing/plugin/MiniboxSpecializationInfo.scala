@@ -25,7 +25,7 @@ trait MiniboxSpecializationInfo {
   /*
    * We need to record how the parameters and the return value should be casted.
    */
-  sealed class CastInfo
+  sealed abstract class CastInfo
   case class CastMiniboxToBox(tag: Symbol) extends CastInfo
   case class CastBoxToMinibox(tag: Symbol) extends CastInfo
   case object NoCast extends CastInfo
@@ -76,6 +76,22 @@ trait MiniboxSpecializationInfo {
   }
 
   /**
+   * When the newly introduced symbol is abstract and does not
+   * have an implementation at all.
+   */
+  case class DeferredTypeTag(tparam: Symbol) extends MethodInfo {
+    override def toString = "is a type tag"
+  }
+
+  /**
+   * When the newly introduced symbol is abstract and does not
+   * have an implementation at all.
+   */
+  case class DeferredTypeTagImplementation(tparam: Symbol) extends MethodInfo {
+    override def toString = "is a type tag from an inherited trait"
+  }
+
+  /**
    * While running the `MiniboxInfoTransform` we record information about how
    * the newly created methods should be implemented when reached by the
    * `MiniboxTreeTransformation`.
@@ -122,12 +138,6 @@ trait MiniboxSpecializationInfo {
   val baseClass =
     new mutable.HashMap[Symbol, Symbol]
 
-  /**
-   * `defferredTypeTags` keeps a list of members that represent type tags
-   * in a trait -- unlike type tags in a class, which are fields, these are
-   * methods which the inheriting class overrides
-   */
-  val deferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
   /**
    * Type environment of a class:
@@ -141,17 +151,23 @@ trait MiniboxSpecializationInfo {
   val partialSpec = new mutable.HashMap[Symbol, PartialSpec]
 
   /**
-   * Records for each of the specialized classes the type tag fields corresponding
-   * to its specialized type parameters. These are global type tags, used in all
-   * members.
+   * Records for each of the specialized classes the type parameter to tag field
+   * correspondence. These are local type tags, used in all members.
    */
   val globalTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
+
   /**
-   * Records for each of the specialized classes the type tag fields corresponding
-   * to its specialized type parameters. These are local type tags, used in each
-   * member.
+   * Records for each of the specialized classes the type parameter to tag field
+   * correspondence. These are local type tags, used in each member.
    */
   val localTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
+
+  /**
+   * `defferredTypeTags` keeps a list of members that represent type tags
+   * in a trait -- unlike type tags in a class, which are fields, these are
+   * methods which the inheriting class overrides
+   */
+  val deferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
   /**
    * For each method of the original class and each partial specialization
