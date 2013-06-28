@@ -100,9 +100,6 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
         case vdef @ ValDef(mods, name, tpt, rhs) =>
           val tp = tree.symbol.tpe
           val tpm = miniboxedEnv(tp)
-//          println(vdef)
-//          println(tp)
-//          println(tpm)
           if ((tpm =:= LongTpe) && !(tp =:= LongTpe)) {
             // TODO: Do this
             val rhs2 = gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))

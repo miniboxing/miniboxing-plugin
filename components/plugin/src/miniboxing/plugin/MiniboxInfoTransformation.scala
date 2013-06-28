@@ -243,7 +243,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       // Copy the members of the original class to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
-        (for (mbr <- decls.toList if mbr.owner == origin && !mbr.isConstructor) yield {
+        // we only duplicate methods and fields
+        (for (mbr <- decls.toList if (!(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
           val newMbr = mbr.cloneSymbol(spec)
           if (mbr.isMethod) {
             if (base(mbr) == mbr)
