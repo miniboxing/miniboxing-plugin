@@ -195,7 +195,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         (for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed) yield {
           val sym =
             if (origin.isTrait)
-              spec.newMethodSymbol(typeTagName(tparam), spec.pos, 0).setInfo(MethodType(List(), ByteTpe))
+              spec.newMethodSymbol(typeTagName(tparam), spec.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
             else
               spec.newValue(typeTagName(tparam), spec.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
