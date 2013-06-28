@@ -36,7 +36,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         specializedClasses(sym).get(extractPSpec(tref)) match {
           case Some(sym1) =>
             val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
-            deferredTypeTags(current) ++= deferredTypeTags(sym1) map { case (tparam, method) => (localTParamMap(tparam), method) }
+            deferredTypeTags(current) ++= deferredTypeTags(sym1).mapValues(localTParamMap)
             typeRef(pre1, sym1, args)
           case None       => typeRef(pre1, sym, args)
         }
@@ -201,7 +201,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           sym setFlag MINIBOXED
           if (origin.isTrait) {
-            deferredTypeTags(spec) += pmap(tparam) -> sym
+            deferredTypeTags(spec) += sym -> pmap(tparam)
             memberSpecializationInfo(sym) = DeferredTypeTag(tparam)
           }
 
@@ -334,6 +334,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
         overloads(newMbr) = overloads(newMbrMeantForSpec)
       }
 
+      // deferred type tags:
+      addDeferredTypeTagImpls(spec, specScope)
+
       spec
     }
 
@@ -408,7 +411,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       if (!origin.isTrait) {
         val deferredTags = deferredTypeTags(origin)
         // classes satisfy the deferred tags immediately, no need to keep them
-        for ((tparam, method) <- deferredTags) {
+        for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope enter impl
@@ -446,29 +449,28 @@ trait MiniboxInfoTransformation extends InfoTransform {
         spc
       }
 
+      // for traits resulting from classes inheriting each other we need to insert an artificial AnyRef parent
+      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && !(originTpe.parents.head =:= AnyRefTpe))
+      val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
+      val parents1 = artificialAnyRef ::: originTpe.parents
+
       val scope2 = removeClassFields(origin, scope1)
       log("  // interface:")
       log("  " + origin.defString + " {")
       for (decl <- scope2.toList.sortBy(_.defString))
         log(f"    ${decl.defString}%-70s")
-        log("  }\n")
 
-        classes foreach { cls =>
-        log("  // specialized class:")
-        log("  " + cls.defString + " {")
-        for (decl <- cls.info.decls.toList.sortBy(_.defString))
-          log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
-          log("  }\n")
+      log("  }\n")
+
+      classes foreach { cls =>
+      log("  // specialized class:")
+      log("  " + cls.defString + " {")
+      for (decl <- cls.info.decls.toList.sortBy(_.defString))
+        log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
+        log("  }\n")
       }
       log("\n\n")
-
       origin.resetFlag(FINAL)
-
-      // for traits resulting from classes inheriting eachother we need to insert an artificial AnyRef parent
-      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size == 1) && (originTpe.parents.head =:= AnyRefTpe))
-      val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
-      val parents1 = artificialAnyRef ::: originTpe.parents
-      addDeferredTypeTagImpls(origin, scope2)
 
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope2, origin))
     } else {

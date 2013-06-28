@@ -6,7 +6,7 @@ Specializing trait C...
 
   // specialized class:
   abstract trait C_J[Tsp] extends C[Tsp] {
-    def C_T_TypeTag(): Byte                                                // is an interface method
+    def C_T_TypeTag(): Byte                                                // is a type tag
   }
 
   // specialized class:
@@ -20,7 +20,7 @@ Specializing trait C...
 package miniboxing.tests.compile.inheritance.traits {
   abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
   abstract trait C_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
-    <synthetic> def C_T_TypeTag(): Byte
+    def C_T_TypeTag(): Byte
   };
   abstract trait C_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp]
 }

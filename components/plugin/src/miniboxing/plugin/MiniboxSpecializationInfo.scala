@@ -166,6 +166,8 @@ trait MiniboxSpecializationInfo {
    * `defferredTypeTags` keeps a list of members that represent type tags
    * in a trait -- unlike type tags in a class, which are fields, these are
    * methods which the inheriting class overrides
+   * NOTE: The inner map is inverted, member -> tparam instead of
+   * tparam -> member as inside localTypeTags and globalTypeTags
    */
   val deferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 

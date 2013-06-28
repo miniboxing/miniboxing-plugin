@@ -117,10 +117,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     }
 
     def typeTagTrees(symbol: Symbol = currentMethod) =
-      localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
-      deferredTypeTags.getOrElse(symbol, Map.empty).map({case (t, method) => (t, {gen.mkMethodCall(method, List())})}) ++
+      standardTypeTagTrees ++
       globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      standardTypeTagTrees
+      deferredTypeTags.getOrElse(symbol, Map.empty).map({case (method, t) => (t, {gen.mkMethodCall(method, List())})}) ++
+      localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))})
 
     import global._
 
