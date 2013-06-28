@@ -450,7 +450,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
 
       // for traits resulting from classes inheriting each other we need to insert an artificial AnyRef parent
-      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && !(originTpe.parents.head =:= AnyRefTpe))
+      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && (specializedBase(originTpe.parents.head.typeSymbol)))
       val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
       val parents1 = artificialAnyRef ::: originTpe.parents
 

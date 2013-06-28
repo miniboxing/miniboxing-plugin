@@ -1,0 +1,43 @@
+Specializing class DDDD...
+
+  // interface:
+  abstract trait DDDD[U] extends CCCC[U] {
+  }
+
+  // specialized class:
+  class DDDD_J[Usp] extends CCCC[Usp] with DDDD[Usp] {
+    def <init>(val DDDD_U_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.DDDD_J[Usp] // is a specialized implementation of constructor DDDD
+    private[this] val DDDD_U_TypeTag: Byte                                 // no info
+  }
+
+  // specialized class:
+  class DDDD_L[Usp] extends CCCC[Usp] with DDDD[Usp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.DDDD_L[Usp]       // is a specialized implementation of constructor DDDD
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile.inheritance {
+  class CCCC[T >: Nothing <: Any] extends AnyRef {
+    def <init>(): miniboxing.tests.compile.inheritance.CCCC[T] = {
+      CCCC.super.<init>();
+      ()
+    }
+  };
+  abstract trait DDDD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[U];
+  class DDDD_J[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
+    def <init>(DDDD_U_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.DDDD_J[Usp] = {
+      DDDD_J.super.<init>();
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val DDDD_U_TypeTag: Byte = _
+  };
+  class DDDD_L[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
+    def <init>()(): miniboxing.tests.compile.inheritance.DDDD_L[Usp] = {
+      DDDD_L.super.<init>();
+      ()
+    }
+  }
+}
