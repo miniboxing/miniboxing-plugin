@@ -3,6 +3,7 @@ package miniboxing.plugin
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker.Analyzer
 
 trait MiniboxInfoTransformation extends InfoTransform {
@@ -212,6 +213,48 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // Record the new mapping for type tags to the fields carrying them
       globalTypeTags(spec) = typeTagMap.toMap
 
+      // Copy the members of the original class to the specialized class.
+      val newMembers: Map[Symbol, Symbol] =
+        // we only duplicate methods and fields
+        (for (mbr <- decls.toList if (!(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
+          val newMbr = mbr.cloneSymbol(spec)
+          if (mbr.isMethod) {
+            if (base(mbr) == mbr)
+              base(newMbr) = newMbr
+            else
+              base(newMbr) = mbr
+          }
+          (mbr, newMbr)
+        }).toMap
+
+      // Replace the info in the copied members to reflect their new class
+      for ((m, newMbr) <- newMembers if !m.isConstructor) {
+
+        newMbr setFlag MINIBOXED
+        newMbr modifyInfo { info =>
+
+          miniboxedArgs(newMbr) = Set()
+
+          val info0 = info.asSeenFrom(spec.tpe, m.owner)
+          val info1 = info0.substThis(origin, spec)
+          val info2 =
+            if (m.isTerm && !m.isMethod) {
+              // this is where we specialize fields:
+              miniboxSubst(ifaceEnv, implEnv, info1)._1
+            } else
+              info1
+
+          val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
+          miniboxedArgs(newMbr) = miniboxedArgs.getOrElse(m, Set()).map({ case (s, t) => (paramUpdate(s), pmap(t.typeSymbol).tpe)})
+
+          info2
+        }
+
+        localTypeTags(newMbr) = localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._1)).zip(newMbr.info.params).toMap
+        debug(spec + " entering: " + newMbr)
+        specScope enter newMbr
+      }
+
       // adding the type tags as constructor arguments
       for (ctor <- decls.filter(sym => sym.name == nme.CONSTRUCTOR)) {
         val newCtor = ctor.cloneSymbol(spec)
@@ -230,7 +273,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             case _ =>
               tpe
           }
-          miniboxedArgs(newCtor) = mboxedArgs
+          miniboxedArgs(newCtor) = Set() ++ mboxedArgs
           overloads.get(ctor) match {
             case Some(map) => map += pspec -> newCtor
             case None => overloads(ctor) = HashMap(pspec -> newCtor)
@@ -239,49 +282,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
         }
         memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
         specScope enter newCtor
-      }
-
-      // Copy the members of the original class to the specialized class.
-      val newMembers: Map[Symbol, Symbol] =
-        // we only duplicate methods and fields
-        (for (mbr <- decls.toList if (!(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
-          val newMbr = mbr.cloneSymbol(spec)
-          if (mbr.isMethod) {
-            if (base(mbr) == mbr)
-              base(newMbr) = newMbr
-            else
-              base(newMbr) = mbr
-          }
-          (mbr, newMbr)
-        }).toMap
-
-
-      // Replace the info in the copied members to reflect their new class
-      for ((m, newMbr) <- newMembers if !m.isConstructor) {
-
-        newMbr setFlag MINIBOXED
-        newMbr modifyInfo { info =>
-
-          val info0 = info.asSeenFrom(spec.tpe, m.owner)
-          val info1 = info0.substThis(origin, spec)
-          val info2 =
-            if (m.isTerm && !m.isMethod)
-              // TODO: We assume we access these values via accessors anyway
-              miniboxSubst(ifaceEnv, implEnv, info1)._1
-            else
-              info1
-
-          val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
-          val oldParams = miniboxedArgs.getOrElse(m, Nil)
-
-          miniboxedArgs(newMbr) = oldParams.map({ case (s, t) => (paramUpdate(s), pmap(t.typeSymbol).tpe)})
-
-          info2
-        }
-
-        localTypeTags(newMbr) = localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._1)).zip(newMbr.info.params).toMap
-        debug(spec + " entering: " + newMbr)
-        specScope enter newMbr
       }
 
       // Record how the body of these members should be generated
@@ -351,7 +351,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // we only specialize the members that are defined in the current class
       val members = origin.info.members.filter(_.owner == origin).toList
 
-      // TODO: Do we actually want to special-case constructors?
       val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
       val getters = members.filter(_.isGetter)
       val setters = members.filter(_.isSetter)
@@ -387,12 +386,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
                   case nmt: NullaryMethodType =>
                     MethodType(tagParams, nmt.resultType)
                 }
-              miniboxedArgs(newMbr) = mbArgs
+              miniboxedArgs(newMbr) = Set() ++ mbArgs
               info1
             })
             newMembers ::= newMbr
           } else {
-            miniboxedArgs(newMbr) = Nil
+            miniboxedArgs(newMbr) = Set()
           }
 
           overloadsOfMember(spec) = newMbr
@@ -464,10 +463,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       log("  }\n")
 
       classes foreach { cls =>
-      log("  // specialized class:")
-      log("  " + cls.defString + " {")
-      for (decl <- cls.info.decls.toList.sortBy(_.defString))
-        log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
+        log("  // specialized class:")
+        log("  " + cls.defString + " {")
+        for (decl <- cls.info.decls.toList.sortBy(_.defString))
+          log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
         log("  }\n")
       }
       log("\n\n")
@@ -549,7 +548,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
     val retCast = genCastInfo(target.tpe.finalResultType, wrapper.tpe.finalResultType)
 
-    // TODO: add type tag forwarding info
     ForwardTo(typeParams, target, retCast, paramCasts)
   }
 }

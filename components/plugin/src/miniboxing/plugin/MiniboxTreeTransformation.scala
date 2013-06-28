@@ -2,9 +2,10 @@ package miniboxing.plugin
 
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
-import scala.collection.mutable
+import scala.collection.mutable.Set
+import scala.collection.mutable.HashMap
+import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.typechecker._
-import com.sun.org.apache.bcel.internal.util.ClassStack
 
 trait MiniboxTreeTransformation extends TypingTransformers {
   self: MiniboxComponent =>
@@ -571,7 +572,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Here we add empty bodies for them.
      */
     private def createMethodTrees(sClass: Symbol): List[Tree] = {
-      val mbrs = new mutable.ListBuffer[Tree]
+      val mbrs = new ListBuffer[Tree]
       for (m <- sClass.info.decls.toList.sortBy(_.defString) if m hasFlag MINIBOXED) {
         debug("creating empty tree for " + m.fullName)
         if (m.isMethod) {
@@ -587,7 +588,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * Create implementation trees for specialized classes
      */
     private def createSpecializedClassesTrees(classdefs: List[Tree]): List[Tree] = {
-      val buf = new mutable.ListBuffer[Tree]
+      val buf = new ListBuffer[Tree]
       for (tree <- classdefs)
         tree match {
           case ClassDef(_, _, _, impl) =>
@@ -617,7 +618,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * for copying inside the methods that are specialized implementations of them.
      */
     private object MethodBodiesCollector extends Traverser {
-      private val body = mutable.HashMap[Symbol, (Tree, List[List[Symbol]])]()
+      private val body = HashMap[Symbol, (Tree, List[List[Symbol]])]()
 
       override def traverse(tree: Tree) = tree match {
         case DefDef(_, _, _, vparamss, _, rhs) if (templateMembers(tree.symbol)) =>
@@ -656,7 +657,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty) = {
 
       val symbol = tree.symbol
-      val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Nil)
+      val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Set())
       val miniboxedEnvDeep = typeEnv(symbol.owner).deepEnv
       val miniboxedEnvShallow = typeEnv(symbol.owner).shallowEnv
       val miniboxedTypeTags = typeTagTrees(symbol)

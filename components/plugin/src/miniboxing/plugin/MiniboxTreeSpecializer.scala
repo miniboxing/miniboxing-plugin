@@ -2,7 +2,7 @@ package miniboxing.plugin
 
 import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
-import scala.collection.mutable
+import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker._
 
 trait MiniboxTreeSpecializer extends TypingTransformers {
@@ -15,7 +15,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
   /** A tree transformer that prepares a tree for duplication */
   class MiniboxTreePreparer(unit: CompilationUnit,
-                             miniboxedSyms: List[(Symbol, Type)],
+                             miniboxedArgs: Set[(Symbol, Type)],
                              miniboxedDeepEnv: Map[Symbol, Type],
                              miniboxedTags: Map[Symbol, Tree],
                              miniboxedReturn: Boolean) extends TypingTransformer(unit) {
@@ -29,19 +29,22 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
         sys.error("incorrect use of miniboxed tree preparer")
     }
 
-    val miniboxedArgs = miniboxedSyms.map(_._1)
+    val miniboxedArgSyms = miniboxedArgs.map(_._1)
     val miniboxedDeepEnvInv = miniboxedDeepEnv.map({ case (p, t) => (t.typeSymbol, p)})
 
     /** Wrap miniboxed arguments in minibox2box already */
     object boxArgs extends Transformer {
       def apply(tree: Tree) = transform(tree)
       override def transform(tree: Tree) = tree match {
-        case i: Ident if miniboxedArgs.contains(i.symbol) =>
+        case i: Ident if miniboxedArgSyms.contains(i.symbol) =>
           val sym = i.symbol
-          val tsp = miniboxedSyms.find(_._1 == sym).get._2
+          val tsp = miniboxedArgs.find(_._1 == sym).get._2
           val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
+        case sel@Select(qual, name) if sel.symbol.isTerm && !sel.symbol.isMethod && specializedBase(qual.tpe.typeSymbol) =>
+          unit.error(sel.pos, "After the miniboxing transformation, it is impossible to access the field " + sel.symbol.name + ": " + sel.tpe + " in " + qual.symbol +". To enable access, you should turn it into a val.")
+          localTyper.typedOperator(gen.mkAttributedRef(Predef_???))
         case _ =>
           super.transform(tree)
       }
