@@ -319,6 +319,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
+        // Super constructor call rewiring for:
+        //  - non-specialized classes
+        //  - specialized classes
         case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args)
           if {
             afterMinibox(sup.tpe.typeSymbol.info)
@@ -344,6 +347,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               localTyper.typed(tree1)
             }
 
+        // Constructor call rewiring for specialized classes
+        //   new C[Int](3) => new C_J[Int](INT)(3.toInt)
         case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
           val oldClassCtor = ctor.symbol
           val tree1 = cl.tpe match {
@@ -374,6 +379,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               tree
           }
           super.transform(localTyper.typed(tree1))
+
+        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
+          unit.error(sel.pos, "The program is accessing a field of a miniboxed class, a pattern which becomes invalid after the miniboxing transformation. Please use \"val t: C\" without the \"private[this]\" qualifier to be able to use the fields.")
+          localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         // Array application
         case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
