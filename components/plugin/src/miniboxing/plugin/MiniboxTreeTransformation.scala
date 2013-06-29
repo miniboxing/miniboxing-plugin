@@ -119,7 +119,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     def typeTagTrees(symbol: Symbol = currentMethod) =
       standardTypeTagTrees ++
-      globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
+      globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol.enclClass else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
       deferredTypeTags.getOrElse(symbol, Map.empty).map({case (method, t) => (t, {gen.mkMethodCall(method, List())})}) ++
       localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))})
 
@@ -672,7 +672,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             s"Mismatching return type: current: ${currentReturn}, original: ${originalReturn}, typeEnv: ${miniboxedEnvShallow}")
       }
 
-      val preparer = new MiniboxTreePreparer(unit, miniboxedSyms, miniboxedEnvDeep, miniboxedTypeTags, miniboxedReturn)
+      val preparer = new MiniboxTreePreparer(unit, source.enclClass, currentClass, miniboxedSyms, miniboxedEnvDeep, miniboxedEnvShallow, miniboxedTypeTags, miniboxedReturn)
       val tree1 = preparer.transform(tree)
 
       val d = new Duplicator(castmap)

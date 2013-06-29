@@ -15,8 +15,11 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
   /** A tree transformer that prepares a tree for duplication */
   class MiniboxTreePreparer(unit: CompilationUnit,
+                             oldThis: Symbol,
+                             newThis: Symbol,
                              miniboxedArgs: Set[(Symbol, Type)],
                              miniboxedDeepEnv: Map[Symbol, Type],
+                             miniboxedShallowEnv: Map[Symbol, Type],
                              miniboxedTags: Map[Symbol, Tree],
                              miniboxedReturn: Boolean) extends TypingTransformer(unit) {
     import global._
@@ -42,9 +45,25 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
-        case sel@Select(qual, name) if sel.symbol.isTerm && !sel.symbol.isMethod && specializedBase(qual.tpe.typeSymbol) =>
-          unit.error(sel.pos, "After the miniboxing transformation, it is impossible to access the field " + sel.symbol.name + ": " + sel.tpe + " in " + qual.symbol +". To enable access, you should turn it into a val.")
-          localTyper.typedOperator(gen.mkAttributedRef(Predef_???))
+        case sel@Select(qual@This(cl), name) if sel.symbol.isTerm && !sel.symbol.isMethod && (qual.symbol == oldThis) =>
+          var tree1 = tree
+
+          // pretty ugly, but sometime we need no rewiring, thus we just
+          try {
+            val tp = sel.symbol.tpe.typeSymbol
+            val tsp = miniboxedDeepEnv(tp).typeSymbol
+            val tsp_mb = miniboxedShallowEnv(tsp).typeSymbol
+            assert((tp != LongClass) && (tsp_mb == LongClass)) // else fallback to the original tree
+            val tag = miniboxedTags(tsp)
+            // force the typer's hand a little, else we can't get to the specialized field:
+            val mbr = newThis.info.member(name).filter(s => s.isTerm && !s.isMethod)
+            val nqual = localTyper.typed(gen.mkAttributedThis(newThis)).setType(newThis.tpe)
+            val nsel = gen.mkAttributedSelect(qual, mbr).setType(LongTpe)
+            tree1 = localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(nsel, tag)))
+          } catch {
+            case ex: Exception =>
+          }
+          tree1
         case _ =>
           super.transform(tree)
       }
