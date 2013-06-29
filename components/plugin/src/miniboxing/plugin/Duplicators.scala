@@ -3,9 +3,10 @@
  * @author  Martin Odersky
  */
 
-package scala.tools.nsc
-package typechecker
+package miniboxing.plugin
 
+import scala.tools.nsc._
+import scala.tools.nsc.typechecker._
 import scala.tools.nsc.symtab.Flags
 import scala.collection.{ mutable, immutable }
 

@@ -45,6 +45,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
+
         case sel@Select(qual@This(cl), name) if sel.symbol.isTerm && !sel.symbol.isMethod && (qual.symbol == oldThis) =>
           var tree1 = tree
 

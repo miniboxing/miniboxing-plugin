@@ -83,7 +83,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val global: MiniboxTreeTransformation.this.global.type = MiniboxTreeTransformation.this.global
       val miniboxing: MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type } =
         MiniboxTreeTransformation.this.asInstanceOf[MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type }]
-    } with Duplicators {
+    } with miniboxing.plugin.Duplicators {
       private val (castfrom, castto) = casts.unzip
       private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
 

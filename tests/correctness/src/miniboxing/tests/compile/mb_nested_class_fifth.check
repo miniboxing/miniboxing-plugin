@@ -1,0 +1,92 @@
+Specializing class CCCCC...
+
+  // interface:
+  abstract trait CCCCC[T] extends AnyRef {
+    def test: Unit
+    def test_J(val CCCCC_T_TypeTag: Byte): Unit
+  }
+
+  // specialized class:
+  class CCCCC_J[Tsp] extends CCCCC[Tsp] {
+    def <init>(val CCCCC_T_TypeTag: Byte)(c: Long): miniboxing.tests.compile.nested.CCCCC_J[Tsp] // is a specialized implementation of constructor CCCCC
+    def test: Unit                                                         // is a forwarder to method test_J
+    def test_J(val CCCCC_T_TypeTag: Byte): Unit                            // is a specialized implementation of method test
+    private[this] val CCCCC_T_TypeTag: Byte                                // no info
+    private[this] val c: Long                                              // is a specialized implementation of value c
+  }
+
+  // specialized class:
+  class CCCCC_L[Tsp] extends CCCCC[Tsp] {
+    def <init>()(c: Tsp): miniboxing.tests.compile.nested.CCCCC_L[Tsp]     // is a specialized implementation of constructor CCCCC
+    def test: Unit                                                         // is a specialized implementation of method test
+    def test_J(val CCCCC_T_TypeTag: Byte): Unit                            // is a forwarder to method test
+    private[this] val c: Tsp                                               // is a specialized implementation of value c
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.compile.nested {
+  abstract trait CCCCC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+    def test: Unit;
+    def test_J(CCCCC_T_TypeTag: Byte): Unit
+  };
+  class CCCCC_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.nested.CCCCC[Tsp] {
+    def <init>(CCCCC_T_TypeTag: Byte)(c: Long): miniboxing.tests.compile.nested.CCCCC_J[Tsp] = {
+      CCCCC_J.super.<init>();
+      ()
+    };
+    def test: Unit = CCCCC_J.this.test_J(CCCCC_J.this.CCCCC_T_TypeTag);
+    def test_J(CCCCC_T_TypeTag: Byte): Unit = {
+      class DDDDD[U >: Nothing <: Any] extends AnyRef {
+        <paramaccessor> private[this] val d: U = _;
+        def <init>(d: U): DDDDD[U] = {
+          DDDDD.super.<init>();
+          ()
+        };
+        private[this] val x1: Long = CCCCC_J.this.c;
+        <stable> <accessor> def x1: Tsp = DDDDD.this.x1;
+        private[this] val x2: U = DDDDD.this.d;
+        <stable> <accessor> def x2: U = DDDDD.this.x2;
+        def foo: Unit = {
+          val x3: Long = CCCCC_J.this.c;
+          val x4: U = DDDDD.this.d;
+          scala.this.Predef.println(DDDDD.this.x1.==(DDDDD.this.x2));
+          scala.this.Predef.println(MiniboxTypeTagDispatch.this.mboxed_eqeq_other(x3, CCCCC_T_TypeTag, x4))
+        }
+      };
+      ()
+    };
+    <synthetic> <paramaccessor> private[this] val CCCCC_T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val c: Long = _
+  };
+  class CCCCC_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.nested.CCCCC[Tsp] {
+    def <init>()(c: Tsp): miniboxing.tests.compile.nested.CCCCC_L[Tsp] = {
+      CCCCC_L.super.<init>();
+      ()
+    };
+    def test: Unit = {
+      class DDDDD[U >: Nothing <: Any] extends AnyRef {
+        <paramaccessor> private[this] val d: U = _;
+        def <init>(d: U): DDDDD[U] = {
+          DDDDD.super.<init>();
+          ()
+        };
+        private[this] val x1: Tsp = CCCCC_L.this.c;
+        <stable> <accessor> def x1: Tsp = DDDDD.this.x1;
+        private[this] val x2: U = DDDDD.this.d;
+        <stable> <accessor> def x2: U = DDDDD.this.x2;
+        def foo: Unit = {
+          val x3: Tsp = CCCCC_L.this.c;
+          val x4: U = DDDDD.this.d;
+          scala.this.Predef.println(DDDDD.this.x1.==(DDDDD.this.x2));
+          scala.this.Predef.println(x3.==(x4))
+        }
+      };
+      ()
+    };
+    def test_J(CCCCC_T_TypeTag: Byte): Unit = CCCCC_L.this.test;
+    <paramaccessor> private[this] val c: Tsp = _
+  }
+}
