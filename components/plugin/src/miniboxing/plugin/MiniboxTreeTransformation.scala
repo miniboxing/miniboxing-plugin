@@ -380,8 +380,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           }
           super.transform(localTyper.typed(tree1))
 
+        // Error on accessing non-existing fields
         case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
-          unit.error(sel.pos, "The program is accessing a field of a miniboxed class, a pattern which becomes invalid after the miniboxing transformation. Please use \"val t: C\" without the \"private[this]\" qualifier to be able to use the fields.")
+          unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
           localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         // Array application

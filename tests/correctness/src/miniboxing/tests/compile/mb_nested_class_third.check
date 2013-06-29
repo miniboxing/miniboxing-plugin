@@ -1,0 +1,3 @@
+newSource1.scala:7: error: The program is accessing field c of miniboxed class (or trait) CCC, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the "private[this]" qualifier: val c: T".
+    def foo = println(c == d)
+                      ^
