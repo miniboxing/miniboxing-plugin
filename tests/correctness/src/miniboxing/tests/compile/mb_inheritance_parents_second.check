@@ -1,18 +1,18 @@
 Specializing class CC...
 
   // interface:
-  abstract trait CC[T] extends AnyRef {
+  abstract trait CC[T] extends Object {
   }
 
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
-    def <init>(val CC_T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
+    def <init>(val CC_T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
     private[this] val CC_T_TypeTag: Byte                                   // no info
   }
 
   // specialized class:
   class CC_L[Tsp] extends CC[Tsp] {
-    def <init>()(): miniboxing.tests.compile.inheritance.CC_L[Tsp]         // is a specialized implementation of constructor CC
+    def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp]           // is a specialized implementation of constructor CC
   }
 
 
@@ -20,22 +20,22 @@ Specializing class CC...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait CC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
+  abstract trait CC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object;
   class DC[U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CC_L[U] {
     def <init>(): miniboxing.tests.compile.inheritance.DC[U] = {
-      DC.super.<init>()();
+      DC.super.<init>();
       ()
     }
   };
-  class CC_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.CC[Tsp] {
-    def <init>(CC_T_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
+  class CC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
+    def <init>(CC_T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
       CC_J.super.<init>();
       ()
     };
     <synthetic> <paramaccessor> private[this] val CC_T_TypeTag: Byte = _
   };
-  class CC_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.CC[Tsp] {
-    def <init>()(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {
+  class CC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {
       CC_L.super.<init>();
       ()
     }

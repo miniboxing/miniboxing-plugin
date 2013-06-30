@@ -1,28 +1,28 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait VerifyArrayOps[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
-    <stable> <accessor> def x: Array[T];
+  abstract trait VerifyArrayOps[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+    <stable> <accessor> def x(): Array[T];
     def reverse(): Unit;
-    def reverse_J(VerifyArrayOps_T_TypeTag: Byte)(): Unit;
+    def reverse_J(VerifyArrayOps_T_TypeTag: Byte): Unit;
     <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[T]
   };
-  class VerifyArrayOps_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
-    def <init>(VerifyArrayOps_T_TypeTag: Byte)()(implicit evidence$1: Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_J[Tsp] = {
+  class VerifyArrayOps_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
+    def <init>(VerifyArrayOps_T_TypeTag: Byte, evidence$1: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_J[Tsp] = {
       VerifyArrayOps_J.super.<init>();
       ()
     };
-    def reverse(): Unit = VerifyArrayOps_J.this.reverse_J(VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag)();
-    def reverse_J(VerifyArrayOps_T_TypeTag: Byte)(): Unit = {
+    def reverse(): Unit = VerifyArrayOps_J.this.reverse_J(VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
+    def reverse_J(VerifyArrayOps_T_TypeTag: Byte): Unit = {
       var i: Int = 0;
-      var j: Int = MiniboxArray_FullSwitch.this.mbarray_length(VerifyArrayOps_J.this.x_J(VerifyArrayOps_T_TypeTag), VerifyArrayOps_T_TypeTag).-(1);
+      var j: Int = MiniboxArray_FullSwitch.this.mbarray_length(VerifyArrayOps_J.this.x(), VerifyArrayOps_T_TypeTag).-(1);
       while$1(){
         if (i.<(j))
           {
             {
-              val t1: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x_J(VerifyArrayOps_T_TypeTag), i, VerifyArrayOps_T_TypeTag);
-              val t2: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x_J(VerifyArrayOps_T_TypeTag), j, VerifyArrayOps_T_TypeTag);
-              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x_J(VerifyArrayOps_T_TypeTag), i, t2, VerifyArrayOps_T_TypeTag);
-              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x_J(VerifyArrayOps_T_TypeTag), j, t1, VerifyArrayOps_T_TypeTag);
+              val t1: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), i, VerifyArrayOps_T_TypeTag);
+              val t2: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), j, VerifyArrayOps_T_TypeTag);
+              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), i, t2, VerifyArrayOps_T_TypeTag);
+              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), j, t1, VerifyArrayOps_T_TypeTag);
               i = i.+(1);
               j = j.-(1)
             };
@@ -32,28 +32,28 @@ package miniboxing.tests.compile {
           ()
       }
     };
-    implicit <synthetic> <paramaccessor> private[this] val evidence$1: Manifest[Tsp] = _;
+    implicit <synthetic> <paramaccessor> private[this] val evidence$1: scala.reflect.Manifest[Tsp] = _;
     <synthetic> <paramaccessor> private[this] val VerifyArrayOps_T_TypeTag: Byte = _;
     private[this] val x: Array[Tsp] = MiniboxArray_FullSwitch.this.mbarray_new(10, VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
-    <stable> <accessor> def x: Array[Tsp] = VerifyArrayOps_J.this.x_J(VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
+    <stable> <accessor> def x(): Array[Tsp] = VerifyArrayOps_J.this.x_J(VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
     <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_J.this.x
   };
-  class VerifyArrayOps_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
-    def <init>()()(implicit evidence$1: Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_L[Tsp] = {
+  class VerifyArrayOps_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
+    def <init>(evidence$1: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_L[Tsp] = {
       VerifyArrayOps_L.super.<init>();
       ()
     };
     def reverse(): Unit = {
       var i: Int = 0;
-      var j: Int = VerifyArrayOps_L.this.x.length.-(1);
+      var j: Int = VerifyArrayOps_L.this.x().length().-(1);
       while$1(){
         if (i.<(j))
           {
             {
-              val t1: Tsp = VerifyArrayOps_L.this.x.apply(i);
-              val t2: Tsp = VerifyArrayOps_L.this.x.apply(j);
-              VerifyArrayOps_L.this.x.update(i, t2);
-              VerifyArrayOps_L.this.x.update(j, t1);
+              val t1: Tsp = VerifyArrayOps_L.this.x().apply(i);
+              val t2: Tsp = VerifyArrayOps_L.this.x().apply(j);
+              VerifyArrayOps_L.this.x().update(i, t2);
+              VerifyArrayOps_L.this.x().update(j, t1);
               i = i.+(1);
               j = j.-(1)
             };
@@ -63,10 +63,10 @@ package miniboxing.tests.compile {
           ()
       }
     };
-    def reverse_J(VerifyArrayOps_T_TypeTag: Byte)(): Unit = VerifyArrayOps_L.this.reverse();
-    implicit <synthetic> <paramaccessor> private[this] val evidence$1: Manifest[Tsp] = _;
+    def reverse_J(VerifyArrayOps_T_TypeTag: Byte): Unit = VerifyArrayOps_L.this.reverse();
+    implicit <synthetic> <paramaccessor> private[this] val evidence$1: scala.reflect.Manifest[Tsp] = _;
     private[this] val x: Array[Tsp] = VerifyArrayOps_L.this.evidence$1.newArray(10);
-    <stable> <accessor> def x: Array[Tsp] = VerifyArrayOps_L.this.x;
-    <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_L.this.x
+    <stable> <accessor> def x(): Array[Tsp] = VerifyArrayOps_L.this.x;
+    <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_L.this.x()
   }
 }

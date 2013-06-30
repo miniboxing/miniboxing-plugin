@@ -4,6 +4,7 @@ import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker._
+import scala.collection.mutable.{ Map => MMap }
 
 trait MiniboxTreeSpecializer extends TypingTransformers {
   self: MiniboxComponent =>
@@ -37,6 +38,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
     /** Wrap miniboxed arguments in minibox2box already */
     object boxArgs extends Transformer {
+      val updateLabel: MMap[Symbol, Symbol] = MMap.empty
       def apply(tree: Tree) = transform(tree)
       override def transform(tree: Tree) = tree match {
         case i: Ident if miniboxedArgSyms.contains(i.symbol) =>
@@ -45,6 +47,25 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
+
+        // Broken labeldefs handling...
+        case LabelDef(name, params, rhs) =>
+          val lbl = tree.symbol
+          updateLabel += lbl -> lbl.cloneSymbol(newThis).setInfo(MethodType(params.map(_.symbol), lbl.info.resultType))
+          val tree1 = LabelDef(name, params, transform(rhs)).setSymbol(updateLabel(tree.symbol))
+          val tree2 = localTyper.typed(tree1)
+          tree2
+
+        // Broken labeldefs handling...
+        case Apply(label, params) if label.symbol.isLabel =>
+          def stripAsInstanceOf(tree: Tree) = tree match {
+            case Apply(TypeApply(sel @ Select(param, asInstanceOf), List(tp)), List()) if sel.symbol == Any_asInstanceOf =>
+              param.setType(param.symbol.tpe)
+            case _ =>
+              tree
+          }
+          val tree1 = Apply(label.setType(null).setSymbol(updateLabel(label.symbol)), params.map(stripAsInstanceOf))
+          localTyper.typed(tree1)
 
         case sel@Select(qual@This(cl), name) if sel.symbol.isTerm && !sel.symbol.isMethod && (qual.symbol == oldThis) =>
           var tree1 = tree

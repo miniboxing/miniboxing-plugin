@@ -27,6 +27,25 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
   }
 
+  def separateTypeTagArgsInTree(args: List[Tree]): (List[Tree], List[Tree]) = args match {
+    case ttarg :: rest if ttarg.symbol.name.toString.endsWith("_TypeTag") =>
+      val (ttargs, args) = separateTypeTagArgsInTree(rest)
+      (ttarg :: ttargs, args)
+    case _ => (Nil, args)
+  }
+
+  def separateTypeTagArgsInType(tpe: Type): (List[Symbol], List[Symbol]) = tpe match {
+    case MethodType(args, _) => separateTypeTagArgsInArgs(args)
+    case PolyType(_, ret) => separateTypeTagArgsInType(ret)
+    case _ => (Nil, Nil)
+  }
+
+  def separateTypeTagArgsInArgs(args: List[Symbol]): (List[Symbol], List[Symbol]) = args match {
+    case ttarg :: rest if ttarg.name.toString.endsWith("_TypeTag") =>
+      val (ttargs, args) = separateTypeTagArgsInArgs(rest)
+      (ttarg :: ttargs, args)
+    case _ => (Nil, args)
+  }
 
   class SpecializeTypeMap(current: Symbol) extends TypeMap {
     def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref)
@@ -278,7 +297,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
             case Some(map) => map += pspec -> newCtor
             case None => overloads(ctor) = HashMap(pspec -> newCtor)
           }
-          MethodType(tagParams.toList, transformArgs(info2))
+          val info3 = transformArgs(info2)
+          MethodType(tagParams.toList ::: info3.params, info3.resultType)
         }
         memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
         specScope enter newCtor
@@ -381,10 +401,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val tagParams = localTags.map(_._2)
               val info1 =
                 info0 match {
-                  case mt: MethodType =>
-                    MethodType(tagParams, mt)
+                  case MethodType(args, ret) =>
+                    MethodType(tagParams ::: args, ret)
                   case nmt: NullaryMethodType =>
-                    MethodType(tagParams, nmt.resultType)
+                    ??? // Do we still need this? adMethodType(tagParams, nmt.resultType)
                 }
               miniboxedArgs(newMbr) = Set() ++ mbArgs
               info1
@@ -525,12 +545,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       if (!target.isMethod || (!target.name.toString.contains("_J") && !target.name.toString.contains("_L")))
         (Nil, target.info.params)
       else
-        target.info match {
-          case MethodType(typetags, result) =>
-            (typetags, result.params)
-          case nmt: NullaryMethodType =>
-            (Nil, Nil)
-        }
+        separateTypeTagArgsInType(target.info)
 
     def typeParams = {
       val targetTParams = targetTags.map(_.swap).toMap

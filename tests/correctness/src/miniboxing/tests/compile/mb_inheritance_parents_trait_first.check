@@ -1,7 +1,7 @@
 Specializing trait C...
 
   // interface:
-  abstract trait C[T] extends AnyRef {
+  abstract trait C[T] extends Object {
   }
 
   // specialized class:
@@ -18,9 +18,9 @@ Specializing trait C...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance.traits {
-  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef;
-  abstract trait C_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
+  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object;
+  abstract trait C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
     def C_T_TypeTag(): Byte
   };
-  abstract trait C_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.inheritance.traits.C[Tsp]
+  abstract trait C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp]
 }

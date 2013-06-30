@@ -1,28 +1,28 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait ArgumentRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+  abstract trait ArgumentRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
     def test(t: T): T;
-    def test_J(ArgumentRewire_T_TypeTag: Byte)(t: Long): Long
+    def test_J(ArgumentRewire_T_TypeTag: Byte, t: Long): Long
   };
-  abstract trait LocalRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+  abstract trait LocalRewire[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
     def test(t: T): T;
-    def test_J(LocalRewire_T_TypeTag: Byte)(t: Long): Long
+    def test_J(LocalRewire_T_TypeTag: Byte, t: Long): Long
   };
-  class ArgumentRewire_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.ArgumentRewire[Tsp] {
-    def <init>(ArgumentRewire_T_TypeTag: Byte)(): miniboxing.tests.compile.ArgumentRewire_J[Tsp] = {
+  class ArgumentRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
+    def <init>(ArgumentRewire_T_TypeTag: Byte): miniboxing.tests.compile.ArgumentRewire_J[Tsp] = {
       ArgumentRewire_J.super.<init>();
       ()
     };
-    def test(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](ArgumentRewire_J.this.test_J(ArgumentRewire_J.this.ArgumentRewire_T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Tsp](t, ArgumentRewire_J.this.ArgumentRewire_T_TypeTag)), ArgumentRewire_J.this.ArgumentRewire_T_TypeTag);
-    def test_J(ArgumentRewire_T_TypeTag: Byte)(t: Long): Long = {
+    def test(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](ArgumentRewire_J.this.test_J(ArgumentRewire_J.this.ArgumentRewire_T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, ArgumentRewire_J.this.ArgumentRewire_T_TypeTag)), ArgumentRewire_J.this.ArgumentRewire_T_TypeTag);
+    def test_J(ArgumentRewire_T_TypeTag: Byte, t: Long): Long = {
       scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](t, ArgumentRewire_T_TypeTag));
       MiniboxTypeTagDispatch.this.mboxed_hashCode(t, ArgumentRewire_T_TypeTag);
       MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.identity[Tsp](MiniboxConversions.this.minibox2box[Tsp](t, ArgumentRewire_T_TypeTag)), ArgumentRewire_T_TypeTag)
     };
     <synthetic> <paramaccessor> private[this] val ArgumentRewire_T_TypeTag: Byte = _
   };
-  class ArgumentRewire_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.ArgumentRewire[Tsp] {
-    def <init>()(): miniboxing.tests.compile.ArgumentRewire_L[Tsp] = {
+  class ArgumentRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
+    def <init>(): miniboxing.tests.compile.ArgumentRewire_L[Tsp] = {
       ArgumentRewire_L.super.<init>();
       ()
     };
@@ -31,15 +31,15 @@ package miniboxing.tests.compile {
       t.hashCode();
       scala.this.Predef.identity[Tsp](t)
     };
-    def test_J(ArgumentRewire_T_TypeTag: Byte)(t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](ArgumentRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, ArgumentRewire_T_TypeTag)), ArgumentRewire_T_TypeTag)
+    def test_J(ArgumentRewire_T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](ArgumentRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, ArgumentRewire_T_TypeTag)), ArgumentRewire_T_TypeTag)
   };
-  class LocalRewire_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.LocalRewire[Tsp] {
-    def <init>(LocalRewire_T_TypeTag: Byte)(): miniboxing.tests.compile.LocalRewire_J[Tsp] = {
+  class LocalRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
+    def <init>(LocalRewire_T_TypeTag: Byte): miniboxing.tests.compile.LocalRewire_J[Tsp] = {
       LocalRewire_J.super.<init>();
       ()
     };
-    def test(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](LocalRewire_J.this.test_J(LocalRewire_J.this.LocalRewire_T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Tsp](t, LocalRewire_J.this.LocalRewire_T_TypeTag)), LocalRewire_J.this.LocalRewire_T_TypeTag);
-    def test_J(LocalRewire_T_TypeTag: Byte)(t: Long): Long = {
+    def test(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](LocalRewire_J.this.test_J(LocalRewire_J.this.LocalRewire_T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, LocalRewire_J.this.LocalRewire_T_TypeTag)), LocalRewire_J.this.LocalRewire_T_TypeTag);
+    def test_J(LocalRewire_T_TypeTag: Byte, t: Long): Long = {
       val x: Long = t;
       scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](t, LocalRewire_T_TypeTag));
       MiniboxTypeTagDispatch.this.mboxed_hashCode(t, LocalRewire_T_TypeTag);
@@ -47,8 +47,8 @@ package miniboxing.tests.compile {
     };
     <synthetic> <paramaccessor> private[this] val LocalRewire_T_TypeTag: Byte = _
   };
-  class LocalRewire_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.LocalRewire[Tsp] {
-    def <init>()(): miniboxing.tests.compile.LocalRewire_L[Tsp] = {
+  class LocalRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
+    def <init>(): miniboxing.tests.compile.LocalRewire_L[Tsp] = {
       LocalRewire_L.super.<init>();
       ()
     };
@@ -58,6 +58,6 @@ package miniboxing.tests.compile {
       t.hashCode();
       scala.this.Predef.identity[Tsp](t)
     };
-    def test_J(LocalRewire_T_TypeTag: Byte)(t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](LocalRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, LocalRewire_T_TypeTag)), LocalRewire_T_TypeTag)
+    def test_J(LocalRewire_T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](LocalRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, LocalRewire_T_TypeTag)), LocalRewire_T_TypeTag)
   }
 }

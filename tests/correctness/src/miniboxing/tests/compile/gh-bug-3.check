@@ -1,30 +1,30 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait BUG3[@miniboxing.plugin.minispec T >: Nothing <: Any] extends AnyRef {
+  abstract trait BUG3[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
     def hashMode(): T;
-    def hashMode_J(BUG3_T_TypeTag: Byte)(): Long
+    def hashMode_J(BUG3_T_TypeTag: Byte): Long
   };
-  class BUG3_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.BUG3[Tsp] {
-    def <init>(BUG3_T_TypeTag: Byte)(): miniboxing.tests.compile.BUG3_J[Tsp] = {
+  class BUG3_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.BUG3[Tsp] {
+    def <init>(BUG3_T_TypeTag: Byte): miniboxing.tests.compile.BUG3_J[Tsp] = {
       BUG3_J.super.<init>();
       ()
     };
-    def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.BUG3_T_TypeTag)(), BUG3_J.this.BUG3_T_TypeTag);
-    def hashMode_J(BUG3_T_TypeTag: Byte)(): Long = {
-      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???, BUG3_T_TypeTag);
+    def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.BUG3_T_TypeTag), BUG3_J.this.BUG3_T_TypeTag);
+    def hashMode_J(BUG3_T_TypeTag: Byte): Long = {
+      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), BUG3_T_TypeTag);
       headhash
     };
     <synthetic> <paramaccessor> private[this] val BUG3_T_TypeTag: Byte = _
   };
-  class BUG3_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.BUG3[Tsp] {
-    def <init>()(): miniboxing.tests.compile.BUG3_L[Tsp] = {
+  class BUG3_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.BUG3[Tsp] {
+    def <init>(): miniboxing.tests.compile.BUG3_L[Tsp] = {
       BUG3_L.super.<init>();
       ()
     };
     def hashMode(): Tsp = {
-      val headhash: Tsp = scala.this.Predef.???;
+      val headhash: Tsp = scala.this.Predef.???();
       headhash
     };
-    def hashMode_J(BUG3_T_TypeTag: Byte)(): Long = MiniboxConversions.this.box2minibox_tt[Tsp](BUG3_L.this.hashMode(), BUG3_T_TypeTag)
+    def hashMode_J(BUG3_T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](BUG3_L.this.hashMode(), BUG3_T_TypeTag)
   }
 }

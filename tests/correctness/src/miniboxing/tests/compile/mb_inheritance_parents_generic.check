@@ -6,13 +6,13 @@ Specializing class DDDD...
 
   // specialized class:
   class DDDD_J[Usp] extends CCCC[Usp] with DDDD[Usp] {
-    def <init>(val DDDD_U_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.DDDD_J[Usp] // is a specialized implementation of constructor DDDD
+    def <init>(val DDDD_U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDDD_J[Usp] // is a specialized implementation of constructor DDDD
     private[this] val DDDD_U_TypeTag: Byte                                 // no info
   }
 
   // specialized class:
   class DDDD_L[Usp] extends CCCC[Usp] with DDDD[Usp] {
-    def <init>()(): miniboxing.tests.compile.inheritance.DDDD_L[Usp]       // is a specialized implementation of constructor DDDD
+    def <init>(): miniboxing.tests.compile.inheritance.DDDD_L[Usp]         // is a specialized implementation of constructor DDDD
   }
 
 
@@ -20,7 +20,7 @@ Specializing class DDDD...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  class CCCC[T >: Nothing <: Any] extends AnyRef {
+  class CCCC[T >: Nothing <: Any] extends Object {
     def <init>(): miniboxing.tests.compile.inheritance.CCCC[T] = {
       CCCC.super.<init>();
       ()
@@ -28,14 +28,14 @@ package miniboxing.tests.compile.inheritance {
   };
   abstract trait DDDD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[U];
   class DDDD_J[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
-    def <init>(DDDD_U_TypeTag: Byte)(): miniboxing.tests.compile.inheritance.DDDD_J[Usp] = {
+    def <init>(DDDD_U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDDD_J[Usp] = {
       DDDD_J.super.<init>();
       ()
     };
     <synthetic> <paramaccessor> private[this] val DDDD_U_TypeTag: Byte = _
   };
   class DDDD_L[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
-    def <init>()(): miniboxing.tests.compile.inheritance.DDDD_L[Usp] = {
+    def <init>(): miniboxing.tests.compile.inheritance.DDDD_L[Usp] = {
       DDDD_L.super.<init>();
       ()
     }

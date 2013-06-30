@@ -54,7 +54,7 @@ class Minibox(val global: Global) extends Plugin {
 
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks")
-    //override val runsRightAfter = Some("specialize")
+    override val runsRightAfter = Some("specialize")
     val phaseName = Minibox.this.name
 
     def flag_log = Minibox.this.flag_log
