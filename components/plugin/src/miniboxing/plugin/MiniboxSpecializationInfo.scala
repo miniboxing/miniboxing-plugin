@@ -6,6 +6,7 @@ trait MiniboxSpecializationInfo {
   self: MiniboxLogic with MiniboxDefinitions =>
 
   import global._
+  import definitions._
 
   /**
    * This class should be extended by various classes containing information
@@ -117,7 +118,7 @@ trait MiniboxSpecializationInfo {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
       val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, p.name.append("sp")))
 
-      newParams foreach (_.removeAnnotation(MinispecedClass))
+      newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
       (oldParams zip newParams).toMap
     }
   }

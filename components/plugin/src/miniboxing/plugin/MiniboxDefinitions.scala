@@ -1,11 +1,15 @@
 package miniboxing.plugin
 
 trait MiniboxDefinitions {
-  this: MiniboxInfoTransformation =>
+  this: MiniboxComponent =>
 
   import global._
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
+
+  def flag_hijack_spec: Boolean
+
+  lazy val MinispecClass = rootMirror.getRequiredClass("miniboxing.plugin.minispec")
 
   // array ops
   lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray_FullSwitch")

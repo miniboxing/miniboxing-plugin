@@ -16,14 +16,20 @@ trait MiniboxInfoTransformation extends InfoTransform {
   /** Type transformation. It is applied to all symbols, compiled or loaded.
    *  If it is a 'no-specialization' run, it is applied only to loaded symbols. */
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    tpe.resultType match {
-      case cinfo @ ClassInfoType(parents, decls, origin) =>
-        val tparams  = tpe.typeParams
-        if (tparams.isEmpty)
-          afterMinibox(parents map (_.typeSymbol.info))
-        specialize(origin, cinfo, typeEnv.getOrElse(origin, MiniboxingTypeEnv(Map.empty, Map.empty)))
-      case _ =>
-        tpe
+    try {
+      tpe.resultType match {
+        case cinfo @ ClassInfoType(parents, decls, origin) =>
+          val tparams  = tpe.typeParams
+          if (tparams.isEmpty)
+            afterMinibox(parents map (_.typeSymbol.info))
+          specialize(origin, cinfo, typeEnv.getOrElse(origin, MiniboxingTypeEnv(Map.empty, Map.empty)))
+        case _ =>
+          tpe
+      }
+    } catch {
+      case t: Throwable =>
+        t.printStackTrace(System.err)
+        throw t
     }
   }
 

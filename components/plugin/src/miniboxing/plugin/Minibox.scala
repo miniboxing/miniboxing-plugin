@@ -31,6 +31,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
   var flag_stats = sys.props.get("miniboxing.stats").isDefined
+  var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -40,6 +41,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_debug = true
       else if (option.toLowerCase() == "stats")
         flag_stats = true
+      else if (option.toLowerCase() == "hijack")
+        flag_hijack_spec = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
@@ -48,7 +51,8 @@ class Minibox(val global: Global) extends Plugin {
   override val optionsHelp: Option[String] = Some(
     s"  -P:${name}:log               log miniboxing signature transformations\n" +
     s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)\n" +
-    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)")
+    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)" +
+    s"  -P:${name}:hijack-spec       hijack the @specialized(...) notation for miniboxing")
 
   private object Component extends MiniboxComponent {
 
@@ -60,15 +64,20 @@ class Minibox(val global: Global) extends Plugin {
     def flag_log = Minibox.this.flag_log
     def flag_debug = Minibox.this.flag_debug
     def flag_stats = Minibox.this.flag_stats
+    def flag_hijack_spec = Minibox.this.flag_hijack_spec
 
-    override var currentPhase : StdPhase = _
+    var mboxPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      currentPhase = new Phase(prev);
-      currentPhase
+      mboxPhase = new Phase(prev);
+      mboxPhase
     }
 
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = {
+        // should be done after typer, else it will remove the specialized annotation
+        if (flag_hijack_spec)
+          global.settings.nospecialization.value = true
+
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
         val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
@@ -80,11 +89,11 @@ class Minibox(val global: Global) extends Plugin {
 }
 
 trait MiniboxPhase extends PluginComponent {
-  var currentPhase : StdPhase
+  def mboxPhase: StdPhase
 
   def afterMinibox[T](op: => T): T =
-    global.afterPhase(currentPhase)(op)
+    global.afterPhase(mboxPhase)(op)
 
   def beforeMinibox[T](op: => T): T =
-    global.beforePhase(currentPhase)(op)
+    global.beforePhase(mboxPhase)(op)
 }

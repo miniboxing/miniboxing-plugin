@@ -10,8 +10,6 @@ trait MiniboxLogic {
   import definitions._
   import scala.collection.immutable
 
-  lazy val MinispecedClass = rootMirror.getRequiredClass("miniboxing.plugin.minispec")
-
   /**
    * A `TypeEnv` maps each type parameter of the original class to the
    * actual type used in the specialized version to which this environment
@@ -39,10 +37,10 @@ trait MiniboxLogic {
    */
   def specializations(tParams: List[Symbol]): List[PartialSpec] = {
     var envs: List[List[SpecInfo]] = List(Nil)
-    val mboxTParams = tParams.filter(_.hasAnnotation(MinispecedClass))
+    val mboxTParams = tParams.filter(s => s.hasAnnotation(MinispecClass) || s.hasAnnotation(SpecializedClass))
 
     for (tParam <- mboxTParams)
-      if (tParam.hasAnnotation(MinispecedClass))
+      if (tParam.hasAnnotation(MinispecClass) || tParam.hasAnnotation(SpecializedClass))
         envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
 
     envs.map((types: List[SpecInfo]) => (mboxTParams zip types).toMap)
@@ -90,7 +88,11 @@ trait MiniboxLogic {
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
     !clazz.typeParams.isEmpty &&
-    (clazz.typeParams exists (_ hasAnnotation MinispecedClass))
+    (flag_hijack_spec match {
+      case false => clazz.typeParams exists (_ hasAnnotation MinispecClass)
+      case true => (clazz.typeParams exists (_ hasAnnotation MinispecClass)) ||
+                   ((clazz.typeParams exists (_ hasAnnotation SpecializedClass)) && (clazz.sourceFile != null))
+    })
 
   final val MINIBOXED = 1L << 46 // we define our own flag
 
