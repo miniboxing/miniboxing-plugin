@@ -45,7 +45,7 @@ class TestSuite {
 //    UPDATE_CHECKFILE = true
 
     for (source <- files(List("tests", "correctness", "src", "miniboxing", "tests", "compile"), ".scala")) {
-      System.err.print(s"Compiling ${source.toString} ... ")
+      System.err.print(f"Compiling ${source.getName()}%-60s ... ")
 
       // source code:
       val code = File(source).slurp
