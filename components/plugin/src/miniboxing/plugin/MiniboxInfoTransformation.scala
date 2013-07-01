@@ -399,20 +399,26 @@ trait MiniboxInfoTransformation extends InfoTransform {
             newMbr setFlag MINIBOXED
             newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
             newMbr modifyInfo (info => {
+              // TODO: This is a pretty hacky way to get new argument symbols for the info -- so it would make sense to
+              // clean it up at some point.
               val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
               localTypeTags(newMbr) = localTags.toMap
               val tagParams = localTags.map(_._2)
-              val info1 =
+              val (info1, mbArgs1) =
                 info0 match {
                   case MethodType(args, ret) =>
-                    MethodType(tagParams ::: args, ret)
-                  case nmt: NullaryMethodType =>
-                    ??? // Do we still need this? adMethodType(tagParams, nmt.resultType)
+                    (MethodType(tagParams ::: args, ret), mbArgs)
+                  case PolyType(targs, MethodType(args, ret)) =>
+                    val ntargs = targs.map(_.cloneSymbol(newMbr))
+                    val tpe = MethodType(tagParams ::: args, ret).substSym(targs, ntargs)
+                    val mbArgs_update = (args zip tpe.params).toMap
+                    (PolyType(ntargs, tpe), mbArgs.map({ case (a, t) => (mbArgs_update(a), t) }))
+                  case _ => ???
                 }
-              miniboxedArgs(newMbr) = Set() ++ mbArgs
+              miniboxedArgs(newMbr) = Set() ++ mbArgs1
               info1
             })
             newMembers ::= newMbr
@@ -515,30 +521,20 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * be converted when forwarding to `target`.
    */
   private def genForwardingInfo(wrapper: Symbol, wrapperTags: Map[Symbol, Symbol], target: Symbol, targetTags: Map[Symbol, Symbol]): ForwardTo = {
+
     def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
       val srcTypeSymbol: Symbol = srcType.typeSymbol
       val tgtTypeSymbol: Symbol = tgtType.typeSymbol
 
-      if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass) {
+      if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass)
         CastMiniboxToBox(wrapperTags(tgtTypeSymbol))
-      } else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass) {
+      else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass)
         CastBoxToMinibox(wrapperTags(srcTypeSymbol))
-      } else if (srcTypeSymbol == tgtTypeSymbol) {
-        if (srcType == tgtType) NoCast
-        else {
-          // We have something like Foo[T] vs Foo[Long] which will be the same
-          // after erasure. For now, just pretend that they are the same.
-          // - we should not have this case anymore.
-          ??? // AsInstanceOfCast
-        }
-        // Arrays are 'erased' to Any
-      } else if (srcTypeSymbol == ArrayClass && tgtTypeSymbol == AnyClass) {
+      else if ((srcTypeSymbol == tgtTypeSymbol) && (srcType =:= tgtType))
         NoCast
-      } else if (srcTypeSymbol == AnyClass && tgtTypeSymbol == ArrayClass) {
-        AsInstanceOfCast
-      } else {
-        log(wrapper + ": " + wrapper.tpe + " ==> " + params(wrapper))
-        log(target + ": " + target.tpe + " ==> " + params(target))
+      else {
+        log(wrapper + ": " + wrapper.tpe + " ==> ")
+        log(target + ": " + target.tpe + " ==> ")
         log(srcTypeSymbol)
         log(tgtTypeSymbol)
         log("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
@@ -547,22 +543,29 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
     }
 
-    def params(target: Symbol): (List[Symbol], List[Symbol]) =
+    def params(target: Symbol, tpe: Type): (List[Symbol], List[Symbol]) =
       if (!target.isMethod || (!target.name.toString.contains("_J") && !target.name.toString.contains("_L")))
-        (Nil, target.info.params)
+        (Nil, tpe.params)
       else
-        separateTypeTagArgsInType(target.info)
+        separateTypeTagArgsInType(tpe)
 
     def typeParams = {
       val targetTParams = targetTags.map(_.swap).toMap
-      val targs = params(target)._1.map(targetTParams)
+      val targs = params(target, target.info)._1.map(targetTParams)
       val tagParams = targs.map(wrapperTags)
       tagParams
     }
 
     // TODO: only basic parameters should go here
-    val wrapParams = params(wrapper)._2.map(_.tpe)
-    val targParams = params(target)._2.map(_.tpe)
+    val (wtpe, ttpe) = (wrapper.info, target.info) match {
+      case (PolyType(wtparams, wtpe), PolyType(ttparams, ttpe)) =>
+        (wtpe, ttpe.instantiateTypeParams(ttparams, wtparams.map(_.tpe)))
+      case (wtpe, ttpe) =>
+        (wtpe, ttpe)
+    }
+
+    val wrapParams = params(wrapper, wtpe)._2.map(_.tpe)
+    val targParams = params(target, ttpe)._2.map(_.tpe)
     assert(wrapParams.length == targParams.length, (wrapParams, targParams))
     val paramCasts = (wrapParams zip targParams) map {
       case (wtp, ttp) => genCastInfo(wtp, ttp)
