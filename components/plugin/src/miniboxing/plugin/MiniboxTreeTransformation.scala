@@ -123,7 +123,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       curTree = tree
       // make sure specializations have been performed
       tree match {
-        case t: SymTree => afterMinibox(t.symbol.info)
+        case t: SymTree if t.symbol != null => afterMinibox(t.symbol.info)
         case _ =>
       }
 
@@ -242,6 +242,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               sys.error("Unknown info type: " + info)
           }
 
+        // ???
         case DefDef(mods, name, tparams, vparamss, tpt, body) if (tree.symbol.isConstructor &&
           tree.symbol.paramss.head.size != vparamss.head.size) =>
           debug(" => overriding constructor in " + tree.symbol.ownerChain.reverse.map(_.nameString).mkString(".") + ":\n" + tree)
@@ -249,8 +250,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           debug(" <= " + result)
           super.transform(result)
 
+        // Redirect method calls without type parameters
+        // TODO: unify with the next case
         case Apply(sel @ Select(qual, fn), args) if { afterMinibox(sel.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
-
           val oldMethodSym = tree.symbol
           val oldMethodType = sel.tpe
           val tree1 =
@@ -264,7 +266,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
                   case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     val newMethodSym = overloads(oldMethodSym)(pspec)
-                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args)
+                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args, null)
                     stats("redirecting method call: " + tree + " ==> " + tree1)
                     tree1
                   case other =>
@@ -273,6 +275,31 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
+        // Redirect method calls with type parameters
+        case Apply(TypeApply(sel @ Select(qual, fn), targs), args) if { afterMinibox(sel.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
+          val oldMethodSym = tree.symbol
+          val oldMethodType = sel.tpe
+          val tree1 =
+            memberSpecializationInfo.get(currentMethod) match {
+              case Some(spec: ForwardTo) =>
+                // don't touch forwarders, they're correctly generated the first time
+                // although it may be interesting to use this logic to generate forwarders too
+                // TODO: Can this be done?
+                tree
+              case _ =>
+                extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
+                  case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
+                    val newMethodSym = overloads(oldMethodSym)(pspec)
+                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args, targs)
+                    stats("redirecting method call: " + tree + " ==> " + tree1)
+                    tree1
+                  case other =>
+                    tree
+                }
+            }
+          super.transform(tree1)
+
+        // Redirect field selections
         case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
           val oldMethodSym = tree.symbol
           val oldMethodType = tree.tpe
@@ -287,7 +314,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
                   case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     val newMethodSym = overloads(oldMethodSym)(pspec)
-                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), null)
+                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), null, null)
                     stats("redirected selection: " + tree + " ==> " + tree1)
                     tree1
                   case other =>
@@ -320,7 +347,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               tree
             else {
               val Select(qual, _) = init
-              val tree1 = rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform))
+              val tree1 = rewiredMethodCall(qual, oldInitSym, oldInitTpe, newInitSym, newInitTpe, args.map(transform), null)
               localTyper.typed(tree1)
             }
 
@@ -338,7 +365,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   val newClass = specializedClasses(oldClass)(pspec)
                   val newClassCtor = overloads(oldClassCtor)(pspec)
                   val newQual = localTyper.typedOperator(New(TypeTree(TypeRef(pre, newClass, targs))))
-                  val tree1 = rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, currentClass.info.memberInfo(newClassCtor), args.map(transform))
+                  val tree1 = rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, currentClass.info.memberInfo(newClassCtor), args.map(transform), null)
                   stats("redirecting new: " + tree + " ==> " + tree1)
                   tree1
                 case Some(_) =>
@@ -433,6 +460,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           Some(pSpec)
         case SingleType(pre, x) =>
           extractSpec(qualTpe.widen, inMethod, inClass)
+        case PolyType(tparams, rest) =>
+          extractSpec(rest, inMethod, inClass)
         case TypeRef(pre, clazz, args) if specializedClasses.isDefinedAt(clazz) =>
           import miniboxing.runtime.MiniboxConstants._
           val tparams = afterMinibox(clazz.info).typeParams
@@ -477,7 +506,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           oldMethodTpe: Type,
           newMethodSym: Symbol,
           newMethodTpe: Type,
-          args: List[Tree]) = {
+          args: List[Tree],
+          targs: List[Tree]) = {
 
       // 1. Generate type tags
       val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodTpe)
@@ -507,15 +537,17 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           Nil
 
       // TODO: Implement type parameter translation
-      val apply = gen.mkMethodCall(newQual, newMethodSym, List(), localTagArgs ::: adaptedArgs)
+      val method = gen.mkAttributedSelect(newQual, newMethodSym)
+      val tapp = if (targs == null) method else gen.mkTypeApply(method, targs)
+      val aapp = gen.mkMethodCall(tapp, localTagArgs ::: adaptedArgs)
 
       // 3. Adapt return type
       val unpackedTree =
         (newMethodTpe.finalResultType, oldMethodTpe.finalResultType) match {
           case (`LongTpe`, other) if other != LongTpe =>
-            gen.mkMethodCall(minibox2box, List(other), List(apply, instToLocalTagTrees(other.typeSymbol)))
+            gen.mkMethodCall(minibox2box, List(other), List(aapp, instToLocalTagTrees(other.typeSymbol)))
           case _ =>
-            apply
+            aapp
         }
       val unpacked = localTyper.typed(unpackedTree)
 
