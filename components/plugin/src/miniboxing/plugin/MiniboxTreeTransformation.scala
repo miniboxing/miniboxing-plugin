@@ -569,8 +569,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     private def cast(tree: Tree, tpe: Type, cinfo: CastInfo) = {
       val tree0 = ltypedpos(tree)
       val tree1 = cinfo match {
-        case NoCast => tree0
-        case AsInstanceOfCast => gen.mkAsInstanceOf(tree0, tpe, true, false)
+        case NoCast =>
+          tree0
+        case AsInstanceOfCast =>
+          gen.mkAsInstanceOf(tree0, tpe, true, false)
         case CastMiniboxToBox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
           gen.mkMethodCall(minibox2box, List(tpe), List(tree0, tagref))

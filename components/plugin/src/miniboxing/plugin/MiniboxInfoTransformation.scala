@@ -526,25 +526,37 @@ trait MiniboxInfoTransformation extends InfoTransform {
    */
   private def genForwardingInfo(wrapper: Symbol, wrapperTags: Map[Symbol, Symbol], target: Symbol, targetTags: Map[Symbol, Symbol]): ForwardTo = {
 
+    // TODO: only basic parameters should go here
+    val (wtpe, ttpe) = (wrapper.info, target.info) match {
+      case (PolyType(wtparams, wtpe), PolyType(ttparams, ttpe)) =>
+        (wtpe, ttpe.instantiateTypeParams(ttparams, wtparams.map(_.tpe)))
+      case (wtpe, ttpe) =>
+        (wtpe, ttpe)
+    }
+
     def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
       val srcTypeSymbol: Symbol = srcType.typeSymbol
       val tgtTypeSymbol: Symbol = tgtType.typeSymbol
 
-      if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass)
+      val res = if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass)
         CastMiniboxToBox(wrapperTags(tgtTypeSymbol))
       else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass)
         CastBoxToMinibox(wrapperTags(srcTypeSymbol))
       else if ((srcTypeSymbol == tgtTypeSymbol) && (srcType =:= tgtType))
         NoCast
       else {
-        log(wrapper + ": " + wrapper.tpe + " ==> ")
-        log(target + ": " + target.tpe + " ==> ")
+        log(wrapper + ": " + wrapper.tpe + " ==> " + wtpe)
+        log(target + ": " + target.tpe + " ==> " + ttpe)
         log(srcTypeSymbol)
         log(tgtTypeSymbol)
         log("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
-        log(srcTypeSymbol + " --> " + tgtTypeSymbol)
+        log(srcTypeSymbol)
+        log(tgtTypeSymbol)
+        log(srcType)
+        log(tgtType)
         ???
       }
+      res
     }
 
     def params(target: Symbol, tpe: Type): (List[Symbol], List[Symbol]) =
@@ -560,13 +572,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
       tagParams
     }
 
-    // TODO: only basic parameters should go here
-    val (wtpe, ttpe) = (wrapper.info, target.info) match {
-      case (PolyType(wtparams, wtpe), PolyType(ttparams, ttpe)) =>
-        (wtpe, ttpe.instantiateTypeParams(ttparams, wtparams.map(_.tpe)))
-      case (wtpe, ttpe) =>
-        (wtpe, ttpe)
-    }
 
     val wrapParams = params(wrapper, wtpe)._2.map(_.tpe)
     val targParams = params(target, ttpe)._2.map(_.tpe)
@@ -574,7 +579,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     val paramCasts = (wrapParams zip targParams) map {
       case (wtp, ttp) => genCastInfo(wtp, ttp)
     }
-    val retCast = genCastInfo(target.tpe.finalResultType, wrapper.tpe.finalResultType)
+    val retCast = genCastInfo(ttpe.finalResultType, wtpe.finalResultType)
 
     ForwardTo(typeParams, target, retCast, paramCasts)
   }
