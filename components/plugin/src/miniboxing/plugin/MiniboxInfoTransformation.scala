@@ -405,20 +405,24 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+              miniboxedArgs(newMbr) = Set() ++ mbArgs
               localTypeTags(newMbr) = localTags.toMap
               val tagParams = localTags.map(_._2)
-              val (info1, mbArgs1) =
+              val info1 =
                 info0 match {
                   case MethodType(args, ret) =>
-                    (MethodType(tagParams ::: args, ret), mbArgs)
+                    MethodType(tagParams ::: args, ret)
                   case PolyType(targs, MethodType(args, ret)) =>
                     val ntargs = targs.map(_.cloneSymbol(newMbr))
                     val tpe = MethodType(tagParams ::: args, ret).substSym(targs, ntargs)
-                    val mbArgs_update = (args zip tpe.params).toMap
-                    (PolyType(ntargs, tpe), mbArgs.map({ case (a, t) => (mbArgs_update(a), t) }))
+                    assert((tagParams ::: args).length == tpe.params.length, tagParams + ", " + args + ", " + tpe.params)
+                    val update = ((tagParams ::: args) zip tpe.params).toMap
+                    miniboxedArgs(newMbr) = miniboxedArgs(newMbr).map({ case (arg, t) => (update(arg), t) })
+                    localTypeTags(newMbr) = localTypeTags(newMbr).map({ case (t, tag) => (t, update(tag)) })
+                    PolyType(ntargs, tpe)
                   case _ => ???
                 }
-              miniboxedArgs(newMbr) = Set() ++ mbArgs1
+
               info1
             })
             newMembers ::= newMbr

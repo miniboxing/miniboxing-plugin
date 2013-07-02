@@ -208,7 +208,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   case ((p, t), paramCast) =>
                     cast(Ident(p.symbol), t.tpe, paramCast)
                 }
-              val rhs1 = gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
+              val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpe), ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
               super.transform(localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast))))
 
             // copy the body of the `original` method
@@ -273,7 +273,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
+        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
           val oldMethodSym = tree.symbol
           val oldMethodType = tree.tpe
           val tree1 =
@@ -491,6 +491,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val instToLocalTagTrees = typeTagTrees(currentMethod)
       val localTagArgs = tparamInsts.map(instToLocalTagTrees)
 
+
       // 2. Adapt arguments
       val adaptedArgs =
         if (args != null)
@@ -510,7 +511,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       // 3. Adapt return type
       val unpackedTree =
-        (newMethodTpe.finalResultType, oldMethodTpe.resultType) match {
+        (newMethodTpe.finalResultType, oldMethodTpe.finalResultType) match {
           case (`LongTpe`, other) if other != LongTpe =>
             gen.mkMethodCall(minibox2box, List(other), List(apply, instToLocalTagTrees(other.typeSymbol)))
           case _ =>
@@ -534,17 +535,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      * the `cinfo`.
      */
     private def cast(tree: Tree, tpe: Type, cinfo: CastInfo) = {
-      val ttree = ltypedpos(tree)
-      cinfo match {
-        case NoCast => ttree
-        case AsInstanceOfCast => gen.mkAsInstanceOf(ttree, tpe, true, false)
+      val tree0 = ltypedpos(tree)
+      val tree1 = cinfo match {
+        case NoCast => tree0
+        case AsInstanceOfCast => gen.mkAsInstanceOf(tree0, tpe, true, false)
         case CastMiniboxToBox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
-          ltypedpos(gen.mkMethodCall(minibox2box, List(tpe), List(ttree, tagref)))
+          gen.mkMethodCall(minibox2box, List(tpe), List(tree0, tagref))
         case CastBoxToMinibox(tag) =>
           val tagref = localTyper.typed(gen.mkAttributedRef(tag))
-          ltypedpos(gen.mkMethodCall(box2minibox, List(ttree.tpe), List(ttree, tagref)))
+          gen.mkMethodCall(box2minibox, List(tree0.tpe), List(tree0, tagref))
       }
+      val tree2 = ltypedpos(tree1)
+      tree2
     }
 
     /**
@@ -705,9 +708,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)
         debuglog("substituting " + origtparams + " for " + symbol.typeParams)
 
-      // skolemize type parameters
+      // skolemize type parameters - not really needed, duplicator will do the job
       val oldtparams = tparams map (_.symbol)
-      val newtparams = deriveFreshSkolems(oldtparams)
+      val newtparams = oldtparams//deriveFreshSkolems(oldtparams)
       map2(tparams, newtparams)(_ setSymbol _)
 
       // create fresh symbols for value parameters to hold the skolem types
