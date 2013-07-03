@@ -13,6 +13,7 @@ trait MiniboxLogging {
   def flag_stats: Boolean
 
   def log(msg: => Any) = if (flag_log) println(msg.toString)
+  def mblog(msg: => Any) = log(msg)
   def debug(msg: => Any) = if (flag_debug) println(msg.toString)
   def stats(msg: => Any) = if (flag_stats) println(msg.toString)
 

@@ -11,7 +11,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   self: MiniboxComponent =>
 
   import global._
-  import definitions._
+  import global.definitions._
   import Flags._
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
@@ -510,13 +510,29 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           targs: List[Tree]) = {
 
       // 1. Generate type tags
-      val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodTpe)
-      val tagsToTparams = localTypeTags(newMethodSym).map(_.swap).toMap
+      val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info)
+      // Tag -> Type param
+      val tagsToTparams1 = localTypeTags(newMethodSym).map(_.swap).toMap
       val tparamInsts = for (tagSym <- tagSyms) yield {
-        val tparam = tagsToTparams(tagSym)
-        val instOwner = newQual.tpe.baseType(tparam.owner)
-        val tparamToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
-        tparamToInst(tparam).typeSymbol
+        try {
+          val tparam = tagsToTparams1(tagSym)
+          val instOwner = newQual.tpe.baseType(tparam.owner)
+          val tparamToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
+          tparamToInst(tparam).typeSymbol
+        } catch {
+          case ex: Exception =>
+            mblog("Tag not found:")
+            mblog(newMethodSym)
+            mblog(tagSyms)
+            mblog(argTypes)
+            mblog(tagsToTparams1)
+            mblog(currentClass)
+            mblog(currentMethod)
+            mblog(typeTagTrees(currentMethod))
+            ex.printStackTrace()
+            System.exit(1)
+            ???
+        }
       }
       val instToLocalTagTrees = typeTagTrees(currentMethod)
       val localTagArgs = tparamInsts.map(instToLocalTagTrees)
