@@ -317,48 +317,57 @@ trait MiniboxInfoTransformation extends InfoTransform {
         } else {
           if (mbr.isDeferred)
             memberSpecializationInfo(newMbr) = Interface()
-
-          // Check whether the method is the one that will carry the
-          // implementation. If yes, find the original method from the original
-          // class from which to copy the implementation. If no, find the method
-          // that will have an implementation and forward to it.
-          if (overloads(mbr)(pspec) == mbr) {
-            if (mbr.hasAccessorFlag) {
-              memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
-                case Some(ForwardTo(_, original, _, _)) =>
-                  FieldAccessor(newMembers(original.accessed))
-                case _ =>
-                  global.error("Unaccounted case: " + memberSpecializationInfo.get(mbr)); ???
+          else {
+            // Check whether the method is the one that will carry the
+            // implementation. If yes, find the original method from the original
+            // class from which to copy the implementation. If no, find the method
+            // that will have an implementation and forward to it.
+            if (overloads(mbr).isDefinedAt(pspec)) {
+              if (overloads(mbr)(pspec) == mbr) {
+                if (mbr.hasAccessorFlag) {
+                  memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
+                    case Some(ForwardTo(_, original, _, _)) =>
+                      FieldAccessor(newMembers(original.accessed))
+                    case _ =>
+                      global.error("Unaccounted case: " + memberSpecializationInfo.get(mbr)); ???
+                  }
+                } else {
+                  memberSpecializationInfo.get(mbr) match {
+                    case Some(ForwardTo(_, original, _, _)) =>
+                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+                    case Some(x) =>
+                      global.error("Unaccounted case: " + x)
+                    case None =>
+                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
+                  }
+                }
+              } else {
+                val target = newMembers(overloads(mbr)(pspec))
+                val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttype, ttag) => (pmap.getOrElse(ttype, ttype), ttag) } ++ globalTypeTags(spec)
+                val targTagMap = localTypeTags.getOrElse(target, Map.empty)
+                memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, wrapTagMap, target, targTagMap)
               }
             } else {
-              memberSpecializationInfo.get(mbr) match {
-                case Some(ForwardTo(_, original, _, _)) =>
-                  memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
-                case Some(x) =>
-                  global.error("Unaccounted case: " + x)
-                case None =>
-                  memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
-              }
+              memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
             }
-          } else {
-            val target = newMembers(overloads(mbr)(pspec))
-            val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttype, ttag) => (pmap.getOrElse(ttype, ttype), ttag) } ++ globalTypeTags(spec)
-            val targTagMap = localTypeTags.getOrElse(target, Map.empty)
-            memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, wrapTagMap, target, targTagMap)
           }
         }
       }
 
       // populate the overloads data structure for the new members also
       for ((m, newMbr) <- newMembers if (m.isMethod && !m.isConstructor)) {
-        val newMbrMeantForSpec = newMembers(overloads(m)(pspec))
-        if (!(overloads isDefinedAt newMbrMeantForSpec)) {
-          overloads(newMbrMeantForSpec) = new HashMap[PartialSpec, Symbol]
-          for ((s, m) <- overloads(m)) {
-            overloads(newMbrMeantForSpec)(s) = newMembers(m)
+        if (overloads(m).isDefinedAt(pspec)) {
+          val newMbrMeantForSpec = newMembers(overloads(m)(pspec))
+          if (!(overloads isDefinedAt newMbrMeantForSpec)) {
+            overloads(newMbrMeantForSpec) = new HashMap[PartialSpec, Symbol]
+            for ((s, m) <- overloads(m)) {
+              overloads(newMbrMeantForSpec)(s) = newMembers(m)
+            }
           }
-        }
-        overloads(newMbr) = overloads(newMbrMeantForSpec)
+          overloads(newMbr) = overloads(newMbrMeantForSpec)
+        } else
+          // member not specialized:
+          overloads(newMbr) = HashMap.empty
       }
 
       // deferred type tags:
@@ -385,9 +394,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       var newMembers = List[Symbol]()
 
       // we make specialized overloads for every member of the original class
-      for (member <- methods ::: getters ::: setters if (needsSpecialization(origin, member))) {
+      for (member <- methods ::: getters ::: setters) {
         val overloadsOfMember = new HashMap[PartialSpec, Symbol]
-        for (spec <- specs) {
+        val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(isAllAnyRef(_))
+        for (spec <- specs_filtered) {
           var newMbr = member
           if (!isAllAnyRef(spec)) {
             val env: TypeEnv = spec map {
@@ -507,6 +517,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
       log("\n\n")
       origin.resetFlag(FINAL)
+      origin.resetFlag(CASE)
 
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope2, origin))
     } else {

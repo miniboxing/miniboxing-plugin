@@ -7,8 +7,6 @@ trait MiniboxDefinitions {
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
-  def flag_hijack_spec: Boolean
-
   lazy val MinispecClass = rootMirror.getRequiredClass("miniboxing.plugin.minispec")
 
   // array ops

@@ -78,7 +78,12 @@ trait MiniboxLogic {
       case Miniboxed => LongClass.tpe
     }
 
-  def needsSpecialization(clazz: Symbol, method: Symbol) = true
+  def needsSpecialization(clazz: Symbol, member: Symbol) = !flag_spec_opt || {
+    val tparams = clazz.typeParams.filter(isSpecialized(clazz, _))
+    val res = member.info.params.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
+    tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
+    res
+  }
 
   def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
 
@@ -88,11 +93,13 @@ trait MiniboxLogic {
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
     !clazz.typeParams.isEmpty &&
-    (flag_hijack_spec match {
-      case false => clazz.typeParams exists (_ hasAnnotation MinispecClass)
-      case true => (clazz.typeParams exists (_ hasAnnotation MinispecClass)) ||
-                   ((clazz.typeParams exists (_ hasAnnotation SpecializedClass)) && (clazz.sourceFile != null))
-    })
+    clazz.typeParams.exists(isSpecialized(clazz, _))
+
+  def isSpecialized(clazz: Symbol, tparam: Symbol): Boolean = flag_hijack_spec match {
+    case false => (tparam hasAnnotation MinispecClass)
+    case true =>  (tparam.typeParams exists (_ hasAnnotation MinispecClass)) ||
+                  ((tparam.typeParams exists (_ hasAnnotation SpecializedClass)) && (clazz.sourceFile != null))
+  }
 
   final val MINIBOXED = 1L << 46 // we define our own flag
 

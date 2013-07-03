@@ -8,10 +8,6 @@ trait MiniboxLogging {
 
   val global: Global
 
-  def flag_log: Boolean
-  def flag_debug: Boolean
-  def flag_stats: Boolean
-
   def log(msg: => Any) = if (flag_log) println(msg.toString)
   def mblog(msg: => Any) = log(msg)
   def debug(msg: => Any) = if (flag_debug) println(msg.toString)

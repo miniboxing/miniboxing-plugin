@@ -19,7 +19,14 @@ trait MiniboxComponent extends
     with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
     with MiniboxDefinitions
-    with MiniboxPhase
+    with MiniboxPhase {
+
+  def flag_log: Boolean
+  def flag_debug: Boolean
+  def flag_stats: Boolean
+  def flag_hijack_spec: Boolean
+  def flag_spec_opt: Boolean
+}
 
 class Minibox(val global: Global) extends Plugin {
   import global._
@@ -32,6 +39,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
   var flag_stats = sys.props.get("miniboxing.stats").isDefined
   var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
+  var flag_spec_opt = sys.props.get("miniboxing.spec.opt").isDefined
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -43,6 +51,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_stats = true
       else if (option.toLowerCase() == "hijack")
         flag_hijack_spec = true
+      else if (option.toLowerCase() == "spec-opt")
+        flag_spec_opt = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
@@ -52,7 +62,8 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:log               log miniboxing signature transformations\n" +
     s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)\n" +
     s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)" +
-    s"  -P:${name}:hijack-spec       hijack the @specialized(...) notation for miniboxing")
+    s"  -P:${name}:hijack-spec       hijack the @specialized(...) notation for miniboxing" +
+    s"  -P:${name}:spec-opt          optimize method specialization, don't create useless specializations")
 
   private object Component extends MiniboxComponent {
 
@@ -65,6 +76,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_debug = Minibox.this.flag_debug
     def flag_stats = Minibox.this.flag_stats
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
+    def flag_spec_opt = Minibox.this.flag_spec_opt
 
     var mboxPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
