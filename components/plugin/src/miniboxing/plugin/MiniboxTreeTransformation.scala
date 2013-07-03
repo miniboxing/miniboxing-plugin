@@ -484,7 +484,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               case (p, tpe) if baseClass.isDefinedAt(inClass) =>
                 val instantiatedBaseClass = inClass.info.baseType(baseClass(inClass))
                 val instantiationMapper = (instantiatedBaseClass.typeArgs.map(_.typeSymbol).zip(instantiatedBaseClass.typeSymbol.typeParams)).toMap
-                val baseTParam = instantiationMapper(tpe.typeSymbol)
+                val baseTParam = instantiationMapper.getOrElse(tpe.typeSymbol, NoSymbol)
                 if (pSpec.isDefinedAt(baseTParam))
                   Some((p, pSpec(baseTParam)))
                 else

@@ -223,7 +223,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             if (origin.isTrait)
               spec.newMethodSymbol(typeTagName(tparam), spec.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
             else
-              spec.newValue(typeTagName(tparam), spec.pos, SYNTHETIC | PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
+              spec.newValue(typeTagName(tparam), spec.pos, PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
           sym setFlag MINIBOXED
           if (origin.isTrait) {
@@ -241,7 +241,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // Copy the members of the original class to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
         // we only duplicate methods and fields
-        (for (mbr <- decls.toList if (!(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
+        (for (mbr <- decls.toList if (!notSpecializable(mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
           val newMbr = mbr.cloneSymbol(spec)
           if (mbr.isMethod) {
             if (base(mbr) == mbr)
@@ -288,7 +288,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
           val info1 = info0.substThis(origin, spec) // Is this still necessary?
           val (info2, mboxedArgs) = miniboxSubst(ifaceEnv, implEnv, info1)
-          val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor, SYNTHETIC))
+          val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor))
           localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
           def transformArgs(tpe: Type): Type = tpe match {
             case MethodType(params, ret) =>
@@ -394,7 +394,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       var newMembers = List[Symbol]()
 
       // we make specialized overloads for every member of the original class
-      for (member <- methods ::: getters ::: setters) {
+      for (member <- methods ::: getters ::: setters if !notSpecializable(member)) {
         val overloadsOfMember = new HashMap[PartialSpec, Symbol]
         val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(isAllAnyRef(_))
         for (spec <- specs_filtered) {

@@ -132,4 +132,6 @@ trait MiniboxLogic {
         }).toMap
     }
   }
+
+  def notSpecializable(mbr: Symbol) = mbr.isSynthetic
 }
