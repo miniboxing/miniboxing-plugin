@@ -97,8 +97,8 @@ trait MiniboxLogic {
 
   def isSpecialized(clazz: Symbol, tparam: Symbol): Boolean = flag_hijack_spec match {
     case false => (tparam hasAnnotation MinispecClass)
-    case true =>  (tparam.typeParams exists (_ hasAnnotation MinispecClass)) ||
-                  ((tparam.typeParams exists (_ hasAnnotation SpecializedClass)) && (clazz.sourceFile != null))
+    case true =>  (tparam hasAnnotation MinispecClass) ||
+                  ((tparam hasAnnotation SpecializedClass) && (clazz.sourceFile != null))
   }
 
   final val MINIBOXED = 1L << 46 // we define our own flag
