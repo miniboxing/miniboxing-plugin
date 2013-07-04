@@ -76,7 +76,7 @@ package miniboxing.tests.compile {
     };
     def qmax(ev: miniboxing.tests.compile.Order2[Asp]): Asp = MiniboxConversions.this.minibox2box[Asp](ArrayOps_J.this.qmax_J(ArrayOps_J.this.ArrayOps_A_TypeTag, ev), ArrayOps_J.this.ArrayOps_A_TypeTag);
     def qmax_J(ArrayOps_A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[Asp]): Long = {
-      def f5(t: Long): Asp = f5(MiniboxConversions.this.minibox2box[Asp](ev.max_J(ArrayOps_A_TypeTag, t, MiniboxArray_FullSwitch.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, ArrayOps_A_TypeTag)), ArrayOps_A_TypeTag));
+      def f5(t: Asp): Asp = f5(MiniboxConversions.this.minibox2box[Asp](ev.max_J(ArrayOps_A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](t, ArrayOps_A_TypeTag), MiniboxArray_FullSwitch.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, ArrayOps_A_TypeTag)), ArrayOps_A_TypeTag));
       MiniboxConversions.this.box2minibox_tt[Asp](f5(MiniboxConversions.this.minibox2box[Asp](MiniboxArray_FullSwitch.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, ArrayOps_A_TypeTag), ArrayOps_A_TypeTag)), ArrayOps_A_TypeTag)
     };
     <paramaccessor> private[this] val ArrayOps_A_TypeTag: Byte = _;
@@ -97,13 +97,3 @@ package miniboxing.tests.compile {
 }
 
 [Now checking: minibox]
-error:
-**** ERROR DURING INTERNAL CHECKING ****
-type mismatch;
- found   : Asp
- required: Long
-error:
-**** ERROR DURING INTERNAL CHECKING ****
-type mismatch;
- found   : Asp
- required: Long

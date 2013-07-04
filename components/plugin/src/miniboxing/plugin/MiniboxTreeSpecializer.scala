@@ -167,6 +167,14 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tsp = miniboxedSyms.find(_._1 == sym).get._2
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tsp), List(gen.mkAttributedIdent(sym), tag)))
+        // don't touch DefDefs, LabelDef, ClassDef-s YET...
+        // -- we don't care about TypeDefs, ModuleDefs and PackageDefs since they do not take parameters
+        case d: DefDef =>
+          treeCopy.DefDef(d, d.mods, d.name, d.tparams, d.vparamss, d.tpt, transform(d.rhs))
+        case l: LabelDef =>
+          treeCopy.LabelDef(l, l.name, l.params, transform(l.rhs))
+        case c: ClassDef =>
+          treeCopy.ClassDef(c, c.mods, c.name, c.tparams, transformTemplate(c.impl))
         case other => super.transform(other)
       }
       debug("  " * indent + "     (" + treen + ") res:  " + res.toString.replaceAll("\n", "\n" + "  " * indent))
