@@ -214,7 +214,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   case ((p, t), paramCast) =>
                     cast(Ident(p.symbol), t.tpe, paramCast)
                 }
-              val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpe), ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
+              val rhs1 = gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
               super.transform(localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast))))
 
             // copy the body of the `original` method
