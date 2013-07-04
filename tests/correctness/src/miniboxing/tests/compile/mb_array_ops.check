@@ -34,7 +34,7 @@ package miniboxing.tests.compile {
     };
     implicit <synthetic> <paramaccessor> private[this] val evidence$1: scala.reflect.Manifest[Tsp] = _;
     <paramaccessor> private[this] val VerifyArrayOps_T_TypeTag: Byte = _;
-    private[this] val x: Array[Tsp] = MiniboxArray_FullSwitch.this.mbarray_new(10, VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
+    private[this] val x: Array[Tsp] = MiniboxArray_FullSwitch.this.mbarray_new[Tsp](10, VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
     <stable> <accessor> def x(): Array[Tsp] = VerifyArrayOps_J.this.x_J(VerifyArrayOps_J.this.VerifyArrayOps_T_TypeTag);
     <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_J.this.x
   };
@@ -70,3 +70,5 @@ package miniboxing.tests.compile {
     <stable> <accessor> def x_J(VerifyArrayOps_T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_L.this.x()
   }
 }
+
+[Now checking: minibox]

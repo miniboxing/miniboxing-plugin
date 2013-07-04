@@ -119,8 +119,8 @@ object MiniboxArray_FullSwitch {
   private[this] final val DOUBLE = 8;
   private[this] final val REFERENCE = 9;
 
-  @inline final def mbarray_new(len: Int, tag: Tag): Any =
-  tag match {
+  @inline final def mbarray_new[T](len: Int, tag: Tag): Array[T] =
+  (tag match {
     case UNIT =>     new Array[Unit](len)
     case BOOLEAN =>  new Array[Boolean](len)
     case BYTE =>     new Array[Byte](len)
@@ -130,7 +130,7 @@ object MiniboxArray_FullSwitch {
     case LONG =>     new Array[Long](len)
     case FLOAT =>    new Array[Float](len)
     case DOUBLE =>   new Array[Double](len)
-  }
+  }).asInstanceOf[Array[T]]
 
   @inline final def mbarray_apply_minibox(array: Any, idx: Int, tag: Tag): Minibox = tag match {
     case INT =>     array.asInstanceOf[Array[Int]](idx).toLong

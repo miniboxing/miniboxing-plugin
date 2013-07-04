@@ -427,7 +427,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val tree1 = manifest.tpe.widen.typeArgs match {
             case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
               val tag = tags(tpe.typeSymbol)
-              val tree1 = gen.mkMethodCall(mbarray_new, List(size, tag))
+              val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(size, tag))
               //val tree2 = gen.mkAsInstanceOf(tree1, tree.tpe)
               stats("rewrote array new: " + tree + " ==> " + tree1)
               tree1
