@@ -92,3 +92,43 @@ package miniboxing.tests.compile.nested {
 }
 
 [Now checking: minibox]
+[check: minibox] 2 DefTrees with symbol ''type U' in class DDDDD': <sym='type U' in class DDDDD>, <sym='type U' in class DDDDD>
+[check: minibox] newSource1.scala:7:
+ currentOwner chain: class DDDDD -> method test_J -> class CCCCC_J
+       symbol chain: type U -> class DDDDD -> method test -> trait CCCCC -> package nested -> package compile -> package tests -> package miniboxing -> package <root>scala.reflect.internal.Trees$TypeDef / type U
+[check: minibox] The symbol, tpe or info of tree `(<paramaccessor> private[this] val d: U = _) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(def <init>(d: U): DDDDD[U] = {
+  DDDDD.super.<init>();
+  ()
+}) : (d: U)DDDDD[U]` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: constructor DDDDD, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(val d: U = _) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, constructor DDDDD, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(private[this] val x2: U = DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x2, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.x2) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x2, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(val x4: U = DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(x4) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test_J, class CCCCC_J, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] newSource1.scala:7:
+ currentOwner chain: class DDDDD -> method test -> class CCCCC_L
+       symbol chain: type U -> class DDDDD -> method test -> trait CCCCC -> package nested -> package compile -> package tests -> package miniboxing -> package <root>scala.reflect.internal.Trees$TypeDef / type U
+[check: minibox] The symbol, tpe or info of tree `(<paramaccessor> private[this] val d: U = _) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(def <init>(d: U): DDDDD[U] = {
+  DDDDD.super.<init>();
+  ()
+}) : (d: U)DDDDD[U]` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: constructor DDDDD, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(val d: U = _) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, constructor DDDDD, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(private[this] val x2: U = DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x2, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.x2) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x2, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(val x4: U = DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+[check: minibox] The symbol, tpe or info of tree `(x4) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
+newSource1.scala:8: error:
+**** ERROR DURING INTERNAL CHECKING ****
+type mismatch;
+ found   : DDDDD.this.x1.type (with underlying type Long)
+ required: Tsp
+      val x1: T = c
+          ^
+warning: TreeCheckers detected non-compliant trees in newSource1.scala
+
