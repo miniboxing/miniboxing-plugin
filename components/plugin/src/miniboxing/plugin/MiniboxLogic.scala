@@ -133,5 +133,5 @@ trait MiniboxLogic {
     }
   }
 
-  def notSpecializable(mbr: Symbol) = mbr.isSynthetic
+  def notSpecializable(mbr: Symbol) = mbr.isMethod && mbr.isSynthetic
 }

@@ -226,8 +226,8 @@ package miniboxing.tests.compile.inheritance {
     def Base1_B12_TypeTag(): Byte = Derived1_JJ.this.Derived1_D12_TypeTag;
     def Base2_B22_TypeTag(): Byte = Derived1_JJ.this.Derived1_D12_TypeTag;
     def Base3_B31_TypeTag(): Byte = Derived1_JJ.this.Derived1_D11_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived1_D11_TypeTag: Byte = _;
-    <synthetic> <paramaccessor> private[this] val Derived1_D12_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived1_D11_TypeTag: Byte = _;
+    <paramaccessor> private[this] val Derived1_D12_TypeTag: Byte = _
   };
   class Derived1_JL[D11sp >: Nothing <: Any, D12sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_JL[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
     def <init>(Derived1_D11_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_JL[D11sp,D12sp] = {
@@ -236,7 +236,7 @@ package miniboxing.tests.compile.inheritance {
     };
     def Base1_B11_TypeTag(): Byte = Derived1_JL.this.Derived1_D11_TypeTag;
     def Base3_B31_TypeTag(): Byte = Derived1_JL.this.Derived1_D11_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived1_D11_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived1_D11_TypeTag: Byte = _
   };
   class Derived1_LJ[D11sp >: Nothing <: Any, D12sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
     def <init>(Derived1_D12_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_LJ[D11sp,D12sp] = {
@@ -245,7 +245,7 @@ package miniboxing.tests.compile.inheritance {
     };
     def Base1_B12_TypeTag(): Byte = Derived1_LJ.this.Derived1_D12_TypeTag;
     def Base2_B22_TypeTag(): Byte = Derived1_LJ.this.Derived1_D12_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived1_D12_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived1_D12_TypeTag: Byte = _
   };
   class Derived1_LL[D11sp >: Nothing <: Any, D12sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived1_LL[D11sp,D12sp] = {
@@ -260,7 +260,7 @@ package miniboxing.tests.compile.inheritance {
     };
     def Base1_B12_TypeTag(): Byte = Derived2_J.this.Derived2_D22_TypeTag;
     def Base2_B22_TypeTag(): Byte = Derived2_J.this.Derived2_D22_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived2_D22_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived2_D22_TypeTag: Byte = _
   };
   class Derived2_L[D21sp >: Nothing <: Any, D22sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base2_L[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base3_L[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base4[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Derived2[D21sp,D22sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived2_L[D21sp,D22sp] = {
@@ -275,7 +275,7 @@ package miniboxing.tests.compile.inheritance {
     };
     def Base1_B11_TypeTag(): Byte = Derived3_J.this.Derived3_D31_TypeTag;
     def Base3_B31_TypeTag(): Byte = Derived3_J.this.Derived3_D31_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived3_D31_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived3_D31_TypeTag: Byte = _
   };
   class Derived3_L[D31sp >: Nothing <: Any, D32sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base2_L[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base3_L[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base4[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Derived3[D31sp,D32sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived3_L[D31sp,D32sp] = {
@@ -292,7 +292,7 @@ package miniboxing.tests.compile.inheritance {
     def Base1_B12_TypeTag(): Byte = 1;
     def Base2_B22_TypeTag(): Byte = 1;
     def Base3_B31_TypeTag(): Byte = Derived6_J.this.Derived6_D61_TypeTag;
-    <synthetic> <paramaccessor> private[this] val Derived6_D61_TypeTag: Byte = _
+    <paramaccessor> private[this] val Derived6_D61_TypeTag: Byte = _
   };
   class Derived6_L[D61sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D61sp,Boolean] with miniboxing.tests.compile.inheritance.Base2_J[D61sp,Boolean] with miniboxing.tests.compile.inheritance.Base3_L[D61sp,Boolean] with miniboxing.tests.compile.inheritance.Base4[D61sp,Boolean] with miniboxing.tests.compile.inheritance.Derived6[D61sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived6_L[D61sp] = {

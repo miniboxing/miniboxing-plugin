@@ -155,9 +155,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val specClassesTped = specClassesTpls map localTyper.typed
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           val parents1 = map2(traitSym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
-          super.transform(localTyper.typedPos(tree.pos)(
+          val tree1 = localTyper.typedPos(tree.pos)(
             treeCopy.Template(tree, parents1, self,
-              atOwner(currentOwner)(transformTrees(body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers ::: specClassesTped)))))
+              atOwner(currentOwner)(transformTrees(body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers ::: specClassesTped))))
+          tree1
 
         /*
          * The tree of a specialized class is empty for the moment, but we
@@ -173,7 +174,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         /*
          * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
          */
-        case ddef @ DefDef(mods, name, tparams, vparams :: Nil, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR =>
+        case ddef @ DefDef(mods, name, tparams, vparams :: Nil, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR && !notSpecializable(ddef.symbol) =>
           localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
 
         /*
@@ -194,6 +195,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   Assign(gen.mkAttributedRef(field),
                     ltypedpos(Ident(mthArgs.head)))
                 })
+//              println(rhs1)
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
             // forward to the target methods, making casts as prescribed

@@ -154,7 +154,7 @@ package miniboxing.tests.compile {
       };
       ret
     };
-    <synthetic> <paramaccessor> private[this] val T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val T_TypeTag: Byte = _;
     <paramaccessor> private[this] val mf: Manifest[Tsp] = _;
     private[this] var array: Array[Tsp] = MiniboxArray_FullSwitch.this.mbarray_new(4, MBResizableArray_J.this.T_TypeTag);
     private[this] var elemCount: Int = 0;

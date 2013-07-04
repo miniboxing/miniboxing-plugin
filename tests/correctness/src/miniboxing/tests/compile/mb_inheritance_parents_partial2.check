@@ -60,22 +60,22 @@ package miniboxing.tests.compile.inheritance {
       FF1_JJ.super.<init>();
       ()
     };
-    <synthetic> <paramaccessor> private[this] val FF1_R_TypeTag: Byte = _;
-    <synthetic> <paramaccessor> private[this] val FF1_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val FF1_R_TypeTag: Byte = _;
+    <paramaccessor> private[this] val FF1_T_TypeTag: Byte = _
   };
   class FF1_JL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
     def <init>(FF1_T_TypeTag: Byte): miniboxing.tests.compile.inheritance.FF1_JL[Tsp,Rsp] = {
       FF1_JL.super.<init>();
       ()
     };
-    <synthetic> <paramaccessor> private[this] val FF1_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val FF1_T_TypeTag: Byte = _
   };
   class FF1_LJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
     def <init>(FF1_R_TypeTag: Byte): miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Rsp] = {
       FF1_LJ.super.<init>();
       ()
     };
-    <synthetic> <paramaccessor> private[this] val FF1_R_TypeTag: Byte = _
+    <paramaccessor> private[this] val FF1_R_TypeTag: Byte = _
   };
   class FF1_LL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
     def <init>(): miniboxing.tests.compile.inheritance.FF1_LL[Tsp,Rsp] = {
@@ -88,7 +88,7 @@ package miniboxing.tests.compile.inheritance {
       PPredicate_J.super.<init>(PPredicate_T_TypeTag, 1);
       ()
     };
-    <synthetic> <paramaccessor> private[this] val PPredicate_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val PPredicate_T_TypeTag: Byte = _
   };
   class PPredicate_L[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.PPredicate_L[Tsp] = {

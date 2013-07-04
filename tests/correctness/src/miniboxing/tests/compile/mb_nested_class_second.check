@@ -60,21 +60,10 @@ package miniboxing.tests.compile.nested {
         DD_J.super.<init>();
         ()
       };
-      <synthetic> <paramaccessor> private[this] val DD_U_TypeTag: Byte = _;
-      <paramaccessor> private[this] val d: Long = _;
-      def <init>(DD_U_TypeTag: Byte, d: Long): CC.this.DD_J[Usp] = {
-        DD_J.super.<init>();
-        ()
-      };
-      <synthetic> <paramaccessor> private[this] val DD_U_TypeTag: Byte = _;
+      <paramaccessor> private[this] val DD_U_TypeTag: Byte = _;
       <paramaccessor> private[this] val d: Long = _
     };
     class DD_L[Usp >: Nothing <: Any] <: Object with CC.this.DD[Usp] {
-      def <init>(d: Usp): CC.this.DD_L[Usp] = {
-        DD_L.super.<init>();
-        ()
-      };
-      <paramaccessor> private[this] val d: Usp = _;
       def <init>(d: Usp): CC.this.DD_L[Usp] = {
         DD_L.super.<init>();
         ()
@@ -89,7 +78,7 @@ package miniboxing.tests.compile.nested {
     };
     def test(): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] = CC_J.this.test_J(CC_J.this.CC_T_TypeTag);
     def test_J(CC_T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] = new CC_J.this.DD_J[Tsp](CC_T_TypeTag, CC_J.this.c);
-    <synthetic> <paramaccessor> private[this] val CC_T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val CC_T_TypeTag: Byte = _;
     <paramaccessor> private[this] val c: Long = _
   };
   class CC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.CC[Tsp] {

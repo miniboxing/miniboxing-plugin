@@ -19,7 +19,7 @@ package miniboxing.tests.compile {
       MiniboxTypeTagDispatch.this.mboxed_hashCode(t, ArgumentRewire_T_TypeTag);
       MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.identity[Tsp](MiniboxConversions.this.minibox2box[Tsp](t, ArgumentRewire_T_TypeTag)), ArgumentRewire_T_TypeTag)
     };
-    <synthetic> <paramaccessor> private[this] val ArgumentRewire_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val ArgumentRewire_T_TypeTag: Byte = _
   };
   class ArgumentRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
     def <init>(): miniboxing.tests.compile.ArgumentRewire_L[Tsp] = {
@@ -45,7 +45,7 @@ package miniboxing.tests.compile {
       MiniboxTypeTagDispatch.this.mboxed_hashCode(t, LocalRewire_T_TypeTag);
       MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.identity[Tsp](MiniboxConversions.this.minibox2box[Tsp](t, LocalRewire_T_TypeTag)), LocalRewire_T_TypeTag)
     };
-    <synthetic> <paramaccessor> private[this] val LocalRewire_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val LocalRewire_T_TypeTag: Byte = _
   };
   class LocalRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
     def <init>(): miniboxing.tests.compile.LocalRewire_L[Tsp] = {
