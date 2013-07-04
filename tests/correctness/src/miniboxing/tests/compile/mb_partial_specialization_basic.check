@@ -48,3 +48,5 @@ package miniboxing.tests.compile {
     def foo_J(UhOh1_X_TypeTag: Byte, x: Long, y: Ysp): Long = MiniboxConversions.this.box2minibox_tt[Xsp](UhOh1_L.this.foo(MiniboxConversions.this.minibox2box[Xsp](x, UhOh1_X_TypeTag), y), UhOh1_X_TypeTag)
   }
 }
+
+[Now checking: minibox]

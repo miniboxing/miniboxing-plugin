@@ -24,3 +24,5 @@ package miniboxing.tests.compile.inheritance.traits {
   };
   abstract trait C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp]
 }
+
+[Now checking: minibox]

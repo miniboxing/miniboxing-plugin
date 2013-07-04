@@ -17,3 +17,5 @@ package miniboxing.tests.compile {
     scala.this.Predef.assert(Test2.this.a().contains_J(5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)))
   }
 }
+
+[Now checking: minibox]

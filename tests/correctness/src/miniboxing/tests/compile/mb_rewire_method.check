@@ -66,3 +66,5 @@ package miniboxing.tests.compile {
     def test_J(RT_U_TypeTag: Byte, u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT_L.this.test(MiniboxConversions.this.minibox2box[Usp](u, RT_U_TypeTag)), RT_U_TypeTag)
   }
 }
+
+[Now checking: minibox]

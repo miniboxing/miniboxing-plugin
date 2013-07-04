@@ -42,3 +42,5 @@ package miniboxing.tests.compile {
     <stable> <accessor> <paramaccessor> def t_J(TN_T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TN_L.this.t(), TN_T_TypeTag)
   }
 }
+
+[Now checking: minibox]

@@ -61,3 +61,5 @@ package miniboxing.tests.compile {
     def test_J(LocalRewire_T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](LocalRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, LocalRewire_T_TypeTag)), LocalRewire_T_TypeTag)
   }
 }
+
+[Now checking: minibox]

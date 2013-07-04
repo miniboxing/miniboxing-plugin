@@ -1,1 +1,1 @@
--P:minibox:spec-opt -P:minibox:log
+-P:minibox:spec-opt -P:minibox:log -Ycheck:minibox

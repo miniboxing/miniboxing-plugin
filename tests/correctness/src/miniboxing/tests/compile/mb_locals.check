@@ -24,3 +24,5 @@ package miniboxing.tests.compile {
     private[this] val x: Int = 0
   }
 }
+
+[Now checking: minibox]

@@ -32,3 +32,8 @@ Specializing class OptMeee...
     def yfoo2(y: Ysp): Xsp                                                 // is a specialized implementation of method yfoo2
     def yfoo2_J(val OptMeee_X_TypeTag: Byte,y: Ysp): Long                  // is a forwarder to method yfoo2
   }
+
+
+
+
+[Now checking: minibox]

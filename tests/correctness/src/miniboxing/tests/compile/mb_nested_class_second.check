@@ -91,3 +91,5 @@ package miniboxing.tests.compile.nested {
     <paramaccessor> private[this] val c: Tsp = _
   }
 }
+
+[Now checking: minibox]

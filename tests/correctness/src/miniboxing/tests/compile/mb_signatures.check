@@ -46,3 +46,8 @@ Specializing class C...
     def z_J(val C_T_TypeTag: Byte,arg1: Long,arg2: List[Tsp]): Long        // is a forwarder to method z
     private[this] var x: Tsp                                               // is a specialized implementation of variable x
   }
+
+
+
+
+[Now checking: minibox]

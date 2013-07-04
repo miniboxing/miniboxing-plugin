@@ -28,3 +28,5 @@ package miniboxing.tests.compile {
     def hashMode_J(BUG3_T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](BUG3_L.this.hashMode(), BUG3_T_TypeTag)
   }
 }
+
+[Now checking: minibox]

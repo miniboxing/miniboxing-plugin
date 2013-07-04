@@ -129,3 +129,5 @@ package miniboxing.tests.compile {
     <paramaccessor> private[this] var u: Usp = _
   }
 }
+
+[Now checking: minibox]

@@ -1,1 +1,1 @@
--Xprint:minibox -P:minibox:log
+-Xprint:minibox -P:minibox:log -Ycheck:minibox

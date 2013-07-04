@@ -303,3 +303,5 @@ package miniboxing.tests.compile.inheritance {
     def Base2_B22_TypeTag(): Byte = 1
   }
 }
+
+[Now checking: minibox]

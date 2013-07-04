@@ -107,3 +107,5 @@ package miniboxing.tests.compile.inheritance.traits {
     }
   }
 }
+
+[Now checking: minibox]

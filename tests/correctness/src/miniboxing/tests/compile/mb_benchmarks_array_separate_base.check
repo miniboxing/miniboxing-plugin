@@ -283,3 +283,5 @@ package miniboxing.tests.compile {
     private[this] var size: Int = 4
   }
 }
+
+[Now checking: minibox]

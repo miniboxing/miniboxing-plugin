@@ -188,3 +188,5 @@ package miniboxing.benchmarks.minibox {
     <stable> <accessor> <paramaccessor> def tail_J(MBList_T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_L.this.tail()
   }
 }
+
+[Now checking: minibox]
