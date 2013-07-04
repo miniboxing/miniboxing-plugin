@@ -1,0 +1,1 @@
+-P:minibox:spec-opt -P:minibox:log -Xprint:minibox -Ycheck:minibox
