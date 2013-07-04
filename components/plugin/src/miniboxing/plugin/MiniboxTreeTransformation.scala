@@ -107,10 +107,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
-    def typeTagTrees(symbol: Symbol = currentMethod) =
+    def typeTagTrees(symbol: Symbol = currentMethod) = {
+      val clazz = if (symbol != NoSymbol) symbol.enclClass else currentClass
       standardTypeTagTrees ++
-      globalTypeTags.getOrElse((if (symbol != NoSymbol) symbol.enclClass else currentClass), Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      deferredTypeTags.getOrElse(symbol, Map.empty).map({case (method, t) => (t, {gen.mkMethodCall(method, List())})}) ++
+      globalTypeTags.getOrElse(clazz, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
+      deferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, {gen.mkMethodCall(method, List())})}) ++
+      symbol.ownerChain.filter(_.isMethod).reverse.foldLeft(Map.empty[Symbol, Tree])((m, s) => m ++ localTypeTagTrees(s))
+    }
+
+    def localTypeTagTrees(symbol: Symbol): Map[Symbol, Tree] =
       localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))})
 
     import global._
@@ -195,7 +200,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   Assign(gen.mkAttributedRef(field),
                     ltypedpos(Ident(mthArgs.head)))
                 })
-//              println(rhs1)
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
             // forward to the target methods, making casts as prescribed
@@ -523,14 +527,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           tparamToInst(tparam).typeSymbol
         } catch {
           case ex: Exception =>
-            mblog("Tag not found:")
-            mblog(newMethodSym)
-            mblog(tagSyms)
-            mblog(argTypes)
-            mblog(tagsToTparams1)
-            mblog(currentClass)
-            mblog(currentMethod)
-            mblog(typeTagTrees(currentMethod))
+            println("Tag not found:")
+            println(newMethodSym)
+            println(tagSyms)
+            println(argTypes)
+            println(tagsToTparams1)
+            println(currentClass)
+            println(currentMethod)
+            println(typeTagTrees(currentMethod))
             ex.printStackTrace()
             System.exit(1)
             ???

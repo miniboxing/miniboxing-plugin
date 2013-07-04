@@ -26,9 +26,9 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
     import global._
     override def transform(tree: Tree): Tree = tree match {
       case ddef@DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
-        localTyper.typed(deriveDefDef(ddef)(rhs => miniboxReturn(boxArgs(rhs))))
+        localTyper.typed(deriveDefDef(ddef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree))
       case vdef@ValDef(mods, name, tpt, rhs) =>
-        localTyper.typed(deriveValDef(vdef)(rhs => miniboxReturn(boxArgs(rhs))))
+        localTyper.typed(deriveValDef(vdef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree))
       case _ =>
         sys.error("incorrect use of miniboxed tree preparer")
     }
@@ -146,7 +146,11 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tpm = miniboxedEnv(tp)
           if ((tpm =:= LongTpe) && !(tp =:= LongTpe)) {
             // TODO: Do this
-            val rhs2 = gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))
+            val rhs2 =
+              if (rhs != EmptyTree)
+                gen.mkMethodCall(box2minibox, List(tp), List(rhs, miniboxedTags(tp.typeSymbol)))
+              else
+                EmptyTree
             val tpt2 = tpt.setType(LongClass.tpe)
             var nvdef: Tree = copyValDef(vdef)(mods, name, tpt2, rhs2)
             nvdef.symbol = vdef.symbol.modifyInfo(miniboxedEnv)
