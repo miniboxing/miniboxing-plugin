@@ -159,6 +159,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     // Add trait constructor and set the trait flag
     // decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
     clazz.setFlag(TRAIT)
+    // Remove the tailcall notation from members
+    decls.foreach(_.removeAnnotation(TailrecClass))
     // This needs to be delayed until trees have been duplicated, else
     // instantiation will fail, since C becomes an abstract class
     clazz.setFlag(INTERFACE)
@@ -345,6 +347,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 val target = newMembers(overloads(mbr)(pspec))
                 val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttype, ttag) => (pmap.getOrElse(ttype, ttype), ttag) } ++ globalTypeTags(spec)
                 val targTagMap = localTypeTags.getOrElse(target, Map.empty)
+                newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
                 memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, wrapTagMap, target, targTagMap)
               }
             } else {
