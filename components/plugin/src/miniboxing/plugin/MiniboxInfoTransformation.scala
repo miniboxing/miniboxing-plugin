@@ -7,7 +7,7 @@ import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker.Analyzer
 
 trait MiniboxInfoTransformation extends InfoTransform {
-  self: MiniboxPhase with MiniboxLogic with MiniboxLogging with MiniboxSpecializationInfo =>
+  self: MiniboxComponent =>
 
   import global._
   import Flags._
@@ -442,7 +442,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
             // rewire to the correct referenced symbol, else mixin crashes
             val alias = newMbr.alias
-            if (alias != NoSymbol && overloads.isDefinedAt(alias)) {
+            if (alias != NoSymbol) {
               // Rewire alias:
               val baseTpe = origin.info.baseType(alias.owner)
               val pspec2 = ((baseTpe.typeSymbol.typeParams zip baseTpe.typeArgs) flatMap {
@@ -456,23 +456,22 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 case _ =>
                   None
               }).toMap
-              if (overloads(alias).isDefinedAt(pspec2)) {
+              if (overloads.isDefinedAt(alias) && overloads(alias).isDefinedAt(pspec2)) {
                 newMbr.asInstanceOf[TermSymbol].referenced = overloads(alias)(pspec2)
               } else {
-                log("Could not rewire referenced symbol, this will probably lead to a crash in the mixin phase.")
-                log(newMbr)
-                log(alias)
+                log("Could not rewire!")
+                log("base: " + newMbr.defString)
+                log("from: " + alias.defString)
                 log(baseTpe)
                 log(baseTpe.typeSymbol.typeParams)
                 log(baseTpe.typeArgs)
                 log(pspec2)
-                log(overloads(alias))
+                log(overloads.get(alias))
                 log()
               }
             }
 
             newMembers ::= newMbr
-
           } else {
             miniboxedArgs(newMbr) = Set()
           }
@@ -501,6 +500,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
         }
         deferredTypeTags(origin).clear()
       }
+
+    // force info on parents to get all specialized metadata
+    afterMinibox(originTpe.parents.map(_.typeSymbol.info))
 
     // begin specialize
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil

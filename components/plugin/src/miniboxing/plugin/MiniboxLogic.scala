@@ -5,7 +5,6 @@ import scala.tools.nsc.Global
 trait MiniboxLogic {
   self: MiniboxComponent =>
 
-  val global: Global
   import global._
   import definitions._
   import scala.collection.immutable
@@ -133,5 +132,7 @@ trait MiniboxLogic {
     }
   }
 
-  def notSpecializable(mbr: Symbol) = mbr.isMethod && mbr.isSynthetic
+  def notSpecializable(mbr: Symbol) =
+    mbr.isMethod && mbr.isSynthetic ||
+    mbr.alias != NoSymbol && !(overloads.isDefinedAt(mbr.alias))
 }

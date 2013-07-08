@@ -21,6 +21,8 @@ trait MiniboxComponent extends
     with MiniboxDefinitions
     with MiniboxPhase {
 
+  val global: Global
+
   def flag_log: Boolean
   def flag_debug: Boolean
   def flag_stats: Boolean
