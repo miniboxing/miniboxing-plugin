@@ -14,6 +14,12 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
   import Flags._
   import typer.{ typed, atOwner }
 
+  def clearTypes(tree: Tree): Tree = {
+    val ntree = tree.duplicate
+    ntree.foreach(_.tpe = null)
+    ntree
+  }
+
   /** A tree transformer that prepares a tree for duplication */
   class MiniboxTreePreparer(unit: CompilationUnit,
                              oldThis: Symbol,
@@ -48,24 +54,13 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tp.tpe), List(gen.mkAttributedIdent(sym), tag)))
 
-//        // Broken labeldefs handling...
-//        case LabelDef(name, params, rhs) =>
-//          val lbl = tree.symbol
-//          updateLabel += lbl -> lbl.cloneSymbol(newThis).setInfo(MethodType(params.map(_.symbol), lbl.info.resultType))
-//          val tree1 = LabelDef(name, params, transform(rhs)).setSymbol(updateLabel(tree.symbol))
-//          val tree2 = localTyper.typed(tree1)
-//          tree2
-//
-//        // Broken labeldefs handling...
-//        case Apply(label, params) if label.symbol.isLabel =>
-//          def stripAsInstanceOf(tree: Tree) = tree match {
-//            case Apply(TypeApply(sel @ Select(param, asInstanceOf), List(tp)), List()) if sel.symbol == Any_asInstanceOf =>
-//              param.setType(param.symbol.tpe)
-//            case _ =>
-//              tree
-//          }
-//          val tree1 = Apply(label.setType(null).setSymbol(updateLabel(label.symbol)), params.map(stripAsInstanceOf))
-//          localTyper.typed(tree1)
+        case Assign(lhs, rhs) if miniboxedArgSyms.contains(lhs.symbol) =>
+          val sym = lhs.symbol
+          val tsp = miniboxedArgs.find(_._1 == sym).get._2
+          val tp  = miniboxedDeepEnvInv(tsp.typeSymbol)
+          val tag = miniboxedTags(tsp.typeSymbol)
+          val rhs1 = transform(rhs)
+          localTyper.typed(Assign(clearTypes(lhs), gen.mkMethodCall(box2minibox, List(tp.tpe), List(rhs1, tag))))
 
         case sel@Select(qual@This(cl), name) if sel.symbol.isTerm && !sel.symbol.isMethod && (qual.symbol == oldThis) =>
           var tree1 = tree
@@ -116,7 +111,6 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
                                 miniboxedTags: Map[Symbol, Tree],
                                 miniboxedShallowEnv: Map[Symbol, Type]) extends TypingTransformer(unit) {
 
-
     // copied over from duplicators
     val shallowEnv = miniboxedShallowEnv.toList
     object miniboxedEnv extends SubstTypeMap(shallowEnv.map(_._1), shallowEnv.map(_._2)) {
@@ -162,11 +156,20 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           } else {
             localTyper.typed(deriveValDef(vdef)(boxingTransform))
           }
+
         case i: Ident if miniboxedSyms.exists(_._1 == i.symbol) =>
           val sym = i.symbol
           val tsp = miniboxedSyms.find(_._1 == sym).get._2
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tsp), List(gen.mkAttributedIdent(sym), tag)))
+
+        case Assign(lhs, rhs) if miniboxedSyms.exists(_._1 == lhs.symbol) =>
+          val sym = lhs.symbol
+          val tsp = miniboxedSyms.find(_._1 == sym).get._2
+          val tag = miniboxedTags(tsp.typeSymbol)
+          val rhs1 = transform(rhs)
+          localTyper.typed(Assign(clearTypes(lhs), gen.mkMethodCall(box2minibox, List(tsp), List(rhs1, tag))))
+
         // don't touch DefDefs, LabelDef, ClassDef-s YET...
         // -- we don't care about TypeDefs, ModuleDefs and PackageDefs since they do not take parameters
         case d: DefDef =>
