@@ -400,6 +400,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       for (member <- methods ::: getters ::: setters if !notSpecializable(member)) {
         val overloadsOfMember = new HashMap[PartialSpec, Symbol]
         val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(isAllAnyRef(_))
+
         for (spec <- specs_filtered) {
           var newMbr = member
           if (!isAllAnyRef(spec)) {
@@ -438,7 +439,40 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
               info1
             })
+
+            // rewire to the correct referenced symbol, else mixin crashes
+            val alias = newMbr.alias
+            if (alias != NoSymbol && overloads.isDefinedAt(alias)) {
+              // Rewire alias:
+              val baseTpe = origin.info.baseType(alias.owner)
+              val pspec2 = ((baseTpe.typeSymbol.typeParams zip baseTpe.typeArgs) flatMap {
+                case (param, tpe) if param.hasFlag(MINIBOXED) =>
+                  if (ScalaValueClasses.contains(tpe.typeSymbol))
+                    Some((param, Miniboxed))
+                  else if (spec.get(tpe.typeSymbol) == Some(Miniboxed))
+                    Some((param, Miniboxed))
+                  else
+                    Some((param, Boxed))
+                case _ =>
+                  None
+              }).toMap
+              if (overloads(alias).isDefinedAt(pspec2)) {
+                newMbr.asInstanceOf[TermSymbol].referenced = overloads(alias)(pspec2)
+              } else {
+                log("Could not rewire referenced symbol, this will probably lead to a crash in the mixin phase.")
+                log(newMbr)
+                log(alias)
+                log(baseTpe)
+                log(baseTpe.typeSymbol.typeParams)
+                log(baseTpe.typeArgs)
+                log(pspec2)
+                log(overloads(alias))
+                log()
+              }
+            }
+
             newMembers ::= newMbr
+
           } else {
             miniboxedArgs(newMbr) = Set()
           }

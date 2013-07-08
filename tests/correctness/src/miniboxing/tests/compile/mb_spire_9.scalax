@@ -1,0 +1,16 @@
+package miniboxing.tests.compile
+import miniboxing.plugin.minispec
+import scala.annotation.tailrec
+import scala.reflect.ClassTag
+
+trait Ordering[@minispec A] {
+  def eqv(x: Array[A], y: Array[A]): Boolean = false
+}
+
+trait ArrayVectorOrder[@minispec A] extends Ordering[A] {
+  override def eqv(x: Array[A], y: Array[A]): Boolean = super.eqv(x, y)
+}
+
+object vectorOrder {
+  implicit def arrayOrder[@minispec A](implicit ct: ClassTag[A]) = new ArrayVectorOrder[A] { }
+}
