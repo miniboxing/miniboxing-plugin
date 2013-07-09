@@ -170,7 +170,8 @@ trait MiniboxSpecializationInfo {
    * NOTE: The inner map is inverted, member -> tparam instead of
    * tparam -> member as inside localTypeTags and globalTypeTags
    */
-  val deferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+  val inheritedDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+  val primaryDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
   /**
    * For each method of the original class and each partial specialization

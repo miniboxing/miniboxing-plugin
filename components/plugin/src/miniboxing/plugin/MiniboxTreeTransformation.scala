@@ -110,8 +110,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     def typeTagTrees(symbol: Symbol = currentMethod) = {
       val clazz = if (symbol != NoSymbol) symbol.enclClass else currentClass
       standardTypeTagTrees ++
+      inheritedDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
+      primaryDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       globalTypeTags.getOrElse(clazz, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      deferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, {gen.mkMethodCall(method, List())})}) ++
       symbol.ownerChain.filter(_.isMethod).reverse.foldLeft(Map.empty[Symbol, Tree])((m, s) => m ++ localTypeTagTrees(s))
     }
 

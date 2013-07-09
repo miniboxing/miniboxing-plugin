@@ -62,7 +62,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         specializedClasses(sym).get(extractPSpec(tref)) match {
           case Some(sym1) =>
             val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
-            deferredTypeTags(current) ++= deferredTypeTags(sym1).mapValues(localTParamMap)
+            inheritedDeferredTypeTags(current) ++= primaryDeferredTypeTags(sym1).mapValues(localTParamMap) ++
+                                                   inheritedDeferredTypeTags(sym1).mapValues(localTParamMap)
             typeRef(pre1, sym1, args)
           case None       => typeRef(pre1, sym, args)
         }
@@ -202,7 +203,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       // declarations inside the specialized class - to be filled in later
       val specScope = newScope
-      deferredTypeTags(spec) = HashMap()
+      inheritedDeferredTypeTags(spec) = HashMap()
+      primaryDeferredTypeTags(spec) = HashMap()
 
       // create the type of the new class
       val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
@@ -229,7 +231,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
           sym setFlag MINIBOXED
           if (origin.isTrait) {
-            deferredTypeTags(spec) += sym -> pmap(tparam)
+            primaryDeferredTypeTags(spec) += sym -> pmap(tparam)
             memberSpecializationInfo(sym) = DeferredTypeTag(tparam)
           }
 
@@ -386,7 +388,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       baseClass(origin) = origin
       typeParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
-      deferredTypeTags(origin) = HashMap()
+      inheritedDeferredTypeTags(origin) = HashMap()
+      primaryDeferredTypeTags(origin) = HashMap()
       specializedClasses(origin) = HashMap()
 
       // we only specialize the members that are defined in the current class
@@ -507,14 +510,14 @@ trait MiniboxInfoTransformation extends InfoTransform {
     def addDeferredTypeTagImpls(origin: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val scope1 = if (inPlace) scope else scope.cloneScope
       if (!origin.isTrait) {
-        val deferredTags = deferredTypeTags(origin)
+        val deferredTags = primaryDeferredTypeTags(origin) ++ inheritedDeferredTypeTags(origin)
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope1 enter impl
         }
-        deferredTypeTags(origin).clear()
+        inheritedDeferredTypeTags(origin).clear()
       }
       scope1
     }
@@ -581,7 +584,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
     } else {
       // TODO: overrides in the specialized class
-      deferredTypeTags(origin) = HashMap()
+      inheritedDeferredTypeTags(origin) = HashMap()
+      primaryDeferredTypeTags(origin) = HashMap()
       val scope1 = newScopeWith(originTpe.decls.toList /* ++ specialOverrides(origin) */: _*)
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
