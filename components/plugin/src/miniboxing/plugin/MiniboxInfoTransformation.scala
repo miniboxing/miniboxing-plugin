@@ -374,7 +374,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
 
       // deferred type tags:
-      addDeferredTypeTagImpls(spec, specScope)
+      addDeferredTypeTagImpls(spec, specScope, inPlace = true)
+
+      // normalized members:
+      normalizeMembers(spec, specScope, inPlace = true)
 
       spec
     }
@@ -488,25 +491,39 @@ trait MiniboxInfoTransformation extends InfoTransform {
       origin.info.decls.toList ++ newMembers
     }
 
+    // expand methods with specialized members
+    def normalizeMembers(clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+      val scope1 = if (inPlace) scope else scope.cloneScope
+
+      for (mbr <- scope if mbr.isMethod && mbr.typeParams.exists(isSpecialized(clazz, _))) {
+        // println(mbr.defString + " needs normalization: " + mbr.typeParams.find(isSpecialized(clazz, _)))
+      }
+
+      scope1
+    }
+
     // add members derived from deferred type tags
-    def addDeferredTypeTagImpls(origin: Symbol, scope: Scope) =
+    def addDeferredTypeTagImpls(origin: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+      val scope1 = if (inPlace) scope else scope.cloneScope
       if (!origin.isTrait) {
         val deferredTags = deferredTypeTags(origin)
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
-          scope enter impl
+          scope1 enter impl
         }
         deferredTypeTags(origin).clear()
       }
+      scope1
+    }
 
     // force info on parents to get all specialized metadata
     afterMinibox(originTpe.parents.map(_.typeSymbol.info))
 
     // begin specialize
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
-    specs.map(_.map(_._1.setFlag(MINIBOXED)))
+    specs.map(_.map(_._1.setFlag(MINIBOXED))) // TODO: Only needs to be done once per type parameter
 
     if (specs.nonEmpty) {
       log("Specializing " + origin + "...\n")
@@ -540,9 +557,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val parents1 = artificialAnyRef ::: originTpe.parents
 
       val scope2 = removeClassFields(origin, scope1)
+      val scope3 = normalizeMembers(origin, scope2)
+
       log("  // interface:")
       log("  " + origin.defString + " {")
-      for (decl <- scope2.toList.sortBy(_.defString))
+      for (decl <- scope3.toList.sortBy(_.defString))
         log(f"    ${decl.defString}%-70s")
 
       log("  }\n")
@@ -558,15 +577,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
       origin.resetFlag(FINAL)
       origin.resetFlag(CASE)
 
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope2, origin))
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
     } else {
       // TODO: overrides in the specialized class
       deferredTypeTags(origin) = HashMap()
       val scope1 = newScopeWith(originTpe.decls.toList /* ++ specialOverrides(origin) */: _*)
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
-      addDeferredTypeTagImpls(origin, scope1)
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope1, origin))
+      val scope2 = addDeferredTypeTagImpls(origin, scope1)
+      val scope3 = normalizeMembers(origin, scope2)
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
     }
   }
 
