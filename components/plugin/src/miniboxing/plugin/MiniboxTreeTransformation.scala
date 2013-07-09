@@ -107,13 +107,12 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
-    def typeTagTrees(symbol: Symbol = currentMethod) = {
-      val clazz = if (symbol != NoSymbol) symbol.enclClass else currentClass
+    def typeTagTrees(member: Symbol = currentMethod, clazz: Symbol = currentClass) = {
       standardTypeTagTrees ++
       inheritedDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       primaryDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       globalTypeTags.getOrElse(clazz, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      symbol.ownerChain.filter(_.isMethod).reverse.foldLeft(Map.empty[Symbol, Tree])((m, s) => m ++ localTypeTagTrees(s))
+      member.ownerChain.filter(_.isMethod).reverse.foldLeft(Map.empty[Symbol, Tree])((m, s) => m ++ localTypeTagTrees(s))
     }
 
     def localTypeTagTrees(symbol: Symbol): Map[Symbol, Tree] =
@@ -230,7 +229,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               tree
 
             case DeferredTypeTagImplementation(tparam) =>
-              val tagTrees = typeTagTrees(currentClass)
+              val tagTrees = typeTagTrees()
               val localTParam = tparam.tpe.asSeenFrom(currentClass.info.prefix, currentClass).typeSymbol
               super.transform(localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam)))))
 
@@ -535,14 +534,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             println(tagsToTparams1)
             println(currentClass)
             println(currentMethod)
-            println(typeTagTrees(currentMethod))
+            println(typeTagTrees())
             ex.printStackTrace()
             System.exit(1)
             ???
         }
       }
-      val instToLocalTagTrees = typeTagTrees(currentMethod)
-      val localTagArgs = tparamInsts.map(instToLocalTagTrees)
+      val typeTags = typeTagTrees()
+      val localTagArgs = tparamInsts.map(typeTags)
 
 
       // 2. Adapt arguments
@@ -552,7 +551,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             // pAct is always encoded using boxing
             // pForm may be encoded using either miniboxing OR boxing
             if ((pForm.tpe == LongTpe) &&(pAct.tpe != LongTpe))
-              gen.mkMethodCall(box2minibox, List(pAct.tpe), List(pAct, typeTagTrees(currentMethod)(pAct.tpe.typeSymbol)))
+              gen.mkMethodCall(box2minibox, List(pAct.tpe), List(pAct, typeTags(pAct.tpe.typeSymbol)))
             else
               pAct
           }
@@ -568,7 +567,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val unpackedTree =
         (newMethodTpe.finalResultType, oldMethodTpe.finalResultType) match {
           case (`LongTpe`, other) if other != LongTpe =>
-            gen.mkMethodCall(minibox2box, List(other), List(aapp, instToLocalTagTrees(other.typeSymbol)))
+            gen.mkMethodCall(minibox2box, List(other), List(aapp, typeTags(other.typeSymbol)))
           case _ =>
             aapp
         }
