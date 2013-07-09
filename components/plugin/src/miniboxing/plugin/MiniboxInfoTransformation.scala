@@ -243,7 +243,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // Copy the members of the original class to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
         // we only duplicate methods and fields
-        (for (mbr <- decls.toList if (!notSpecializable(mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
+        (for (mbr <- decls.toList if (!notSpecializable(origin, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
           val newMbr = mbr.cloneSymbol(spec)
           if (mbr.isMethod) {
             if (base(mbr) == mbr)
@@ -391,6 +391,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       // we only specialize the members that are defined in the current class
       val members = origin.info.members.filter(_.owner == origin).toList
+//      members foreach (_ info)
 
       val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
       val getters = members.filter(_.isGetter)
@@ -400,7 +401,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       var newMembers = List[Symbol]()
 
       // we make specialized overloads for every member of the original class
-      for (member <- methods ::: getters ::: setters if !notSpecializable(member)) {
+      for (member <- methods ::: getters ::: setters if !notSpecializable(origin, member)) {
         val overloadsOfMember = new HashMap[PartialSpec, Symbol]
         val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(isAllAnyRef(_))
 
@@ -495,7 +496,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     def normalizeMembers(clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val scope1 = if (inPlace) scope else scope.cloneScope
 
-      for (mbr <- scope if mbr.isMethod && mbr.typeParams.exists(isSpecialized(clazz, _))) {
+      for (mbr <- scope if !notSpecializable(clazz, mbr) && mbr.isMethod && mbr.info.typeParams.exists(isSpecialized(clazz, _))) {
         // println(mbr.defString + " needs normalization: " + mbr.typeParams.find(isSpecialized(clazz, _)))
       }
 

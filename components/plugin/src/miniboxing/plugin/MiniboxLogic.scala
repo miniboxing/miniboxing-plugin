@@ -77,7 +77,7 @@ trait MiniboxLogic {
       case Miniboxed => LongClass.tpe
     }
 
-  def needsSpecialization(clazz: Symbol, member: Symbol) = !flag_spec_opt || {
+  def needsSpecialization(clazz: Symbol, member: Symbol) = flag_spec_no_opt || {
     val tparams = clazz.typeParams.filter(isSpecialized(clazz, _))
     val res = member.info.params.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
     tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
@@ -132,7 +132,7 @@ trait MiniboxLogic {
     }
   }
 
-  def notSpecializable(mbr: Symbol) =
+  def notSpecializable(clazz: Symbol, mbr: Symbol) =
     mbr.isMethod && mbr.isSynthetic ||
-    mbr.alias != NoSymbol && !(overloads.isDefinedAt(mbr.alias))
+    (mbr.alias != NoSymbol) && !(overloads.isDefinedAt(mbr.alias))
 }
