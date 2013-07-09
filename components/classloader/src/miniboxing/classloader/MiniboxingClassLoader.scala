@@ -36,19 +36,23 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     classNode.name = newname
 
     // Make the type tags static final
-    val fieldNodes = classNode.fields.asInstanceOf[JList[FieldNode]].asScala
-    for (fieldNode <- fieldNodes if fieldNode.name.endsWith("_TypeTag")) {
-      fieldNode.access |= Opcodes.ACC_FINAL;
-      // TODO: Extend to more parameters, this only supports one
-      fieldNode.value = new Integer(tparam)
+    val fieldNodes = classNode.fields.iterator()
+    while(fieldNodes.hasNext()) {
+      val fieldNode = fieldNodes.next()
+      if (fieldNode.name.endsWith("_TypeTag")) {
+        fieldNode.access |= Opcodes.ACC_FINAL;
+        // TODO: Extend to more parameters, this only supports one
+        fieldNode.value = new Integer(tparam)
+      }
     }
 
     // Patch all the methods
-    val methodNodes = classNode.methods.asInstanceOf[JList[MethodNode]].asScala
-    for (methodNode <- methodNodes) {
+    val methodNodes = classNode.methods.iterator()
+    while(methodNodes.hasNext()) {
+      val methodNode = methodNodes.next()
       val insnNodes = methodNode.instructions.iterator().asInstanceOf[ListIterator[AbstractInsnNode]]
-      while (insnNodes.hasNext) {
-        insnNodes.next match {
+      while (insnNodes.hasNext()) {
+        insnNodes.next() match {
           case finst: FieldInsnNode =>
             // update owner to the new class
             finst.owner = finst.owner.replace(oldname, newname) // update names everywhere
@@ -58,11 +62,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
                 case Opcodes.GETFIELD =>
                   insnNodes.set(new InsnNode(Opcodes.POP));
                   val replNode = tparam match {
-                    case 0 => new InsnNode(Opcodes.ICONST_0)
-                    case 1 => new InsnNode(Opcodes.ICONST_1)
-                    case 2 => new InsnNode(Opcodes.ICONST_2)
-                    case 3 => new InsnNode(Opcodes.ICONST_3)
-                    case 4 => new InsnNode(Opcodes.ICONST_4)
+                    case 0 | 1 | 2 | 3 | 4 => new InsnNode(Opcodes.ICONST_0 + tparam)
                     case _ => new IntInsnNode(Opcodes.BIPUSH, tparam)
                   }
                   insnNodes.add(replNode) // Full expansion
@@ -73,6 +73,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
           case tinst: TypeInsnNode if tinst.getOpcode() == Opcodes.NEW =>
             // patch up NEW calls
             if (tinst.desc.endsWith("_J"))
+              // TODO: In-place replace this
               insnNodes.set(new TypeInsnNode(Opcodes.NEW, tinst.desc.replaceAll("_J$", "_" + tparam)))
           case minst: MethodInsnNode =>
             // update owner to the new class
@@ -80,6 +81,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
             // patch up constructor call
             if (minst.name == "<init>")
               if (minst.owner.endsWith("_J"))
+                // TODO: In-place replace this
                 minst.owner = minst.owner.replaceAll("_J$", "_" + tparam)
           case _ =>
         }
@@ -93,15 +95,15 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 //    classNode.accept(traceClassVisitor);
 
     // Optimizing the hell out of that class:
-    val iter = classNode.methods.asInstanceOf[JList[MethodNode]].iterator()
+    val iter = classNode.methods.iterator()
     while(iter.hasNext) {
       val mnode = iter.next()
-      if(Util.hasBytecodeInstructions(mnode)) {
-        Util.computeMaxLocalsMaxStack(mnode)
-        jumpChainsColl.transform(mnode)
-        constantFolder.transform(newname, mnode)
-        unreachableCode.transform(newname, mnode)
-        jumpChainsColl.transform(mnode)
+      if (Util.hasBytecodeInstructions(mnode)) {
+         Util.computeMaxLocalsMaxStack(mnode)
+         jumpChainsColl.transform(mnode)
+         constantFolder.transform(newname, mnode)
+         unreachableCode.transform(newname, mnode)
+         jumpChainsColl.transform(mnode)
       }
     }
 
