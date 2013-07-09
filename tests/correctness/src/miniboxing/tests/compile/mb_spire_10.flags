@@ -1,1 +1,2 @@
 -Ycheck:minibox
+-P:minibox:spec-no-opt
