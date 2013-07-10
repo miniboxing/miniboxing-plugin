@@ -13,7 +13,7 @@ package miniboxing.tests.compile {
       Cplx.super.<init>();
       ()
     };
-    def one[@miniboxing.plugin.minispec T >: Nothing <: Any](implicit f: miniboxing.tests.compile.Fractional[T]): miniboxing.tests.compile.Cplx[T] = scala.this.Predef.???()
+    def one[T >: Nothing <: Any](implicit f: miniboxing.tests.compile.Fractional[T]): miniboxing.tests.compile.Cplx[T] = scala.this.Predef.???()
   };
   abstract trait CplxIsRing[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
     implicit def f(): miniboxing.tests.compile.Fractional[A];

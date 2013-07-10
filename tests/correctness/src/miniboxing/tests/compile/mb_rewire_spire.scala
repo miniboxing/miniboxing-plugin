@@ -11,7 +11,7 @@ class Cplx[@minispec A](real: A, imag: A)(implicit f: Fractional[A]) {
 }
 
 object Cplx {
-  def one[@minispec T](implicit f: Fractional[T]): Cplx[T] = ???
+  def one[T](implicit f: Fractional[T]): Cplx[T] = ???
 }
 
 trait CplxIsRing[@minispec A] {
