@@ -19,10 +19,13 @@ trait CplxIsRing[@minispec A] {
   def one: Cplx[A] = Cplx.one
 }
 
-trait Fractional[@minispec A] {
+trait Ord[@minispec A] {
+  def lt(o1: A, o2: A): Boolean
+}
+
+trait Fractional[@minispec A] extends Ord[A] {
   def one: A
   def zero: A
-  def lt(o1: A, o2: A): Boolean
 }
 
 

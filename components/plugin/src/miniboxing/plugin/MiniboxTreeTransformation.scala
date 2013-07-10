@@ -258,7 +258,11 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
         // Redirect method calls without type parameters
         // TODO: unify with the next case
-        case Apply(sel @ Select(qual, fn), args) if { afterMinibox(sel.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
+        case Apply(sel @ Select(qual, fn), args) if {
+          afterMinibox(sel.symbol.owner.info)
+          base.isDefinedAt(tree.symbol) &&
+          (base(tree.symbol) == tree.symbol)
+        } =>
           val oldMethodSym = tree.symbol
           val oldMethodType = sel.tpe
           val tree1 =
@@ -269,7 +273,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 // TODO: Can this be done?
                 tree
               case _ =>
-                extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
+                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
+                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
                   case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args, null)
@@ -293,7 +298,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 // TODO: Can this be done?
                 tree
               case _ =>
-                extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
+                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
+                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
                   case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args, targs)
@@ -317,7 +323,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                 // TODO: Can this be done?
                 tree
               case _ =>
-              extractSpec(qual.tpe, currentMethod, currentClass) match { // Get the partial specialization
+                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
+                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
                   case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
                     val newMethodSym = overloads(oldMethodSym)(pspec)
                     val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), null, null)
@@ -460,17 +467,19 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     }
 
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
-      val pSpec = partialSpec.getOrElse(inClass, Map.empty)
+      val pSpec0 = partialSpec.getOrElse(inClass, Map.empty)
+      val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
+      val pSpec = pSpec0.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       qualTpe match {
         case ThisType(cls) if (cls == inClass) =>
-          Some(pSpec)
+          Some(pSpec0)
         case SingleType(pre, x) =>
           extractSpec(qualTpe.widen, inMethod, inClass)
         case PolyType(tparams, rest) =>
           extractSpec(rest, inMethod, inClass)
-        case TypeRef(pre, clazz, args) if specializedClasses.isDefinedAt(clazz) =>
+        case TypeRef(pre, clazz, args) =>
           import miniboxing.runtime.MiniboxConstants._
-          val tparams = afterMinibox(clazz.info).typeParams
+          val tparams = afterMinibox(baseClass.getOrElse(clazz, clazz).info).typeParams
           val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
             pair match {
               // case (2.3)
@@ -487,15 +496,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               // case (2.1)
               // case (2.2)
               // case (2.4)
-              case (p, tpe) if baseClass.isDefinedAt(inClass) =>
-                val instantiatedBaseClass = inClass.info.baseType(baseClass(inClass))
-                val instantiationMapper = (instantiatedBaseClass.typeArgs.map(_.typeSymbol).zip(instantiatedBaseClass.typeSymbol.typeParams)).toMap
-                val baseTParam = instantiationMapper.getOrElse(tpe.typeSymbol, NoSymbol)
-                if (pSpec.isDefinedAt(baseTParam))
-                  Some((p, pSpec(baseTParam)))
+              case (p, tpe) =>
+                if (pSpec.isDefinedAt(tpe.typeSymbol))
+                  Some((p, pSpec(tpe.typeSymbol)))
                 else
-                  Some((p, Boxed))
-              case (p, _) =>
                   Some((p, Boxed))
             }
           }

@@ -19,11 +19,13 @@ package miniboxing.tests.compile {
     implicit def f(): miniboxing.tests.compile.Fractional[A];
     def one(): miniboxing.tests.compile.Cplx[A]
   };
-  abstract trait Fractional[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait Ord[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+    def lt(o1: A, o2: A): Boolean;
+    def lt_J(Ord_A_TypeTag: Byte, o1: Long, o2: Long): Boolean
+  };
+  abstract trait Fractional[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[A] {
     def one(): A;
     def zero(): A;
-    def lt(o1: A, o2: A): Boolean;
-    def lt_J(Fractional_A_TypeTag: Byte, o1: Long, o2: Long): Boolean;
     def one_J(Fractional_A_TypeTag: Byte): Long;
     def zero_J(Fractional_A_TypeTag: Byte): Long
   };
@@ -73,18 +75,23 @@ package miniboxing.tests.compile {
     def one(): miniboxing.tests.compile.Cplx[Asp] = Cplx.one[Asp](CplxIsRing_L.this.f());
     implicit def f(): miniboxing.tests.compile.Fractional[Asp]
   };
-  abstract trait Fractional_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Fractional[Asp] {
-    def Fractional_A_TypeTag(): Byte;
+  abstract trait Ord_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[Asp] {
+    def Ord_A_TypeTag(): Byte;
     def lt(o1: Asp, o2: Asp): Boolean;
-    def lt_J(Fractional_A_TypeTag: Byte, o1: Long, o2: Long): Boolean;
+    def lt_J(Ord_A_TypeTag: Byte, o1: Long, o2: Long): Boolean
+  };
+  abstract trait Ord_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[Asp] {
+    def lt(o1: Asp, o2: Asp): Boolean;
+    def lt_J(Ord_A_TypeTag: Byte, o1: Long, o2: Long): Boolean
+  };
+  abstract trait Fractional_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord_J[Asp] with miniboxing.tests.compile.Fractional[Asp] {
+    def Fractional_A_TypeTag(): Byte;
     def one(): Asp;
     def one_J(Fractional_A_TypeTag: Byte): Long;
     def zero(): Asp;
     def zero_J(Fractional_A_TypeTag: Byte): Long
   };
-  abstract trait Fractional_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Fractional[Asp] {
-    def lt(o1: Asp, o2: Asp): Boolean;
-    def lt_J(Fractional_A_TypeTag: Byte, o1: Long, o2: Long): Boolean;
+  abstract trait Fractional_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord_L[Asp] with miniboxing.tests.compile.Fractional[Asp] {
     def one(): Asp;
     def one_J(Fractional_A_TypeTag: Byte): Long;
     def zero(): Asp;
