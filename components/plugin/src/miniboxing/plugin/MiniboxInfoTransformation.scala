@@ -253,6 +253,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
             else
               base(newMbr) = mbr
           }
+          val update = (mbr.info.params zip newMbr.info.params).toMap
+          localTypeTags(newMbr) = localTypeTags.getOrElse(mbr, Map.empty).map({ case (tpe, tag) => (tpe, update(tag))})
+          globalTypeTags(newMbr) = globalTypeTags(spec)
           (mbr, newMbr)
         }).toMap
 
@@ -545,7 +548,30 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
             scope1 enter newMbr
 
-            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(base.getOrElse(member, member))
+            memberSpecializationInfo(newMbr) =
+              memberSpecializationInfo.get(member) match {
+                case Some(Interface()) =>
+                  Interface()
+                case Some(SpecializedImplementationOf(baseMbr)) =>
+                  println(newMbr + " ==> " + baseMbr)
+                  SpecializedImplementationOf(baseMbr)
+                case Some(ForwardTo(_, target, _, _)) =>
+                  println("mbr:  " + member.defString)
+                  println("from: " + newMbr.defString)
+                  println("to:   " + target.defString)
+                  val wrapperTypeTags = localTypeTags(newMbr) ++ globalTypeTags.getOrElse(clazz, Map.empty)
+                  val targetTypeTags = localTypeTags.getOrElse(target, Map())
+                  println(wrapperTypeTags)
+                  println(targetTypeTags)
+                  genForwardingInfo(newMbr, wrapperTypeTags, target, targetTypeTags)
+                case None =>
+                  SpecializedImplementationOf(member)
+                case _ =>
+                  println("Unknown info for " + member.defString)
+                  println("when specializing " + newMbr.defString + ":")
+                  println(memberSpecializationInfo.get(member))
+                  ???
+              }
           }
 
 //          println(pspec)
