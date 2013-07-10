@@ -104,6 +104,7 @@ trait MiniboxLogic {
 
   /** TODO: Document this */
   case class MiniboxingTypeEnv(shallowEnv: TypeEnv, deepEnv: TypeEnv)
+  object EmptyMbTypeEnv extends MiniboxingTypeEnv(EmptyTypeEnv, EmptyTypeEnv)
 
   object PartialSpec {
 

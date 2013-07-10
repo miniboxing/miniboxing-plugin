@@ -170,6 +170,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
          * create symbols for the methods - give them an empty body.
          */
         case Template(parents, self, body) =>
+          MethodBodiesCollector(tree)
           val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
           val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
           val parents1 = map2(currentOwner.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
@@ -701,8 +702,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val symbol = tree.symbol
       val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Set())
-      val miniboxedEnvDeep = typeEnv(symbol.owner).deepEnv
-      val miniboxedEnvShallow = typeEnv(symbol.owner).shallowEnv
+      val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyMbTypeEnv)
+      val miniboxedEnvDeep = miniboxedEnv.deepEnv
+      val miniboxedEnvShallow = miniboxedEnv.shallowEnv
       val miniboxedTypeTags = typeTagTrees(symbol)
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
@@ -762,7 +764,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if base.getOrElse(symbol, NoSymbol) == symbol =>
           (tparams, Nil, vparams, tpt)
       }
-      val env = typeEnv(symbol.owner).deepEnv // TODO
+      val env = typeEnv.getOrElse(symbol, EmptyMbTypeEnv).deepEnv // TODO
       val boundTvars = env.keySet
       val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
       if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)

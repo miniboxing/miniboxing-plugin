@@ -117,7 +117,6 @@ trait MiniboxSpecializationInfo {
   object ParamMap {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
       val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, p.name.append("sp")))
-
       newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
       (oldParams zip newParams).toMap
     }
@@ -178,12 +177,14 @@ trait MiniboxSpecializationInfo {
    * we keep track of the overload specialized for that representation.
    */
   val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+  val normalizations = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
   /**
    * Which of the members are base (do not take any type tags)
    * TODO: Transform into a set
    */
   val base = new mutable.HashMap[Symbol, Symbol]
+  val normbase = new mutable.HashMap[Symbol, Symbol]
 
   /**
    * The set of miniboxed arguments a member takes
