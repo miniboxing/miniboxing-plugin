@@ -553,16 +553,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 case Some(Interface()) =>
                   Interface()
                 case Some(SpecializedImplementationOf(baseMbr)) =>
-                  println(newMbr + " ==> " + baseMbr)
+//                  println(newMbr + " ==> " + baseMbr)
                   SpecializedImplementationOf(baseMbr)
                 case Some(ForwardTo(_, target, _, _)) =>
-                  println("mbr:  " + member.defString)
-                  println("from: " + newMbr.defString)
-                  println("to:   " + target.defString)
+//                  println("mbr:  " + member.defString)
+//                  println("from: " + newMbr.defString)
+//                  println("to:   " + target.defString)
                   val wrapperTypeTags = localTypeTags(newMbr) ++ globalTypeTags.getOrElse(clazz, Map.empty)
                   val targetTypeTags = localTypeTags.getOrElse(target, Map())
-                  println(wrapperTypeTags)
-                  println(targetTypeTags)
+//                  println(wrapperTypeTags)
+//                  println(targetTypeTags)
                   genForwardingInfo(newMbr, wrapperTypeTags, target, targetTypeTags)
                 case None =>
                   SpecializedImplementationOf(member)
