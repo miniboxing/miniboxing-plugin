@@ -1,0 +1,282 @@
+Specializing class SpCls4Tuple2...
+
+  // interface:
+  case abstract trait SpCls4Tuple2[U, V] extends Product with Serializable {
+    def canEqual(x$1: Any): Boolean
+    def copy$default$1[U, V](): U @scala.annotation.unchecked.uncheckedVariance
+    def copy$default$2[U, V](): V @scala.annotation.unchecked.uncheckedVariance
+    def copy[U, V](u: U,v: V): miniboxing.tests.correctness.SpCls4Tuple2[U,V]
+    def productArity(): Int
+    def productElement(x$1: Int): Any
+    override def equals(x$1: Any): Boolean
+    override def hashCode(): Int
+    override def productIterator(): Iterator[Any]
+    override def productPrefix(): String
+    override def toString(): String
+    val u(): U
+    val u_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long
+    val u_JL(val SpCls4Tuple2_U_TypeTag: Byte): Long
+    val u_LJ(val SpCls4Tuple2_V_TypeTag: Byte): U
+    val v(): V
+    val v_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long
+    val v_JL(val SpCls4Tuple2_U_TypeTag: Byte): V
+    val v_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Long
+  }
+
+  // specialized class:
+  case class SpCls4Tuple2_JJ[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
+    def <init>(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte,u: Long,v: Long): miniboxing.tests.correctness.SpCls4Tuple2_JJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    private[this] val SpCls4Tuple2_U_TypeTag: Byte                         // no info
+    private[this] val SpCls4Tuple2_V_TypeTag: Byte                         // no info
+    private[this] val u: Long                                              // is a specialized implementation of value u
+    private[this] val v: Long                                              // is a specialized implementation of value v
+    val u(): Usp                                                           // is a forwarder to value u_JJ
+    val u_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a setter or getter for value u
+    val u_JL(val SpCls4Tuple2_U_TypeTag: Byte): Long                       // is a forwarder to value u_JJ
+    val u_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Usp                        // is a forwarder to value u_JJ
+    val v(): Vsp                                                           // is a forwarder to value v_JJ
+    val v_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a setter or getter for value v
+    val v_JL(val SpCls4Tuple2_U_TypeTag: Byte): Vsp                        // is a forwarder to value v_JJ
+    val v_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Long                       // is a forwarder to value v_JJ
+  }
+
+  // specialized class:
+  case class SpCls4Tuple2_LJ[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
+    def <init>(val SpCls4Tuple2_V_TypeTag: Byte,u: Usp,v: Long): miniboxing.tests.correctness.SpCls4Tuple2_LJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    private[this] val SpCls4Tuple2_V_TypeTag: Byte                         // no info
+    private[this] val u: Usp                                               // is a specialized implementation of value u
+    private[this] val v: Long                                              // is a specialized implementation of value v
+    val u(): Usp                                                           // is a forwarder to value u_LJ
+    val u_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value u_LJ
+    val u_JL(val SpCls4Tuple2_U_TypeTag: Byte): Long                       // is a forwarder to value u_LJ
+    val u_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Usp                        // is a setter or getter for value u
+    val v(): Vsp                                                           // is a forwarder to value v_LJ
+    val v_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value v_LJ
+    val v_JL(val SpCls4Tuple2_U_TypeTag: Byte): Vsp                        // is a forwarder to value v_LJ
+    val v_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Long                       // is a setter or getter for value v
+  }
+
+  // specialized class:
+  case class SpCls4Tuple2_JL[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
+    def <init>(val SpCls4Tuple2_U_TypeTag: Byte,u: Long,v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_JL[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    private[this] val SpCls4Tuple2_U_TypeTag: Byte                         // no info
+    private[this] val u: Long                                              // is a specialized implementation of value u
+    private[this] val v: Vsp                                               // is a specialized implementation of value v
+    val u(): Usp                                                           // is a forwarder to value u_JL
+    val u_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value u_JL
+    val u_JL(val SpCls4Tuple2_U_TypeTag: Byte): Long                       // is a setter or getter for value u
+    val u_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Usp                        // is a forwarder to value u_JL
+    val v(): Vsp                                                           // is a forwarder to value v_JL
+    val v_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value v_JL
+    val v_JL(val SpCls4Tuple2_U_TypeTag: Byte): Vsp                        // is a setter or getter for value v
+    val v_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Long                       // is a forwarder to value v_JL
+  }
+
+  // specialized class:
+  case class SpCls4Tuple2_LL[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
+    def <init>(u: Usp,v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_LL[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    private[this] val u: Usp                                               // is a specialized implementation of value u
+    private[this] val v: Vsp                                               // is a specialized implementation of value v
+    val u(): Usp                                                           // is a setter or getter for value u
+    val u_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value u
+    val u_JL(val SpCls4Tuple2_U_TypeTag: Byte): Long                       // is a forwarder to value u
+    val u_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Usp                        // is a forwarder to value u
+    val v(): Vsp                                                           // is a setter or getter for value v
+    val v_JJ(val SpCls4Tuple2_U_TypeTag: Byte,val SpCls4Tuple2_V_TypeTag: Byte): Long // is a forwarder to value v
+    val v_JL(val SpCls4Tuple2_U_TypeTag: Byte): Vsp                        // is a forwarder to value v
+    val v_LJ(val SpCls4Tuple2_V_TypeTag: Byte): Long                       // is a forwarder to value v
+  }
+
+
+
+
+Specializing class SpCls4...
+
+  // interface:
+  abstract trait SpCls4[S] extends Object {
+    def normalizeMe1[T](s: S,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_J[T](val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: S,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+  }
+
+  // specialized class:
+  class SpCls4_J[Ssp] extends SpCls4[Ssp] {
+    def <init>(val SpCls4_S_TypeTag: Byte): miniboxing.tests.correctness.SpCls4_J[Ssp] // is a specialized implementation of constructor SpCls4
+    def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_J
+    def normalizeMe1_J[T](val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_J
+    private[this] val SpCls4_S_TypeTag: Byte                               // no info
+  }
+
+  // specialized class:
+  class SpCls4_L[Ssp] extends SpCls4[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls4_L[Ssp]               // is a specialized implementation of constructor SpCls4
+    def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_J[T](val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1
+    def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1
+    def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+  }
+
+
+
+
+[[syntax trees at end of                   minibox]] // newSource1.scala
+package miniboxing.tests.correctness {
+  abstract trait SpCls4Tuple2[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any] extends Object with Product with Serializable {
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u(): U;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v(): V;
+    <synthetic> def copy[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any](u: U, v: V): miniboxing.tests.correctness.SpCls4Tuple2[U,V] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[U,V](u, v);
+    <synthetic> def copy$default$1[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any](): U @scala.annotation.unchecked.uncheckedVariance = SpCls4Tuple2.this.u();
+    <synthetic> def copy$default$2[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any](): V @scala.annotation.unchecked.uncheckedVariance = SpCls4Tuple2.this.v();
+    override <synthetic> def productPrefix(): String = "SpCls4Tuple2";
+    <synthetic> def productArity(): Int = 2;
+    <synthetic> def productElement(x$1: Int): Any = {
+      case <synthetic> val x1: Int = x$1;
+      x1 match {
+        case 0 => SpCls4Tuple2.this.u()
+        case 1 => SpCls4Tuple2.this.v()
+        case _ => throw new IndexOutOfBoundsException(x$1.toString())
+      }
+    };
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](SpCls4Tuple2.this);
+    <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[miniboxing.tests.correctness.SpCls4Tuple2[_, _]]();
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(SpCls4Tuple2.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(SpCls4Tuple2.this);
+    override <synthetic> def equals(x$1: Any): Boolean = SpCls4Tuple2.this.eq(x$1.asInstanceOf[Object]()).||({
+  case <synthetic> val x1: Any = x$1;
+  case5(){
+    if (x1.isInstanceOf[miniboxing.tests.correctness.SpCls4Tuple2[U,V]]())
+      matchEnd4(true)
+    else
+      case6()
+  };
+  case6(){
+    matchEnd4(false)
+  };
+  matchEnd4(x: Boolean){
+    x
+  }
+}.&&({
+      <synthetic> val SpCls4Tuple2$1: miniboxing.tests.correctness.SpCls4Tuple2[U,V] = x$1.asInstanceOf[miniboxing.tests.correctness.SpCls4Tuple2[U,V]]();
+      SpCls4Tuple2.this.u().==(SpCls4Tuple2$1.u()).&&(SpCls4Tuple2.this.v().==(SpCls4Tuple2$1.v())).&&(SpCls4Tuple2$1.canEqual(SpCls4Tuple2.this))
+    }));
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JL(SpCls4Tuple2_U_TypeTag: Byte): Long;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_LJ(SpCls4Tuple2_V_TypeTag: Byte): U;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JL(SpCls4Tuple2_U_TypeTag: Byte): V;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_LJ(SpCls4Tuple2_V_TypeTag: Byte): Long
+  };
+  <synthetic> object SpCls4Tuple2 extends Object with Serializable {
+    def <init>(): miniboxing.tests.correctness.SpCls4Tuple2.type = {
+      SpCls4Tuple2.super.<init>();
+      ()
+    };
+    final override <synthetic> def toString(): String = "SpCls4Tuple2";
+    case <synthetic> def apply[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any](u: U, v: V): miniboxing.tests.correctness.SpCls4Tuple2[U,V] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[U,V](u, v);
+    case <synthetic> def unapply[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any](x$0: miniboxing.tests.correctness.SpCls4Tuple2[U,V]): Option[(U, V)] = if (x$0.==(null))
+      scala.this.None
+    else
+      new Some[(U, V)](new (U, V)(x$0.u(), x$0.v()));
+    <synthetic> private def readResolve(): Object = correctness.this.SpCls4Tuple2
+  };
+  abstract trait SpCls4[@miniboxing.plugin.minispec S >: Nothing <: Any] extends Object {
+    def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_J[@miniboxing.plugin.minispec T >: Nothing <: Any](SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: S, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+  };
+  case class SpCls4Tuple2_JJ[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.correctness.SpCls4Tuple2[Usp,Vsp] {
+    def <init>(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte, u: Long, v: Long): miniboxing.tests.correctness.SpCls4Tuple2_JJ[Usp,Vsp] = {
+      SpCls4Tuple2_JJ.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val SpCls4Tuple2_U_TypeTag: Byte = _;
+    <paramaccessor> private[this] val SpCls4Tuple2_V_TypeTag: Byte = _;
+    <caseaccessor> <paramaccessor> private[this] val u: Long = _;
+    <caseaccessor> <paramaccessor> private[this] val v: Long = _;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u(): Usp = MiniboxConversions.this.minibox2box[Usp](SpCls4Tuple2_JJ.this.u_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_JJ.this.u;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JL(SpCls4Tuple2_U_TypeTag: Byte): Long = SpCls4Tuple2_JJ.this.u_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_LJ(SpCls4Tuple2_V_TypeTag: Byte): Usp = MiniboxConversions.this.minibox2box[Usp](SpCls4Tuple2_JJ.this.u_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v(): Vsp = MiniboxConversions.this.minibox2box[Vsp](SpCls4Tuple2_JJ.this.v_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_JJ.this.v;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JL(SpCls4Tuple2_U_TypeTag: Byte): Vsp = MiniboxConversions.this.minibox2box[Vsp](SpCls4Tuple2_JJ.this.v_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_LJ(SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_JJ.this.v_JJ(SpCls4Tuple2_JJ.this.SpCls4Tuple2_U_TypeTag, SpCls4Tuple2_JJ.this.SpCls4Tuple2_V_TypeTag)
+  };
+  case class SpCls4Tuple2_JL[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.correctness.SpCls4Tuple2[Usp,Vsp] {
+    def <init>(SpCls4Tuple2_U_TypeTag: Byte, u: Long, v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_JL[Usp,Vsp] = {
+      SpCls4Tuple2_JL.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val SpCls4Tuple2_U_TypeTag: Byte = _;
+    <caseaccessor> <paramaccessor> private[this] val u: Long = _;
+    <caseaccessor> <paramaccessor> private[this] val v: Vsp = _;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u(): Usp = MiniboxConversions.this.minibox2box[Usp](SpCls4Tuple2_JL.this.u_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag), SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_JL.this.u_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JL(SpCls4Tuple2_U_TypeTag: Byte): Long = SpCls4Tuple2_JL.this.u;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_LJ(SpCls4Tuple2_V_TypeTag: Byte): Usp = MiniboxConversions.this.minibox2box[Usp](SpCls4Tuple2_JL.this.u_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag), SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v(): Vsp = SpCls4Tuple2_JL.this.v_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_JL.this.v_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag), SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JL(SpCls4Tuple2_U_TypeTag: Byte): Vsp = SpCls4Tuple2_JL.this.v;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_LJ(SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_JL.this.v_JL(SpCls4Tuple2_JL.this.SpCls4Tuple2_U_TypeTag), SpCls4Tuple2_V_TypeTag)
+  };
+  case class SpCls4Tuple2_LJ[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.correctness.SpCls4Tuple2[Usp,Vsp] {
+    def <init>(SpCls4Tuple2_V_TypeTag: Byte, u: Usp, v: Long): miniboxing.tests.correctness.SpCls4Tuple2_LJ[Usp,Vsp] = {
+      SpCls4Tuple2_LJ.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val SpCls4Tuple2_V_TypeTag: Byte = _;
+    <caseaccessor> <paramaccessor> private[this] val u: Usp = _;
+    <caseaccessor> <paramaccessor> private[this] val v: Long = _;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u(): Usp = SpCls4Tuple2_LJ.this.u_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](SpCls4Tuple2_LJ.this.u_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JL(SpCls4Tuple2_U_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](SpCls4Tuple2_LJ.this.u_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_LJ(SpCls4Tuple2_V_TypeTag: Byte): Usp = SpCls4Tuple2_LJ.this.u;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v(): Vsp = MiniboxConversions.this.minibox2box[Vsp](SpCls4Tuple2_LJ.this.v_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_LJ.this.v_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JL(SpCls4Tuple2_U_TypeTag: Byte): Vsp = MiniboxConversions.this.minibox2box[Vsp](SpCls4Tuple2_LJ.this.v_LJ(SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag), SpCls4Tuple2_LJ.this.SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_LJ(SpCls4Tuple2_V_TypeTag: Byte): Long = SpCls4Tuple2_LJ.this.v
+  };
+  case class SpCls4Tuple2_LL[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.correctness.SpCls4Tuple2[Usp,Vsp] {
+    def <init>(u: Usp, v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_LL[Usp,Vsp] = {
+      SpCls4Tuple2_LL.super.<init>();
+      ()
+    };
+    <caseaccessor> <paramaccessor> private[this] val u: Usp = _;
+    <caseaccessor> <paramaccessor> private[this] val v: Vsp = _;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u(): Usp = SpCls4Tuple2_LL.this.u;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](SpCls4Tuple2_LL.this.u(), SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_JL(SpCls4Tuple2_U_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](SpCls4Tuple2_LL.this.u(), SpCls4Tuple2_U_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def u_LJ(SpCls4Tuple2_V_TypeTag: Byte): Usp = SpCls4Tuple2_LL.this.u();
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v(): Vsp = SpCls4Tuple2_LL.this.v;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JJ(SpCls4Tuple2_U_TypeTag: Byte, SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_LL.this.v(), SpCls4Tuple2_V_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_JL(SpCls4Tuple2_U_TypeTag: Byte): Vsp = SpCls4Tuple2_LL.this.v();
+    <stable> <caseaccessor> <accessor> <paramaccessor> def v_LJ(SpCls4Tuple2_V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_LL.this.v(), SpCls4Tuple2_V_TypeTag)
+  };
+  class SpCls4_J[Ssp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls4[Ssp] {
+    def <init>(SpCls4_S_TypeTag: Byte): miniboxing.tests.correctness.SpCls4_J[Ssp] = {
+      SpCls4_J.super.<init>();
+      ()
+    };
+    def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_J.this.normalizeMe1_J[T](SpCls4_J.this.SpCls4_S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls4_J.this.SpCls4_S_TypeTag), t);
+    def normalizeMe1_J[@miniboxing.plugin.minispec T >: Nothing <: Any](SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_JL[Ssp,T](SpCls4_S_TypeTag, s, t);
+    def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_JJ[Ssp,T](SpCls4_S_TypeTag, normalizeMe1_J_T_TypeTag, s, MiniboxConversions.this.box2minibox_tt[T](t, normalizeMe1_J_T_TypeTag));
+    def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_J.this.normalizeMe1_J[T](SpCls4_J.this.SpCls4_S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls4_J.this.SpCls4_S_TypeTag), t);
+    <paramaccessor> private[this] val SpCls4_S_TypeTag: Byte = _
+  };
+  class SpCls4_L[Ssp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls4[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls4_L[Ssp] = {
+      SpCls4_L.super.<init>();
+      ()
+    };
+    def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[Ssp,T](s, t);
+    def normalizeMe1_J[@miniboxing.plugin.minispec T >: Nothing <: Any](SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_L.this.normalizeMe1[T](MiniboxConversions.this.minibox2box[Ssp](s, SpCls4_S_TypeTag), t);
+    def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_L.this.normalizeMe1[T](MiniboxConversions.this.minibox2box[Ssp](s, SpCls4_S_TypeTag), t);
+    def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_LJ[Ssp,T](normalizeMe1_T_TypeTag, s, MiniboxConversions.this.box2minibox_tt[T](t, normalizeMe1_T_TypeTag))
+  }
+}
+
+[Now checking: minibox]
