@@ -16,53 +16,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
 
-  /** A tree symbol substituter that substitutes on type skolems.
-   *  If a type parameter is a skolem, it looks for the original
-   *  symbol in the 'from' and maps it to the corresponding new
-   *  symbol. The new symbol should probably be a type skolem as
-   *  well (not enforced).
-   *
-   *  All private members are made protected in order to be accessible from
-   *  specialized classes.
-   */
-  class ImplementationAdapter(from: List[Symbol],
-                              to: List[Symbol],
-                              targetClass: Symbol,
-                              addressFields: Boolean,
-                              makePublicAtAll: Boolean) extends TreeSymSubstituter(from, to) {
-    override val symSubst = new SubstSymMap(from, to) {
-      override def matches(sym1: Symbol, sym2: Symbol) =
-        if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
-        else sym1 eq sym2
-    }
-
-    private def isAccessible(sym: Symbol): Boolean =
-      (currentClass == sym.owner.enclClass) && (currentClass != targetClass)
-
-    private def shouldMakePublic(sym: Symbol): Boolean =
-      makePublicAtAll && sym.hasFlag(PRIVATE | PROTECTED) && (addressFields || !nme.isLocalName(sym.name))
-
-    /** All private members that are referenced are made protected,
-     *  in order to be accessible from specialized subclasses.
-     */
-    override def transform(tree: Tree): Tree = tree match {
-      case Select(qual, name) =>
-        val sym = tree.symbol
-        if (sym.isPrivate) debuglog(
-          "seeing private member %s, currentClass: %s, owner: %s, isAccessible: %b, isLocalName: %b".format(
-            sym, currentClass, sym.owner.enclClass, isAccessible(sym), nme.isLocalName(sym.name))
-        )
-        if (shouldMakePublic(sym) && !isAccessible(sym)) {
-          debuglog("changing private flag of " + sym)
-          sym.makeNotPrivate(sym.owner)
-        }
-        super.transform(tree)
-
-      case _ =>
-        super.transform(tree)
-    }
-  }
-
   /**
    * The tree transformer that adds the trees for the specialized classes inside
    * the current package.
@@ -794,11 +747,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       // log("newtparams: " + newtparams)
       val (body, parameters) = MethodBodiesCollector.getMethodBody(source)
 
-      val symSubstituter = new ImplementationAdapter(
+      val symSubstituter = new TreeSymSubstituter(
         parameters.flatten ::: origtparams,
-        vparams.map(_.symbol) ::: newtparams,
-        source.enclClass,
-        false, false) // don't make private fields public
+        vparams.map(_.symbol) ::: newtparams)
 
       val newBody = symSubstituter(body.duplicate)
       tpt.tpe = tpt.tpe.substSym(oldtparams, newtparams)
