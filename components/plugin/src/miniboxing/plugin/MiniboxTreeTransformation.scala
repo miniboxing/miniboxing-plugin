@@ -205,17 +205,23 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
             // forward to the target methods, making casts as prescribed
             case ForwardTo(ttagArgs, target, retCast, paramCasts) =>
-              val (ttagWrapperArgs, params) = separateTypeTagArgsInTree(vparams)
-              val (ttagFormalArgs, targetParams) = separateTypeTagArgsInType(target.tpe)
+              val targetTpe =
+                if (target.tpe.typeParams.isEmpty)
+                  target.tpe
+                else
+                  target.tpe.resultType.instantiateTypeParams(target.tpe.typeParams, tparams.map(_.symbol.tpeHK))
 
-              assert(params.length == targetParams.length, "Different number of parameters for forward from " + tree.symbol.defString + " to " + target.defString + ": " + params + " vs " + targetParams)
+              val (ttagWrapperArgs, wrapperParams) = separateTypeTagArgsInTree(vparams)
+              val (ttagFormalArgs, targetParams) = separateTypeTagArgsInType(targetTpe)
+
+              assert(wrapperParams.length == targetParams.length, "Different number of parameters for forward from " + tree.symbol.defString + " to " + target.defString + ": " + wrapperParams + " vs " + targetParams)
 
               val params1 =
-                ((params zip targetParams) zip paramCasts) map {
+                ((wrapperParams zip targetParams) zip paramCasts) map {
                   case ((p, t), paramCast) =>
                     cast(Ident(p.symbol), t.tpe, paramCast)
                 }
-              val rhs1 = gen.mkMethodCall(target, ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
+              val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpeHK), ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
               super.transform(localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast))))
 
             // copy the body of the `original` method
