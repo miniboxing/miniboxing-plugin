@@ -523,7 +523,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
             newMbr setName (specializedName(newTermName(member.name.toString + "_n"), typeParamValues(member, pspec)))
             newMbr modifyInfo (info0 => {
               val deepEnv = member.typeParams.zip(info0.typeParams).toMap
-              val update = (member.info.params zip info0.params).toMap
               val shallowEnv =
                 pspec flatMap {
                   case (p, Boxed)     => None // stays the same
@@ -535,10 +534,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val localTags =
                 for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
                   yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+              val update = (member.info.params zip info1.params).toMap
               val oldMiniboxedArgs = miniboxedArgs.getOrElse(member, Set())
               val oldLocalTypeTags = localTypeTags.getOrElse(member, Map())
               val updMiniboxedArgs = oldMiniboxedArgs.map({ case (tag, tpe) => (update(tag), tpe)})
-              val updLocalTypeTags = oldLocalTypeTags.map({ case (tpe, tag) => (tag, update(tag))})
+              val updLocalTypeTags = oldLocalTypeTags.map({ case (tpe, tag) => (tpe, update(tag))})
               miniboxedArgs(newMbr) = updMiniboxedArgs ++ mbArgs
               localTypeTags(newMbr) = updLocalTypeTags ++ localTags
               val tagParams = localTags.map(_._2)
@@ -556,11 +556,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
 //                  println(newMbr + " ==> " + baseMbr)
                   SpecializedImplementationOf(baseMbr)
                 case Some(ForwardTo(_, target, _, _)) =>
-//                  println("mbr:  " + member.defString)
-//                  println("from: " + newMbr.defString)
-//                  println("to:   " + target.defString)
-                  val wrapperTypeTags = localTypeTags(newMbr) ++ globalTypeTags.getOrElse(clazz, Map.empty)
+//                  println("\n")
+//                  println("mbr:  " + member.defString + "  (in " + member.owner + ")")
+//                  println("from: " + newMbr.defString + "  (in " + newMbr.owner + ")")
+//                  println("to:   " + target.defString + "  (in " + target.owner + ")")
+                  val globalTypeTagsMap = typeEnv.getOrElse(clazz, EmptyMbTypeEnv).deepEnv
+                  val globalTypeTagsUpd = globalTypeTags.getOrElse(clazz, Map.empty).map({case (tpar, tag) => (globalTypeTagsMap.getOrElse(tpar, tpar.tpe).typeSymbol, tag)})
+                  val wrapperTypeTags = localTypeTags(newMbr) ++ globalTypeTagsUpd
                   val targetTypeTags = localTypeTags.getOrElse(target, Map())
+//                  println(globalTypeTagsMap)
+//                  println(globalTypeTagsUpd)
 //                  println(wrapperTypeTags)
 //                  println(targetTypeTags)
                   genForwardingInfo(newMbr, wrapperTypeTags, target, targetTypeTags)
