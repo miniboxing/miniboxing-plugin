@@ -371,7 +371,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val oldClassCtor = ctor.symbol
           val tree1 = cl.tpe match {
             case TypeRef(pre, oldClass, targs) =>
-              extractSpec(cl.tpe, currentMethod, currentClass) match {
+              val spec = extractSpec(cl.tpe, currentMethod, currentClass)
+              spec match {
                 case Some(pspec) if !isAllAnyRef(pspec) =>
                   assert(specializedClasses(oldClass).isDefinedAt(pspec))
                   assert(overloads.isDefinedAt(ctor.symbol))
@@ -468,12 +469,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     }
 
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
-      val pSpec0 = partialSpec.getOrElse(inClass, Map.empty)
+      val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
       val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
-      val pSpec = pSpec0.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
+      val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
+      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
+      val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
       qualTpe match {
         case ThisType(cls) if (cls == inClass) =>
-          Some(pSpec0)
+          Some(pSpecFromBaseClass)
         case SingleType(pre, x) =>
           extractSpec(qualTpe.widen, inMethod, inClass)
         case PolyType(tparams, rest) =>

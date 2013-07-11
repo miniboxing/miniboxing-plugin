@@ -149,6 +149,7 @@ trait MiniboxSpecializationInfo {
    * Partial specialization corresponding to a class.
    */
   val partialSpec = new mutable.HashMap[Symbol, PartialSpec]
+  val normalSpec = new mutable.HashMap[Symbol, PartialSpec]
 
   /**
    * Records for each of the specialized classes the type parameter to tag field

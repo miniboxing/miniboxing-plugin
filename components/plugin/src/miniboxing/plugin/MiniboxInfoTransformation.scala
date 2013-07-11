@@ -522,18 +522,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
             newMbr setFlag MINIBOXED
             newMbr setName (specializedName(newTermName(member.name.toString + "_n"), typeParamValues(member, pspec)))
             newMbr modifyInfo (info0 => {
-              val deepEnv = member.typeParams.zip(info0.typeParams).toMap
+              val deepEnv0: Map[Symbol, Symbol] = member.typeParams.zip(info0.typeParams).toMap
               val shallowEnv =
                 pspec flatMap {
                   case (p, Boxed)     => None // stays the same
-                  case (p, Miniboxed) => Some((deepEnv(p), LongClass.tpe))
+                  case (p, Miniboxed) => Some((deepEnv0(p), LongClass.tpe))
                 }
+              val (info1, mbArgs) = miniboxSubst(EmptyTypeEnv, shallowEnv, info0)
+              val deepEnv: Map[Symbol, Symbol] = member.typeParams.zip(info1.typeParams).toMap
               typeParamMap(newMbr) = deepEnv.map(_.swap).toMap
               typeEnv(newMbr) = MiniboxingTypeEnv(baseShallowEnv ++ shallowEnv, baseDeepEnv ++ deepEnv.mapValues(_.tpe))
-              val (info1, mbArgs) = miniboxSubst(EmptyTypeEnv, shallowEnv, info0)
               val localTags =
                 for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
-                  yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                  yield (deepEnv(tparam), newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
               val update = (member.info.params zip info1.params).toMap
               val oldMiniboxedArgs = miniboxedArgs.getOrElse(member, Set())
               val oldLocalTypeTags = localTypeTags.getOrElse(member, Map())
@@ -541,6 +542,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val updLocalTypeTags = oldLocalTypeTags.map({ case (tpe, tag) => (tpe, update(tag))})
               miniboxedArgs(newMbr) = updMiniboxedArgs ++ mbArgs
               localTypeTags(newMbr) = updLocalTypeTags ++ localTags
+              normalSpec(newMbr) = pspec.map({ case (tp, state) => (deepEnv(tp), state)})
               val tagParams = localTags.map(_._2)
               val info1m = if (info1.typeParams.isEmpty) info1 else info1.resultType
               GenPolyType(info1.typeParams, MethodType(tagParams ::: info1m.params, info1m.resultType))
