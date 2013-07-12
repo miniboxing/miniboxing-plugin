@@ -97,8 +97,8 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
             localTyper.typed(Block(stats, miniboxReturn(res)))
           case _ =>
             val tp = tree.tpe
-            val updatedTpe = miniboxedDeepEnv.getOrElse(tp.typeSymbol, tp) // Nothing/Null stay the same
-            val typeTag = miniboxedTags(updatedTpe.typeSymbol)
+            val updatedTpe = miniboxedDeepEnv.getOrElse(tp.typeSymbol.deSkolemize, tp) // Nothing/Null stay the same
+            val typeTag = miniboxedTags(updatedTpe.typeSymbol.deSkolemize)
             localTyper.typed(gen.mkMethodCall(box2minibox, List(tp), List(tree, typeTag)))
         }
       } else
