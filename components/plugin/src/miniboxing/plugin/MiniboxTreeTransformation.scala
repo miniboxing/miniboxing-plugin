@@ -217,7 +217,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           super.transform(result)
 
         // Redirect method calls without type parameters
-        // TODO: unify with the next case
         case Apply(sel @ Select(qual, fn), args) if {
           afterMinibox(sel.symbol.owner.info)
           base.isDefinedAt(tree.symbol) &&
@@ -345,7 +344,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
                 // final tree
                 if (normMethodSym != oldMethodSym)
-                  rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args.map(transform), targs)
+                  rewiredMethodCall(transform(qual), oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args.map(transform), targs)
                 else
                   super.transform(tree)
             }
