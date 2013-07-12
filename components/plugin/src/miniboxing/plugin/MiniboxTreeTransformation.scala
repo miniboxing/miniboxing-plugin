@@ -482,9 +482,11 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 //        println("rewiring target: " + target.defString)
 //        println(pspec)
 //        println(normalizations.get(target))
-        if (normalizations.isDefinedAt(target) && normalizations(target).isDefinedAt(pspec))
+        if (target.typeParams.exists(_ hasAnnotation MinispecClass) && notSpecializable(target.owner, target)) {
+          assert(normalizations.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
+          assert(normalizations(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizations(target))
           Some(normalizations(target)(pspec))
-        else
+        } else
           None
       } else
         None
