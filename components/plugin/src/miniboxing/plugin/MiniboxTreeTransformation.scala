@@ -165,7 +165,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   target.tpe.resultType.instantiateTypeParams(target.tpe.typeParams, tparams.map(_.symbol.tpeHK))
 
               val (ttagWrapperArgs, wrapperParams) = separateTypeTagArgsInTree(vparams)
-              val (ttagFormalArgs, targetParams) = separateTypeTagArgsInType(targetTpe)
+              val (ttagFormalArgs, targetParams) = separateTypeTagArgsInType(targetTpe, tparams.map(_.symbol.tpeHK))
 
               assert(wrapperParams.length == targetParams.length, "Different number of parameters for forward from " + tree.symbol.defString + " to " + target.defString + ": " + wrapperParams + " vs " + targetParams)
 
@@ -483,7 +483,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           targs: List[Tree]) = {
 
       // 1. Generate type tags
-      val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info)
+      val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info, if (targs == null) Nil else targs.map(_.tpe))
       // Tag -> Type param
       val tagsToTparams1 = localTypeTags(newMethodSym).map(_.swap).toMap
       val tparamInsts = for (tagSym <- tagSyms) yield {

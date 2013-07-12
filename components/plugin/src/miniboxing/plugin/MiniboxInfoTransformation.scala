@@ -40,9 +40,12 @@ trait MiniboxInfoTransformation extends InfoTransform {
     case _ => (Nil, args)
   }
 
-  def separateTypeTagArgsInType(tpe: Type): (List[Symbol], List[Symbol]) = tpe match {
+  def separateTypeTagArgsInType(tpe: Type, tpArgs: List[Type], preserveTags: Boolean = true, preserveParams: Boolean = false): (List[Symbol], List[Symbol]) = tpe match {
     case MethodType(args, _) => separateTypeTagArgsInArgs(args)
-    case PolyType(_, ret) => separateTypeTagArgsInType(ret)
+    case PolyType(formals, ret) =>
+      val preserveRes = separateTypeTagArgsInType(ret, Nil)
+      val modifyRes = separateTypeTagArgsInType(ret.instantiateTypeParams(formals, tpArgs), Nil)
+      (if (preserveTags) preserveRes._1 else modifyRes._2, if (preserveParams) preserveRes._2 else modifyRes._2)
     case _ => (Nil, Nil)
   }
 
@@ -723,22 +726,22 @@ trait MiniboxInfoTransformation extends InfoTransform {
       res
     }
 
-    def params(target: Symbol, tpe: Type): (List[Symbol], List[Symbol]) =
+    def params(target: Symbol, tpe: Type, tparams: List[Symbol]): (List[Symbol], List[Symbol]) =
       if (!target.isMethod || (!target.name.toString.contains("_J") && !target.name.toString.contains("_L")))
         (Nil, tpe.params)
       else
-        separateTypeTagArgsInType(tpe)
+        separateTypeTagArgsInType(tpe, tparams.map(_.tpe)) // we instantiate the type separately
 
     def typeParams = {
       val targetTParams = targetTags.map(_.swap).toMap
-      val targs = params(target, target.info)._1.map(targetTParams)
+      val targs = params(target, target.info, wrapper.typeParams)._1.map(targetTParams)
       val tagParams = targs.map(wrapperTags)
       tagParams
     }
 
 
-    val wrapParams = params(wrapper, wtpe)._2.map(_.tpe)
-    val targParams = params(target, ttpe)._2.map(_.tpe)
+    val wrapParams = params(wrapper, wtpe, Nil)._2.map(_.tpe)
+    val targParams = params(target, ttpe, Nil)._2.map(_.tpe)
     assert(wrapParams.length == targParams.length, (wrapParams, targParams))
     val paramCasts = (wrapParams zip targParams) map {
       case (wtp, ttp) => genCastInfo(wtp, ttp)
