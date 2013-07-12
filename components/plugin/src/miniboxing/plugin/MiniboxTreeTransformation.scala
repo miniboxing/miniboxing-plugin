@@ -246,56 +246,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
           super.transform(tree1)
 
-        // Redirect method calls with type parameters
-        case Apply(TypeApply(sel @ Select(qual, fn), targs), args) if { afterMinibox(sel.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol } =>
-          val oldMethodSym = tree.symbol
-          val oldMethodType = sel.tpe
-          val tree1 =
-            memberSpecializationInfo.get(currentMethod) match {
-              case Some(spec: ForwardTo) =>
-                // don't touch forwarders, they're correctly generated the first time
-                // although it may be interesting to use this logic to generate forwarders too
-                // TODO: Can this be done?
-                tree
-              case _ =>
-                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
-                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
-                  case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
-                    val newMethodSym = overloads(oldMethodSym)(pspec)
-                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args, targs)
-                    stats("redirecting method call: " + tree + " ==> " + tree1)
-                    tree1
-                  case other =>
-                    tree
-                }
-            }
-          super.transform(tree1)
-
-        // Redirect field selections
-        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
-          val oldMethodSym = tree.symbol
-          val oldMethodType = tree.tpe
-          val tree1 =
-            memberSpecializationInfo.get(currentMethod) match {
-              case Some(spec: ForwardTo) =>
-                // don't touch forwarders, they're correctly generated the first time
-                // although it may be interesting to use this logic to generate forwarders too
-                // TODO: Can this be done?
-                tree
-              case _ =>
-                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
-                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
-                  case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
-                    val newMethodSym = overloads(oldMethodSym)(pspec)
-                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), null, null)
-                    stats("redirected selection: " + tree + " ==> " + tree1)
-                    tree1
-                  case other =>
-                    tree
-                }
-            }
-          super.transform(tree1)
-
         // Super constructor call rewiring for:
         //  - non-specialized classes
         //  - specialized classes
@@ -357,6 +307,74 @@ trait MiniboxTreeTransformation extends TypingTransformers {
               tree
           }
           localTyper.typed(tree1)
+
+        // Redirect method calls with type parameters
+        case Apply(TypeApply(sel @ Select(qual, fn), targs), args) =>
+          afterMinibox(sel.symbol.owner.info)
+          val oldMethodSym = tree.symbol
+          val oldMethodType = sel.tpe
+          val tree1 =
+            memberSpecializationInfo.get(currentMethod) match {
+              case Some(spec: ForwardTo) =>
+                // don't touch forwarders, they're correctly generated the first time
+                // although it may be interesting to use this logic to generate forwarders too
+                // TODO: Can this be done?
+                tree
+              case _ =>
+                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
+                // rewiring based on the receiver
+                val newMethodSym =
+                  if (base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol)
+                    extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
+                      case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
+                        val newMethod = overloads(oldMethodSym)(pspec)
+                        stats("redirecting method call: " + tree + " ==> " + newMethod.defString)
+                        newMethod
+                      case other =>
+                        oldMethodSym
+                    }
+                  else
+                    oldMethodSym
+
+                // rewiring based on the normalized member
+                val normMethodSym =
+                  extractNormSpec(targs.map(_.tpe), newMethodSym, currentMethod, currentClass) match {
+                    case Some(newSym) => newSym
+                    case None => newMethodSym
+                  }
+
+                // final tree
+                if (normMethodSym != oldMethodSym)
+                  rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args.map(transform), targs)
+                else
+                  super.transform(tree)
+            }
+          tree1
+
+        // Redirect field selections
+        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
+          val oldMethodSym = tree.symbol
+          val oldMethodType = tree.tpe
+          val tree1 =
+            memberSpecializationInfo.get(currentMethod) match {
+              case Some(spec: ForwardTo) =>
+                // don't touch forwarders, they're correctly generated the first time
+                // although it may be interesting to use this logic to generate forwarders too
+                // TODO: Can this be done?
+                tree
+              case _ =>
+                val tpe1 = qual.tpe baseType (oldMethodSym.owner)
+                extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
+                  case Some(pspec) if !isAllAnyRef(pspec) && overloads.get(oldMethodSym).flatMap(_.get(pspec)).isDefined =>
+                    val newMethodSym = overloads(oldMethodSym)(pspec)
+                    val tree1 = rewiredMethodCall(qual, oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), null, null)
+                    stats("redirected selection: " + tree + " ==> " + tree1)
+                    tree1
+                  case other =>
+                    tree
+                }
+            }
+          super.transform(tree1)
 
         // Error on accessing non-existing fields
         case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
@@ -427,6 +445,52 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
     }
 
+    def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
+      val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
+      val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
+      val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
+      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
+      val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
+
+      if (normbase.isDefinedAt(target)) {
+        val tparams = afterMinibox(target.info).typeParams
+        assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + inMethod + " of " + inClass + ": " + targs.length)
+        val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
+          pair match {
+            // case (2.3)
+            case (p, _) if !(p hasFlag MINIBOXED) => None
+            case (p, `UnitTpe`)    => Some((p, Miniboxed))
+            case (p, `BooleanTpe`) => Some((p, Miniboxed))
+            case (p, `ByteTpe`)    => Some((p, Miniboxed))
+            case (p, `ShortTpe`)   => Some((p, Miniboxed))
+            case (p, `CharTpe`)    => Some((p, Miniboxed))
+            case (p, `IntTpe`)     => Some((p, Miniboxed))
+            case (p, `LongTpe`)    => Some((p, Miniboxed))
+            case (p, `FloatTpe`)   => Some((p, Miniboxed))
+            case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+            // case (2.1)
+            // case (2.2)
+            // case (2.4)
+            case (p, tpe) =>
+              if (pSpec.isDefinedAt(tpe.typeSymbol))
+                Some((p, pSpec(tpe.typeSymbol)))
+              else
+                Some((p, Boxed))
+          }
+        }
+        val pspec = spec.toMap
+//        println()
+//        println("rewiring target: " + target.defString)
+//        println(pspec)
+//        println(normalizations.get(target))
+        if (normalizations.isDefinedAt(target) && normalizations(target).isDefinedAt(pspec))
+          Some(normalizations(target)(pspec))
+        else
+          None
+      } else
+        None
+    }
+
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
       val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
       val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
@@ -485,7 +549,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       // 1. Generate type tags
       val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info, if (targs == null) Nil else targs.map(_.tpe))
       // Tag -> Type param
-      val tagsToTparams1 = localTypeTags(newMethodSym).map(_.swap).toMap
+      val tagsToTparams1 = localTypeTags.getOrElse(newMethodSym, Map()).map(_.swap).toMap
       val tparamInsts = for (tagSym <- tagSyms) yield {
         try {
           val tparam = tagsToTparams1(tagSym)
