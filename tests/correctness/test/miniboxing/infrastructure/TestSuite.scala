@@ -78,9 +78,6 @@ class TestSuite {
         System.err.println("[ OK ]")
     }
 
-    if (UPDATE_CHECKFILE)
-      System.err.println("\n\nUPDATE_CHECKFILE is turned ON! Don't forget to turn if off!!!\n\n")
-
-    assert(!failed, "Some tests failed.")
+    assert(!UPDATE_CHECKFILE && !failed, "Some tests failed. (or UPDATE_CHECKFILE is on)")
   }
 }

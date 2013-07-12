@@ -128,7 +128,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
           val parents1 = map2(currentOwner.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
           val templateDef = treeCopy.Template(tree, parents1, self, memberDefs)
-          localTyper.typedPos(tree.pos)(templateDef)
+          val tree1 = localTyper.typedPos(tree.pos)(templateDef)
+          tree1
 
         /*
          * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
@@ -344,7 +345,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
                 // final tree
                 if (normMethodSym != oldMethodSym)
-                  rewiredMethodCall(transform(qual), oldMethodSym, oldMethodType, newMethodSym, currentClass.info.memberInfo(newMethodSym), args.map(transform), targs)
+                  rewiredMethodCall(transform(qual), oldMethodSym, oldMethodType, normMethodSym, currentClass.info.memberInfo(normMethodSym), args.map(transform), targs)
                 else
                   super.transform(tree)
             }
@@ -482,9 +483,11 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 //        println("rewiring target: " + target.defString)
 //        println(pspec)
 //        println(normalizations.get(target))
-        if (target.typeParams.exists(_ hasAnnotation MinispecClass) && notSpecializable(target.owner, target)) {
+        if (!notSpecializable(target.owner, target) && target.typeParams.exists(isSpecialized(target.owner, _))) {
           assert(normalizations.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
           assert(normalizations(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizations(target))
+//          println(target.defString + " ==> " + normalizations(target)(pspec))
+//          println(currentClass + "." + currentMethod)
           Some(normalizations(target)(pspec))
         } else
           None
@@ -555,12 +558,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         try {
           val tparam = tagsToTparams1(tagSym)
           val instOwner = newQual.tpe.baseType(tparam.owner)
-          val tparamToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
+          val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
+          if (targs != null) assert(newMethodSym.info.typeParams.length == targs.length, "Type parameter mismatch in rewiring from " + oldMethodSym.defString + " to " + newMethodSym.defString + ": " + targs)
+          val tparamFromNormToInst = if (targs != null) (newMethodSym.info.typeParams zip targs.map(_.tpe)).toMap else Map.empty
+          val tparamToInst = tparamFromQualToInst ++ tparamFromNormToInst
           tparamToInst(tparam).typeSymbol
         } catch {
           case ex: Exception =>
             println("Tag not found:")
-            println(newMethodSym)
+            println(newMethodSym.defString)
             println(tagSyms)
             println(argTypes)
             println(tagsToTparams1)
