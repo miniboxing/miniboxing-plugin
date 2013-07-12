@@ -382,6 +382,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
           overloads(newMbr) = HashMap.empty
       }
 
+      // specialized overloads
+      addSpecialOverrides(pspec, spec, specScope, inPlace = true)
+
       // deferred type tags:
       addDeferredTypeTagImpls(spec, specScope, inPlace = true)
 
@@ -413,11 +416,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // we make specialized overloads for every member of the original class
       for (member <- methods ::: getters ::: setters if !notSpecializable(origin, member)) {
         val overloadsOfMember = new HashMap[PartialSpec, Symbol]
-        val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(isAllAnyRef(_))
+        val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(PartialSpec.isAllAnyRef(_))
 
         for (spec <- specs_filtered) {
           var newMbr = member
-          if (!isAllAnyRef(spec)) {
+          if (!PartialSpec.isAllAnyRef(spec)) {
             val env: TypeEnv = spec map {
               case (p, v) => (p, if (v == Boxed) p.tpe else LongClass.tpe)
             }
@@ -499,8 +502,81 @@ trait MiniboxInfoTransformation extends InfoTransform {
           memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
       }
 
+      // TODO: Do we want to keep overrides?
       origin.info.decls.toList ++ newMembers
     }
+
+    // create overrides for specialized variants of the method
+    def addSpecialOverrides(pspec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+
+      val scope1 = if (inPlace) scope else scope.cloneScope
+      val base = baseClass.getOrElse(clazz, NoSymbol)
+
+      def specializedOverriddenMembers(sym: Symbol): List[Symbol] = {
+        for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
+          // here we get the base class, not the specialized class
+          // therefore, the 1st step is to identify the specialized class
+          val baseParent = baseOSym.owner
+          val baseParentTpe = clazz.info.baseType(baseParent)
+          val spec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pspec)
+          val specParent = specializedClasses(baseParent)(spec)
+          // now find the main member:
+          val List(specOSym) = specParent.info.decls.toList.filter(_.overriddenSymbol(baseParent) == baseOSym)
+
+          overloads(specOSym).get(spec) match {
+            case Some(specMainSym) =>
+              println(sym.defString + " overrides " + specMainSym.defString + " in " + specMainSym.owner)
+            case None => // nothing to do, we're overriding it
+          }
+        }
+        Nil
+      }
+
+    for (sym <- scope1) {
+      specializedOverriddenMembers(sym)
+    }
+    scope1
+
+//    (clazz.info.decls flatMap { overriding =>
+//      needsSpecialOverride(overriding) match {
+//        case (NoSymbol, _)     => None
+//        case (overridden, env) =>
+//          val om = specializedOverload(clazz, overridden, env)
+//          foreachWithIndex(om.paramss) { (params, i) =>
+//            foreachWithIndex(params) { (param, j) =>
+//              param.name = overriding.paramss(i)(j).name // SI-6555 Retain the parameter names from the subclass.
+//            }
+//          }
+//          debuglog("specialized overload %s for %s in %s: %s".format(om, overriding.name.decode, pp(env), om.info))
+//          typeEnv(om) = env
+//          addConcreteSpecMethod(overriding)
+//          if (overriding.isDeferred) {    // abstract override
+//            debuglog("abstract override " + overriding.fullName + " with specialized " + om.fullName)
+//            info(om) = Forward(overriding)
+//          }
+//          else {
+//            // if the override is a normalized member, 'om' gets the
+//            // implementation from its original target, and adds the
+//            // environment of the normalized member (that is, any
+//            // specialized /method/ type parameter bindings)
+//            info get overriding match {
+//              case Some(NormalizedMember(target)) =>
+//                typeEnv(om) = env ++ typeEnv(overriding)
+//                info(om) = Forward(target)
+//              case _ =>
+//                info(om) = SpecialOverride(overriding)
+//            }
+//            info(overriding) = Forward(om setPos overriding.pos)
+//          }
+//          newOverload(overriding, om, env)
+//          ifDebug(afterSpecialize(assert(
+//            overridden.owner.info.decl(om.name) != NoSymbol,
+//            "Could not find " + om.name + " in " + overridden.owner.info.decls))
+//          )
+//          Some(om)
+//      }
+//    }).toList
+  }
 
     // expand methods with specialized members
     def normalizeMembers(clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
@@ -519,7 +595,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         val MiniboxingTypeEnv(baseShallowEnv, baseDeepEnv) = typeEnv.getOrElse(member, EmptyMbTypeEnv)
         for (pspec <- pspecs) {
           var newMbr = member
-          if (!isAllAnyRef(pspec)) {
+          if (!PartialSpec.isAllAnyRef(pspec)) {
 
             newMbr = member.cloneSymbol(clazz)
             newMbr setFlag MINIBOXED
@@ -675,15 +751,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
     } else {
-      // TODO: overrides in the specialized class
       inheritedDeferredTypeTags(origin) = HashMap()
       primaryDeferredTypeTags(origin) = HashMap()
-      val scope1 = newScopeWith(originTpe.decls.toList /* ++ specialOverrides(origin) */: _*)
+      val scope1 = originTpe.decls.cloneScope
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
-      val scope2 = addDeferredTypeTagImpls(origin, scope1)
-      val scope3 = normalizeMembers(origin, scope2)
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
+      val scope2 = addSpecialOverrides(Map.empty, origin, scope1)
+      val scope3 = addDeferredTypeTagImpls(origin, scope2)
+      val scope4 = normalizeMembers(origin, scope3)
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
     }
   }
 

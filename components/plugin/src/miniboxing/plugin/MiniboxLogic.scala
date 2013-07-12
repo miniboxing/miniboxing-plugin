@@ -84,7 +84,6 @@ trait MiniboxLogic {
     res
   }
 
-  def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
 
   /**
    * Tells whether a class must be specialized by looking at the annotations
@@ -108,13 +107,17 @@ trait MiniboxLogic {
 
   object PartialSpec {
 
+    def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
+
+    def allAnyRefPSpec(clazz: Symbol): PartialSpec = clazz.typeParams.filter(isSpecialized(clazz, _)).map(t => (t, Boxed)).toMap
+
     // used if the current class is not miniboxed
     def fromType(tpe: TypeRef): PartialSpec = fromTypeInContext(tpe, Map.empty)
 
     // used if the current class is miniboxed
     def fromTypeInContext(tpe: TypeRef, pspec: PartialSpec): PartialSpec = tpe match {
       case TypeRef(pre, sym, args) =>
-        val tparams = afterMinibox(sym.info).typeParams
+        val tparams = sym.info.typeParams
         ((tparams zip args) flatMap { (pair: (Symbol, Type)) =>
           pair match {
             case (p, _) if !(p hasFlag MINIBOXED) => None
