@@ -309,10 +309,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           localTyper.typed(tree1)
 
         // Redirect method calls with type parameters
-        case Apply(TypeApply(sel @ Select(qual, fn), targs), args) =>
+        case Apply(tapply @ TypeApply(sel @ Select(qual, fn), targs), args) =>
           afterMinibox(sel.symbol.owner.info)
           val oldMethodSym = tree.symbol
-          val oldMethodType = sel.tpe
+          val oldMethodType = tapply.tpe
           val tree1 =
             memberSpecializationInfo.get(currentMethod) match {
               case Some(spec: ForwardTo) =>
@@ -580,7 +580,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       }
       val typeTags = typeTagTrees()
       val localTagArgs = tparamInsts.map(typeTags)
-
 
       // 2. Adapt arguments
       val adaptedArgs =
