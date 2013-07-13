@@ -522,17 +522,27 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val base = baseClass.getOrElse(clazz, NoSymbol)
 
       def specializedOverriddenMembers(sym: Symbol): Symbol = {
-        for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
-          // here we get the base class, not the specialized class
-          // therefore, the 1st step is to identify the specialized class
-          val baseParent = baseOSym.owner
-          val baseParentTpe = clazz.info.baseType(baseParent)
-          val spec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pspec)
-          if (!PartialSpec.isAllAnyRef(spec) && overloads.isDefinedAt(baseOSym)) {
-            overloads(baseOSym).get(spec) match {
-              case Some(mainSym) =>
-                return mainSym
-              case _ =>
+        for (baseOSym <- sym.allOverriddenSymbols) {
+          if (sym.typeParams.nonEmpty) {
+            val tparamMap = (baseOSym.typeParams zip sym.typeParams).toMap
+            val tparamMiss = baseOSym.typeParams.filter(tparam =>
+              isSpecialized(baseOSym.owner, tparam) && !isSpecialized(clazz, tparamMap(tparam))).map(tparamMap)
+            if (tparamMiss.nonEmpty)
+              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + baseOSym + " in " + baseOSym.owner + " therefore needs to have the follwing type parameters marked with @minispec: " + tparamMiss.mkString(",") + ".")
+          }
+
+          if (isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
+            // here we get the base class, not the specialized class
+            // therefore, the 1st step is to identify the specialized class
+            val baseParent = baseOSym.owner
+            val baseParentTpe = clazz.info.baseType(baseParent)
+            val spec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pspec)
+            if (!PartialSpec.isAllAnyRef(spec) && overloads.isDefinedAt(baseOSym)) {
+              overloads(baseOSym).get(spec) match {
+                case Some(mainSym) =>
+                  return mainSym
+                case _ =>
+              }
             }
           }
         }
