@@ -46,14 +46,15 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           // log(" tree type: " + tree.tpe)
           tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
           // log(" tree type: " + tree.tpe)
-          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
-            val casttpe = CastMap(tree.tpe)
-            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
-            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
-            else tree
-          } else tree
-          ntree.tpe = null
-          ntree
+//          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
+//            val casttpe = CastMap(tree.tpe)
+//            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
+//            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
+//            else tree
+//          } else tree
+//          ntree.tpe = null
+          tree.tpe = null
+          tree
         }
       }
 
@@ -761,7 +762,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       // flags for the entire class - for better or worse we adapt just
       // before calling the duplicator, and get back for specialization
       for (clazz <- specializedBase)
-        clazz.resetFlag(ABSTRACT)
+        clazz.resetFlag(ABSTRACT | TRAIT)
 
       val tree2 = beforeMinibox(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
@@ -773,7 +774,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       // get back flags
       for (clazz <- specializedBase)
-        clazz.setFlag(ABSTRACT)
+        clazz.setFlag(ABSTRACT | TRAIT)
 
       val specializer = new MiniboxTreeSpecializer(unit, Nil, miniboxedTypeTags, miniboxedEnvShallow)
       val tree3 = specializer.transform(tree2)

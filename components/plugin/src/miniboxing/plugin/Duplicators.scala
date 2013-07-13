@@ -319,6 +319,10 @@ abstract class Duplicators extends Analyzer {
         case ddef @ DefDef(_, _, _, _, tpt, rhs) =>
           ddef.tpt.tpe = fixType(ddef.tpt.tpe)
           ddef.tpe = null
+          // workaround for SI-7662: https://issues.scala-lang.org/browse/SI-7662
+          if (ddef.symbol != null)
+            if (ddef.symbol.isStructuralRefinementMember)
+              ddef.symbol.setFlag(Flags.PROTECTED)
           super.typed(ddef, mode, pt)
 
         case vdef @ ValDef(mods, name, tpt, rhs) =>

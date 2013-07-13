@@ -52,10 +52,10 @@ Specializing class DD...
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.nested {
   abstract trait CC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
-    abstract trait DD[@miniboxing.plugin.minispec U >: Nothing <: Any] <: Object;
+    abstract trait DD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends Object;
     def test(): CC.this.DD[T];
     def test_J(CC_T_TypeTag: Byte): CC.this.DD[T];
-    class DD_J[Usp >: Nothing <: Any] <: Object with CC.this.DD[Usp] {
+    class DD_J[Usp >: Nothing <: Any] extends Object with CC.this.DD[Usp] {
       def <init>(DD_U_TypeTag: Byte, d: Long): CC.this.DD_J[Usp] = {
         DD_J.super.<init>();
         ()
@@ -63,7 +63,7 @@ package miniboxing.tests.compile.nested {
       <paramaccessor> private[this] val DD_U_TypeTag: Byte = _;
       <paramaccessor> private[this] val d: Long = _
     };
-    class DD_L[Usp >: Nothing <: Any] <: Object with CC.this.DD[Usp] {
+    class DD_L[Usp >: Nothing <: Any] extends Object with CC.this.DD[Usp] {
       def <init>(d: Usp): CC.this.DD_L[Usp] = {
         DD_L.super.<init>();
         ()

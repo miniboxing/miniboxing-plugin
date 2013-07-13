@@ -163,19 +163,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
   private def removeClassFields(clazz: Symbol, decls1: Scope): Scope = {
     val decls = decls1.cloneScope
     for (mbr <- decls) {
-      mbr.setFlag(DEFERRED)
+      if (mbr.isMethod) mbr.setFlag(DEFERRED)
       if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
         decls unlink mbr
     }
-    // Add trait constructor and set the trait flag
-    // decls.enter(clazz.newMethod(nme.MIXIN_CONSTRUCTOR, clazz.pos) setInfo MethodType(Nil, UnitClass.tpe))
-    clazz.setFlag(TRAIT)
     // Remove the tailcall notation from members
     decls.foreach(_.removeAnnotation(TailrecClass))
     // This needs to be delayed until trees have been duplicated, else
     // instantiation will fail, since C becomes an abstract class
-    clazz.setFlag(INTERFACE)
-    clazz.setFlag(ABSTRACT)
+    clazz.setFlag(TRAIT | ABSTRACT)
     decls
   }
 
@@ -773,17 +769,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val scope1 = originTpe.decls.cloneScope
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
-      // interaction between from duplication + miniboxing traits - see #19
-      // expl: the typer introduces an Object parent since it sees the trait
-      // as the only parent but the trait is there just until the tree is patched
-      val parents2 = parents1 match {
-        case ObjectTpe :: clzz :: rest if !clzz.typeSymbol.isTrait && baseClass.isDefinedAt(clzz.typeSymbol) => clzz :: rest
-        case _ => parents1
-      }
       val scope2 = addSpecialOverrides(Map.empty, Map.empty, origin, scope1)
       val scope3 = addDeferredTypeTagImpls(origin, scope2)
       val scope4 = normalizeMembers(origin, scope3)
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents2, scope4, origin))
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
     }
   }
 
