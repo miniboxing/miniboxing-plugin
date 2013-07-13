@@ -519,8 +519,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val scope1 = if (inPlace) scope else scope.cloneScope
       val base = baseClass.getOrElse(clazz, NoSymbol)
 
-      def specializedOverriddenMembers(sym: Symbol): List[Symbol] =
-        (for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) yield {
+      def specializedOverriddenMembers(sym: Symbol): Symbol = {
+        for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
           // here we get the base class, not the specialized class
           // therefore, the 1st step is to identify the specialized class
           val baseParent = baseOSym.owner
@@ -529,18 +529,17 @@ trait MiniboxInfoTransformation extends InfoTransform {
           if (!PartialSpec.isAllAnyRef(spec) && overloads.isDefinedAt(baseOSym)) {
             overloads(baseOSym).get(spec) match {
               case Some(mainSym) =>
-//                println(sym.defString + " overrides " + mainSym.defString + " in " + mainSym.owner)
-                Some(mainSym)
-              case None => // nothing to do, we're overriding it
-                None
+                return mainSym
+              case _ =>
             }
-          } else
-            None
-        }).flatten
+          }
+        }
+        NoSymbol
+      }
 
     if (clazz.isClass)
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
-        for (oSym <- specializedOverriddenMembers(sym)) {
+        specializedOverriddenMembers(sym).map(oSym => {
           val overrider = oSym.cloneSymbol(clazz)
           overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
           overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
@@ -553,7 +552,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty)
 
           scope1 enter overrider
-        }
+        })
       }
     scope1
   }
