@@ -542,8 +542,11 @@ trait MiniboxInfoTransformation extends InfoTransform {
     if (clazz.isClass)
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
         specializedOverriddenMembers(sym).toOption.foreach(oSym => {
-          val localOverride = overloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
-          if (localOverride.name != oSym.name) {
+          val localOverload = overloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
+          // only generate the override if we don't have an overload which matches the current symbol:
+          // matching the symbol is a pain in the arse, since oSym points to the interface while localOverload
+          // points to the current clazz -- TODO: we could carry newMembers and get the correspondence
+          if (localOverload.name != oSym.name) {
             val overrider = oSym.cloneSymbol(clazz)
             overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
             overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
@@ -552,10 +555,18 @@ trait MiniboxInfoTransformation extends InfoTransform {
             val baseClazz = oSym.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
+            val typeTags = globalTypeTags.getOrElse(clazz, Map.empty) ++
+                           localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
 
+            // direct to the most specific override instead of the generic member:
             localTypeTags(overrider) = typeTags
-            memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
+            memberSpecializationInfo(overrider) =
+              if (localOverload == NoSymbol)
+                genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
+              else {
+                val targTagMap = localTypeTags.getOrElse(localOverload, Map.empty)
+                genForwardingInfo(overrider, typeTags, localOverload, targTagMap, overrider = true)
+              }
 
             scope1 enter overrider
           }
