@@ -512,70 +512,42 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val scope1 = if (inPlace) scope else scope.cloneScope
       val base = baseClass.getOrElse(clazz, NoSymbol)
 
-      def specializedOverriddenMembers(sym: Symbol): List[Symbol] = {
-        for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
+      def specializedOverriddenMembers(sym: Symbol): List[Symbol] =
+        (for (baseOSym <- sym.allOverriddenSymbols if isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) yield {
           // here we get the base class, not the specialized class
           // therefore, the 1st step is to identify the specialized class
           val baseParent = baseOSym.owner
           val baseParentTpe = clazz.info.baseType(baseParent)
           val spec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pspec)
-          val specParent = specializedClasses(baseParent)(spec)
-          // now find the main member:
-          val List(specOSym) = specParent.info.decls.toList.filter(_.overriddenSymbol(baseParent) == baseOSym)
+          if (!PartialSpec.isAllAnyRef(spec) && overloads.isDefinedAt(baseOSym)) {
+            overloads(baseOSym).get(spec) match {
+              case Some(mainSym) =>
+//                println(sym.defString + " overrides " + mainSym.defString + " in " + mainSym.owner)
+                Some(mainSym)
+              case None => // nothing to do, we're overriding it
+                None
+            }
+          } else
+            None
+        }).flatten
 
-          overloads(specOSym).get(spec) match {
-            case Some(specMainSym) =>
-              println(sym.defString + " overrides " + specMainSym.defString + " in " + specMainSym.owner)
-            case None => // nothing to do, we're overriding it
-          }
-        }
-        Nil
+    for (sym <- scope1 if !sym.isConstructor) {
+      for (oSym <- specializedOverriddenMembers(sym)) {
+        val overrider = oSym.cloneSymbol(clazz)
+        overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
+        overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
+        val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
+        val baseClazz = oSym.owner
+        val baseType = clazz.info.baseType(baseClazz)
+        val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
+        val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
+        localTypeTags(overrider) = typeTags
+        memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty)
+
+        scope1 enter overrider
       }
-
-    for (sym <- scope1) {
-      specializedOverriddenMembers(sym)
     }
     scope1
-
-//    (clazz.info.decls flatMap { overriding =>
-//      needsSpecialOverride(overriding) match {
-//        case (NoSymbol, _)     => None
-//        case (overridden, env) =>
-//          val om = specializedOverload(clazz, overridden, env)
-//          foreachWithIndex(om.paramss) { (params, i) =>
-//            foreachWithIndex(params) { (param, j) =>
-//              param.name = overriding.paramss(i)(j).name // SI-6555 Retain the parameter names from the subclass.
-//            }
-//          }
-//          debuglog("specialized overload %s for %s in %s: %s".format(om, overriding.name.decode, pp(env), om.info))
-//          typeEnv(om) = env
-//          addConcreteSpecMethod(overriding)
-//          if (overriding.isDeferred) {    // abstract override
-//            debuglog("abstract override " + overriding.fullName + " with specialized " + om.fullName)
-//            info(om) = Forward(overriding)
-//          }
-//          else {
-//            // if the override is a normalized member, 'om' gets the
-//            // implementation from its original target, and adds the
-//            // environment of the normalized member (that is, any
-//            // specialized /method/ type parameter bindings)
-//            info get overriding match {
-//              case Some(NormalizedMember(target)) =>
-//                typeEnv(om) = env ++ typeEnv(overriding)
-//                info(om) = Forward(target)
-//              case _ =>
-//                info(om) = SpecialOverride(overriding)
-//            }
-//            info(overriding) = Forward(om setPos overriding.pos)
-//          }
-//          newOverload(overriding, om, env)
-//          ifDebug(afterSpecialize(assert(
-//            overridden.owner.info.decl(om.name) != NoSymbol,
-//            "Could not find " + om.name + " in " + overridden.owner.info.decls))
-//          )
-//          Some(om)
-//      }
-//    }).toList
   }
 
     // expand methods with specialized members
