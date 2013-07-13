@@ -13,12 +13,19 @@ trait MiniboxInfoTransformation extends InfoTransform {
   import Flags._
   import definitions._
 
+  // shamelessly stolen from specialization
+  private def unspecializableClass(tp: Type) = (
+       definitions.isRepeatedParamType(tp)  // ???
+    || tp.typeSymbol.isJavaDefined
+    || tp.typeSymbol.isPackageClass
+  )
+
   /** Type transformation. It is applied to all symbols, compiled or loaded.
    *  If it is a 'no-specialization' run, it is applied only to loaded symbols. */
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
     try {
       tpe.resultType match {
-        case cinfo @ ClassInfoType(parents, decls, origin) =>
+        case cinfo @ ClassInfoType(parents, decls, origin) if !unspecializableClass(tpe) =>
           val tparams  = tpe.typeParams
           if (tparams.isEmpty)
             afterMinibox(parents map (_.typeSymbol.info))
@@ -531,22 +538,23 @@ trait MiniboxInfoTransformation extends InfoTransform {
             None
         }).flatten
 
-    for (sym <- scope1 if !sym.isConstructor) {
-      for (oSym <- specializedOverriddenMembers(sym)) {
-        val overrider = oSym.cloneSymbol(clazz)
-        overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
-        overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
-        val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
-        val baseClazz = oSym.owner
-        val baseType = clazz.info.baseType(baseClazz)
-        val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-        val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
-        localTypeTags(overrider) = typeTags
-        memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty)
+    if (clazz.isClass)
+      for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
+        for (oSym <- specializedOverriddenMembers(sym)) {
+          val overrider = oSym.cloneSymbol(clazz)
+          overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
+          overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
+          val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
+          val baseClazz = oSym.owner
+          val baseType = clazz.info.baseType(baseClazz)
+          val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
+          val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
+          localTypeTags(overrider) = typeTags
+          memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty)
 
-        scope1 enter overrider
+          scope1 enter overrider
+        }
       }
-    }
     scope1
   }
 
