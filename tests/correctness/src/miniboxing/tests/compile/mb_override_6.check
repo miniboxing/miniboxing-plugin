@@ -1,0 +1,107 @@
+Specializing class Base61...
+
+  // interface:
+  abstract trait Base61[T, S] extends Object {
+    def overrideMe[C](t1: T,t2: T,s: S,c: C): T
+    def overrideMe_JJ[C](val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: C): Long
+    def overrideMe_JJ_n_J[C](val overrideMe_JJ_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: Long): Long
+    def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: S,c: C): Long
+    def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: S,c: Long): Long
+    def overrideMe_LJ[C](val Base61_S_TypeTag: Byte,t1: T,t2: T,s: Long,c: C): T
+    def overrideMe_LJ_n_J[C](val overrideMe_LJ_C_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: T,t2: T,s: Long,c: Long): T
+    def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: T,t2: T,s: S,c: Long): T
+  }
+
+  // specialized class:
+  class Base61_JJ[Tsp, Ssp] extends Base61[Tsp,Ssp] {
+    def <init>(val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte): miniboxing.tests.compile.Base61_JJ[Tsp,Ssp] // is a specialized implementation of constructor Base61
+    def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp                    // is a forwarder to method overrideMe_JJ
+    def overrideMe_JJ[C](val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: C): Long // is a specialized implementation of method overrideMe
+    def overrideMe_JJ_n_J[C](val overrideMe_JJ_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: Long): Long // is a specialized implementation of method overrideMe
+    def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a forwarder to method overrideMe_JJ
+    def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a forwarder to method overrideMe_JJ
+    def overrideMe_LJ[C](val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: C): Tsp // is a forwarder to method overrideMe_JJ
+    def overrideMe_LJ_n_J[C](val overrideMe_LJ_C_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: Long): Tsp // is a forwarder to method overrideMe_JJ
+    def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a forwarder to method overrideMe_JJ
+    private[this] val Base61_S_TypeTag: Byte                               // no info
+    private[this] val Base61_T_TypeTag: Byte                               // no info
+  }
+
+  // specialized class:
+  class Base61_LJ[Tsp, Ssp] extends Base61[Tsp,Ssp] {
+    def <init>(val Base61_S_TypeTag: Byte): miniboxing.tests.compile.Base61_LJ[Tsp,Ssp] // is a specialized implementation of constructor Base61
+    def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp                    // is a forwarder to method overrideMe_LJ
+    def overrideMe_JJ[C](val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: C): Long // is a forwarder to method overrideMe_LJ
+    def overrideMe_JJ_n_J[C](val overrideMe_JJ_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: Long): Long // is a forwarder to method overrideMe_LJ
+    def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a forwarder to method overrideMe_LJ
+    def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a forwarder to method overrideMe_LJ
+    def overrideMe_LJ[C](val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: C): Tsp // is a specialized implementation of method overrideMe
+    def overrideMe_LJ_n_J[C](val overrideMe_LJ_C_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: Long): Tsp // is a specialized implementation of method overrideMe
+    def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a forwarder to method overrideMe_LJ
+    private[this] val Base61_S_TypeTag: Byte                               // no info
+  }
+
+  // specialized class:
+  class Base61_JL[Tsp, Ssp] extends Base61[Tsp,Ssp] {
+    def <init>(val Base61_T_TypeTag: Byte): miniboxing.tests.compile.Base61_JL[Tsp,Ssp] // is a specialized implementation of constructor Base61
+    def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp                    // is a forwarder to method overrideMe_JL
+    def overrideMe_JJ[C](val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: C): Long // is a forwarder to method overrideMe_JL
+    def overrideMe_JJ_n_J[C](val overrideMe_JJ_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: Long): Long // is a forwarder to method overrideMe_JL
+    def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a specialized implementation of method overrideMe
+    def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a specialized implementation of method overrideMe
+    def overrideMe_LJ[C](val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: C): Tsp // is a forwarder to method overrideMe_JL
+    def overrideMe_LJ_n_J[C](val overrideMe_LJ_C_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: Long): Tsp // is a forwarder to method overrideMe_JL
+    def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a forwarder to method overrideMe_JL
+    private[this] val Base61_T_TypeTag: Byte                               // no info
+  }
+
+  // specialized class:
+  class Base61_LL[Tsp, Ssp] extends Base61[Tsp,Ssp] {
+    def <init>(): miniboxing.tests.compile.Base61_LL[Tsp,Ssp]              // is a specialized implementation of constructor Base61
+    def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp                    // is a specialized implementation of method overrideMe
+    def overrideMe_JJ[C](val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: C): Long // is a forwarder to method overrideMe
+    def overrideMe_JJ_n_J[C](val overrideMe_JJ_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Long,t2: Long,s: Long,c: Long): Long // is a forwarder to method overrideMe
+    def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a forwarder to method overrideMe
+    def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a forwarder to method overrideMe
+    def overrideMe_LJ[C](val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: C): Tsp // is a forwarder to method overrideMe
+    def overrideMe_LJ_n_J[C](val overrideMe_LJ_C_TypeTag: Byte,val Base61_S_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Long,c: Long): Tsp // is a forwarder to method overrideMe
+    def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a specialized implementation of method overrideMe
+  }
+
+
+
+
+Specializing class Base62...
+
+  // interface:
+  abstract trait Base62[T, S] extends Base61[T,S] {
+    override def overrideMe[C](t1: T,t2: T,s: S,c: C): T
+    override def overrideMe_J[C](val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: S,c: C): Long
+    override def overrideMe_J_n_J[C](val overrideMe_J_C_TypeTag: Byte,val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: S,c: Long): Long
+    override def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: T,t2: T,s: S,c: Long): T
+  }
+
+  // specialized class:
+  class Base62_J[Tsp, Ssp] extends Base61_JL[Tsp,Ssp] with Base62[Tsp,Ssp] {
+    def <init>(val Base62_T_TypeTag: Byte): miniboxing.tests.compile.Base62_J[Tsp,Ssp] // is a specialized implementation of constructor Base62
+    override def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp           // is a forwarder to method overrideMe_J
+    override def overrideMe_JL[C](val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is an override which forwards to method overrideMe_J
+    override def overrideMe_JL_n_J[C](val overrideMe_JL_C_TypeTag: Byte,val Base61_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a forwarder to method overrideMe_J
+    override def overrideMe_J[C](val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a specialized implementation of method overrideMe
+    override def overrideMe_J_n_J[C](val overrideMe_J_C_TypeTag: Byte,val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a specialized implementation of method overrideMe
+    override def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a forwarder to method overrideMe_J
+    private[this] val Base62_T_TypeTag: Byte                               // no info
+  }
+
+  // specialized class:
+  class Base62_L[Tsp, Ssp] extends Base61_LL[Tsp,Ssp] with Base62[Tsp,Ssp] {
+    def <init>(): miniboxing.tests.compile.Base62_L[Tsp,Ssp]               // is a specialized implementation of constructor Base62
+    override def overrideMe[C](t1: Tsp,t2: Tsp,s: Ssp,c: C): Tsp           // is a specialized implementation of method overrideMe
+    override def overrideMe_J[C](val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: C): Long // is a forwarder to method overrideMe
+    override def overrideMe_J_n_J[C](val overrideMe_J_C_TypeTag: Byte,val Base62_T_TypeTag: Byte,t1: Long,t2: Long,s: Ssp,c: Long): Long // is a forwarder to method overrideMe
+    override def overrideMe_n_J[C](val overrideMe_C_TypeTag: Byte,t1: Tsp,t2: Tsp,s: Ssp,c: Long): Tsp // is a specialized implementation of method overrideMe
+  }
+
+
+
+
