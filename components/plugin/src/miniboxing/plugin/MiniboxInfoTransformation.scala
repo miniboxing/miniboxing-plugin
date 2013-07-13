@@ -707,10 +707,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       scope1
     }
 
+    // begin specialize
+
     // force info on parents to get all specialized metadata
     afterMinibox(originTpe.parents.map(_.typeSymbol.info))
-
-    // begin specialize
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
     specs.map(_.map(_._1.setFlag(MINIBOXED))) // TODO: Only needs to be done once per type parameter
 
@@ -773,10 +773,17 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val scope1 = originTpe.decls.cloneScope
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
+      // interaction between from duplication + miniboxing traits - see #19
+      // expl: the typer introduces an Object parent since it sees the trait
+      // as the only parent but the trait is there just until the tree is patched
+      val parents2 = parents1 match {
+        case ObjectTpe :: clzz :: rest if !clzz.typeSymbol.isTrait && baseClass.isDefinedAt(clzz.typeSymbol) => clzz :: rest
+        case _ => parents1
+      }
       val scope2 = addSpecialOverrides(Map.empty, Map.empty, origin, scope1)
       val scope3 = addDeferredTypeTagImpls(origin, scope2)
       val scope4 = normalizeMembers(origin, scope3)
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
+      GenPolyType(origin.info.typeParams, ClassInfoType(parents2, scope4, origin))
     }
   }
 
