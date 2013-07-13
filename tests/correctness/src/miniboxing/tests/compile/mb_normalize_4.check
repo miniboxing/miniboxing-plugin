@@ -106,7 +106,7 @@ Specializing class SpCls4...
     def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_J
     def normalizeMe1_J[T](val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
     def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
-    def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: Ssp,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_J
+    def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: Ssp,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_J_n_J
     private[this] val SpCls4_S_TypeTag: Byte                               // no info
   }
 
@@ -115,7 +115,7 @@ Specializing class SpCls4...
     def <init>(): miniboxing.tests.correctness.SpCls4_L[Ssp]               // is a specialized implementation of constructor SpCls4
     def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
     def normalizeMe1_J[T](val SpCls4_S_TypeTag: Byte,s: Long,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1
-    def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1
+    def normalizeMe1_J_n_J[T](val normalizeMe1_J_T_TypeTag: Byte,val SpCls4_S_TypeTag: Byte,s: Long,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to method normalizeMe1_n_J
     def normalizeMe1_n_J[T](val normalizeMe1_T_TypeTag: Byte,s: Ssp,t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
   }
 
@@ -264,7 +264,7 @@ package miniboxing.tests.correctness {
     def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_J.this.normalizeMe1_J[T](SpCls4_J.this.SpCls4_S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls4_J.this.SpCls4_S_TypeTag), t);
     def normalizeMe1_J[@miniboxing.plugin.minispec T >: Nothing <: Any](SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_JL[Ssp,T](SpCls4_S_TypeTag, s, t);
     def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_JJ[Ssp,T](SpCls4_S_TypeTag, normalizeMe1_J_T_TypeTag, s, t);
-    def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: Ssp, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_J.this.normalizeMe1_J[T](SpCls4_J.this.SpCls4_S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls4_J.this.SpCls4_S_TypeTag), MiniboxConversions.this.minibox2box[T](t, normalizeMe1_T_TypeTag));
+    def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: Ssp, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_J.this.normalizeMe1_J_n_J[T](normalizeMe1_T_TypeTag, SpCls4_J.this.SpCls4_S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls4_J.this.SpCls4_S_TypeTag), t);
     <paramaccessor> private[this] val SpCls4_S_TypeTag: Byte = _
   };
   class SpCls4_L[Ssp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls4[Ssp] {
@@ -274,7 +274,7 @@ package miniboxing.tests.correctness {
     };
     def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](s: Ssp, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[Ssp,T](s, t);
     def normalizeMe1_J[@miniboxing.plugin.minispec T >: Nothing <: Any](SpCls4_S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_L.this.normalizeMe1[T](MiniboxConversions.this.minibox2box[Ssp](s, SpCls4_S_TypeTag), t);
-    def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_L.this.normalizeMe1[T](MiniboxConversions.this.minibox2box[Ssp](s, SpCls4_S_TypeTag), MiniboxConversions.this.minibox2box[T](t, normalizeMe1_J_T_TypeTag));
+    def normalizeMe1_J_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_J_T_TypeTag: Byte, SpCls4_S_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = SpCls4_L.this.normalizeMe1_n_J[T](normalizeMe1_J_T_TypeTag, MiniboxConversions.this.minibox2box[Ssp](s, SpCls4_S_TypeTag), t);
     def normalizeMe1_n_J[@miniboxing.plugin.minispec T >: Nothing <: Any](normalizeMe1_T_TypeTag: Byte, s: Ssp, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] = new miniboxing.tests.correctness.SpCls4Tuple2_LJ[Ssp,T](normalizeMe1_T_TypeTag, s, t)
   }
 }
