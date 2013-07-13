@@ -390,7 +390,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       }
 
       // specialized overloads
-      addSpecialOverrides(pspec, spec, specScope, inPlace = true)
+      addSpecialOverrides(pspec, localPspec, spec, specScope, inPlace = true)
 
       // deferred type tags:
       addDeferredTypeTagImpls(spec, specScope, inPlace = true)
@@ -461,6 +461,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
                   case _ => ???
                 }
 
+              // TODO: We need to clear some override flags, but that's not critical for the classes to work (#41)
+
               info1
             })
 
@@ -514,7 +516,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
 
     // create overrides for specialized variants of the method
-    def addSpecialOverrides(pspec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+    def addSpecialOverrides(globalPSpec: PartialSpec, pspec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
 
       val scope1 = if (inPlace) scope else scope.cloneScope
       val base = baseClass.getOrElse(clazz, NoSymbol)
@@ -539,19 +541,24 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
     if (clazz.isClass)
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
-        specializedOverriddenMembers(sym).map(oSym => {
-          val overrider = oSym.cloneSymbol(clazz)
-          overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
-          overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
-          val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
-          val baseClazz = oSym.owner
-          val baseType = clazz.info.baseType(baseClazz)
-          val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-          val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
-          localTypeTags(overrider) = typeTags
-          memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty)
+        specializedOverriddenMembers(sym).toOption.foreach(oSym => {
+          val localOverride = overloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
+          if (localOverride.name != oSym.name) {
+            val overrider = oSym.cloneSymbol(clazz)
+            overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
+            overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
 
-          scope1 enter overrider
+            val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
+            val baseClazz = oSym.owner
+            val baseType = clazz.info.baseType(baseClazz)
+            val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
+            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
+
+            localTypeTags(overrider) = typeTags
+            memberSpecializationInfo(overrider) = genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
+
+            scope1 enter overrider
+          }
         })
       }
     scope1
@@ -735,7 +742,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       val scope1 = originTpe.decls.cloneScope
       val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
       val parents1 = originTpe.parents map specializeTypeMap
-      val scope2 = addSpecialOverrides(Map.empty, origin, scope1)
+      val scope2 = addSpecialOverrides(Map.empty, Map.empty, origin, scope1)
       val scope3 = addDeferredTypeTagImpls(origin, scope2)
       val scope4 = normalizeMembers(origin, scope3)
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
@@ -746,7 +753,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Generate the information about how arguments and return value should
    * be converted when forwarding to `target`.
    */
-  private def genForwardingInfo(wrapper: Symbol, wrapperTags: Map[Symbol, Symbol], target: Symbol, targetTags: Map[Symbol, Symbol]): ForwardTo = {
+  private def genForwardingInfo(wrapper: Symbol, wrapperTags: Map[Symbol, Symbol], target: Symbol, targetTags: Map[Symbol, Symbol], overrider: Boolean = false): ForwardTo = {
 
     // TODO: only basic parameters should go here
     val (wtpe, ttpe) = (wrapper.info, target.info) match {
@@ -803,6 +810,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
     val retCast = genCastInfo(ttpe.finalResultType, wtpe.finalResultType)
 
-    ForwardTo(typeParams, target, retCast, paramCasts)
+    ForwardTo(typeParams, target, retCast, paramCasts)(overrider)
   }
 }
