@@ -656,10 +656,15 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 val globalTypeTagsMap = typeEnv.getOrElse(clazz, EmptyMbTypeEnv).deepEnv
                 val globalTypeTagsUpd = globalTypeTags.getOrElse(clazz, Map.empty).map({case (tpar, tag) => (globalTypeTagsMap.getOrElse(tpar, tpar.tpe).typeSymbol, tag)})
                 val updateTparam2 = (newMbr.typeParams zip target.typeParams).toMap
-                val wrapperTypeTags = globalTypeTagsUpd ++ /* localTypeTags(newMbr) ++ */
+                val wrapperTypeTags = globalTypeTagsUpd ++ localTypeTags(newMbr) ++
                                       localTypeTags(newMbr).map({ case (tpar, tag) => (updateTparam2.getOrElse(tpar, tpar), tag)})
 
                 val targetTypeTags = localTypeTags.getOrElse(target, Map())
+                // println("ORIGIN: " + member.defString)
+                // println("FROM:   " + newMbr.defString)
+                // println("TO:     " + target.defString)
+                // println(wrapperTypeTags)
+                // println(targetTypeTags)
 
                 genForwardingInfo(newMbr, wrapperTypeTags, target, targetTypeTags)
 
