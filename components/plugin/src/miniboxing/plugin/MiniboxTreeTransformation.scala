@@ -751,7 +751,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             s"Mismatching return type: current: ${currentReturn}, original: ${originalReturn}, typeEnv: ${miniboxedEnvShallow}")
       }
 
-      val preparer = new MiniboxTreePreparer(unit, source.enclClass, currentClass, miniboxedSyms, miniboxedEnvDeep, miniboxedEnvShallow, miniboxedTypeTags, miniboxedReturn)
+      val preparer = new MiniboxTreePreparer(unit,
+                                             source.enclClass,
+                                             currentClass,
+                                             miniboxedSyms,
+                                             miniboxedEnvDeep,
+                                             miniboxedEnvShallow,
+                                             miniboxedTypeTags,
+                                             miniboxedReturn)
       val tree1 = preparer.transform(tree)
 
       val d = new Duplicator(castmap)

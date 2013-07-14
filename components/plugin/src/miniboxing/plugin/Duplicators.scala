@@ -227,6 +227,8 @@ abstract class Duplicators extends Analyzer {
             invalidSyms(ldef.symbol) = ldef
           //          breakIf(true, this, ldef, context)
             val newsym = ldef.symbol.cloneSymbol(context.owner)
+//            println("FROM: " + ldef.symbol.defString)
+//            println("TO:   " + newsym.defString)
             newsym.setInfo(fixType(ldef.symbol.info))
             ldef.symbol = newsym
             debuglog("newsym: " + newsym + " info: " + newsym.info)
@@ -348,7 +350,7 @@ abstract class Duplicators extends Analyzer {
             if (isTailLabel)
               Ident(updateSym(p.symbol))
             else {
-              val newsym = p.symbol.cloneSymbol //(context.owner) // TODO owner?
+              val newsym = p.symbol.cloneSymbol(context.owner) // TODO owner?
               Ident(newsym.setInfo(fixType(p.symbol.info)))
             }
 
