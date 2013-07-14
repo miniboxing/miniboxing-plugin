@@ -1,0 +1,3 @@
+[Now checking: minibox]
+[check: minibox] The symbol, tpe or info of tree `(miniboxing.tests.compile.ComplexAlgebra[A]) : miniboxing.tests.compile.ComplexAlgebra[A]` refers to a out-of-scope symbol, type A. tree.symbol.ownerChain: ComplexAlgebra, method ComplexAlgebra, trait ComplexInstances, package compile, package tests, package miniboxing, package <root>
+warning: TreeCheckers detected non-compliant trees in newSource1.scala

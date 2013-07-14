@@ -769,7 +769,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       // flags for the entire class - for better or worse we adapt just
       // before calling the duplicator, and get back for specialization
       for (clazz <- specializedBase)
-        clazz.resetFlag(ABSTRACT | TRAIT)
+        if (originalTraitFlag(clazz))
+          clazz.resetFlag(ABSTRACT)
+        else
+          clazz.resetFlag(ABSTRACT | TRAIT)
 
       val tree2 = beforeMinibox(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],

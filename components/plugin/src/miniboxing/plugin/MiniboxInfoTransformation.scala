@@ -171,6 +171,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     decls.foreach(_.removeAnnotation(TailrecClass))
     // This needs to be delayed until trees have been duplicated, else
     // instantiation will fail, since C becomes an abstract class
+    if (clazz.hasFlag(TRAIT))
+      originalTraitFlag += clazz
     clazz.setFlag(TRAIT | ABSTRACT)
     decls
   }

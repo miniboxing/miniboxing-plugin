@@ -127,6 +127,8 @@ trait MiniboxSpecializationInfo {
     }
   }
 
+  val originalTraitFlag = mutable.Set.empty[Symbol]
+
   val specializedBase = mutable.Set.empty[Symbol]
 
   /**
