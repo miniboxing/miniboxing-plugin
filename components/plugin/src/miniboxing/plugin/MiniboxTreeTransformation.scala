@@ -789,7 +789,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       val specializer = new MiniboxTreeSpecializer(unit, Nil, miniboxedTypeTags, miniboxedEnvShallow)
       val tree3 = specializer.transform(tree2)
 
-      tree3
+      val specializer2 = new MiniboxDefSpecializer(unit, miniboxedTypeTags, miniboxedEnvShallow)
+      val tree4 = specializer2.transform(tree3)
+
+      tree4
     }
 
     /** Put the body of 'source' as the right hand side of the method 'tree'.

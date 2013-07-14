@@ -223,4 +223,90 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
       res
     }
   }
+
+  class MiniboxDefSpecializer(unit: CompilationUnit,
+                               tags: Map[Symbol, Tree],
+                               shallowEnv: Map[Symbol, Type]) {
+
+    var labelDefs = Map[Symbol, (Symbol, List[Symbol], Boolean)]()
+    var defDefs = Map[Symbol, Symbol]()
+
+    // modify *defs in place
+    val phase1 = new TypingTransformer(unit) {
+
+      private def miniboxit(tree: Tree, tpe: Type): Tree =
+        tree match {
+          case EmptyTree =>
+            EmptyTree
+          case Block(stats, res) =>
+            // propagate inside blocks to enable the peephole optimization
+            localTyper.typed(Block(stats, miniboxit(res, tpe)))
+          case If(cond, thenp, elsep) =>
+            localTyper.typed(If(cond, miniboxit(thenp, tpe), miniboxit(elsep, tpe)))
+          case _ =>
+            val typeTag = tags(tpe.typeSymbol.deSkolemize)
+            localTyper.typed(gen.mkMethodCall(box2minibox, List(tpe), List(tree, typeTag)))
+        }
+
+      override def transform(tree: Tree) = tree match {
+        case LabelDef(name, args, rhs) =>
+          val label = tree.symbol
+          val newlabel = label.cloneSymbol(label.owner)
+          var mboxedArgs = List[Symbol]()
+          var mboxedRet = false
+          newlabel.modifyInfo({
+            case MethodType(nargs, ret) =>
+              mboxedArgs = nargs.filter(s => shallowEnv.getOrElse(s.tpe.typeSymbol, NoType) =:= LongTpe)
+              mboxedRet = shallowEnv.getOrElse(ret.typeSymbol, NoType) =:= LongTpe
+              mboxedArgs.foreach(arg => { arg.setInfo(LongTpe); arg.owner = newlabel })
+              labelDefs += label -> (newlabel, mboxedArgs, mboxedRet)
+              val nret = if (mboxedRet) LongTpe else ret
+              MethodType(nargs, nret)
+          })
+//          println("FROM: " + label.defString + " (SPEC)")
+//          println("TO:   " + newlabel.defString + " (SPEC)")
+          val fargs = newlabel.info.params.map(_.cloneSymbol(newlabel.owner))
+          val nargrefs =
+            for (((arg, narg), farg) <- label.info.params zip newlabel.info.params zip fargs) yield
+              if (mboxedArgs.contains(narg)) {
+                localTyper.typed(gen.mkMethodCall(minibox2box, List(arg.tpe), List(Ident(farg), tags(arg.tpe.typeSymbol))))
+              } else
+                localTyper.typed(Ident(farg))
+          val newrhs = new TreeSubstituter(args.map(_.symbol), nargrefs).transform(rhs)
+          val restpe = label.info.resultType
+          val newrhs2 = if (mboxedRet) miniboxit(newrhs, restpe) else newrhs
+          val tree0 = LabelDef(newlabel, fargs, newrhs2).setSymbol(newlabel)
+          val tree1 = localTyper.typed(tree0)
+          tree1
+        case _ => super.transform(tree)
+      }
+    }
+
+    // modify *defs in place
+    val phase2 = new TypingTransformer(unit) {
+      override def transform(tree: Tree) = tree match {
+        case Apply(lapply, args) if labelDefs.isDefinedAt(lapply.symbol) =>
+          val (newlabel, mboxedArgs, mboxedRet) = labelDefs(lapply.symbol)
+          val label = lapply.symbol
+          val nargrefs =
+            for (((oarg, narg), tree) <- (label.info.params zip newlabel.info.params) zip args) yield
+              if (mboxedArgs.contains(narg)) {
+                localTyper.typed(gen.mkMethodCall(box2minibox, List(oarg.tpe), List(tree, tags(oarg.tpe.typeSymbol))))
+              } else
+                tree
+          val tree1 = Apply(Ident(newlabel).setSymbol(newlabel), nargrefs)
+          val restpe = label.tpe.resultType
+          val tree2 = if (mboxedRet) gen.mkMethodCall(minibox2box, List(restpe), List(tree1, tags(restpe.typeSymbol))) else tree1
+          val tree3 = localTyper.typed(tree2)
+          tree3
+        case _ => super.transform(tree)
+      }
+    }
+
+    def transform(tree: Tree) = {
+      val tree1 = phase1.transform(tree)
+      val tree2 = phase2.transform(tree1)
+      tree2
+    }
+  }
 }
