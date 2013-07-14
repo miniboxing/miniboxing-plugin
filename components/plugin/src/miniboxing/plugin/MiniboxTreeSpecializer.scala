@@ -113,6 +113,8 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
               val tree1 = localTyper.typed(tree0)
 //              println(tree1)
               tree1
+            case If(cond, thenp, elsep) =>
+              localTyper.typed(If(cond, miniboxit(thenp), miniboxit(elsep)))
             case _ =>
               val tp = tree.tpe
               val updatedTpe = miniboxedDeepEnv.getOrElse(tp.typeSymbol.deSkolemize, tp) // Nothing/Null stay the same
