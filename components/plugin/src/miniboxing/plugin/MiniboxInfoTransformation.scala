@@ -72,8 +72,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
         specializedClasses(sym).get(extractPSpec(tref)) match {
           case Some(sym1) =>
             val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
-            inheritedDeferredTypeTags(current) ++= primaryDeferredTypeTags(sym1).mapValues(localTParamMap) ++
-                                                   inheritedDeferredTypeTags(sym1).mapValues(localTParamMap)
+            inheritedDeferredTypeTags(current) ++= primaryDeferredTypeTags(sym1).mapValues(s => localTParamMap.getOrElse(s, s)) ++
+                                                   inheritedDeferredTypeTags(sym1).mapValues(s => localTParamMap.getOrElse(s, s))
             typeRef(pre1, sym1, args)
           case None       => typeRef(pre1, sym, args)
         }
