@@ -384,9 +384,10 @@ trait GenSeqLike[@specialized +A, +Repr] extends Any with GenIterableLike[A, Rep
    *  @return   `true` if `that` is a sequence that has the same elements as
    *            this sequence in the same order, `false` otherwise
    */
-  override def equals(that: Any): Boolean = that match {
-    case that: GenSeq[_] => (that canEqual this) && (this sameElements that)
-    case _               => false
-  }
+  override def equals(that: Any): Boolean = ???
+//  that match {
+//    case that: GenSeq[_] => (that canEqual this) && (this sameElements that)
+//    case _               => false
+//  }
 
 }
