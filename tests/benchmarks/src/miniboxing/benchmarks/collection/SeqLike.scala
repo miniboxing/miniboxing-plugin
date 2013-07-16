@@ -336,7 +336,7 @@ trait SeqLike[@specialized +A, +Repr] extends Any with IterableLike[A, Repr] wit
 
   /* Need to override string, so that it's not the Function1's string that gets mixed in.
    */
-  override def toString = super[IterableLike].toString
+  override def toString = ??? //super[IterableLike].toString
 }
 
 /** The companion object for trait `SeqLike`.
@@ -429,7 +429,7 @@ object SeqLike {
    *  @param  forward Direction of search (from beginning==true, from end==false)
    *  @return Index of start of sequence if found, -1 if not (relative to beginning of S, not m0).
    */
-  private def kmpSearch[B](S: Seq[B], m0: Int, m1: Int, W: Seq[B], n0: Int, n1: Int, forward: Boolean): Int = {
+  def kmpSearch[B](S: Seq[B], m0: Int, m1: Int, W: Seq[B], n0: Int, n1: Int, forward: Boolean): Int = {
     // Check for redundant case when target has single valid element
     def clipR(x: Int, y: Int) = if (x < y) x else -1
     def clipL(x: Int, y: Int) = if (x > y) x else -1
