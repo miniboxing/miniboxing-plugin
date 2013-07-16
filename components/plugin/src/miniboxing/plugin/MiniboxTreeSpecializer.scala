@@ -32,9 +32,9 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
     import global._
     override def transform(tree: Tree): Tree = tree match {
       case ddef@DefDef(mods, name, tparams, vparamss, tpt, rhs) =>
-        localTyper.typed(deriveDefDef(ddef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree))
+        atOwner(ddef.symbol)(localTyper.typed(deriveDefDef(ddef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree)))
       case vdef@ValDef(mods, name, tpt, rhs) =>
-        localTyper.typed(deriveValDef(vdef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree))
+        atOwner(vdef.symbol)(localTyper.typed(deriveValDef(vdef)(rhs => if (rhs != EmptyTree) miniboxReturn(boxArgs(rhs)) else EmptyTree)))
       case _ =>
         sys.error("incorrect use of miniboxed tree preparer")
     }
@@ -145,6 +145,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
   /** A tree transformer that transforms Tsp-s to Longs */
   class MiniboxTreeSpecializer(unit: CompilationUnit,
+                                owner: Symbol,
                                 miniboxedSymsInit: List[(Symbol, Type)],
                                 miniboxedTags: Map[Symbol, Tree],
                                 miniboxedShallowEnv: Map[Symbol, Type]) extends TypingTransformer(unit) {
@@ -164,9 +165,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
 
     import global._
     import definitions._
-    override def transform(tree: Tree): Tree = boxingTransform(tree)
-
-    def boxingTransform(tree: Tree): Tree = {
+    override def transform(tree: Tree): Tree = {
       // printing vars:
       indent += 1
       treen += 1
@@ -192,7 +191,7 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
             nvdef
             localTyper.typed(nvdef)
           } else {
-            localTyper.typed(deriveValDef(vdef)(boxingTransform))
+            localTyper.typed(deriveValDef(vdef)(transform))
           }
 
         case i: Ident if miniboxedSyms.exists(_._1 == i.symbol) =>
@@ -200,6 +199,12 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
           val tsp = miniboxedSyms.find(_._1 == sym).get._2
           val tag = miniboxedTags(tsp.typeSymbol)
           localTyper.typed(gen.mkMethodCall(minibox2box, List(tsp), List(gen.mkAttributedIdent(sym), tag)))
+
+        case s@Select(qual, _) if miniboxedSyms.exists(_._1 == s.symbol) =>
+          val sym = s.symbol
+          val tsp = miniboxedSyms.find(_._1 == sym).get._2
+          val tag = miniboxedTags(tsp.typeSymbol)
+          localTyper.typed(gen.mkMethodCall(minibox2box, List(tsp), List(gen.mkAttributedSelect(qual, sym), tag)))
 
         case Assign(lhs, rhs) if miniboxedSyms.exists(_._1 == lhs.symbol) =>
           val sym = lhs.symbol
@@ -211,12 +216,13 @@ trait MiniboxTreeSpecializer extends TypingTransformers {
         // don't touch DefDefs, LabelDef, ClassDef-s YET...
         // -- we don't care about TypeDefs, ModuleDefs and PackageDefs since they do not take parameters
         case d: DefDef =>
-          treeCopy.DefDef(d, d.mods, d.name, d.tparams, d.vparamss, d.tpt, transform(d.rhs))
+          atOwner(d.symbol)(treeCopy.DefDef(d, d.mods, d.name, d.tparams, d.vparamss, d.tpt, transform(d.rhs)))
         case l: LabelDef =>
-          treeCopy.LabelDef(l, l.name, l.params, transform(l.rhs))
+          atOwner(l.symbol)(treeCopy.LabelDef(l, l.name, l.params, transform(l.rhs)))
         case c: ClassDef =>
-          treeCopy.ClassDef(c, c.mods, c.name, c.tparams, transformTemplate(c.impl))
-        case other => super.transform(other)
+          atOwner(c.symbol)(treeCopy.ClassDef(c, c.mods, c.name, c.tparams, transformTemplate(c.impl)))
+        case other =>
+          super.transform(other)
       }
       debug("  " * indent + "     (" + treen + ") res:  " + res.toString.replaceAll("\n", "\n" + "  " * indent))
       indent -= 1

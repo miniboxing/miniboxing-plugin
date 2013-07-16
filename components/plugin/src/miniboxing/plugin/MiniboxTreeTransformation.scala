@@ -786,7 +786,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
       for (clazz <- specializedBase)
         clazz.setFlag(ABSTRACT | TRAIT)
 
-      val specializer = new MiniboxTreeSpecializer(unit, Nil, miniboxedTypeTags, miniboxedEnvShallow)
+      val specializer = new MiniboxTreeSpecializer(unit, symbol, Nil, miniboxedTypeTags, miniboxedEnvShallow)
       val tree3 = specializer.transform(tree2)
 
       val specializer2 = new MiniboxDefSpecializer(unit, miniboxedTypeTags, miniboxedEnvShallow)

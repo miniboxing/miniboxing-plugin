@@ -46,7 +46,7 @@ package miniboxing.tests.compile.nested {
           ()
         };
         private[this] val x1: Long = CCCCC_J.this.c;
-        <stable> <accessor> def x1(): Tsp = DDDDD.this.x1;
+        <stable> <accessor> def x1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](DDDDD.this.x1, CCCCC_T_TypeTag);
         private[this] val x2: U = DDDDD.this.d;
         <stable> <accessor> def x2(): U = DDDDD.this.x2;
         def foo(): Unit = {
@@ -123,12 +123,4 @@ package miniboxing.tests.compile.nested {
 [check: minibox] The symbol, tpe or info of tree `(val x4: U = DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
 [check: minibox] The symbol, tpe or info of tree `(DDDDD.this.d) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value d, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
 [check: minibox] The symbol, tpe or info of tree `(x4) : U` refers to a out-of-scope symbol, type U in class DDDDD. tree.symbol.ownerChain: value x4, method foo, class DDDDD, method test, class CCCCC_L, package nested, package compile, package tests, package miniboxing, package <root>
-newSource1.scala:8: error:
-**** ERROR DURING INTERNAL CHECKING ****
-type mismatch;
- found   : DDDDD.this.x1.type (with underlying type Long)
- required: Tsp
-      val x1: T = c
-          ^
 warning: TreeCheckers detected non-compliant trees in newSource1.scala
-
