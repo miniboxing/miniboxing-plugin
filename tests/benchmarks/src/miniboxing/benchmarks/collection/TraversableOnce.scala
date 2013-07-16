@@ -204,19 +204,19 @@ trait TraversableOnce[@specialized +A] extends Any with GenTraversableOnce[A] {
 
   def product[B >: A](implicit num: Numeric[B]): B = foldLeft(num.one)(num.times)
 
-  def min[B >: A](implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.min")
-
-    reduceLeft((x, y) => if (cmp.lteq(x, y)) x else y)
-  }
-
-  def max[B >: A](implicit cmp: Ordering[B]): A = {
-    if (isEmpty)
-      throw new UnsupportedOperationException("empty.max")
-
-    reduceLeft((x, y) => if (cmp.gteq(x, y)) x else y)
-  }
+//  def min[B >: A](implicit cmp: Ordering[B]): A = {
+//    if (isEmpty)
+//      throw new UnsupportedOperationException("empty.min")
+//
+//    reduceLeft((x, y) => if (cmp.lteq(x, y)) x else y)
+//  }
+//
+//  def max[B >: A](implicit cmp: Ordering[B]): A = {
+//    if (isEmpty)
+//      throw new UnsupportedOperationException("empty.max")
+//
+//    reduceLeft((x, y) => if (cmp.gteq(x, y)) x else y)
+//  }
 
   def maxBy[B](f: A => B)(implicit cmp: Ordering[B]): A = {
     if (isEmpty)

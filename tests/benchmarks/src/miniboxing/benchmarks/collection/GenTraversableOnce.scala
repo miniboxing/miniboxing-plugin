@@ -359,7 +359,7 @@ trait GenTraversableOnce[@specialized +A] extends Any {
    *
    *    @return   the smallest element of this $coll
    */
-  def min[A1 >: A](implicit ord: Ordering[A1]): A
+//  def min[A1 >: A](implicit ord: Ordering[A1]): A
 
   /** Finds the largest element.
    *
@@ -372,7 +372,7 @@ trait GenTraversableOnce[@specialized +A] extends Any {
    *
    *    @return   the largest element of this $coll.
    */
-  def max[A1 >: A](implicit ord: Ordering[A1]): A
+//  def max[A1 >: A](implicit ord: Ordering[A1]): A
 
   def maxBy[B](f: A => B)(implicit cmp: Ordering[B]): A
 
