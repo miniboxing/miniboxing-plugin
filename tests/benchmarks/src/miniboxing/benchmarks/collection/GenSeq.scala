@@ -11,7 +11,7 @@ import generic._
  *  @author Aleksandar Prokopec
  *  @since 2.9
  */
-trait GenSeq[+A]
+trait GenSeq[@specialized +A]
 extends GenSeqLike[A, GenSeq[A]]
    with GenIterable[A]
    with Equals

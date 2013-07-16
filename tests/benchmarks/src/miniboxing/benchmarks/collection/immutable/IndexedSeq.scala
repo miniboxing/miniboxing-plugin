@@ -17,7 +17,7 @@ import mutable.Builder
  *  that are guaranteed immutable.
  *  $indexedSeqInfo
  */
-trait IndexedSeq[+A] extends Seq[A]
+trait IndexedSeq[@specialized +A] extends Seq[A]
                     with miniboxing.benchmarks.collection.IndexedSeq[A]
                     with GenericTraversableTemplate[A, IndexedSeq]
                     with IndexedSeqLike[A, IndexedSeq[A]] {

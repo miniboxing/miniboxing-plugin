@@ -19,7 +19,7 @@ import generic._
  *  @author Aleksandar Prokopec
  *  @since 2.9
  */
-trait GenIterable[+A]
+trait GenIterable[@specialized +A]
 extends GenIterableLike[A, GenIterable[A]]
    with GenTraversable[A]
    with GenericTraversableTemplate[A, GenIterable]
@@ -30,7 +30,7 @@ extends GenIterableLike[A, GenIterable[A]]
 
 
 object GenIterable extends GenTraversableFactory[GenIterable] {
-  implicit def canBuildFrom[A] = ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
+  implicit def canBuildFrom[A]: GenericCanBuildFrom[A] = ??? // ReusableCBF.asInstanceOf[GenericCanBuildFrom[A]]
   def newBuilder[A] = ??? // Iterable.newBuilder
 }
 

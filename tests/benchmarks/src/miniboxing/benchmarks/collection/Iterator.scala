@@ -225,7 +225,7 @@ import Iterator.empty
  *  on, as well as the one passed as parameter. Using the old iterators is
  *  undefined and subject to change.
  */
-trait Iterator[+A] extends TraversableOnce[A] {
+trait Iterator[@specialized +A] extends TraversableOnce[A] {
   self =>
 
   def seq: Iterator[A] = this
@@ -900,4 +900,4 @@ trait Iterator[+A] extends TraversableOnce[A] {
 }
 
 /** Explicit instantiation of the `Iterator` trait to reduce class file size in subclasses. */
-abstract class AbstractIterator[+A] extends Iterator[A]
+abstract class AbstractIterator[@specialized +A] extends Iterator[A]

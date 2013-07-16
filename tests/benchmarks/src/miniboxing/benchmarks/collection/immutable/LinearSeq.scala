@@ -18,7 +18,7 @@ import mutable.Builder
  *  are guaranteed immutable.
  *  $linearSeqInfo
  */
-trait LinearSeq[+A] extends Seq[A]
+trait LinearSeq[@specialized +A] extends Seq[A]
                             with scala.collection.LinearSeq[A]
                             with GenericTraversableTemplate[A, LinearSeq]
                             with LinearSeqLike[A, LinearSeq[A]] {

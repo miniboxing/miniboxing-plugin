@@ -8,4 +8,4 @@ import generic._
  *
  *  @since 2.8
  */
-trait IndexedSeqOptimized[A, +Repr] extends Any with IndexedSeqLike[A, Repr] with collection.IndexedSeqOptimized[A, Repr]
+trait IndexedSeqOptimized[@specialized A, +Repr] extends Any with IndexedSeqLike[A, Repr] with collection.IndexedSeqOptimized[A, Repr]

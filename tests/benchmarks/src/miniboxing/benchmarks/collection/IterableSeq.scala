@@ -47,7 +47,7 @@ import scala.annotation.unchecked.uncheckedVariance
  *  @define Coll Iterable
  *  @define coll iterable collection
  */
-trait IterableLike[+A, +Repr] extends Any with Equals with TraversableLike[A, Repr] with GenIterableLike[A, Repr] {
+trait IterableLike[@specialized +A, +Repr] extends Any with Equals with TraversableLike[A, Repr] with GenIterableLike[A, Repr] {
 self =>
 
   override protected[this] def thisCollection: Iterable[A] = this.asInstanceOf[Iterable[A]]

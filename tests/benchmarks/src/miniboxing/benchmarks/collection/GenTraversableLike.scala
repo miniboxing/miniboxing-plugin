@@ -53,7 +53,7 @@ import scala.annotation.migration
  *  @author Aleksandar Prokopec
  *  @since 2.9
  */
-trait GenTraversableLike[+A, +Repr] extends Any with GenTraversableOnce[A] {
+trait GenTraversableLike[@specialized +A, +Repr] extends Any with GenTraversableOnce[A] {
 
   def repr: Repr
 

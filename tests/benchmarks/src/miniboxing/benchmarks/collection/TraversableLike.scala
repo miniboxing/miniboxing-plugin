@@ -64,7 +64,7 @@ import scala.language.higherKinds
  *  @define Coll Traversable
  *  @define coll traversable collection
  */
-trait TraversableLike[+A, +Repr] extends Any
+trait TraversableLike[@specialized +A, +Repr] extends Any
                                     with HasNewBuilder[A, Repr]
                                     with FilterMonadic[A, Repr]
                                     with TraversableOnce[A]

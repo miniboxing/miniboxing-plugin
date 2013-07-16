@@ -14,7 +14,7 @@ import mutable.Builder
 /** A base trait for indexed sequences.
  *  $indexedSeqInfo
  */
-trait IndexedSeq[+A] extends Seq[A]
+trait IndexedSeq[@specialized +A] extends Seq[A]
                     with GenericTraversableTemplate[A, IndexedSeq]
                     with IndexedSeqLike[A, IndexedSeq[A]] {
   override def companion: GenericCompanion[IndexedSeq] = IndexedSeq

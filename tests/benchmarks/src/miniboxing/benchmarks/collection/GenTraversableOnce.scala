@@ -46,7 +46,7 @@ import scala.language.higherKinds
  *  @author Aleksandar Prokopec
  *  @since 2.9
  */
-trait GenTraversableOnce[+A] extends Any {
+trait GenTraversableOnce[@specialized +A] extends Any {
 
   def foreach[U](f: A => U): Unit
 

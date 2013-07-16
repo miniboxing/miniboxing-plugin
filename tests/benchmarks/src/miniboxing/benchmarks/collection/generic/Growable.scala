@@ -13,7 +13,7 @@ package generic
  *  @define add  add
  *  @define Add  add
  */
-trait Growable[-A] extends Clearable {
+trait Growable[@specialized -A] extends Clearable {
 
   /** ${Add}s a single element to this $coll.
    *

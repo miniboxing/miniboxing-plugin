@@ -57,7 +57,7 @@ import scala.annotation.{migration, bridge}
  *  mutates the collection in place, unlike similar but
  *  undeprecated methods throughout the collections hierarchy.
  */
-trait BufferLike[A, +This <: BufferLike[A, This]]
+trait BufferLike[/* this just won't work: @specialized */A, +This <: BufferLike[A, This]]
                 extends Growable[A]
                    with SeqLike[A, This]
                    with scala.Cloneable

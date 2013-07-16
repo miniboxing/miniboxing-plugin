@@ -14,7 +14,7 @@ import generic._
  *
  *  @since 2.8
  */
-trait Builder[-Elem, +To] extends Growable[Elem] {
+trait Builder[@specialized -Elem, +To] extends Growable[Elem] {
 
   /** Adds a single element to the builder.
    *  @param elem the element to be added.

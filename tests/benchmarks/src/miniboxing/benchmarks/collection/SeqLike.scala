@@ -59,7 +59,7 @@ import scala.math.{ min, max, Ordering }
  *  @define orderDependent
  *  @define orderDependentFold
  */
-trait SeqLike[+A, +Repr] extends Any with IterableLike[A, Repr] with GenSeqLike[A, Repr] { self =>
+trait SeqLike[@specialized +A, +Repr] extends Any with IterableLike[A, Repr] with GenSeqLike[A, Repr] { self =>
 
   override protected[this] def thisCollection: Seq[A] = this.asInstanceOf[Seq[A]]
   override protected[this] def toCollection(repr: Repr): Seq[A] = repr.asInstanceOf[Seq[A]]
@@ -142,8 +142,8 @@ trait SeqLike[+A, +Repr] extends Any with IterableLike[A, Repr] with GenSeqLike[
 
   def reverseMap[B, That](f: A => B)(implicit bf: CanBuildFrom[Repr, B, That]): That = {
     var xs: List[A] = List()
-    for (x <- this.seq)
-      xs = x :: xs
+//    for (x <- this.seq)
+//      xs = x :: xs
     val b = bf(repr)
     for (x <- xs)
       b += f(x)

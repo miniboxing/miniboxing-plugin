@@ -57,7 +57,7 @@ import scala.reflect.ClassTag
  *
  *    Note: will not terminate for infinite-sized collections.
  */
-trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
+trait TraversableOnce[@specialized +A] extends Any with GenTraversableOnce[A] {
   self =>
 
   /** Self-documenting abstract methods. */

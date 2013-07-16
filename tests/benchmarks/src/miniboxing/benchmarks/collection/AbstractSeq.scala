@@ -14,7 +14,7 @@ import mutable.Builder
 /** A base trait for sequences.
  *  $seqInfo
  */
-trait Seq[+A] extends PartialFunction[Int, A]
+trait Seq[@specialized +A] extends PartialFunction[Int, A]
                       with Iterable[A]
                       with GenSeq[A]
                       with GenericTraversableTemplate[A, Seq]
@@ -37,4 +37,4 @@ object Seq extends SeqFactory[Seq] {
 }
 
 /** Explicit instantiation of the `Seq` trait to reduce class file size in subclasses. */
-abstract class AbstractSeq[+A] extends AbstractIterable[A] with Seq[A]
+abstract class AbstractSeq[@specialized +A] extends AbstractIterable[A] with Seq[A]
