@@ -6,8 +6,8 @@ Specializing class C...
 
   // specialized class:
   class C_J[Tsp] extends C[Tsp] {
-    def <init>(val C_T_TypeTag: Byte): miniboxing.tests.compile.inheritance.C_J[Tsp] // is a specialized implementation of constructor C
-    private[this] val C_T_TypeTag: Byte                                    // no info
+    def <init>(val miniboxing$tests$compile$inheritance$C_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.C_J[Tsp] // is a specialized implementation of constructor C
+    private[this] val miniboxing$tests$compile$inheritance$C_J|T_TypeTag: Byte // no info
   }
 
   // specialized class:
@@ -28,11 +28,11 @@ package miniboxing.tests.compile.inheritance {
     }
   };
   class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.C[Tsp] {
-    def <init>(C_T_TypeTag: Byte): miniboxing.tests.compile.inheritance.C_J[Tsp] = {
+    def <init>(miniboxing$tests$compile$inheritance$C_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.C_J[Tsp] = {
       C_J.super.<init>();
       ()
     };
-    <paramaccessor> private[this] val C_T_TypeTag: Byte = _
+    <paramaccessor> private[this] val miniboxing$tests$compile$inheritance$C_J|T_TypeTag: Byte = _
   };
   class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.C[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.C_L[Tsp] = {
