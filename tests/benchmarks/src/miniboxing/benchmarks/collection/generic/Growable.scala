@@ -36,7 +36,7 @@ trait Growable[@specialized -A] extends Clearable {
    *  @param xs   the TraversableOnce producing the elements to $add.
    *  @return  the $coll itself.
    */
-  def ++=(xs: TraversableOnce[A]): this.type = { xs.seq foreach += ; this }
+  def ++=(xs: TraversableOnce[A]): this.type = ??? //{ xs.seq foreach { x => { this.+=(_); 0 } } ; this; }
 
   /** Clears the $coll's contents. After this operation, the
    *  $coll is empty.
