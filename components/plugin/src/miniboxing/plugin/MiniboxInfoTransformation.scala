@@ -233,9 +233,9 @@ trait MiniboxInfoTransformation extends InfoTransform {
         (for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed) yield {
           val sym =
             if (origin.isTrait)
-              spec.newMethodSymbol(typeTagName(tparam), spec.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
+              spec.newMethodSymbol(typeTagName(spec, tparam), spec.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
             else
-              spec.newValue(typeTagName(tparam), spec.pos, PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
+              spec.newValue(typeTagName(spec, tparam), spec.pos, PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
           sym setFlag MINIBOXED
           if (origin.isTrait) {
@@ -440,7 +440,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val (info0, mbArgs) = miniboxSubst(EmptyTypeEnv, env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
-                  yield (tparam, newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                  yield (tparam, newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
               miniboxedArgs(newMbr) = Set() ++ mbArgs
               localTypeTags(newMbr) = localTags.toMap
               val tagParams = localTags.map(_._2)
@@ -614,7 +614,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
                 typeEnv(newMbr) = MiniboxingTypeEnv(baseShallowEnv ++ shallowEnv, baseDeepEnv ++ deepEnv.mapValues(_.tpe))
                 val localTags =
                   for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
-                    yield (deepEnv(tparam), newMbr.newValue(typeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                    yield (deepEnv(tparam), newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
                 val updateParams = (member.info.params zip info1.params).toMap
                 val oldMiniboxedArgs = miniboxedArgs.getOrElse(member, Set())
                 val oldLocalTypeTags = localTypeTags.getOrElse(member, Map())
