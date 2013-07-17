@@ -29,7 +29,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 
   def needsUpdate(name: String): Boolean =
     // TODO: Extend to more parameters
-    name.matches(".*_class_J.*")
+    name.contains("_class_J")
 
   def updateClassName(name: String, tag: Int) =
     if (needsUpdate(name)) name.replaceAll("_class_J", "_class_" + tag) else name
@@ -86,7 +86,11 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
               insnNodes.set(new TypeInsnNode(Opcodes.NEW, updateClassName(tinst.desc, tparam)))
           case minst: MethodInsnNode =>
             // update owner to the new class
-            minst.owner = minst.owner.replace(oldname, newname) // update names everywhere
+            minst.owner = minst.owner.replaceAll(oldname, newname) // update names everywhere
+            if (minst.getOpcode() == Opcodes.INVOKESTATIC) {
+              minst.owner = updateClassName(minst.owner, tparam)
+              //System.err.println("INVOKESTATIC on " + minst.owner)
+            }
             // patch up constructor call
             if (minst.name == "<init>")
               if (minst.owner.endsWith("_J"))
@@ -142,12 +146,14 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
   override def findClass(decodedName: String): Class[_] = classes get decodedName match {
     case Some(clazz) => clazz
     case None =>
+      //System.err.println("CLASS: " + decodedName + "  " + needsInstantiation(decodedName))
       if (needsInstantiation(decodedName)) {
         try {
           //System.err.println("NEEDS MODIFYING: " + decodedName)
           val encodedName = decodedName.replace('.', '/')
           // TODO: Extend to more parameters
-          val encodedTplName = encodedName.replaceAll("_class_[0-9]$", "_class_J")
+          val encodedTplName = encodedName.replaceAll("_class_[0-9]", "_class_J")
+          //System.err.println("BASE: " + encodedTplName)
           val templateBytes = super.getResourceAsStream(encodedTplName + ".class");
           if (templateBytes == null) {
             throw new ClassNotFoundException("Class " + encodedTplName + " not found. Sorry.");
