@@ -731,7 +731,7 @@ final class VectorBuilder[A]() extends Builder[A,Vector[A]] with VectorPointer[A
 
 
 
-trait VectorPointer[T] {
+trait VectorPointer[@specialized T] {
     var depth: Int = _
     var display0: Array[AnyRef] = _
     var display1: Array[AnyRef] = _

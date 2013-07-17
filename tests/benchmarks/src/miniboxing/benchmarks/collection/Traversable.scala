@@ -102,4 +102,4 @@ object Traversable extends TraversableFactory[Traversable] { self =>
 }
 
 /** Explicit instantiation of the `Traversable` trait to reduce class file size in subclasses. */
-abstract class AbstractTraversable[+A] extends Traversable[A]
+abstract class AbstractTraversable[@specialized +A] extends Traversable[A]
