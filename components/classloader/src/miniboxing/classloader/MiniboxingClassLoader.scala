@@ -25,7 +25,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 
   def needsModifying(name: String): Boolean =
     // TODO: Extend to more parameters
-    name.matches(".*_[0-9]$")
+    name.matches(".*_class_[0-9]$")
 
   def modifyClass(in: InputStream, oldname: String, newname: String): Array[Byte] = {
     val tparam = newname.last.toInt - '0'.toInt
@@ -74,7 +74,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
             // patch up NEW calls
             if (tinst.desc.endsWith("_J"))
               // TODO: In-place replace this
-              insnNodes.set(new TypeInsnNode(Opcodes.NEW, tinst.desc.replaceAll("_J$", "_" + tparam)))
+              insnNodes.set(new TypeInsnNode(Opcodes.NEW, tinst.desc.replaceAll("_class_J", "_class_" + tparam)))
           case minst: MethodInsnNode =>
             // update owner to the new class
             minst.owner = minst.owner.replace(oldname, newname) // update names everywhere
@@ -82,7 +82,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
             if (minst.name == "<init>")
               if (minst.owner.endsWith("_J"))
                 // TODO: In-place replace this
-                minst.owner = minst.owner.replaceAll("_J$", "_" + tparam)
+                minst.owner = minst.owner.replaceAll("_class_J", "_class_" + tparam)
           case _ =>
         }
       }
@@ -133,9 +133,10 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     case None =>
       if (needsModifying(decodedName)) {
         try {
+          //System.err.println("NEEDS MODIFYING: " + decodedName)
           val encodedName = decodedName.replace('.', '/')
           // TODO: Extend to more parameters
-          val encodedTplName = encodedName.replaceAll("_[0-9]$", "_J")
+          val encodedTplName = encodedName.replaceAll("_class_[0-9]$", "_class_J")
           val templateBytes = super.getResourceAsStream(encodedTplName + ".class");
           if (templateBytes == null) {
             throw new ClassNotFoundException("Class " + encodedTplName + " not found. Sorry.");
@@ -145,6 +146,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
           // store it
           val clazz = defineClass(decodedName, array, 0, array.length);
           classes += decodedName -> clazz
+          //System.err.println("DONE")
           clazz
         } catch {
           case io: IOException =>

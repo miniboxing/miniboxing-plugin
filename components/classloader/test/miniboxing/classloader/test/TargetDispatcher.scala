@@ -31,18 +31,12 @@ trait TargetDispatcher[T] {
   def print: Unit
 }
 
-class TargetDispatcher_J[T$sp](val t_J: Long, dispatcher: Dispatcher) extends TargetDispatcher[T$sp] {
+class TargetDispatcher_class_J[T$sp](val t_J: Long, dispatcher: Dispatcher) extends TargetDispatcher[T$sp] {
   def t = ???
   def print: Unit = {
     System.out.println("print(" + t_J + ", " + dispatcher + ") by " + this.getClass.getName())
   }
 }
-
-class TargetDispatcher_L[T$sp](val t: T$sp) extends TargetDispatcher[T$sp] {
-  def t_J = ???
-  def print: Unit = System.out.println("print( " + t.toString + ") by " + this.getClass.getName())
-}
-
 
 /**********************************************************************************************************************
  * FACTORY C()DE ******************************************************************************************************
@@ -55,8 +49,8 @@ abstract class TargetDispatcherFactoryInterface {
   def newTargetDispatcher_J[T$inst](t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst]
 }
 
-class TargetDispatcherFactoryInstance_J extends TargetDispatcherFactoryInterface {
-  def newTargetDispatcher_J[T$inst](t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst] = new TargetDispatcher_J(t_J, dispatcher)
+class TargetDispatcherFactoryInstance_class_J extends TargetDispatcherFactoryInterface {
+  def newTargetDispatcher_J[T$inst](t_J: Long, dispatcher: Dispatcher): TargetDispatcher[T$inst] = new TargetDispatcher_class_J(t_J, dispatcher)
 }
 
 object TargetDispatcherFactory {
@@ -71,14 +65,14 @@ object TargetDispatcherFactory {
   def createFactoryAndObject[T$inst](tag: Int)(t_J: Long, disp: Dispatcher): TargetDispatcher[T$inst] =
     try {
       val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetDispatcherFactory.this)
-      val clazz = classloader.findClass("miniboxing.classloader.test.TargetDispatcherFactoryInstance_" + tag)
+      val clazz = classloader.findClass("miniboxing.classloader.test.TargetDispatcherFactoryInstance_class_" + tag)
       val inst  = clazz.newInstance().asInstanceOf[TargetDispatcherFactoryInterface]
       fact(tag) = inst
       fact(tag).newTargetDispatcher_J(t_J, disp)
     } catch {
       // TODO: What exactly do we want to catch?
       case other: Throwable =>
-        fact(tag) = new TargetDispatcherFactoryInstance_J()
+        fact(tag) = new TargetDispatcherFactoryInstance_class_J()
         fact(tag).newTargetDispatcher_J(t_J, disp)
     }
 }

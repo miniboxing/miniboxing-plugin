@@ -6,13 +6,36 @@ import scala.collection.mutable.WeakHashMap
 /**********************************************************************************************************************
  * CLASS C()DE ********************************************************************************************************
  **********************************************************************************************************************/
-trait Target[T] {
+// NOTE: This is the exact miniboxing encoding:
+
+trait TargetTrait[T] {
+  def TargetTrait_T_TypeTag: Byte
+  def printTrait: Unit
+}
+
+// Make sure we specialize trait implementations
+trait TargetTrait_class_J[T] extends TargetTrait[T] {
+  def printTrait: Unit = System.out.println("printBase: " + (new Exception()).getStackTrace()(0).getClassName())
+}
+
+trait TargetSuper[T] {
+  def printSuper: Unit
+}
+
+// Make sure we specialize superclasses
+class TargetSuper_class_J[T](T_TypeTag: Byte) extends TargetSuper[T] {
+  def printSuper: Unit = System.out.println("printSuper: " + getClass().getSuperclass().getName())
+}
+
+trait Target[T] extends AnyRef with TargetSuper[T] with TargetTrait[T]{
   def t: T
   def t_J: Long
   def print: Unit
 }
 
-class Target_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends Target[T$sp] {
+// Make sure we specialize classes
+class Target_class_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends TargetSuper_class_J[T$sp](T_TypeTag) with TargetTrait_class_J[T$sp] with Target[T$sp] {
+  def TargetTrait_T_TypeTag: Byte = T_TypeTag
   def t = ???
   def print: Unit = {
     System.out.println("print(" + t_J + ", " + T_TypeTag + ") by " + this.getClass.getName())
@@ -28,11 +51,6 @@ class Target_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends Target[T$sp] {
   }
 }
 
-class Target_L[T$sp](val t: T$sp) extends Target[T$sp] {
-  def t_J = ???
-  def print: Unit = System.out.println("print( " + t.toString + ") by " + this.getClass.getName())
-}
-
 /**********************************************************************************************************************
  * FACTORY C()DE ******************************************************************************************************
  **********************************************************************************************************************/
@@ -44,8 +62,11 @@ abstract class TargetFactoryInterface {
   def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst]
 }
 
-class TargetFactoryInstance_J extends TargetFactoryInterface {
-  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = new Target_J(_t_J, T_TypeTag)
+class TargetFactoryInstance_class_J extends TargetFactoryInterface {
+  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = {
+    System.err.println("IN: " + getClass() )
+    new Target_class_J(_t_J, T_TypeTag)
+  }
 }
 
 object TargetFactory {
@@ -60,14 +81,14 @@ object TargetFactory {
   def createFactoryAndObject[T$inst](tag: Int)(t_J: Long, T_TypeTag: Byte): Target[T$inst] =
     try {
       val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(TargetFactory.this)
-      val clazz = classloader.findClass("miniboxing.classloader.test.TargetFactoryInstance_" + tag)
+      val clazz = classloader.findClass("miniboxing.classloader.test.TargetFactoryInstance_class_" + tag)
       val inst  = clazz.newInstance().asInstanceOf[TargetFactoryInterface]
       fact(tag) = inst
       fact(tag).newTarget_J(t_J, T_TypeTag)
     } catch {
       // TODO: What exactly do we want to catch?
-      case other: Throwable =>
-        fact(tag) = new TargetFactoryInstance_J()
+      case other: NullPointerException =>
+        fact(tag) = new TargetFactoryInstance_class_J()
         fact(tag).newTarget_J(t_J, T_TypeTag)
     }
 }
