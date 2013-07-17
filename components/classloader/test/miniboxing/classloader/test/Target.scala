@@ -31,6 +31,7 @@ trait Target[T] extends AnyRef with TargetSuper[T] with TargetTrait[T]{
   def t: T
   def t_J: Long
   def print: Unit
+  def printInnerClass: Unit
 }
 
 // Make sure we specialize classes
@@ -48,6 +49,12 @@ class Target_class_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends TargetSuper_c
       case _ => 6
     }
     ()
+  }
+  def printInnerClass: Unit = {
+    class `$anon` extends Function0[String]{
+      def apply(): String = (new Exception()).getStackTrace()(0).getClassName()
+    }
+    System.out.println("printInnerClass: " + (new `$anon`: Function0[String]).apply)
   }
 }
 
