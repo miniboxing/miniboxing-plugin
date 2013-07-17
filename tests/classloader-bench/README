@@ -1,0 +1,14 @@
+If you want to redo the classloader benchmarks, run:
+
+./prepare.sh
+ - will compile scala.collection.immutable.Vector with specialization and with
+miniboxing. You will get the size stats at the end.
+ - will compile the miniboxing runtime and classloader and will move them into
+the jars directory
+ - will make a comparison between code sizes
+
+./compile.sh
+ - will compile the benchmarks
+
+./run.sh
+ - will execute the benchmarks (can take useful parameters)
