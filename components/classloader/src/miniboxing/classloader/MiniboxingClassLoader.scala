@@ -35,14 +35,32 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     if (needsUpdate(name)) name.replaceAll("_class_J", "_class_" + tag) else name
 
   def modifyClass(in: InputStream, oldname: String, newname: String): Array[Byte] = {
-    val tparam = newname.last.toInt - '0'.toInt
-    val cr = new ClassReader(in)
+    val tparam = newname(newname.indexOf("_class_") + 7) - '0'.toInt
+//    System.err.println("TPARAM EXTRACTION: " + newname + " ==> " + tparam)
+    // forcefully patch the class in the inputstream phase
+    class PatchInline(in: InputStream) extends InputStream {
+      var state = 0
+      // TODO: I'm 100% sure this can be better coded with some bit shifting
+      def read(): Int = in.read() match {
+        case '_' if state == 0 => state = 1; '_'
+        case 'c' if state == 1 => state = 2; 'c'
+        case 'l' if state == 2 => state = 3; 'l'
+        case 'a' if state == 3 => state = 4; 'a'
+        case 's' if state == 4 => state = 5; 's'
+        case 's' if state == 5 => state = 6; 's'
+        case '_' if state == 6 => state = 7; '_'
+        case 'J' if state == 7 => state = 0; tparam + '0'
+        case other => state = 0; other
+      }
+    }
+    val cr = new ClassReader(new PatchInline(in))
     val classNode = new ClassNode()
     cr.accept(classNode, 0)
 
     classNode.name = newname
-
     classNode.superName = updateClassName(classNode.superName, tparam)
+
+
 
     // Make the type tags static final
     val fieldNodes = classNode.fields.iterator()
@@ -79,23 +97,22 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
                   insnNodes.set(new InsnNode(Opcodes.POP2));
               }
             }
-          case tinst: TypeInsnNode if tinst.getOpcode() == Opcodes.NEW =>
-            // patch up NEW calls
-            if (tinst.desc.endsWith("_J"))
-              // TODO: In-place replace this
-              insnNodes.set(new TypeInsnNode(Opcodes.NEW, updateClassName(tinst.desc, tparam)))
-          case minst: MethodInsnNode =>
-            // update owner to the new class
-            minst.owner = minst.owner.replaceAll(oldname, newname) // update names everywhere
-            if (minst.getOpcode() == Opcodes.INVOKESTATIC) {
-              minst.owner = updateClassName(minst.owner, tparam)
-              //System.err.println("INVOKESTATIC on " + minst.owner)
-            }
-            // patch up constructor call
-            if (minst.name == "<init>")
-              if (minst.owner.endsWith("_J"))
-                // TODO: In-place replace this
-                minst.owner = minst.owner.replaceAll("_class_J", "_class_" + tparam)
+//          case tinst: TypeInsnNode if tinst.getOpcode() == Opcodes.NEW =>
+//            // patch up NEW calls
+//            if (needsUpdate(tinst.desc))
+//              insnNodes.set(new TypeInsnNode(Opcodes.NEW, updateClassName(tinst.desc, tparam)))
+//          case minst: MethodInsnNode =>
+//            // update owner to the new class
+//            minst.owner = minst.owner.replaceAll(oldname, newname) // update names everywhere
+//            if (minst.getOpcode() == Opcodes.INVOKESTATIC) {
+//              minst.owner = updateClassName(minst.owner, tparam)
+//              //System.err.println("INVOKESTATIC on " + minst.owner)
+//            }
+//            // patch up constructor call
+//            if (minst.name == "<init>")
+//              if (minst.owner.endsWith("_J"))
+//                // TODO: In-place replace this
+//                minst.owner = minst.owner.replaceAll("_class_J", "_class_" + tparam)
           case _ =>
         }
       }
@@ -146,14 +163,14 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
   override def findClass(decodedName: String): Class[_] = classes get decodedName match {
     case Some(clazz) => clazz
     case None =>
-      //System.err.println("CLASS: " + decodedName + "  " + needsInstantiation(decodedName))
+//      System.err.println("CLASS: " + decodedName + "  " + needsInstantiation(decodedName))
       if (needsInstantiation(decodedName)) {
         try {
-          //System.err.println("NEEDS MODIFYING: " + decodedName)
+//          System.err.println("NEEDS MODIFYING: " + decodedName)
           val encodedName = decodedName.replace('.', '/')
           // TODO: Extend to more parameters
           val encodedTplName = encodedName.replaceAll("_class_[0-9]", "_class_J")
-          //System.err.println("BASE: " + encodedTplName)
+//          System.err.println("BASE: " + encodedTplName)
           val templateBytes = super.getResourceAsStream(encodedTplName + ".class");
           if (templateBytes == null) {
             throw new ClassNotFoundException("Class " + encodedTplName + " not found. Sorry.");
@@ -163,7 +180,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
           // store it
           val clazz = defineClass(decodedName, array, 0, array.length);
           classes += decodedName -> clazz
-          //System.err.println("DONE")
+//          System.err.println("DONE")
           clazz
         } catch {
           case io: IOException =>
