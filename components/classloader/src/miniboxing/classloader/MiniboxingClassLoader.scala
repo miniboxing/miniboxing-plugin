@@ -14,7 +14,7 @@ import scala.collection.mutable.Map
 import miniboxing.tools.asm.optimiz._
 
 /** Taken from http://stackoverflow.com/questions/6366288/how-to-change-default-class-loader-in-java */
-class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
+class MiniboxingClassLoader(parent: ClassLoader, verbose: Boolean = false) extends ClassLoader(parent) {
 
   val classes = Map.empty[String, Class[_]]
   lazy val constantFolder = new ConstantFolder()
@@ -149,7 +149,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 //      analyzer.analyze(newname, methodNode)
 //    }
 
-    val cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+    val cw = new ClassWriter(0/* ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES */);
     classNode.accept(cw);
     var classBytes = cw.toByteArray
 
@@ -166,7 +166,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 //      System.err.println("CLASS: " + decodedName + "  " + needsInstantiation(decodedName))
       if (needsInstantiation(decodedName)) {
         try {
-//          System.err.println("NEEDS MODIFYING: " + decodedName)
+          if (verbose) System.err.println("UPDATING: " + decodedName)
           val encodedName = decodedName.replace('.', '/')
           // TODO: Extend to more parameters
           val encodedTplName = encodedName.replaceAll("_class_[0-9]", "_class_J")
@@ -180,7 +180,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
           // store it
           val clazz = defineClass(decodedName, array, 0, array.length);
           classes += decodedName -> clazz
-//          System.err.println("DONE")
+          if (verbose) System.err.println("DONE WITH " + decodedName)
           clazz
         } catch {
           case io: IOException =>
@@ -195,12 +195,12 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 object MiniboxingClassLoader {
   // TODO: Make this weak
   var classloaders = collection.mutable.Map.empty[ClassLoader, MiniboxingClassLoader]
-  def classloader(ths: Any): MiniboxingClassLoader = {
+  def classloader(ths: Any, verbose: Boolean = false): MiniboxingClassLoader = {
     val crt_classloader = ths.getClass().getClassLoader()
     classloaders get (crt_classloader) match {
       case Some(classloader) => classloader
       case None =>
-        val classloader = new MiniboxingClassLoader(crt_classloader)
+        val classloader = new MiniboxingClassLoader(crt_classloader, verbose)
         classloaders += crt_classloader -> classloader
         classloader
     }
