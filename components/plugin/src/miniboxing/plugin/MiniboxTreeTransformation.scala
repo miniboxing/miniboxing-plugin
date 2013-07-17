@@ -210,7 +210,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             afterMinibox(sup.tpe.typeSymbol.info)
             (sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents)) || baseClass.isDefinedAt(sup.symbol) && (baseClass(sup.symbol) != sup.symbol)
           } =>
-          super.transform(localTyper.typedOperator(Select(Super(ths, name), member)))
+          val tree1 = localTyper.typedOperator(Select(Super(ths, name), member))
+          // catch the overloaded thief red-handed next time
+          if (tree1.symbol.isOverloaded) {
+            for (sym <- tree1.symbol.alternatives)
+              println(sym.defString + "   " + sym.ownerChain)
+            println(currentClass.baseClasses)
+          }
+          super.transform(tree1)
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
