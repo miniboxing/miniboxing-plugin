@@ -21,7 +21,6 @@ object MiniboxingBuild extends Build {
     scalaSource in Compile <<= baseDirectory(_ / "src"),
     scalaSource in Test <<= baseDirectory(_ / "test"),
     resourceDirectory in Compile <<= baseDirectory(_ / "resources"),
-    scalacOptions ++= Seq("-optimize", "-Yinline-warnings"),
     compileOrder := CompileOrder.JavaThenScala,
 
     unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_)),
@@ -29,6 +28,20 @@ object MiniboxingBuild extends Build {
     //http://stackoverflow.com/questions/10472840/how-to-attach-sources-to-sbt-managed-dependencies-in-scala-ide#answer-11683728
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+      "com.novocode" % "junit-interface" % "0.10-M2" % "test"
+    ),
+
+    parallelExecution in Test := false,
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
+  )
+
+  val runtimeDeps = Seq(
+    scalacOptions ++= Seq("-optimize", "-Yinline-warnings")
+  )
+
+  val pluginDeps = defaults ++ Seq(
     // this should work but it doesn't:
     // resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     // so I replaced it with this, which works with both sbt 0.11 and 0.12 
@@ -43,25 +56,17 @@ object MiniboxingBuild extends Build {
       "org.scala-lang" % "scala-reflect" % scalaVer,
       "org.scala-lang" % "scala-compiler" % scalaVer,
       "org.scala-lang" % "scala-partest" % scalaVer, 
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1",
-      "com.novocode" % "junit-interface" % "0.10-M2" % "test"
-    ),
-    parallelExecution in Test := false,
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
+      "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
+    )
   )
 
-  val asm = Seq(
+  val classloaderDeps = Seq(
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm" % "4.0",
       "org.ow2.asm" % "asm-tree" % "4.0",
       "org.ow2.asm" % "asm-util" % "4.0",
       "org.ow2.asm" % "asm-analysis" % "4.0"
     )
-  )
-
-  val classLoader = Seq(
-    testLoader <<= (fullClasspath in Test, scalaInstance, taskTemporaryDirectory) map { (cp, si, tmp) => sys.error("yyy") }
   )
 
   val scalaMeter = {
@@ -73,7 +78,7 @@ object MiniboxingBuild extends Build {
     )
   }
 
-  val correctnessTests = Seq(
+  val testsDeps = Seq(
     getJarsTask,
     fork in Test := true,
     javaOptions in Test <+= (dependencyClasspath in Runtime) map { path =>
@@ -89,10 +94,10 @@ object MiniboxingBuild extends Build {
 
   lazy val _mboxing    = Project(id = "miniboxing",             base = file(".")) aggregate (runtime, plugin, classloader, tests, benchmarks)
   lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults)
-  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults) dependsOn(runtime)
-  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ asm)
-  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classLoader ++ correctnessTests) dependsOn(plugin, runtime, classloader)
-  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ classLoader ++ scalaMeter) dependsOn(plugin, runtime, classloader)
+  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ pluginDeps) dependsOn(runtime)
+  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ classloaderDeps)
+  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
+  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
   // @Cristi: The project will be called "miniboxing-lib-bench". You can run it with "sbt miniboxing-lib-bench/run"
   // I don't think we'll need the classloader, as only the array operations are affected by the megamorphic problem
   // (well, the other Any methods that we rewire may also be affected but we don't really need them at this point)
