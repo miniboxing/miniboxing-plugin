@@ -202,6 +202,16 @@ trait MiniboxTreeTransformation extends TypingTransformers {
           }
           super.transform(res)
 
+        // Super constructor call rewiring for:
+        //  - non-specialized classes
+        //  - specialized classes
+        case Select(sup @ Super(ths, name), member)
+          if (member != nme.CONSTRUCTOR) && {
+            afterMinibox(sup.tpe.typeSymbol.info)
+            (sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents)) || baseClass.isDefinedAt(sup.symbol) && (baseClass(sup.symbol) != sup.symbol)
+          } =>
+          super.transform(localTyper.typedOperator(Select(Super(ths, name), member)))
+
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
