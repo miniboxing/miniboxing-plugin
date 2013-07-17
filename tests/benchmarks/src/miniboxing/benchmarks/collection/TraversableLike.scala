@@ -479,20 +479,20 @@ trait TraversableLike[@specialized +A, +Repr] extends Any
   def slice(from: Int, until: Int): Repr =
     sliceWithKnownBound(scala.math.max(from, 0), until)
 
-  // Precondition: from >= 0, until > 0, builder already configured for building.
-  private[this] def sliceInternal(from: Int, until: Int, b: Builder[A, Repr]): Repr = {
-    var i = 0
-    breakable {
-      for (x <- this.seq) {
-        if (i >= from) b += x
-        i += 1
-        if (i >= until) break
-      }
-    }
-    b.result
-  }
   // Precondition: from >= 0
   def sliceWithKnownDelta(from: Int, until: Int, delta: Int): Repr = {
+    // Precondition: from >= 0, until > 0, builder already configured for building.
+    def sliceInternal(from: Int, until: Int, b: Builder[A, Repr]): Repr = {
+      var i = 0
+      breakable {
+        for (x <- this.seq) {
+          if (i >= from) b += x
+          i += 1
+          if (i >= until) break
+        }
+      }
+      b.result
+    }
     val b = newBuilder
     if (until <= from) b.result
     else {
@@ -502,6 +502,17 @@ trait TraversableLike[@specialized +A, +Repr] extends Any
   }
   // Precondition: from >= 0
   def sliceWithKnownBound(from: Int, until: Int): Repr = {
+    def sliceInternal(from: Int, until: Int, b: Builder[A, Repr]): Repr = {
+      var i = 0
+      breakable {
+        for (x <- this.seq) {
+          if (i >= from) b += x
+          i += 1
+          if (i >= until) break
+        }
+      }
+      b.result
+    }
     val b = newBuilder
     if (until <= from) b.result
     else {
@@ -739,7 +750,7 @@ trait TraversableLike[@specialized +A, +Repr] extends Any
   }
 
   // A helper for tails and inits.
-  private def iterateUntilEmpty(f: Traversable[A @uV] => Traversable[A @uV]): Iterator[Repr] = {
+  def iterateUntilEmpty(f: Traversable[A @uV] => Traversable[A @uV]): Iterator[Repr] = {
     val it = Iterator.iterate(thisCollection)(f) takeWhile (x => !x.isEmpty)
     it ++ Iterator(Nil) map (x => (newBuilder ++= ???).result)
   }
