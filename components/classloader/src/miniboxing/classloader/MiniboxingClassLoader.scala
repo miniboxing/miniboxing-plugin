@@ -23,9 +23,16 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
   lazy val jumpChainsColl = new JumpChainsCollapser(jumpReducer)
 
 
-  def needsModifying(name: String): Boolean =
+  def needsInstantiation(name: String): Boolean =
     // TODO: Extend to more parameters
-    name.matches(".*_class_[0-9]$")
+    name.matches(".*_class_[0-9].*")
+
+  def needsUpdate(name: String): Boolean =
+    // TODO: Extend to more parameters
+    name.matches(".*_class_J.*")
+
+  def updateClassName(name: String, tag: Int) =
+    if (needsUpdate(name)) name.replaceAll("_class_J", "_class_" + tag) else name
 
   def modifyClass(in: InputStream, oldname: String, newname: String): Array[Byte] = {
     val tparam = newname.last.toInt - '0'.toInt
@@ -34,6 +41,8 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
     cr.accept(classNode, 0)
 
     classNode.name = newname
+
+    classNode.superName = updateClassName(classNode.superName, tparam)
 
     // Make the type tags static final
     val fieldNodes = classNode.fields.iterator()
@@ -74,7 +83,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
             // patch up NEW calls
             if (tinst.desc.endsWith("_J"))
               // TODO: In-place replace this
-              insnNodes.set(new TypeInsnNode(Opcodes.NEW, tinst.desc.replaceAll("_class_J", "_class_" + tparam)))
+              insnNodes.set(new TypeInsnNode(Opcodes.NEW, updateClassName(tinst.desc, tparam)))
           case minst: MethodInsnNode =>
             // update owner to the new class
             minst.owner = minst.owner.replace(oldname, newname) // update names everywhere
@@ -95,26 +104,28 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
 //    classNode.accept(traceClassVisitor);
 
     // Optimizing the hell out of that class:
-    val iter = classNode.methods.iterator()
-    while(iter.hasNext) {
-      val mnode = iter.next()
-      if (Util.hasBytecodeInstructions(mnode)) {
-         Util.computeMaxLocalsMaxStack(mnode)
-         jumpChainsColl.transform(mnode)
-         constantFolder.transform(newname, mnode)
-         unreachableCode.transform(newname, mnode)
-         jumpChainsColl.transform(mnode)
-      }
-    }
+//    val iter = classNode.methods.iterator()
+//    while(iter.hasNext) {
+//      val mnode = iter.next()
+//      if (Util.hasBytecodeInstructions(mnode)) {
+//         Util.computeMaxLocalsMaxStack(mnode)
+//         jumpChainsColl.transform(mnode)
+//         constantFolder.transform(newname, mnode)
+//         unreachableCode.transform(newname, mnode)
+//         jumpChainsColl.transform(mnode)
+//      }
+//    }
 
 //    System.err.println("================================AFTER================================")
-//    printWriter = new PrintWriter(System.err);
-//    traceClassVisitor = new TraceClassVisitor(printWriter);
+//    val printWriter = new PrintWriter(System.err);
+//    val traceClassVisitor = new TraceClassVisitor(printWriter);
 //    classNode.accept(traceClassVisitor);
 //
 //    val analyzer = new Analyzer(new BasicVerifier)
-//    for (methodNode <- methodNodes) {
-//      analyzer.analyze(name, methodNode)
+//    val methodNodes2 = classNode.methods.iterator()
+//    while (methodNodes.hasNext()) {
+//      val methodNode = methodNodes2.next()
+//      analyzer.analyze(newname, methodNode)
 //    }
 
     val cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
@@ -131,7 +142,7 @@ class MiniboxingClassLoader(parent: ClassLoader) extends ClassLoader(parent) {
   override def findClass(decodedName: String): Class[_] = classes get decodedName match {
     case Some(clazz) => clazz
     case None =>
-      if (needsModifying(decodedName)) {
+      if (needsInstantiation(decodedName)) {
         try {
           //System.err.println("NEEDS MODIFYING: " + decodedName)
           val encodedName = decodedName.replace('.', '/')

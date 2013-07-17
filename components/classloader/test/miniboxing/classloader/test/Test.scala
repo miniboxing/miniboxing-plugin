@@ -10,13 +10,19 @@ class ClassloaderTest extends Base {
     assertEqualString(collectSystemOut(new Target_class_J[Int](5,1).print), "print(5, 1) by miniboxing.classloader.test.Target_class_J\n")
 
   @Test def testTargetSuper(): Unit =
-    assertEqualString(collectSystemOut(new Target_class_J[Int](5,1).printTrait), "printBase: miniboxing.classloader.test.TargetTrait_class_J$class\n")
+    assertEqualString(collectSystemOut(new Target_class_J[Int](5,1).printTrait), "printTrait: miniboxing.classloader.test.TargetTrait_class_J$class\n")
 
   @Test def testTargetTrait(): Unit =
     assertEqualString(collectSystemOut(new Target_class_J[Int](5,1).printSuper), "printSuper: miniboxing.classloader.test.TargetSuper_class_J\n")
 
-  @Test def testTargetFactoryClassLoader(): Unit =
+  @Test def testTargetFactoryClassLoaderTarget(): Unit =
     assertEqualString(collectSystemOut(TargetFactory.newTarget_J[Int](5, 1).print), "print(5, 1) by miniboxing.classloader.test.Target_class_1\n")
+
+  @Test def testTargetFactoryClassLoaderSuper(): Unit =
+    assertEqualString(collectSystemOut(TargetFactory.newTarget_J[Int](5, 1).printSuper), "printSuper: miniboxing.classloader.test.TargetSuper_class_1\n")
+
+  @Test def testTargetFactoryClassLoaderTrait(): Unit =
+    assertEqualString(collectSystemOut(TargetFactory.newTarget_J[Int](5, 1).printTrait), "printTrait: miniboxing.classloader.test.TargetTrait_class_1$class\n")
 
 /////////////////////////////////////////////////  DISPATCHER TESTING \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
   @Test def testTargetDispatcherDirect(): Unit =

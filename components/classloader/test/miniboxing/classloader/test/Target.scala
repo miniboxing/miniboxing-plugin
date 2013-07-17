@@ -15,7 +15,7 @@ trait TargetTrait[T] {
 
 // Make sure we specialize trait implementations
 trait TargetTrait_class_J[T] extends TargetTrait[T] {
-  def printTrait: Unit = System.out.println("printBase: " + (new Exception()).getStackTrace()(0).getClassName())
+  def printTrait: Unit = System.out.println("printTrait: " + (new Exception()).getStackTrace()(0).getClassName())
 }
 
 trait TargetSuper[T] {
@@ -63,10 +63,8 @@ abstract class TargetFactoryInterface {
 }
 
 class TargetFactoryInstance_class_J extends TargetFactoryInterface {
-  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] = {
-    System.err.println("IN: " + getClass() )
+  def newTarget_J[T$inst](_t_J: Long, T_TypeTag: Byte): Target[T$inst] =
     new Target_class_J(_t_J, T_TypeTag)
-  }
 }
 
 object TargetFactory {
