@@ -35,6 +35,7 @@ trait MiniboxComponent extends
   def flag_stats: Boolean
   def flag_hijack_spec: Boolean
   def flag_spec_no_opt: Boolean
+  def flag_loader_friendly: Boolean
 }
 
 class Minibox(val global: Global) extends Plugin {
@@ -49,6 +50,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_stats = sys.props.get("miniboxing.stats").isDefined
   var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
   var flag_spec_no_opt = sys.props.get("miniboxing.spec.no-opt").isDefined
+  var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -62,6 +64,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_hijack_spec = true
       else if (option.toLowerCase() == "spec-no-opt")
         flag_spec_no_opt = true
+      else if (option.toLowerCase() == "loader")
+        flag_loader_friendly = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
@@ -72,7 +76,8 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)\n" +
     s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)" +
     s"  -P:${name}:hijack-spec       hijack the @specialized(...) notation for miniboxing" +
-    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations")
+    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations" +
+    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)")
 
   private object Component extends MiniboxComponent {
 
@@ -86,6 +91,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_stats = Minibox.this.flag_stats
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
+    def flag_loader_friendly = Minibox.this.flag_loader_friendly
 
     var mboxPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

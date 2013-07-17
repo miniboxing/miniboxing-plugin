@@ -183,7 +183,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
     def specialize1(pspec: PartialSpec, decls: Scope): Symbol = {
 
       val specParamValues = typeParamValues(origin, pspec)
-      val specName = specializedName(origin.name, specParamValues).toTypeName
+      val baseName = if (flag_loader_friendly) newTermName(origin.name.toString + "_class") else origin.name
+      val specName = specializedName(baseName, specParamValues).toTypeName
       val bytecodeClass = origin.owner.info.decl(specName)
       bytecodeClass.info // TODO: we have 5054 here, but even this doesn't work
       val spec = origin.owner.newClass(specName, origin.pos, origin.flags)
