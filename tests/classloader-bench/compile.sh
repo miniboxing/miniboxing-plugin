@@ -11,4 +11,7 @@ mkdir -p binaries/tester-mb-bin
 echo Compiling specialization tester...
 mkdir binaries/tester-spec-bin
 ../../mb-scalac -cp jars/miniboxing-classloader-assembly-0.1-SNAPSHOT.jar:jars/miniboxing-runtime-assembly-0.1-SNAPSHOT.jar:./vector-spec/ `find tester-spec/src/ -name "*.scala"` -d binaries/tester-spec-bin/
+echo Compiling generic tester...
+mkdir binaries/tester-nosp-bin
+../../mb-scalac -cp jars/miniboxing-classloader-assembly-0.1-SNAPSHOT.jar:jars/miniboxing-runtime-assembly-0.1-SNAPSHOT.jar:./vector-nosp/ `find tester-nosp/src/ -name "*.scala"` -d binaries/tester-nosp-bin/
 
