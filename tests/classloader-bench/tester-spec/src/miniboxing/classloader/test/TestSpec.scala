@@ -5,18 +5,15 @@ import miniboxing.benchmarks.collection.immutable._
 object TestSpec {
   def main(args: Array[String]): Unit = {
     println("Test Specialization")
+    var specs = Array[Char]('Z', 'B', 'C', 'D', 'F', 'I', 'J', 'S', 'V')
     var time = System.currentTimeMillis()
-    new Vector[Unit](0, 1, 0)
-    new Vector[Boolean](0, 1, 0)
-    new Vector[Byte](0, 1, 0)
-    new Vector[Char](0, 1, 0)
-    new Vector[Short](0, 1, 0)
-    new Vector[Int](0, 1, 0)
-    new Vector[Long](0, 1, 0)
-    new Vector[Float](0, 1, 0)
-    new Vector[Double](0, 1, 0)
+    var i = 0
+    while (i < 9) {
+      Class.forName("miniboxing.benchmarks.collection.immutable.Vector$mc" + specs(i).toString + "$sp")
+      i += 1
+    }
     time -= System.currentTimeMillis()
     time = -time
-    println("Time in miliseconds: " + time)
+    println("Time: " + time + "ms")
   }
 }
