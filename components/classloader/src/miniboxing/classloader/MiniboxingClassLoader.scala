@@ -155,7 +155,7 @@ class MiniboxingClassLoader(parent: ClassLoader, verbose: Boolean = false) exten
 
     // DUMP CLASS
     if (sys.props.get("classloader.dump").isDefined) {
-      val outputFile = new File("/tmp/class-dump/" + newname)
+      val outputFile = new File("/tmp/class-dump/" + newname + ".class")
       val outputDir = outputFile.getParentFile()
       outputDir.mkdirs()
       val output = new FileOutputStream(outputFile)
