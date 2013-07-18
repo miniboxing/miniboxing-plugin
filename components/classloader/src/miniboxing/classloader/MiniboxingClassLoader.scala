@@ -153,9 +153,14 @@ class MiniboxingClassLoader(parent: ClassLoader, verbose: Boolean = false) exten
     classNode.accept(cw);
     var classBytes = cw.toByteArray
 
-// DUMP CLASS
-//    val output = new FileOutputStream(new File("/tmp/class-file"))
-//    output.write(classBytes)
+    // DUMP CLASS
+    if (sys.props.get("classloader.dump").isDefined) {
+      val outputFile = new File("/tmp/class-dump/" + newname)
+      val outputDir = outputFile.getParentFile()
+      outputDir.mkdirs()
+      val output = new FileOutputStream(outputFile)
+      output.write(classBytes)
+    }
 
     classBytes
   }
