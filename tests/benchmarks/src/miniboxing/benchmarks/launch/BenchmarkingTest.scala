@@ -18,12 +18,12 @@ object BenchmarkingTest extends ScalameterBenchTest
                            with Serializable{
 
   // the number of independent samples to use
-  lazy val sampleCount = 2
+  lazy val sampleCount = 20
 
   // the test size
   lazy val testSizes = {
     //List(1000, 2000, 3000)
-    List(100000)//, 2000000, 3000000)
+    List(1000000, 2000000, 3000000)
 //    List(1000)
   }
   def megamorphicTestSize = 200000
@@ -38,14 +38,14 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingDispatchClassLoader(true)
   testHardcodedMiniboxingSimpleFS(false)
   testHardcodedMiniboxingSimpleFS(true)
-//  testHardcodedMiniboxingSimpleSS(false)
-//  testHardcodedMiniboxingSimpleSS(true)
-//  testHardcodedMiniboxingSimpleDT(false)
-//  testHardcodedMiniboxingSimpleDT(true)
-//  testHardcodedMiniboxingSimpleLI(false)
-//  testHardcodedMiniboxingSimpleLI(true)
-//  testHardcodedMiniboxingSimpleNI(false)
-//  testHardcodedMiniboxingSimpleNI(true)
+  testHardcodedMiniboxingSimpleSS(false)
+  testHardcodedMiniboxingSimpleSS(true)
+  testHardcodedMiniboxingSimpleDT(false)
+  testHardcodedMiniboxingSimpleDT(true)
+  testHardcodedMiniboxingSimpleLI(false)
+  testHardcodedMiniboxingSimpleLI(true)
+  testHardcodedMiniboxingSimpleNI(false)
+  testHardcodedMiniboxingSimpleNI(true)
   testHardcodedMiniboxingSimpleClassLoader(false)
   testHardcodedMiniboxingSimpleClassLoader(true)
   testSpecialized(false)
