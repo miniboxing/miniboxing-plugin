@@ -22,6 +22,8 @@ trait ScalameterBenchTest extends PerformanceTest
   def lastTag: String
   def lastTraf: String
 
+  def sampleCount: Int
+
   // Store the test values
   var testTrafs = List[String]()
   var testTags  = List[String]()
@@ -72,7 +74,7 @@ trait ScalameterBenchTest extends PerformanceTest
   def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit) = {
     performance of transformation in {
       measure method tag in {
-        using(sizes) config (exec.independentSamples -> 20) setUp {
+        using(sizes) config (exec.independentSamples -> sampleCount) setUp {
           size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {
           teardown; size => testSize = 0

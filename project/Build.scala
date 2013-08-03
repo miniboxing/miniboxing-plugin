@@ -19,7 +19,9 @@ object MiniboxingBuild extends Build {
     scalaVersion := scalaVer,
     scalaBinaryVersion := "2.10",
     scalaSource in Compile <<= baseDirectory(_ / "src"),
+    javaSource in Compile <<= baseDirectory(_ / "src"),
     scalaSource in Test <<= baseDirectory(_ / "test"),
+    javaSource in Test <<= baseDirectory(_ / "test"),
     resourceDirectory in Compile <<= baseDirectory(_ / "resources"),
     compileOrder := CompileOrder.JavaThenScala,
 

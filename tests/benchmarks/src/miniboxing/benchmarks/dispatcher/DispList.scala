@@ -20,7 +20,7 @@ trait DispList[T] {
   def toString2_J: String
 }
 
-class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) extends DispList[Tsp] {
+class DispList_class_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) extends DispList[Tsp] {
 
   // head
   def head: Tsp = disp.minibox2box(head_J(disp))
@@ -73,7 +73,7 @@ class DispList_J[Tsp](_head: Long, _tail: DispList[Tsp], disp: Dispatcher[Tsp]) 
   def toString2_J: String = toString_J
 }
 
-class DispList_L[Tsp](_head: Tsp, _tail: DispList[Tsp]) extends DispList[Tsp] {
+class DispList_class_L[Tsp](_head: Tsp, _tail: DispList[Tsp]) extends DispList[Tsp] {
 
   // head
   def head: Tsp = _head
@@ -133,9 +133,9 @@ abstract class DispListFactoryInterface {
   def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst]
 }
 
-class DispListFactoryInstance_J extends DispListFactoryInterface {
+class DispListFactoryInstance_class_J extends DispListFactoryInterface {
   def newDispList_J[T$inst](_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] =
-    new DispList_J(_head, _tail, disp)
+    new DispList_class_J(_head, _tail, disp)
 }
 
 object DispListFactory {
@@ -150,14 +150,14 @@ object DispListFactory {
   def createFactoryAndObject[T$inst](tag: Int)(_head: Long, _tail: DispList[T$inst], disp: Dispatcher[T$inst]): DispList[T$inst] =
     try {
       val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispListFactory.this)
-      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispListFactoryInstance_" + tag)
+      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispListFactoryInstance_class_" + tag)
       val inst  = clazz.newInstance().asInstanceOf[DispListFactoryInterface]
       fact(tag) = inst
       fact(tag).newDispList_J(_head, _tail, disp)
     } catch {
       // TODO: What exactly do we want to catch?
       case other: Throwable =>
-        fact(tag) = new DispListFactoryInstance_J()
+        fact(tag) = new DispListFactoryInstance_class_J()
         fact(tag).newDispList_J(_head, _tail, disp)
     }
 }

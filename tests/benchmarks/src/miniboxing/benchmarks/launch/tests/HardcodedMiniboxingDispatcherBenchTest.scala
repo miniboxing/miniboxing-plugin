@@ -12,7 +12,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_J[Int](IntToMinibox(i), l, Dispatchers.IntDispatcher)
+        l = new DispList_class_J[Int](IntToMinibox(i), l, Dispatchers.IntDispatcher)
         i += 1
       }
       l
@@ -36,7 +36,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Long] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_J[Long](IntToMinibox(i), l, Dispatchers.LongDispatcher)
+        l = new DispList_class_J[Long](IntToMinibox(i), l, Dispatchers.LongDispatcher)
         i += 1
       }
       l
@@ -60,7 +60,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Double] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_J[Double](IntToMinibox(i), l, Dispatchers.DoubleDispatcher)
+        l = new DispList_class_J[Double](IntToMinibox(i), l, Dispatchers.DoubleDispatcher)
         i += 1
       }
       l
@@ -84,7 +84,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
 
   private[this] object TestArray {
     def array_insert(): DispResizableArray[Int] = {
-      val a: DispResizableArray[Int] = new DispResizableArray_J[Int](Dispatchers.IntDispatcher)
+      val a: DispResizableArray[Int] = new DispResizableArray_class_J[Int](Dispatchers.IntDispatcher)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i), Dispatchers.IntDispatcher)
@@ -109,7 +109,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
     }
 
     def array_insert_LONG(): DispResizableArray[Long] = {
-      val a: DispResizableArray[Long] = new DispResizableArray_J[Long](Dispatchers.LongDispatcher)
+      val a: DispResizableArray[Long] = new DispResizableArray_class_J[Long](Dispatchers.LongDispatcher)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i), Dispatchers.LongDispatcher)
@@ -134,7 +134,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
     }
 
     def array_insert_DOUBLE(): DispResizableArray[Double] = {
-      val a: DispResizableArray[Double] = new DispResizableArray_J[Double](Dispatchers.DoubleDispatcher)
+      val a: DispResizableArray[Double] = new DispResizableArray_class_J[Double](Dispatchers.DoubleDispatcher)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i), Dispatchers.DoubleDispatcher)

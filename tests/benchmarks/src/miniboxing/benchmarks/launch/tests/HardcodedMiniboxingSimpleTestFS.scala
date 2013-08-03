@@ -12,7 +12,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       var l: MBList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Int](IntToMinibox(i), l, INT)
+        l = new MBList_class_J[Int](IntToMinibox(i), l, INT)
         i += 1
       }
       l
@@ -36,7 +36,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       var l: MBList[Double] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Double](IntToMinibox(i), l, DOUBLE)
+        l = new MBList_class_J[Double](IntToMinibox(i), l, DOUBLE)
         i += 1
       }
       l
@@ -60,7 +60,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       var l: MBList[Long] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Long](IntToMinibox(i), l, LONG)
+        l = new MBList_class_J[Long](IntToMinibox(i), l, LONG)
         i += 1
       }
       l
@@ -83,7 +83,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
       var l: MBList[Short] = null
       var i = 0
       while (i < testSize) {
-        l = new MBList_J[Short](IntToMinibox(i), l, SHORT)
+        l = new MBList_class_J[Short](IntToMinibox(i), l, SHORT)
         i += 1
       }
       l
@@ -105,7 +105,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
   }
   private[this] object TestArray {
     def array_insert(): MBResizableArray[Int] = {
-      val a: MBResizableArray[Int] = new MBResizableArray_J[Int](INT)
+      val a: MBResizableArray[Int] = new MBResizableArray_class_J[Int](INT)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i), INT)
@@ -130,7 +130,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
     }
 
     def array_insert_LONG(): MBResizableArray[Long] = {
-      val a: MBResizableArray[Long] = new MBResizableArray_J[Long](LONG)
+      val a: MBResizableArray[Long] = new MBResizableArray_class_J[Long](LONG)
       var i = 0
       while (i < testSize) {
         a.add_J(LongToMinibox(i), LONG)
@@ -155,7 +155,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
     }
 
     def array_insert_DOUBLE(): MBResizableArray[Double] = {
-      val a: MBResizableArray[Double] = new MBResizableArray_J[Double](DOUBLE)
+      val a: MBResizableArray[Double] = new MBResizableArray_class_J[Double](DOUBLE)
       var i = 0
       while (i < testSize) {
         a.add_J(DoubleToMinibox(i), DOUBLE)
@@ -180,7 +180,7 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
     }
 
     def array_insert_SHORT(): MBResizableArray[Short] = {
-      val a: MBResizableArray[Short] = new MBResizableArray_J[Short](SHORT)
+      val a: MBResizableArray[Short] = new MBResizableArray_class_J[Short](SHORT)
       var i = 0
       while (i < testSize) {
         a.add_J(IntToMinibox(i), SHORT)

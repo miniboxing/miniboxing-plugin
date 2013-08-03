@@ -73,7 +73,7 @@ trait MBResizableArray[T] {
   def toString_J(): String
 }
 
-class MBResizableArray_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArray[Tsp] {
+class MBResizableArray_class_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizableArray[Tsp] {
   // initialSize
   private[this] final val _initialSize_J = 4
   def initialSize: Int = initialSize_J
@@ -313,8 +313,9 @@ abstract class MBResizableArrayFactoryInterface {
   def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst]
 }
 
-class MBResizableArrayFactoryInstance_J extends MBResizableArrayFactoryInterface {
-  def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] = new MBResizableArray_J[T$inst](T_TypeTag)
+class MBResizableArrayFactoryInstance_class_J extends MBResizableArrayFactoryInterface {
+  def newMBResizableArray_J[T$inst: Manifest](T_TypeTag: Byte): MBResizableArray[T$inst] =
+    new MBResizableArray_class_J[T$inst](T_TypeTag)
 }
 
 object MBResizableArrayFactory {
@@ -329,14 +330,14 @@ object MBResizableArrayFactory {
   def createFactoryAndObject[T$inst: Manifest](tag: Int)(T_TypeTag: Byte): MBResizableArray[T$inst] =
     try {
       val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(MBResizableArrayFactory.this)
-      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBResizableArrayFactoryInstance_" + tag)
+      val clazz = classloader.findClass("miniboxing.benchmarks.hardcoded.fullswitch.MBResizableArrayFactoryInstance_class_" + tag)
       val inst  = clazz.newInstance().asInstanceOf[MBResizableArrayFactoryInterface]
       fact(tag) = inst
       fact(tag).newMBResizableArray_J(T_TypeTag)
     } catch {
       // TODO: What exactly do we want to catch?
       case other: Throwable =>
-        fact(tag) = new MBResizableArrayFactoryInstance_J()
+        fact(tag) = new MBResizableArrayFactoryInstance_class_J()
         fact(tag).newMBResizableArray_J(T_TypeTag)
     }
 }

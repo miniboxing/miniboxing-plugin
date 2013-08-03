@@ -59,7 +59,7 @@ trait DispResizableArray[T] {
   def toString_J(): String
 }
 
-class DispResizableArray_J[Tsp: Manifest](disp: Dispatcher[Tsp]) extends DispResizableArray[Tsp] {
+class DispResizableArray_class_J[Tsp: Manifest](disp: Dispatcher[Tsp]) extends DispResizableArray[Tsp] {
   // initialSize
   private[this] final val _initialSize_J = 4
   def initialSize: Int = initialSize_J
@@ -177,7 +177,7 @@ class DispResizableArray_J[Tsp: Manifest](disp: Dispatcher[Tsp]) extends DispRes
   }
 }
 
-class DispResizableArray_L[Tsp: Manifest]() extends DispResizableArray[Tsp] {
+class DispResizableArray_class_L[Tsp: Manifest]() extends DispResizableArray[Tsp] {
   // initialSize
   private[this] final val _initialSize_L = 4
   def initialSize: Int = _initialSize_L
@@ -300,9 +300,9 @@ abstract class DispResizableArrayFactoryInterface {
   def newDispResizableArray_J[T$inst: Manifest](disp: Dispatcher[T$inst]): DispResizableArray[T$inst]
 }
 
-class DispResizableArrayFactoryInstance_J extends DispResizableArrayFactoryInterface {
+class DispResizableArrayFactoryInstance_class_J extends DispResizableArrayFactoryInterface {
   def newDispResizableArray_J[T$inst: Manifest](disp: Dispatcher[T$inst]): DispResizableArray[T$inst] =
-    new DispResizableArray_J(disp)
+    new DispResizableArray_class_J(disp)
 }
 
 object DispResizableArrayFactory {
@@ -317,14 +317,14 @@ object DispResizableArrayFactory {
   def createFactoryAndObject[T$inst: Manifest](tag: Int)(disp: Dispatcher[T$inst]): DispResizableArray[T$inst] =
     try {
       val classloader = miniboxing.classloader.MiniboxingClassLoader.classloader(DispResizableArrayFactory.this)
-      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispResizableArrayFactoryInstance_" + tag)
+      val clazz = classloader.findClass("miniboxing.benchmarks.dispatcher.DispResizableArrayFactoryInstance_class_" + tag)
       val inst  = clazz.newInstance().asInstanceOf[DispResizableArrayFactoryInterface]
       fact(tag) = inst
       fact(tag).newDispResizableArray_J(disp)
     } catch {
       // TODO: What exactly do we want to catch?
       case other: Throwable =>
-        fact(tag) = new DispResizableArrayFactoryInstance_J()
+        fact(tag) = new DispResizableArrayFactoryInstance_class_J()
         fact(tag).newDispResizableArray_J(disp)
     }
 }
