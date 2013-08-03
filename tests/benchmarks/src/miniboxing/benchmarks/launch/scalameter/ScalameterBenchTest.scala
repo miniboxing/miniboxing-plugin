@@ -1,6 +1,7 @@
 package miniboxing.benchmarks.launch.scalameter
 import org.scalameter.CurveData
 import org.scalameter.api._
+import org.scalameter.Key
 import miniboxing.benchmarks.launch.tests.BaseTest
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
@@ -23,6 +24,8 @@ trait ScalameterBenchTest extends PerformanceTest
   def lastTraf: String
 
   def sampleCount: Int
+  def javaCommand: String
+  def javaPreJDK7: Boolean
 
   // Store the test values
   var testTrafs = List[String]()
@@ -49,14 +52,14 @@ trait ScalameterBenchTest extends PerformanceTest
       val testTraf  = testTitle.substring(0, testTitle.indexOf('.')).trim     // the tag of the test (what it tests)
 
       for (measurement <- result.measurements) {
-        output += f"${measurement.params}: ${measurement.time}% 10.5f  "
+        output += f"${measurement.params}: ${measurement.value}% 10.5f  "
 
         // fill in the table for getting final results
         val testSize  = measurement.params.axisData("size").toString.toInt     // the size of the test
         if (!testTrafs.contains(testTraf)) testTrafs ::= testTraf
         if (!testTags.contains(testTag))   testTags  ::= testTag
         val testEntry = testValues.getOrElseUpdate(testTag, HashMap()).getOrElseUpdate(testTraf, HashMap())
-        testEntry += testSize -> (measurement.time, measurement.errors.sdeviation)
+        testEntry += testSize -> (measurement.value, measurement.errors.sdeviation)
 
         // println(s""""${testTag}" "${testTraf}", "${testSize}": ${measurement.time} +/- ${measurement.errors.sdeviation}""")
       }
@@ -74,7 +77,7 @@ trait ScalameterBenchTest extends PerformanceTest
   def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit) = {
     performance of transformation in {
       measure method tag in {
-        using(sizes) config (exec.independentSamples -> sampleCount) setUp {
+        using(sizes) config (exec.independentSamples -> sampleCount, exec.jvmcmd -> javaCommand, Key.preJDK7 -> javaPreJDK7) setUp {
           size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {
           teardown; size => testSize = 0
