@@ -20,15 +20,22 @@ object BenchmarkingTest extends ScalameterBenchTest
   // the number of independent samples to use
   lazy val sampleCount = 2
 
+  lazy val baseDir = 
+    java.net.InetAddress.getLocalHost().getHostName() match {
+      case "sun-laptop" => "/home/sun/workspace/dev/"
+      case "lamppc47"   => "/localhome/ureche/software/"
+      case _            => "./" // uh-oh, I don't know
+    }
+
   // the command used to start the JVM
   // HotSpot:
   lazy val javaCommand = "java -server"
   lazy val javaPreJDK7 = false
   // JRockit:
-  //  lazy val javaCommand = "/localhome/ureche/software/jrockit/bin/java -jrockit -d64 -Xms4g -Xmx4g -Xss4m"
+  //  lazy val javaCommand = baseDir + "jrockit/bin/java -jrockit -d64 -Xms4g -Xmx4g -Xss4m"
   //  lazy val javaPreJDK7 = true
   // Graal:
-  //  lazy val javaCommand = "/localhome/ureche/software/graal/bin/java -graal -dsa -Xmx8g -Xms8g -Xss10m -d64 -XX:+BootstrapGraal"
+  //  lazy val javaCommand = baseDir + "graal/bin/java -graal -dsa -Xmx8g -Xms8g -Xss10m -d64 -XX:+BootstrapGraal"
   //  lazy val javaPreJDK7 = true
 
   // the test size
