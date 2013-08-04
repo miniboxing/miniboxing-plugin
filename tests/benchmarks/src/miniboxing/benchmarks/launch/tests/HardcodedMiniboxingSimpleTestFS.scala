@@ -214,13 +214,35 @@ trait HardcodedMiniboxingSimpleFS extends BaseTest {
     def forceMegamorphicCallSites(): Unit =
       if (megamorphic) {
         withTestSize(megamorphicTestSize) {
-          array_find(array_reverse(array_insert()))
+          // Doing this will crash Graal with the following stack trace:
+          // array_find(array_reverse(array_insert()))
+          //  scope: Compiling.GraalCompiler.FrontEnd.HighTier.Lowering (BEFORE_GUARDS).IncrementalCanonicalizer.Lowering iteration 0.Schedule.InterceptException
+          //  Exception occurred in scope: Compiling.GraalCompiler.FrontEnd.HighTier.Lowering (BEFORE_GUARDS).IncrementalCanonicalizer.Lowering iteration 0.Schedule.InterceptException
+          //  Context obj java.lang.NullPointerException
+          //  Context obj com.oracle.graal.phases.schedule.SchedulePhase@18f01d41
+          //  Context obj com.oracle.graal.phases.common.LoweringPhase$Round@1f64f1b4
+          //  Context obj com.oracle.graal.phases.common.IncrementalCanonicalizerPhase@faa7860
+          //  Context obj com.oracle.graal.phases.common.LoweringPhase@b0ba210
+          //  Context obj com.oracle.graal.compiler.phases.HighTier@1309bc25
+          //  Context obj StructuredGraph:36901{HotSpotMethod<MBResizableArray_class_J.contains_J(long, byte)>}
+          //  Use -G:+DumpOnError to enable dumping of graphs on this error
+          //  Context obj com.oracle.graal.hotspot.amd64.AMD64HotSpotRuntime@2bd816a1
+          //  Context obj DebugDumpScope[3387]
+          //  java.lang.NullPointerException
+          //  	at com.oracle.graal.nodes.cfg.ControlFlowGraph.commonDominator(ControlFlowGraph.java:338)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase$CommonDominatorBlockClosure.apply(SchedulePhase.java:658)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase.blocksForUsage(SchedulePhase.java:781)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase.latestBlock(SchedulePhase.java:628)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase.assignBlockToNode(SchedulePhase.java:477)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase.assignBlockToNodes(SchedulePhase.java:445)
+          //  	at com.oracle.graal.phases.schedule.SchedulePhase.run(SchedulePhase.java:345)
+          array_reverse(array_insert()); array_find(array_insert())
           list_hashCode(list_insert()); list_find(list_insert())
-          array_find_LONG(array_reverse_LONG(array_insert_LONG()))
+          array_find_LONG(array_insert_LONG()); array_reverse_LONG(array_insert_LONG());
           list_hashCode_LONG(list_insert_LONG()); list_find_LONG(list_insert_LONG())
-          array_find_DOUBLE(array_reverse_DOUBLE(array_insert_DOUBLE()))
+          array_find_DOUBLE(array_insert_DOUBLE()); array_reverse_DOUBLE(array_insert_DOUBLE())
           list_hashCode_DOUBLE(list_insert_DOUBLE()); list_find_DOUBLE(list_insert_DOUBLE())
-          array_find_SHORT(array_reverse_SHORT(array_insert_SHORT()))
+          array_find_SHORT(array_insert_SHORT()); array_reverse_SHORT(array_insert_SHORT())
           list_hashCode_SHORT(list_insert_SHORT()); list_find_SHORT(list_insert_SHORT())
         }
       }
