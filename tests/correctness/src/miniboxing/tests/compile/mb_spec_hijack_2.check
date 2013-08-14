@@ -35,8 +35,8 @@ package miniboxing.tests.compile {
   abstract trait HijackMe2[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
     def hijackMeToo[@miniboxing.plugin.minispec U >: Nothing <: Any](t: T, u: U): Nothing;
     def hijackMeToo_J[@miniboxing.plugin.minispec U >: Nothing <: Any](T_TypeTag: Byte, t: Long, u: U): Nothing;
-    def hijackMeToo_J_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing;
-    def hijackMeToo_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, t: T, u: Long): Nothing
+    def hijackMeToo_J_n_J[U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing;
+    def hijackMeToo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, t: T, u: Long): Nothing
   };
   class HijackMe2_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.HijackMe2[Tsp] {
     def <init>(miniboxing$tests$compile$HijackMe2_J|T_TypeTag: Byte): miniboxing.tests.compile.HijackMe2_J[Tsp] = {
@@ -45,8 +45,8 @@ package miniboxing.tests.compile {
     };
     def hijackMeToo[@miniboxing.plugin.minispec U >: Nothing <: Any](t: Tsp, u: U): Nothing = HijackMe2_J.this.hijackMeToo_J[U](HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag), u);
     def hijackMeToo_J[@miniboxing.plugin.minispec U >: Nothing <: Any](T_TypeTag: Byte, t: Long, u: U): Nothing = scala.this.Predef.???();
-    def hijackMeToo_J_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing = scala.this.Predef.???();
-    def hijackMeToo_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, t: Tsp, u: Long): Nothing = HijackMe2_J.this.hijackMeToo_J_n_J[U](U_TypeTag, HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag), u);
+    def hijackMeToo_J_n_J[U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing = scala.this.Predef.???();
+    def hijackMeToo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, t: Tsp, u: Long): Nothing = HijackMe2_J.this.hijackMeToo_J_n_J[U](U_TypeTag, HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, HijackMe2_J.this.miniboxing$tests$compile$HijackMe2_J|T_TypeTag), u);
     <paramaccessor> private[this] val miniboxing$tests$compile$HijackMe2_J|T_TypeTag: Byte = _
   };
   class HijackMe2_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.HijackMe2[Tsp] {
@@ -56,8 +56,8 @@ package miniboxing.tests.compile {
     };
     def hijackMeToo[@miniboxing.plugin.minispec U >: Nothing <: Any](t: Tsp, u: U): Nothing = scala.this.Predef.???();
     def hijackMeToo_J[@miniboxing.plugin.minispec U >: Nothing <: Any](T_TypeTag: Byte, t: Long, u: U): Nothing = HijackMe2_L.this.hijackMeToo[U](MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), u);
-    def hijackMeToo_J_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing = HijackMe2_L.this.hijackMeToo_n_J[U](U_TypeTag, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), u);
-    def hijackMeToo_n_J[@miniboxing.plugin.minispec U >: Nothing <: Any](U_TypeTag: Byte, t: Tsp, u: Long): Nothing = scala.this.Predef.???()
+    def hijackMeToo_J_n_J[U >: Nothing <: Any](U_TypeTag: Byte, T_TypeTag: Byte, t: Long, u: Long): Nothing = HijackMe2_L.this.hijackMeToo_n_J[U](U_TypeTag, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), u);
+    def hijackMeToo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, t: Tsp, u: Long): Nothing = scala.this.Predef.???()
   }
 }
 

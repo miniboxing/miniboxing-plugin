@@ -67,14 +67,14 @@ package miniboxing.tests.correctness {
   abstract trait SpCls8Tgt[@miniboxing.plugin.minispec U >: Nothing <: Any] extends Object {
     def normalized[@miniboxing.plugin.minispec V >: Nothing <: Any](u: U, v: V): V;
     def normalized_J[@miniboxing.plugin.minispec V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): V;
-    def normalized_J_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long;
-    def normalized_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, u: U, v: Long): Long
+    def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long;
+    def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: U, v: Long): Long
   };
   abstract trait SpCls8[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
     def normalizeMe[@miniboxing.plugin.minispec S >: Nothing <: Any](sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: T): T;
     def normalizeMe_J[@miniboxing.plugin.minispec S >: Nothing <: Any](T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: Long): Long;
-    def normalizeMe_J_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long;
-    def normalizeMe_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: T): T
+    def normalizeMe_J_n_J[S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long;
+    def normalizeMe_n_J[S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: T): T
   };
   object SpCls8Static extends Object {
     def <init>(): miniboxing.tests.correctness.SpCls8Static.type = {
@@ -83,7 +83,7 @@ package miniboxing.tests.correctness {
     };
     def foo(): Int = MiniboxConversions.this.minibox2box[Int](new miniboxing.tests.correctness.SpCls8Tgt_J[Byte](2).normalized_J_n_J[Int](5, 2, MiniboxConversions.this.box2minibox_tt[Byte(3)](3, 2), MiniboxConversions.this.box2minibox_tt[Int(4)](4, 5)), 5);
     def bar[@miniboxing.plugin.minispec Z >: Nothing <: Any](z: Z): Z = new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J[Z](5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5), z);
-    def bar_n_J[@miniboxing.plugin.minispec Z >: Nothing <: Any](Z_TypeTag: Byte, z: Long): Long = new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J_n_J[Z](Z_TypeTag, 5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5), z)
+    def bar_n_J[Z >: Nothing <: Any](Z_TypeTag: Byte, z: Long): Long = new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J_n_J[Z](Z_TypeTag, 5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5), z)
   };
   class SpCls8Tgt_J[Usp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls8Tgt[Usp] {
     def <init>(miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag: Byte): miniboxing.tests.correctness.SpCls8Tgt_J[Usp] = {
@@ -92,8 +92,8 @@ package miniboxing.tests.correctness {
     };
     def normalized[@miniboxing.plugin.minispec V >: Nothing <: Any](u: Usp, v: V): V = SpCls8Tgt_J.this.normalized_J[V](SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag), v);
     def normalized_J[@miniboxing.plugin.minispec V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): V = scala.this.Predef.???();
-    def normalized_J_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
-    def normalized_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = SpCls8Tgt_J.this.normalized_J_n_J[V](V_TypeTag, SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag), v);
+    def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = SpCls8Tgt_J.this.normalized_J_n_J[V](V_TypeTag, SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, SpCls8Tgt_J.this.miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag), v);
     <paramaccessor> private[this] val miniboxing$tests$correctness$SpCls8Tgt_J|U_TypeTag: Byte = _
   };
   class SpCls8Tgt_L[Usp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls8Tgt[Usp] {
@@ -103,8 +103,8 @@ package miniboxing.tests.correctness {
     };
     def normalized[@miniboxing.plugin.minispec V >: Nothing <: Any](u: Usp, v: V): V = scala.this.Predef.???();
     def normalized_J[@miniboxing.plugin.minispec V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): V = SpCls8Tgt_L.this.normalized[V](MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag), v);
-    def normalized_J_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = SpCls8Tgt_L.this.normalized_n_J[V](V_TypeTag, MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag), v);
-    def normalized_n_J[@miniboxing.plugin.minispec V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
+    def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = SpCls8Tgt_L.this.normalized_n_J[V](V_TypeTag, MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag), v);
+    def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
   };
   class SpCls8_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls8[Tsp] {
     def <init>(miniboxing$tests$correctness$SpCls8_J|T_TypeTag: Byte): miniboxing.tests.correctness.SpCls8_J[Tsp] = {
@@ -113,8 +113,8 @@ package miniboxing.tests.correctness {
     };
     def normalizeMe[@miniboxing.plugin.minispec S >: Nothing <: Any](sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](SpCls8_J.this.normalizeMe_J[S](SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag, sp, s, MiniboxConversions.this.box2minibox_tt[Tsp](t, SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag)), SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag);
     def normalizeMe_J[@miniboxing.plugin.minispec S >: Nothing <: Any](T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: Long): Long = sp.normalized_n_J[Tsp](T_TypeTag, s, t);
-    def normalizeMe_J_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long = sp.normalized_J_n_J[Tsp](T_TypeTag, S_TypeTag, s, t);
-    def normalizeMe_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](SpCls8_J.this.normalizeMe_J_n_J[S](S_TypeTag, SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag, sp, s, MiniboxConversions.this.box2minibox_tt[Tsp](t, SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag)), SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag);
+    def normalizeMe_J_n_J[S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long = sp.normalized_J_n_J[Tsp](T_TypeTag, S_TypeTag, s, t);
+    def normalizeMe_n_J[S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](SpCls8_J.this.normalizeMe_J_n_J[S](S_TypeTag, SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag, sp, s, MiniboxConversions.this.box2minibox_tt[Tsp](t, SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag)), SpCls8_J.this.miniboxing$tests$correctness$SpCls8_J|T_TypeTag);
     <paramaccessor> private[this] val miniboxing$tests$correctness$SpCls8_J|T_TypeTag: Byte = _
   };
   class SpCls8_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls8[Tsp] {
@@ -124,8 +124,8 @@ package miniboxing.tests.correctness {
     };
     def normalizeMe[@miniboxing.plugin.minispec S >: Nothing <: Any](sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: Tsp): Tsp = sp.normalized[Tsp](s, t);
     def normalizeMe_J[@miniboxing.plugin.minispec S >: Nothing <: Any](T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: S, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](SpCls8_L.this.normalizeMe[S](sp, s, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag);
-    def normalizeMe_J_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](SpCls8_L.this.normalizeMe_n_J[S](S_TypeTag, sp, s, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag);
-    def normalizeMe_n_J[@miniboxing.plugin.minispec S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Tsp): Tsp = sp.normalized_J[Tsp](S_TypeTag, s, t)
+    def normalizeMe_J_n_J[S >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](SpCls8_L.this.normalizeMe_n_J[S](S_TypeTag, sp, s, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag);
+    def normalizeMe_n_J[S >: Nothing <: Any](S_TypeTag: Byte, sp: miniboxing.tests.correctness.SpCls8Tgt[S], s: Long, t: Tsp): Tsp = sp.normalized_J[Tsp](S_TypeTag, s, t)
   }
 }
 

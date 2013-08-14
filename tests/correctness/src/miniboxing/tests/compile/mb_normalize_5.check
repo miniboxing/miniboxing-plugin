@@ -54,21 +54,21 @@ package miniboxing.tests.correctness {
       };
       foo()
     };
-    def normalize_n_JJ[@miniboxing.plugin.minispec S >: Nothing <: Any, @miniboxing.plugin.minispec T >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+    def normalize_n_JJ[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
       def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
         def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JJ[S,T](S_TypeTag, T_TypeTag, s, t);
         bar()
       };
       foo()
     };
-    def normalize_n_JL[@miniboxing.plugin.minispec S >: Nothing <: Any, @miniboxing.plugin.minispec T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+    def normalize_n_JL[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
       def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
         def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JL[S,T](S_TypeTag, s, t);
         bar()
       };
       foo()
     };
-    def normalize_n_LJ[@miniboxing.plugin.minispec S >: Nothing <: Any, @miniboxing.plugin.minispec T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+    def normalize_n_LJ[S >: Nothing <: Any, T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
       def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
         def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LJ[S,T](T_TypeTag, s, t);
         bar()

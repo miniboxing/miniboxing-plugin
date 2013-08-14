@@ -604,7 +604,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
               newMbr setFlag MINIBOXED
               newMbr setName (specializedName(newTermName(member.name.toString + "_n"), typeParamValues(member, pspec)))
               newMbr modifyInfo (info0 => {
-                // info0.typeParams.foreach(_.removeAnnotation(MinispecClass))
+                info0.typeParams.foreach(_.removeAnnotation(MinispecClass))
                 val deepEnv: Map[Symbol, Symbol] = member.typeParams.zip(info0.typeParams).toMap
                 val shallowEnv =
                   pspec flatMap {
