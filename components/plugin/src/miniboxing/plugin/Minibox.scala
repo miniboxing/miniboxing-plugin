@@ -20,8 +20,6 @@ trait MiniboxComponent extends
     with MiniboxSpecializationInfo
     with MiniboxDefinitions {
 
-  val global: Global
-
   def mboxPhase: StdPhase
 
   def afterMinibox[T](op: => T): T =
@@ -33,17 +31,26 @@ trait MiniboxComponent extends
   def flag_log: Boolean
   def flag_debug: Boolean
   def flag_stats: Boolean
-  def flag_hijack_spec: Boolean
   def flag_spec_no_opt: Boolean
   def flag_loader_friendly: Boolean
 }
+
+trait HijackComponent extends
+    PluginComponent
+    with MiniboxInfoHijack
+    with MiniboxDefinitions {
+
+  def flag_hijack_spec: Boolean
+}
+
 
 class Minibox(val global: Global) extends Plugin {
   import global._
 
   val name = "minibox"
   val description = "spcializes generic classes"
-  val components = List[PluginComponent](Component)
+
+  val components = List[PluginComponent](HijackPhase, MiniboxPhase)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
@@ -79,7 +86,7 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations" +
     s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)")
 
-  private object Component extends MiniboxComponent {
+  private object MiniboxPhase extends MiniboxComponent {
 
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks")
@@ -89,22 +96,17 @@ class Minibox(val global: Global) extends Plugin {
     def flag_log = Minibox.this.flag_log
     def flag_debug = Minibox.this.flag_debug
     def flag_stats = Minibox.this.flag_stats
-    def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
     def flag_loader_friendly = Minibox.this.flag_loader_friendly
 
     var mboxPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mboxPhase = new Phase(prev);
+      mboxPhase = new Phase(prev)
       mboxPhase
     }
 
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = {
-        // should be done after typer, else it will remove the specialized annotation
-        if (flag_hijack_spec)
-          global.settings.nospecialization.value = true
-
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
         val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
@@ -112,5 +114,20 @@ class Minibox(val global: Global) extends Plugin {
         tree2
       }
     }
+  }
+
+  private object HijackPhase extends HijackComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List("typer")
+    override val runsRightAfter = Some("extmethods")
+    val phaseName = "hijacker"
+
+    def flag_hijack_spec = Minibox.this.flag_hijack_spec
+
+    // no change
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = tree
+    }
+
   }
 }

@@ -20,7 +20,7 @@ Specializing class HijackMe...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait HijackMe[@specialized(scala.Int) T >: Nothing <: Any] extends Object;
+  abstract trait HijackMe[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object;
   class HijackMe_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
     def <init>(miniboxing$tests$compile$HijackMe_J|T_TypeTag: Byte): miniboxing.tests.compile.HijackMe_J[Tsp] = {
       HijackMe_J.super.<init>();

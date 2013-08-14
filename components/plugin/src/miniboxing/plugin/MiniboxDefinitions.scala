@@ -1,7 +1,9 @@
 package miniboxing.plugin
 
+import scala.tools.nsc.plugins.PluginComponent
+
 trait MiniboxDefinitions {
-  this: MiniboxComponent =>
+  this: PluginComponent =>
 
   import global._
   import definitions._
