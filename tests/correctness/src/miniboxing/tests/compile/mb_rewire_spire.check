@@ -36,13 +36,13 @@ package miniboxing.tests.compile {
     def gcd(a: miniboxing.tests.compile.Cplx[A], b: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A]
   };
   class Cplx_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Cplx[Asp] {
-    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def <init>(miniboxing$tests$compile$Cplx_J|A_TypeTag: Byte, real: Long, imag: Long, f: miniboxing.tests.compile.Fractional[Asp]): miniboxing.tests.compile.Cplx_J[Asp] = {
       Cplx_J.super.<init>();
       ()
     };
+    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def abs(): Asp = MiniboxConversions.this.minibox2box[Asp](Cplx_J.this.abs_J(Cplx_J.this.miniboxing$tests$compile$Cplx_J|A_TypeTag), Cplx_J.this.miniboxing$tests$compile$Cplx_J|A_TypeTag);
     def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
     def isZero(): Boolean = scala.this.Predef.???();
@@ -52,13 +52,13 @@ package miniboxing.tests.compile {
     <paramaccessor> private[this] val real: Long = _
   };
   class Cplx_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Cplx[Asp] {
-    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def <init>(real: Asp, imag: Asp, f: miniboxing.tests.compile.Fractional[Asp]): miniboxing.tests.compile.Cplx_L[Asp] = {
       Cplx_L.super.<init>();
       ()
     };
+    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def abs(): Asp = scala.this.Predef.???();
     def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](Cplx_L.this.abs(), A_TypeTag);
     def isZero(): Boolean = scala.this.Predef.???();

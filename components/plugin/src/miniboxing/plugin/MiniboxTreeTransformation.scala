@@ -295,11 +295,27 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
         // Constructor call rewiring for specialized classes
         //   new C[Int](3) => new C_J[Int](INT)(3.toInt)
-        case Apply(ctor @ Select(qual @ New(cl), nme.CONSTRUCTOR), args) if { afterMinibox(cl.symbol.info); specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
+        //   <interface>.this.<init>(3) => <specialized>.this.<init>(...)
+        case Apply(ctor @ Select(qual, nme.CONSTRUCTOR), args) if {
+          qual match {
+            case New(cl) => afterMinibox(cl.symbol.info)
+            case _ =>
+          }
+          specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
+
           val oldClassCtor = ctor.symbol
-          val tree1 = cl.tpe match {
+          val cltpe: Type  = qual match {
+            case New(cl) => cl.tpe
+            case This(clazz) => appliedType(qual.symbol, currentClass.typeParams.map(_.tpe): _*)
+          }
+          val tree1 = cltpe match {
             case TypeRef(pre, oldClass, targs) =>
-              val spec = extractSpec(cl.tpe, currentMethod, currentClass)
+              val spec = extractSpec(cltpe, currentMethod, currentClass)
+              def newQual(newClass: Symbol) =
+                qual match {
+                  case New(_)  => localTyper.typedOperator(New(TypeTree(typeRef(pre, newClass, targs))))
+                  case This(_) => localTyper.typed(This(newClass))
+                }
               spec match {
                 case Some(pspec) if !PartialSpec.isAllAnyRef(pspec) =>
                   assert(specializedClasses(oldClass).isDefinedAt(pspec))
@@ -307,16 +323,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
                   assert(overloads(ctor.symbol).isDefinedAt(pspec))
                   val newClass = specializedClasses(oldClass)(pspec)
                   val newClassCtor = overloads(oldClassCtor)(pspec)
-                  val newQual = localTyper.typedOperator(New(TypeTree(TypeRef(pre, newClass, targs))))
-                  val tree1 = rewiredMethodCall(newQual, oldClassCtor, ctor.tpe, newClassCtor, currentClass.info.memberInfo(newClassCtor), args.map(transform), null)
+                  val tree1 = rewiredMethodCall(newQual(newClass), oldClassCtor, ctor.tpe, newClassCtor, currentClass.info.memberInfo(newClassCtor), args.map(transform), null)
                   stats("redirecting new: " + tree + " ==> " + tree1)
                   tree1
                 case Some(_) =>
                   val allAnyRefSpec = oldClass.typeParams.filter(_ hasFlag MINIBOXED).map(t => (t, Boxed)).toMap
                   val newClass = specializedClasses(oldClass)(allAnyRefSpec)
                   val newClassCtor = overloads(oldClassCtor)(allAnyRefSpec)
-                  val newQual = localTyper.typedOperator(New(TypeTree(TypeRef(pre, newClass, targs))))
-                  gen.mkMethodCall(newQual, newClassCtor, List(), args.map(transform))
+                  gen.mkMethodCall(newQual(newClass), newClassCtor, List(), args.map(transform))
                 case None =>
                   global.reporter.error(tree.pos, "Unable to rewire constructor, this will probably lead to invalid bytecode.")
                   tree
@@ -668,7 +682,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def createMethodTrees(sClass: Symbol): List[Tree] = {
       val mbrs = new ListBuffer[Tree]
-      for (m <- sClass.info.decls.toList.sortBy(_.defString) if m hasFlag MINIBOXED) {
+      // needs to keep the order for constructors:
+      for (m <- sClass.info.decls.filter(_.isConstructor).toList ::: sClass.info.decls.filterNot(_.isConstructor).toList.sortBy(_.defString) if m hasFlag MINIBOXED) {
         debug("creating empty tree for " + m.fullName)
         if (m.isMethod) {
           mbrs += atPos(m.pos)(DefDef(m, { paramss => EmptyTree }))
