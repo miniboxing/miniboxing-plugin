@@ -36,14 +36,8 @@ object MiniboxingBuild extends Build {
     ),
 
     parallelExecution in Test := false,
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
-  )
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v"),
 
-  val runtimeDeps = Seq(
-    scalacOptions ++= Seq("-optimize", "-Yinline-warnings")
-  )
-
-  val pluginDeps = defaults ++ Seq(
     // this should work but it doesn't:
     // resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
     // so I replaced it with this, which works with both sbt 0.11 and 0.12 
@@ -51,8 +45,14 @@ object MiniboxingBuild extends Build {
       ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
-    ),
+    )
+  )
 
+  val runtimeDeps = Seq(
+    scalacOptions ++= Seq("-optimize", "-Yinline-warnings")
+  )
+
+  val pluginDeps = defaults ++ Seq(
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-library" % scalaVer,
       "org.scala-lang" % "scala-reflect" % scalaVer,
