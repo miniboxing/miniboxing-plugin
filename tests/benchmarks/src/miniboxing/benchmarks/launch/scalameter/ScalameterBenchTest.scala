@@ -4,6 +4,7 @@ import org.scalameter.api._
 import miniboxing.benchmarks.launch.tests.BaseTest
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
+import org.scalameter.utils.Tree
 
 trait ScalameterBenchTest extends PerformanceTest
                              with BaseTest {
@@ -19,8 +20,6 @@ trait ScalameterBenchTest extends PerformanceTest
   }
   def testSizes: List[Int]
   val sizes = Gen.enumeration("size")(testSizes: _*)
-  def lastTag: String
-  def lastTraf: String
 
   def sampleCount: Int
 
@@ -62,10 +61,11 @@ trait ScalameterBenchTest extends PerformanceTest
       }
 
       println(output)
+    }
 
-      // printout:
-      if ((testTag == lastTag) && (testTraf == lastTraf))
-        printResults()
+    override def report(result: Tree[CurveData], persistor: Persistor): Boolean = {
+      printResults()
+      true
     }
   }
 

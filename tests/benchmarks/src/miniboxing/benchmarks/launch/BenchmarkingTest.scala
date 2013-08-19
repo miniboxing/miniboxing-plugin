@@ -27,8 +27,6 @@ object BenchmarkingTest extends ScalameterBenchTest
 //    List(1000)
   }
   def megamorphicTestSize = 200000
-  def lastTag = "list.find"
-  def lastTraf = "generic mega"
 
   // run the tests:
   testIdeal()
