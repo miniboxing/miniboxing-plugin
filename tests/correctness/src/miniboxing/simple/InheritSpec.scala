@@ -1,6 +1,6 @@
 package miniboxing.simple
 
-import miniboxing.plugin.minispec
+
 import scala.util.Random
 
 // XXX: inheritance related tests do not work
@@ -8,13 +8,13 @@ class Base {
   val b = 0
 }
 
-trait SpecTrait[@minispec A, @minispec B] {
+trait SpecTrait[@miniboxed A, @miniboxed B] {
   def st1(t: A): B
   def st2: A
 }
 
 
-class Foo[@minispec T: Manifest](p: T) extends Base with SpecTrait[T, T] {
+class Foo[@miniboxed T: Manifest](p: T) extends Base with SpecTrait[T, T] {
   def st1(t: T): T = t
   def st2 = p
 
@@ -22,7 +22,7 @@ class Foo[@minispec T: Manifest](p: T) extends Base with SpecTrait[T, T] {
   def toString2() = st2.toString
 }
 
-class Bar[@minispec T: Manifest](t: T) extends Foo[T](t: T) {
+class Bar[@miniboxed T: Manifest](t: T) extends Foo[T](t: T) {
   override def toString1() = t.toString
 }
 

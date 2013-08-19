@@ -1,6 +1,6 @@
 package miniboxing.tests.compile
 
-import miniboxing.plugin.minispec
+
 
 /**
  * We can distinguish 5 cases:
@@ -11,7 +11,7 @@ import miniboxing.plugin.minispec
  *     2.3. from the current scope, but not specialized
  *     2.4. from the current scope, but specialized => same as (1)
  */
-class TN[@minispec T](val t: T){
+class TN[@miniboxed T](val t: T){
   def foo(): TN[T] =
     new TN[T](t)           // case (1)
 }

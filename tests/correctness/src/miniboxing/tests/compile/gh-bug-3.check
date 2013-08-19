@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait BUG3[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait BUG3[@miniboxed T >: Nothing <: Any] extends Object {
     def hashMode(): T;
     def hashMode_J(T_TypeTag: Byte): Long
   };

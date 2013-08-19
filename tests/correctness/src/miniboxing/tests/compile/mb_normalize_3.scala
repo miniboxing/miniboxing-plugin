@@ -1,6 +1,6 @@
 package miniboxing.tests.correctness
-import miniboxing.plugin.minispec
 
-class SpCls3[@minispec S] {
-  def normalizeMe[@minispec T](s: S, t: T): SpCls3[T] = new SpCls3[T]
+
+class SpCls3[@miniboxed S] {
+  def normalizeMe[@miniboxed T](s: S, t: T): SpCls3[T] = new SpCls3[T]
 }

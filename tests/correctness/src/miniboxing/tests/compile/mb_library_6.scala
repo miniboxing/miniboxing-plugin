@@ -1,12 +1,12 @@
 package miniboxing.tests.compile.library6
-import miniboxing.plugin.minispec
+
 
 package A {
-  trait Iterator[@minispec +A]
+  trait Iterator[@miniboxed +A]
 }
 
 package B {
-  trait Iterator[@minispec +A]
+  trait Iterator[@miniboxed +A]
 }
 
-class Iterator[@minispec +A] extends A.Iterator[A] with B.Iterator[A]
+class Iterator[@miniboxed +A] extends A.Iterator[A] with B.Iterator[A]

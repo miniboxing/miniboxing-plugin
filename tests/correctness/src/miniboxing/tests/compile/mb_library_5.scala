@@ -1,7 +1,7 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-trait Iterator[@minispec +A] {
+
+trait Iterator[@miniboxed +A] {
   self =>
 
   def seq: Iterator[A] = this
@@ -26,4 +26,4 @@ trait Iterator[@minispec +A] {
   }
 }
 
-abstract class AbstractIterator[@minispec +A] extends Iterator[A]
+abstract class AbstractIterator[@miniboxed +A] extends Iterator[A]

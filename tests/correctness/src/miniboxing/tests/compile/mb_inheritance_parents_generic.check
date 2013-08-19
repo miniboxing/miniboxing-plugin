@@ -26,7 +26,7 @@ package miniboxing.tests.compile.inheritance {
       ()
     }
   };
-  abstract trait DDDD[@miniboxing.plugin.minispec U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[U];
+  abstract trait DDDD[@miniboxed U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[U];
   class DDDD_J[Usp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
     def <init>(miniboxing$tests$compile$inheritance$DDDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDDD_J[Usp] = {
       DDDD_J.super.<init>();

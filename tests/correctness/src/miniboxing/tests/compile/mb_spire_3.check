@@ -52,11 +52,11 @@ Specializing class ArrayOps...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Order2[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait Order2[@miniboxed A >: Nothing <: Any] extends Object {
     def max(x: A, y: A): A;
     def max_J(A_TypeTag: Byte, x: Long, y: Long): Long
   };
-  abstract trait ArrayOps[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait ArrayOps[@miniboxed A >: Nothing <: Any] extends Object {
     def qmax(implicit ev: miniboxing.tests.compile.Order2[A]): A;
     def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[A]): Long
   };

@@ -1,18 +1,18 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
+
 
 // Note the override problem shown here also affects specialization, 
 // see SI-7659: https://issues.scala-lang.org/browse/SI-7659
 
-trait Base21[@minispec T, S] {
+trait Base21[@miniboxed T, S] {
   def overrideMe(t: T, s: S): T = t
 }
 
-trait Base22[@minispec T, S] {
+trait Base22[@miniboxed T, S] {
   def overrideMe(t: T, s: S): T = t
 }
 
-trait Base23[@minispec T, @minispec S] {
+trait Base23[@miniboxed T, @miniboxed S] {
   def overrideMe(t: T, s: S): T = t
 }
 

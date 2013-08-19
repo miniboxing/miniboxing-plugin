@@ -34,7 +34,7 @@ Specializing class TN...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.tparams {
-  abstract trait TN[@miniboxing.plugin.minispec T >: Nothing <: Any, X >: Nothing <: Any] extends Object {
+  abstract trait TN[@miniboxed T >: Nothing <: Any, X >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
     def foo(): miniboxing.tests.compile.tparams.TN[T,String];
     def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String];

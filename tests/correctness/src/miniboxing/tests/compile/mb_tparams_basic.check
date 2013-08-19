@@ -26,7 +26,7 @@ Specializing class TParams1...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.tparams {
-  abstract trait TParams1[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait TParams1[@miniboxed T >: Nothing <: Any] extends Object {
     def foo[X >: Nothing <: Any](t: T, x: X): Int;
     def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int
   };

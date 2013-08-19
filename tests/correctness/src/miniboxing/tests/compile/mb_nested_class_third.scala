@@ -1,9 +1,9 @@
 package miniboxing.tests.compile.nested
 
-import miniboxing.plugin.minispec
 
-class CCC[@minispec T](c: T) {
-  class DDD[@minispec U](d: U) {
+
+class CCC[@miniboxed T](c: T) {
+  class DDD[@miniboxed U](d: U) {
     def foo = println(c == d)
   }
   def test = {

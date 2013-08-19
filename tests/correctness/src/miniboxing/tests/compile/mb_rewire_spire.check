@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Cplx[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait Cplx[@miniboxed A >: Nothing <: Any] extends Object {
     def isZero(): Boolean;
     def abs(): A;
     def %(that: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
@@ -15,21 +15,21 @@ package miniboxing.tests.compile {
     };
     def one[T >: Nothing <: Any](implicit f: miniboxing.tests.compile.Fractional[T]): miniboxing.tests.compile.Cplx[T] = scala.this.Predef.???()
   };
-  abstract trait CplxIsRing[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait CplxIsRing[@miniboxed A >: Nothing <: Any] extends Object {
     implicit def f(): miniboxing.tests.compile.Fractional[A];
     def one(): miniboxing.tests.compile.Cplx[A]
   };
-  abstract trait Ord[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait Ord[@miniboxed A >: Nothing <: Any] extends Object {
     def lt(o1: A, o2: A): Boolean;
     def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean
   };
-  abstract trait Fractional[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[A] {
+  abstract trait Fractional[@miniboxed A >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[A] {
     def one(): A;
     def zero(): A;
     def one_J(A_TypeTag: Byte): Long;
     def zero_J(A_TypeTag: Byte): Long
   };
-  abstract trait CplxIsEuclideanRing[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object with miniboxing.tests.compile.CplxIsRing[A] {
+  abstract trait CplxIsEuclideanRing[@miniboxed A >: Nothing <: Any] extends Object with miniboxing.tests.compile.CplxIsRing[A] {
     def quot(a: miniboxing.tests.compile.Cplx[A], b: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
     def mod(a: miniboxing.tests.compile.Cplx[A], b: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
     def quotmod(a: miniboxing.tests.compile.Cplx[A], b: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];

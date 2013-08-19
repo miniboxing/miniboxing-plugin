@@ -1,8 +1,8 @@
 package miniboxing.tests.compile
 
-import miniboxing.plugin.minispec
 
-class OptMeee[@minispec X, Y]{
+
+class OptMeee[@miniboxed X, Y]{
   def yfoo1(x: X, y: Y): X = yfoo1(x, y)
   def yfoo2(y: Y): X = yfoo2(y)
   def nfoo3(y: Y): Y = nfoo3(y)

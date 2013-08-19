@@ -1,7 +1,7 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-class BUG2[@minispec T](tail: BUG2[T]) {
+
+class BUG2[@miniboxed T](tail: BUG2[T]) {
   // WORKS:
   //def length: Int = tail.length
   // CRASHES:

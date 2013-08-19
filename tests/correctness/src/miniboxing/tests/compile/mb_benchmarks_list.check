@@ -78,7 +78,7 @@ Specializing class MBList...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.benchmarks.minibox {
-  abstract trait MBList[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait MBList[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def head(): T;
     <stable> <accessor> <paramaccessor> def tail(): miniboxing.benchmarks.minibox.MBList[T];
     def length(): Int;

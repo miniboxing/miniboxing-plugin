@@ -45,8 +45,8 @@ Specializing class D...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.nested {
-  abstract trait C[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
-    abstract trait D[@miniboxing.plugin.minispec U >: Nothing <: Any] extends Object;
+  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+    abstract trait D[@miniboxed U >: Nothing <: Any] extends Object;
     class D_J[Usp >: Nothing <: Any] extends Object with C.this.D[Usp] {
       def <init>(miniboxing$tests$compile$nested$C$D_J|U_TypeTag: Byte, d: Long): C.this.D_J[Usp] = {
         D_J.super.<init>();

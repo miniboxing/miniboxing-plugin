@@ -1,7 +1,7 @@
 package miniboxing.tests.compile.tparams
 
-import miniboxing.plugin.minispec
 
-class TParams1[@minispec T] {
+
+class TParams1[@miniboxed T] {
   def foo[X](t: T, x: X) = 12
 }

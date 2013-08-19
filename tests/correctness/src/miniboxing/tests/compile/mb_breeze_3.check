@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.breeze3 {
-  abstract trait Vector[@miniboxing.plugin.minispec E >: Nothing <: Any] extends Object;
+  abstract trait Vector[@miniboxed E >: Nothing <: Any] extends Object;
   class Vector_J[Esp >: Nothing <: Any] extends Object with miniboxing.tests.compile.breeze3.Vector[Esp] {
     def <init>(miniboxing$tests$compile$breeze3$Vector_J|E_TypeTag: Byte, size: Int): miniboxing.tests.compile.breeze3.Vector_J[Esp] = {
       Vector_J.super.<init>();

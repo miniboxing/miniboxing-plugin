@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.ideal
 
-import miniboxing.plugin.minispec
+
 
 class List(val head: Int, val tail: List) {
 

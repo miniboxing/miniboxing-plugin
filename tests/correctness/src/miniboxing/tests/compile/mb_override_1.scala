@@ -1,7 +1,7 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-class Base1[@minispec T, @minispec S] {
+
+class Base1[@miniboxed T, @miniboxed S] {
   def overrideMe(t: T, s: S): T = t
 }
 

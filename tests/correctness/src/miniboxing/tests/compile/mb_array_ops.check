@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait VerifyArrayOps[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait VerifyArrayOps[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> def x(): Array[T];
     def reverse(): Unit;
     def reverse_J(T_TypeTag: Byte): Unit;

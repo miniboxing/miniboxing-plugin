@@ -1,13 +1,13 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-trait Field1[@minispec A] {
+
+trait Field1[@miniboxed A] {
   def zero: A
   def plus(o1: A, o2: A): A
   def times(o1: A, o2: A): A
 }
 
-trait ArrayInnerProductSpace1[@minispec A] {
+trait ArrayInnerProductSpace1[@miniboxed A] {
   def scalar: Field1[A]
 
   def dot(v: Array[A], w: Array[A], zero: A): A = {

@@ -6,7 +6,7 @@ class Z[T] {
   val baz: T = ???
 }
 
-class C[@miniboxing.plugin.minispec T] extends Z[T] {
+class C[@miniboxed T] extends Z[T] {
 
   override def foo(t: T) = {
     println("overridden foo")

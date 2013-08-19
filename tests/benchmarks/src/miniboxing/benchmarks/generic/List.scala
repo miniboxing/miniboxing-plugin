@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.generic
 
-import miniboxing.plugin.minispec
+
 
 class List[T](val head: T, val tail: List[T]) {
 

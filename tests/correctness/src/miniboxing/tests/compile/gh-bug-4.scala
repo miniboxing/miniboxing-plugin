@@ -1,7 +1,7 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-class BUG4[@minispec T]() {
+
+class BUG4[@miniboxed T]() {
   def hashMode(t: T): Int = {
     val headhash: Int = 12
     headhash

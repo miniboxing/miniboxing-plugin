@@ -1,8 +1,8 @@
 package miniboxing.benchmarks.minibox
 
-import miniboxing.plugin.minispec
 
-class MBList[@minispec T](val head: T, val tail: MBList[T]) {
+
+class MBList[@miniboxed T](val head: T, val tail: MBList[T]) {
 
   def length: Int = 1 + (if (tail != null) tail.length else 0)
 

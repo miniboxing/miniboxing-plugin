@@ -7,8 +7,8 @@
  *  - rewiring the constructor with the correct type tags
  */
 package miniboxing.tests.compile.inheritance
-import miniboxing.plugin.minispec
 
-class FF1[@minispec T, @minispec R]
 
-class PPredicate[@minispec T] extends FF1[T, Boolean]
+class FF1[@miniboxed T, @miniboxed R]
+
+class PPredicate[@miniboxed T] extends FF1[T, Boolean]

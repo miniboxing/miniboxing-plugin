@@ -1,7 +1,7 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
 
-class BUG7[@minispec T](head: T, tail: BUG7[T]) {
+
+class BUG7[@miniboxed T](head: T, tail: BUG7[T]) {
   //override def hashCode(): Int = 123
   override def hashCode(): Int = tail.hashCode
 }

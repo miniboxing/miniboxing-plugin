@@ -1,8 +1,8 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
+
 import scala.annotation.tailrec
 
-class Cplx[@minispec A](real: A, imag: A)(implicit f: Fractional[A]) {
+class Cplx[@miniboxed A](real: A, imag: A)(implicit f: Fractional[A]) {
   def isZero: Boolean = ???
   def abs: A = ???
   def %(that: Cplx[A]): Cplx[A] = ???
@@ -14,22 +14,22 @@ object Cplx {
   def one[T](implicit f: Fractional[T]): Cplx[T] = ???
 }
 
-trait CplxIsRing[@minispec A] {
+trait CplxIsRing[@miniboxed A] {
   implicit def f: Fractional[A]
   def one: Cplx[A] = Cplx.one
 }
 
-trait Ord[@minispec A] {
+trait Ord[@miniboxed A] {
   def lt(o1: A, o2: A): Boolean
 }
 
-trait Fractional[@minispec A] extends Ord[A] {
+trait Fractional[@miniboxed A] extends Ord[A] {
   def one: A
   def zero: A
 }
 
 
-trait CplxIsEuclideanRing[@minispec A] extends CplxIsRing[A] {
+trait CplxIsEuclideanRing[@miniboxed A] extends CplxIsRing[A] {
   def quot(a: Cplx[A], b: Cplx[A]) = a /~ b
   def mod(a: Cplx[A], b: Cplx[A]) = a % b
   def quotmod(a: Cplx[A], b: Cplx[A]) = a /% b

@@ -1,8 +1,8 @@
 package miniboxing.tests.compile
 
-import miniboxing.plugin.minispec
 
-class ArgumentRewire[@minispec T] {
+
+class ArgumentRewire[@miniboxed T] {
   def test(t: T) = {
     println(t)   // should be rewired to: println(minibox2box(t))
     t.hashCode   // should be rewired to: minibox2box(t).hashCode
@@ -10,7 +10,7 @@ class ArgumentRewire[@minispec T] {
   }
 }
 
-class LocalRewire[@minispec T] {
+class LocalRewire[@miniboxed T] {
   def test(t: T) = {
     val x = t    // x should be a Long instead of Tsp
     println(t)   // should be rewired to: println(minibox2box(x))

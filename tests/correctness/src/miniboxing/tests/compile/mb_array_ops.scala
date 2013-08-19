@@ -1,8 +1,8 @@
 package miniboxing.tests.compile
 
-import miniboxing.plugin.minispec
 
-class VerifyArrayOps[@minispec T: Manifest] {
+
+class VerifyArrayOps[@miniboxed T: Manifest] {
   val x = new Array[T](10)
   def reverse() = {
     var i = 0

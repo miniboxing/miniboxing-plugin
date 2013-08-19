@@ -41,13 +41,13 @@ Specializing class Sp5Tuple2...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.correctness {
-  abstract trait Sp5Tuple2[@miniboxing.plugin.minispec U >: Nothing <: Any, @miniboxing.plugin.minispec V >: Nothing <: Any] extends Object;
+  abstract trait Sp5Tuple2[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any] extends Object;
   object Sp5Test extends Object {
     def <init>(): miniboxing.tests.correctness.Sp5Test.type = {
       Sp5Test.super.<init>();
       ()
     };
-    def normalize[@miniboxing.plugin.minispec S >: Nothing <: Any, @miniboxing.plugin.minispec T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+    def normalize[@miniboxed S >: Nothing <: Any, @miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
       def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
         def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LL[S,T](s, t);
         bar()

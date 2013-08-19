@@ -47,12 +47,12 @@ Specializing class Complex...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Complex[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object with Product with Serializable {
+  abstract trait Complex[@miniboxed T >: Nothing <: Any] extends Object with Product with Serializable {
     <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): T;
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): T;
-    <synthetic> def copy[@miniboxing.plugin.minispec T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    <synthetic> def copy$default$1[@miniboxing.plugin.minispec T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t1();
-    <synthetic> def copy$default$2[@miniboxing.plugin.minispec T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t2();
+    <synthetic> def copy[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
+    <synthetic> def copy$default$1[@miniboxed T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t1();
+    <synthetic> def copy$default$2[@miniboxed T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t2();
     override <synthetic> def productPrefix(): String = "Complex";
     <synthetic> def productArity(): Int = 2;
     <synthetic> def productElement(x$1: Int): Any = {
@@ -94,8 +94,8 @@ package miniboxing.tests.compile {
       ()
     };
     final override <synthetic> def toString(): String = "Complex";
-    case <synthetic> def apply[@miniboxing.plugin.minispec T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    case <synthetic> def unapply[@miniboxing.plugin.minispec T >: Nothing <: Any](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
+    case <synthetic> def apply[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
+    case <synthetic> def unapply[@miniboxed T >: Nothing <: Any](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
       scala.this.None
     else
       new Some[(T, T)](new (T, T)(x$0.t1(), x$0.t2()));

@@ -32,7 +32,7 @@ Specializing class TailCallsCrasher...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait TailCallsCrasher[@miniboxing.plugin.minispec A >: Nothing <: Any] extends Object {
+  abstract trait TailCallsCrasher[@miniboxed A >: Nothing <: Any] extends Object {
     final def zzz1(x: A): A;
     private[this] def zzz2(x: A): A;
     final def zzz1_J(A_TypeTag: Byte, x: Long): Long;

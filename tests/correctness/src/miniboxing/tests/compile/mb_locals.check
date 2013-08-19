@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait LocalValuesHandling[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait LocalValuesHandling[@miniboxed T >: Nothing <: Any] extends Object {
     def extend(): Int;
     def extend_J(T_TypeTag: Byte): Int
   };

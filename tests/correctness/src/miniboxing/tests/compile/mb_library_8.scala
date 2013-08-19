@@ -1,11 +1,11 @@
 package miniboxing.tests.compile.library8
-import miniboxing.plugin.minispec
 
-trait Growable[@minispec A] {
+
+trait Growable[@miniboxed A] {
   def ++=() = {}
 }
 
-class VectorBuilder[@minispec A] extends Growable[A] {
+class VectorBuilder[@miniboxed A] extends Growable[A] {
   override def ++=() =
     super.++=()
 }

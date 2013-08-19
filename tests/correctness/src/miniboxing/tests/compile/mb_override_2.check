@@ -97,15 +97,15 @@ Specializing trait Base23...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Base21[@miniboxing.plugin.minispec T >: Nothing <: Any, S >: Nothing <: Any] extends Object {
+  abstract trait Base21[@miniboxed T >: Nothing <: Any, S >: Nothing <: Any] extends Object {
     def overrideMe(t: T, s: S): T;
     def overrideMe_J(T_TypeTag: Byte, t: Long, s: S): Long
   };
-  abstract trait Base22[@miniboxing.plugin.minispec T >: Nothing <: Any, S >: Nothing <: Any] extends Object {
+  abstract trait Base22[@miniboxed T >: Nothing <: Any, S >: Nothing <: Any] extends Object {
     def overrideMe(t: T, s: S): T;
     def overrideMe_J(T_TypeTag: Byte, t: Long, s: S): Long
   };
-  abstract trait Base23[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec S >: Nothing <: Any] extends Object {
+  abstract trait Base23[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object {
     def overrideMe(t: T, s: S): T;
     def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long;
     def overrideMe_JL(T_TypeTag: Byte, t: Long, s: S): Long;

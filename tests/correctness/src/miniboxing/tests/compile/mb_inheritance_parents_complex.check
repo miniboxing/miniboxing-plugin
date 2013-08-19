@@ -176,13 +176,13 @@ Specializing class Derived6...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait Base1[@miniboxing.plugin.minispec B11 >: Nothing <: Any, @miniboxing.plugin.minispec B12 >: Nothing <: Any] extends Object;
-  abstract trait Base2[B21 >: Nothing <: Any, @miniboxing.plugin.minispec B22 >: Nothing <: Any] extends Object;
-  abstract trait Base3[@miniboxing.plugin.minispec B31 >: Nothing <: Any, B32 >: Nothing <: Any] extends Object;
+  abstract trait Base1[@miniboxed B11 >: Nothing <: Any, @miniboxed B12 >: Nothing <: Any] extends Object;
+  abstract trait Base2[B21 >: Nothing <: Any, @miniboxed B22 >: Nothing <: Any] extends Object;
+  abstract trait Base3[@miniboxed B31 >: Nothing <: Any, B32 >: Nothing <: Any] extends Object;
   abstract trait Base4[B41 >: Nothing <: Any, B42 >: Nothing <: Any] extends Object;
-  abstract trait Derived1[@miniboxing.plugin.minispec D11 >: Nothing <: Any, @miniboxing.plugin.minispec D12 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D11,D12] with miniboxing.tests.compile.inheritance.Base2[D11,D12] with miniboxing.tests.compile.inheritance.Base3[D11,D12] with miniboxing.tests.compile.inheritance.Base4[D11,D12];
-  abstract trait Derived2[D21 >: Nothing <: Any, @miniboxing.plugin.minispec D22 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D21,D22] with miniboxing.tests.compile.inheritance.Base2[D21,D22] with miniboxing.tests.compile.inheritance.Base3[D21,D22] with miniboxing.tests.compile.inheritance.Base4[D21,D22];
-  abstract trait Derived3[@miniboxing.plugin.minispec D31 >: Nothing <: Any, D32 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D31,D32] with miniboxing.tests.compile.inheritance.Base2[D31,D32] with miniboxing.tests.compile.inheritance.Base3[D31,D32] with miniboxing.tests.compile.inheritance.Base4[D31,D32];
+  abstract trait Derived1[@miniboxed D11 >: Nothing <: Any, @miniboxed D12 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D11,D12] with miniboxing.tests.compile.inheritance.Base2[D11,D12] with miniboxing.tests.compile.inheritance.Base3[D11,D12] with miniboxing.tests.compile.inheritance.Base4[D11,D12];
+  abstract trait Derived2[D21 >: Nothing <: Any, @miniboxed D22 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D21,D22] with miniboxing.tests.compile.inheritance.Base2[D21,D22] with miniboxing.tests.compile.inheritance.Base3[D21,D22] with miniboxing.tests.compile.inheritance.Base4[D21,D22];
+  abstract trait Derived3[@miniboxed D31 >: Nothing <: Any, D32 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D31,D32] with miniboxing.tests.compile.inheritance.Base2[D31,D32] with miniboxing.tests.compile.inheritance.Base3[D31,D32] with miniboxing.tests.compile.inheritance.Base4[D31,D32];
   class Derived4[D41 >: Nothing <: Any, D42 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D41,D42] with miniboxing.tests.compile.inheritance.Base2_L[D41,D42] with miniboxing.tests.compile.inheritance.Base3_L[D41,D42] with miniboxing.tests.compile.inheritance.Base4[D41,D42] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived4[D41,D42] = {
       Derived4.super.<init>();
@@ -197,7 +197,7 @@ package miniboxing.tests.compile.inheritance {
     def miniboxing$tests$compile$inheritance$Base1_LJ|B12_TypeTag(): Byte = 1;
     def miniboxing$tests$compile$inheritance$Base2_J|B22_TypeTag(): Byte = 1
   };
-  abstract trait Derived6[@miniboxing.plugin.minispec D61 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D61,Boolean] with miniboxing.tests.compile.inheritance.Base2[D61,Boolean] with miniboxing.tests.compile.inheritance.Base3[D61,Boolean] with miniboxing.tests.compile.inheritance.Base4[D61,Boolean];
+  abstract trait Derived6[@miniboxed D61 >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[D61,Boolean] with miniboxing.tests.compile.inheritance.Base2[D61,Boolean] with miniboxing.tests.compile.inheritance.Base3[D61,Boolean] with miniboxing.tests.compile.inheritance.Base4[D61,Boolean];
   abstract trait Base1_JJ[B11sp >: Nothing <: Any, B12sp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.Base1[B11sp,B12sp] {
     def miniboxing$tests$compile$inheritance$Base1_JJ|B11_TypeTag(): Byte;
     def miniboxing$tests$compile$inheritance$Base1_JJ|B12_TypeTag(): Byte

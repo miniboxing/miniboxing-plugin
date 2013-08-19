@@ -1,5 +1,5 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
+
 
 object `package` {
   implicit val IntIntegral = new Integral[Long]
@@ -7,4 +7,4 @@ object `package` {
 
 class Integral[T]
 object LongRationals extends Rationals[Long]
-abstract class Rationals[@minispec A](implicit integral: Integral[A])
+abstract class Rationals[@miniboxed A](implicit integral: Integral[A])

@@ -97,7 +97,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
    * Substitute the type parameters with their value as given by the 'env'
    * in the type 'tpe'. The replacement is shallow, as the transformation
    * doesn't go deep into the types:
-   *   class C[@minispec T]{
+   *   class C[@miniboxed T]{
    *     def foo: T = ???
    *     def bar: List[T] = ???
    *   }
@@ -527,7 +527,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
             val tparamMiss = baseOSym.typeParams.filter(tparam =>
               isSpecialized(baseOSym.owner, tparam) && !isSpecialized(clazz, tparamMap(tparam))).map(tparamMap)
             if (tparamMiss.nonEmpty)
-              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + baseOSym + " in " + baseOSym.owner + " therefore needs to have the follwing type parameters marked with @minispec: " + tparamMiss.mkString(",") + ".")
+              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + baseOSym + " in " + baseOSym.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
           }
 
           if (isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {

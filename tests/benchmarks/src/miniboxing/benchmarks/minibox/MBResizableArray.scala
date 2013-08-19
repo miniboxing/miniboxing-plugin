@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.minibox
 
-import miniboxing.plugin.minispec
+
 
 /**
  * The arrays are tricky since we need to use the natural representation for them.
@@ -10,7 +10,7 @@ import miniboxing.plugin.minispec
  *  - every access to the array requires a cast to its type: array.asInstanceOf[Array[T]](p)
  *  - local array variables are not supported
  */
-class MBResizableArray[@minispec T](mf: Manifest[T])  {
+class MBResizableArray[@miniboxed T](mf: Manifest[T])  {
   final val initialSize = 4
   var size: Int = initialSize
   var elemCount: Int = 0

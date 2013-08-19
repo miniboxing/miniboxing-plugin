@@ -1,8 +1,8 @@
 package miniboxing.tests.compile
-import miniboxing.plugin.minispec
+
 import scala.annotation.tailrec
 
-abstract class Dist2[@minispec A] {
+abstract class Dist2[@miniboxed A] {
   def apply(a: A): A
 
   def iterateUntil(): Dist2[A] = new Dist2[A] {

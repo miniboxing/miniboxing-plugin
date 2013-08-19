@@ -66,11 +66,11 @@ Specializing class OhUh...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait UhOh[@miniboxing.plugin.minispec X >: Nothing <: Any, Y >: Nothing <: Any] extends Object {
+  abstract trait UhOh[@miniboxed X >: Nothing <: Any, Y >: Nothing <: Any] extends Object {
     def foo(x: X, y: Y): X;
     def foo_J(X_TypeTag: Byte, x: Long, y: Y): Long
   };
-  abstract trait OhUh[@miniboxing.plugin.minispec U >: Nothing <: Any] extends Object {
+  abstract trait OhUh[@miniboxed U >: Nothing <: Any] extends Object {
     <accessor> <paramaccessor> def u(): U;
     <accessor> <paramaccessor> def u_=(x$1: U): Unit;
     def test(): U;

@@ -1,6 +1,6 @@
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait CCC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait CCC[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
     def foo(t1: T, t2: Any): String;
     def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String;

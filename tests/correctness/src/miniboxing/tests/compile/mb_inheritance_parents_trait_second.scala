@@ -2,14 +2,14 @@
  *  specialized type tags, which need to transform into
  *  getters and need to be overridden. */
 package miniboxing.tests.compile.inheritance.traits
-import miniboxing.plugin.minispec
 
-trait CC[@minispec T] {
+
+trait CC[@miniboxed T] {
   def foo(t: T): T = ???
 }
 
-trait DD[@minispec T] extends CC[T]
+trait DD[@miniboxed T] extends CC[T]
 
-class EE[@minispec T] extends DD[T]
+class EE[@miniboxed T] extends DD[T]
 
 class FF extends DD[Int]

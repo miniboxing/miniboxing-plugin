@@ -53,7 +53,7 @@ Specializing class Base1...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Base1[@miniboxing.plugin.minispec T >: Nothing <: Any, @miniboxing.plugin.minispec S >: Nothing <: Any] extends Object {
+  abstract trait Base1[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object {
     def overrideMe(t: T, s: S): T;
     def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long;
     def overrideMe_JL(T_TypeTag: Byte, t: Long, s: S): Long;

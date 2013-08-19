@@ -1,6 +1,6 @@
 package miniboxing.tests.compile
 
-import miniboxing.plugin.minispec
+
 
 /**
  * We can distinguish 5 cases:
@@ -12,12 +12,12 @@ import miniboxing.plugin.minispec
  *     2.3. from the current scope, but not specialized
  *     2.4. from the current scope, but specialized
  */
-class TR[@minispec T] {
+class TR[@miniboxed T] {
   def foo(t: T): T = foo(t)      // case (1)
   def bar(t: TR[T]) = t.foo(???) // case (2.4)
 }
 
-class RT[@minispec U] {
+class RT[@miniboxed U] {
   def test(u: U) = {
     val tr = new TR[U]
     tr.foo(u)

@@ -5,8 +5,8 @@
  *  - rewiring the constructor with the correct type tags
  */
 package miniboxing.tests.compile.inheritance
-import miniboxing.plugin.minispec
 
-class CC[@minispec T]
+
+class CC[@miniboxed T]
 
 class DC[U] extends CC[U]

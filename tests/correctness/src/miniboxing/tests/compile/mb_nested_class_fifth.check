@@ -28,7 +28,7 @@ Specializing class CCCCC...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile.nested {
-  abstract trait CCCCC[@miniboxing.plugin.minispec T >: Nothing <: Any] extends Object {
+  abstract trait CCCCC[@miniboxed T >: Nothing <: Any] extends Object {
     def test(): Unit;
     def test_J(T_TypeTag: Byte): Unit
   };

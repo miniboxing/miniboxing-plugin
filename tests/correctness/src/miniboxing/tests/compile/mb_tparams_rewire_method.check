@@ -60,13 +60,13 @@ Specializing class RT3...
 
 [[syntax trees at end of                   minibox]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait TR3[@miniboxing.plugin.minispec T >: Nothing <: Any, Z >: Nothing <: Any] extends Object {
+  abstract trait TR3[@miniboxed T >: Nothing <: Any, Z >: Nothing <: Any] extends Object {
     def foo[X >: Nothing <: Any, Y >: Nothing <: Any](t: T, x: X, y: Y): T;
     def bar[X >: Nothing <: Any, Y >: Nothing <: Any](t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): T;
     def bar_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): Long;
     def foo_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X, y: Y): Long
   };
-  abstract trait RT3[@miniboxing.plugin.minispec U >: Nothing <: Any, G >: Nothing <: Any] extends Object {
+  abstract trait RT3[@miniboxed U >: Nothing <: Any, G >: Nothing <: Any] extends Object {
     def test(u: U): U;
     def test_J(U_TypeTag: Byte, u: Long): Long
   };

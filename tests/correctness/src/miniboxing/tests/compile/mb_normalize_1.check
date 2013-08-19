@@ -37,7 +37,7 @@ package miniboxing.tests.correctness {
       Obj.super.<init>();
       ()
     };
-    def normalizeMe1[@miniboxing.plugin.minispec T >: Nothing <: Any](t: T): T = t;
+    def normalizeMe1[@miniboxed T >: Nothing <: Any](t: T): T = t;
     def normalizeMe1_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Long = t
   };
   class Cls extends Object {
@@ -45,12 +45,12 @@ package miniboxing.tests.correctness {
       Cls.super.<init>();
       ()
     };
-    def normalizeMe2[@miniboxing.plugin.minispec T >: Nothing <: Any](t: T): T = t;
+    def normalizeMe2[@miniboxed T >: Nothing <: Any](t: T): T = t;
     def normalizeMe2_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Long = t
   };
-  abstract trait SpCls[@miniboxing.plugin.minispec S >: Nothing <: Any] extends Object {
-    def normalizeMe3[@miniboxing.plugin.minispec T >: Nothing <: Any](t: T): T;
-    def normalizeMe3_J[@miniboxing.plugin.minispec T >: Nothing <: Any](S_TypeTag: Byte, t: T): T;
+  abstract trait SpCls[@miniboxed S >: Nothing <: Any] extends Object {
+    def normalizeMe3[@miniboxed T >: Nothing <: Any](t: T): T;
+    def normalizeMe3_J[@miniboxed T >: Nothing <: Any](S_TypeTag: Byte, t: T): T;
     def normalizeMe3_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long;
     def normalizeMe3_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Long
   };
@@ -59,8 +59,8 @@ package miniboxing.tests.correctness {
       SpCls_J.super.<init>();
       ()
     };
-    def normalizeMe3[@miniboxing.plugin.minispec T >: Nothing <: Any](t: T): T = SpCls_J.this.normalizeMe3_J[T](SpCls_J.this.miniboxing$tests$correctness$SpCls_J|S_TypeTag, t);
-    def normalizeMe3_J[@miniboxing.plugin.minispec T >: Nothing <: Any](S_TypeTag: Byte, t: T): T = t;
+    def normalizeMe3[@miniboxed T >: Nothing <: Any](t: T): T = SpCls_J.this.normalizeMe3_J[T](SpCls_J.this.miniboxing$tests$correctness$SpCls_J|S_TypeTag, t);
+    def normalizeMe3_J[@miniboxed T >: Nothing <: Any](S_TypeTag: Byte, t: T): T = t;
     def normalizeMe3_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long = t;
     def normalizeMe3_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Long = SpCls_J.this.normalizeMe3_J_n_J[T](T_TypeTag, SpCls_J.this.miniboxing$tests$correctness$SpCls_J|S_TypeTag, t);
     <paramaccessor> private[this] val miniboxing$tests$correctness$SpCls_J|S_TypeTag: Byte = _
@@ -70,8 +70,8 @@ package miniboxing.tests.correctness {
       SpCls_L.super.<init>();
       ()
     };
-    def normalizeMe3[@miniboxing.plugin.minispec T >: Nothing <: Any](t: T): T = t;
-    def normalizeMe3_J[@miniboxing.plugin.minispec T >: Nothing <: Any](S_TypeTag: Byte, t: T): T = SpCls_L.this.normalizeMe3[T](t);
+    def normalizeMe3[@miniboxed T >: Nothing <: Any](t: T): T = t;
+    def normalizeMe3_J[@miniboxed T >: Nothing <: Any](S_TypeTag: Byte, t: T): T = SpCls_L.this.normalizeMe3[T](t);
     def normalizeMe3_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long = SpCls_L.this.normalizeMe3_n_J[T](T_TypeTag, t);
     def normalizeMe3_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Long = t
   }

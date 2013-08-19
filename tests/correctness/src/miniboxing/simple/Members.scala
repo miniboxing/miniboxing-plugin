@@ -1,9 +1,9 @@
 package miniboxing.simple
 
-import miniboxing.plugin.minispec
+
 import miniboxing.runtime.MiniboxTypeTagDispatch
 
-class Members[@minispec T: Manifest](t: T, u: Int) {
+class Members[@miniboxed T: Manifest](t: T, u: Int) {
   var a : T = t
   val b : Int = u
 

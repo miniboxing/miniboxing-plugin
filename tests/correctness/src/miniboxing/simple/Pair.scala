@@ -1,8 +1,8 @@
 package miniboxing.simple
 
-import miniboxing.plugin.minispec
 
-class Pair[@minispec T1,@minispec T2](t1: T1, t2: T2) {
+
+class Pair[@miniboxed T1,@miniboxed T2](t1: T1, t2: T2) {
   def defT1 : T1 = t1
   def defT2 : T2 = t2
   var varT1 : T1 = t1
