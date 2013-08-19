@@ -7,7 +7,7 @@ echo ===========================================================================
 if [ ! -d vector-mb ]
 then
   mkdir vector-mb
-  ../../mb-scalac -P:minibox:loader -P:minibox:hijack `find ../benchmarks/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-mb
+  ../../mb-scalac -P:minibox:loader -P:minibox:hijack `find ../lib-bench/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-mb
 else
   echo Skipping. Remove vector-mb to recompile.
 fi
@@ -19,7 +19,7 @@ echo ===========================================================================
 if [ ! -d vector-spec ]
 then
   mkdir vector-spec
-  ../../mb-scalac `find ../benchmarks/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-spec
+  ../../mb-scalac `find ../lib-bench/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-spec
 else
   echo Skipping. Remove vector-spec to recompile.
 fi
@@ -31,7 +31,7 @@ echo ===========================================================================
 if [ ! -d vector-nosp ]
 then
   mkdir vector-nosp
-  ../../mb-scalac -no-specialization `find ../benchmarks/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-nosp
+  ../../mb-scalac -no-specialization `find ../lib-bench/src/miniboxing/benchmarks/collection/ -name '*.scala'` -d vector-nosp
 else
   echo Skipping. Remove vector-nosp to recompile.
 fi
