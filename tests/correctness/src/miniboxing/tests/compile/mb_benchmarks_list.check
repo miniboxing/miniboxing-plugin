@@ -113,7 +113,7 @@ package miniboxing.benchmarks.minibox {
     def toString2(): String = MBList_J.this.toString2_J(MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag);
     def toString2_J(T_TypeTag: Byte): String = MBList_J.this.toString_J(T_TypeTag);
     final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Tsp): Boolean = MBList_J.this.containsTail_J(MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag, list, MiniboxConversions.this.box2minibox_tt[Tsp](e, MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag));
-    final private[this] def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = if (MiniboxTypeTagDispatch.this.mboxed_eqeq_notag(list.head_J(T_TypeTag), e))
+    final private[this] def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = if (MiniboxDispatch.this.mboxed_eqeq_notag(list.head_J(T_TypeTag), e))
       true
     else
       if (list.tail_J(T_TypeTag).==(null))
@@ -122,7 +122,7 @@ package miniboxing.benchmarks.minibox {
         MBList_J.this.containsTail_J(T_TypeTag, list.tail_J(T_TypeTag), e);
     final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = MBList_J.this.tailHash_J(MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag, list, or);
     final private[this] def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = {
-      val headhash: Int = MiniboxTypeTagDispatch.this.mboxed_hashCode(list.head_J(T_TypeTag), T_TypeTag);
+      val headhash: Int = MiniboxDispatch.this.mboxed_hashCode(list.head_J(T_TypeTag), T_TypeTag);
       if (list.tail_J(T_TypeTag).==(null))
         headhash.|(or)
       else
@@ -131,7 +131,7 @@ package miniboxing.benchmarks.minibox {
     override def hashCode(): Int = MBList_J.this.hashCode_J(MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag);
     override def hashCode_J(T_TypeTag: Byte): Int = MBList_J.this.tailHash_J(T_TypeTag, MBList_J.this, 0);
     override def toString(): String = MBList_J.this.toString_J(MBList_J.this.miniboxing$benchmarks$minibox$MBList_J|T_TypeTag);
-    override def toString_J(T_TypeTag: Byte): String = MiniboxTypeTagDispatch.this.mboxed_toString(MBList_J.this.head_J(T_TypeTag), T_TypeTag).+(if (MBList_J.this.tail_J(T_TypeTag).!=(null))
+    override def toString_J(T_TypeTag: Byte): String = MiniboxDispatch.this.mboxed_toString(MBList_J.this.head_J(T_TypeTag), T_TypeTag).+(if (MBList_J.this.tail_J(T_TypeTag).!=(null))
       ", ".+(MBList_J.this.tail_J(T_TypeTag).toString_J(T_TypeTag))
     else
       "");

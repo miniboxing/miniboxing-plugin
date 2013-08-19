@@ -2,7 +2,18 @@ package miniboxing.runtime
 
 
 object MiniboxConversions {
-  import MiniboxTypes._
+
+  // instead of importing, we copy the values here so the Scala compiler transforms the calls into tableswitches
+  private[this] final val UNIT = 0;
+  private[this] final val BOOLEAN = 1;
+  private[this] final val BYTE = 2;
+  private[this] final val SHORT = 3;
+  private[this] final val CHAR = 4;
+  private[this] final val INT = 5;
+  private[this] final val LONG = 6;
+  private[this] final val FLOAT = 7;
+  private[this] final val DOUBLE = 8;
+  private[this] final val REFERENCE = 9;
 
   /*
    * Conversions to and from Miniboxed representation and
@@ -46,19 +57,19 @@ object MiniboxConversions {
    * As a workaround, in our test examples we manually insert minibox2box
    * in such places.
    */
-  @inline final def minibox2box[T](l: Long, tag: Tag) : T = {
+  @inline final def minibox2box[T](l: Long, tag: Byte) : T = {
     val ret: Any = tag.asInstanceOf[Byte] match {
       // See https://issues.scala-lang.org/browse/SI-6956
-      case 0 /* UNIT */ => ()
-      case 1 /* BOOLEAN */ => (l != 0)
-      case 2 /* BYTE */ => l.toByte
-      case 3 /* CHAR */ => l.toChar
-      case 4 /* SHORT */ => l.toShort
-      case 5 /* INT */ => l.toInt
-      case 6 /* LONG */ => l
-      case 7 /* FLOAT */ => java.lang.Float.intBitsToFloat(l.toInt)
-      case 8 /* DOUBLE */ => java.lang.Double.longBitsToDouble(l)
-      case 9 /* REFERENCE */ => ???
+      case UNIT => ()
+      case BOOLEAN => (l != 0)
+      case BYTE => l.toByte
+      case CHAR => l.toChar
+      case SHORT => l.toShort
+      case INT => l.toInt
+      case LONG => l
+      case FLOAT => java.lang.Float.intBitsToFloat(l.toInt)
+      case DOUBLE => java.lang.Double.longBitsToDouble(l)
+      case REFERENCE => ???
     }
     ret.asInstanceOf[T]
   }
@@ -83,7 +94,7 @@ object MiniboxConversions {
   /*
    *  Used in the rewiring, to keep the type and tag on all types
    */
-  @inline final def box2minibox_tt[T](a: T, tag: Tag): Long = a match {
+  @inline final def box2minibox_tt[T](a: T, tag: Byte): Long = a match {
     case b : Boolean => if (b) 1 else 0
     case b : Byte => b.toLong
     case u : Unit => 0

@@ -1,9 +1,9 @@
 package miniboxing.benchmarks.hardcoded.decisiontree
 
-import miniboxing.runtime.MiniboxArray_DecisionTrees._
+import miniboxing.runtime.alternative.MiniboxArray_DecisionTrees._
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxTypeTagDispatch._
+import miniboxing.runtime.MiniboxDispatch._
 import scala.Int.int2long
 
 /*

@@ -53,7 +53,7 @@ package miniboxing.tests.compile.nested {
           val x3: Long = CCCCC_J.this.c;
           val x4: U = DDDDD.this.d;
           scala.this.Predef.println(DDDDD.this.x1().==(DDDDD.this.x2()));
-          scala.this.Predef.println(MiniboxTypeTagDispatch.this.mboxed_eqeq_other(x3, T_TypeTag, x4))
+          scala.this.Predef.println(MiniboxDispatch.this.mboxed_eqeq_other(x3, T_TypeTag, x4))
         }
       };
       ()

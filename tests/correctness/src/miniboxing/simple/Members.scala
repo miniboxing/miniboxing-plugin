@@ -1,8 +1,5 @@
 package miniboxing.simple
 
-
-import miniboxing.runtime.MiniboxTypeTagDispatch
-
 class Members[@miniboxed T: Manifest](t: T, u: Int) {
   var a : T = t
   val b : Int = u
@@ -19,5 +16,3 @@ class Members[@miniboxed T: Manifest](t: T, u: Int) {
 object Impl extends Members[Boolean](false, 1) {
   override def foo1(t: Boolean) : Boolean = true
 }
-
-

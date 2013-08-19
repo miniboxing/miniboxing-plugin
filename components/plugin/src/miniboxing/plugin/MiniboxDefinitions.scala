@@ -12,14 +12,14 @@ trait MiniboxDefinitions {
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
 
   // array ops
-  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray_FullSwitch")
+  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")
   lazy val mbarray_update = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_update_minibox"))
   lazy val mbarray_apply  = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_apply_minibox"))
   lazy val mbarray_length = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_length"))
   lazy val mbarray_new    = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_new"))
 
   // Any ops
-  lazy val TagDipatchObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxTypeTagDispatch")
+  lazy val TagDipatchObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatch")
   lazy val tag_hashCode = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_hashCode"))
   lazy val other_==     = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_other"))
   lazy val tag_==       = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_tag"))
@@ -70,7 +70,4 @@ trait MiniboxDefinitions {
 
   // Manifest's newArray
   lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
-
-  // Manifest's newArray
-  lazy val Long_==           = definitions.getMember(LongClass, newTermName("$eq$eq"))
 }

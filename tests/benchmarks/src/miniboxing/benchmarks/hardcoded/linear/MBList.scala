@@ -2,7 +2,7 @@ package miniboxing.benchmarks.hardcoded.linear
 
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxTypeTagDispatch._
+import miniboxing.runtime.MiniboxDispatch._
 import miniboxing.classloader.MiniboxingClassLoader
 
 trait MBList[T] {

@@ -14,15 +14,15 @@ package miniboxing.tests.compile {
     def reverse(): Unit = VerifyArrayOps_J.this.reverse_J(VerifyArrayOps_J.this.miniboxing$tests$compile$VerifyArrayOps_J|T_TypeTag);
     def reverse_J(T_TypeTag: Byte): Unit = {
       var i: Int = 0;
-      var j: Int = MiniboxArray_FullSwitch.this.mbarray_length(VerifyArrayOps_J.this.x(), T_TypeTag).-(1);
+      var j: Int = MiniboxArray.this.mbarray_length(VerifyArrayOps_J.this.x(), T_TypeTag).-(1);
       while$1(){
         if (i.<(j))
           {
             {
-              val t1: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), i, T_TypeTag);
-              val t2: Long = MiniboxArray_FullSwitch.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), j, T_TypeTag);
-              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), i, t2, T_TypeTag);
-              MiniboxArray_FullSwitch.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), j, t1, T_TypeTag);
+              val t1: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), i, T_TypeTag);
+              val t2: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), j, T_TypeTag);
+              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), i, t2, T_TypeTag);
+              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), j, t1, T_TypeTag);
               i = i.+(1);
               j = j.-(1)
             };
@@ -34,7 +34,7 @@ package miniboxing.tests.compile {
     };
     implicit <synthetic> <paramaccessor> private[this] val evidence$1: scala.reflect.Manifest[Tsp] = _;
     <paramaccessor> private[this] val miniboxing$tests$compile$VerifyArrayOps_J|T_TypeTag: Byte = _;
-    private[this] val x: Array[Tsp] = MiniboxArray_FullSwitch.this.mbarray_new[Tsp](10, VerifyArrayOps_J.this.miniboxing$tests$compile$VerifyArrayOps_J|T_TypeTag);
+    private[this] val x: Array[Tsp] = MiniboxArray.this.mbarray_new[Tsp](10, VerifyArrayOps_J.this.miniboxing$tests$compile$VerifyArrayOps_J|T_TypeTag);
     <stable> <accessor> def x(): Array[Tsp] = VerifyArrayOps_J.this.x_J(VerifyArrayOps_J.this.miniboxing$tests$compile$VerifyArrayOps_J|T_TypeTag);
     <stable> <accessor> def x_J(T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_J.this.x
   };

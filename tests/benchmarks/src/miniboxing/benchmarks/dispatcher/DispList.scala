@@ -1,5 +1,7 @@
 package miniboxing.benchmarks.dispatcher
 
+import miniboxing.runtime.alternative.Dispatcher
+
 trait DispList[T] {
   // accessors
   def head: T

@@ -4,6 +4,7 @@ import org.scalameter.api._
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._
 import miniboxing.benchmarks.dispatcher._
+import miniboxing.runtime.alternative.Dispatchers
 
 trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
 
