@@ -30,17 +30,6 @@ object MiniboxingBuild extends Build {
     //http://stackoverflow.com/questions/10472840/how-to-attach-sources-to-sbt-managed-dependencies-in-scala-ide#answer-11683728
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
-    libraryDependencies ++= Seq(
-      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
-      "com.novocode" % "junit-interface" % "0.10-M2" % "test"
-    ),
-
-    parallelExecution in Test := false,
-    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v"),
-
-    // this should work but it doesn't:
-    // resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
-    // so I replaced it with this, which works with both sbt 0.11 and 0.12 
     resolvers in ThisBuild ++= Seq(
       ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
@@ -66,7 +55,7 @@ object MiniboxingBuild extends Build {
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
     },
     publishArtifact in Test := false,
-    // pomIncludeRepository := { _ => false },
+    pomIncludeRepository := { _ => false },
     pomExtra := (
       <scm>
         <url>git@github.com:miniboxing/miniboxing-plugin.git</url>
@@ -91,13 +80,7 @@ object MiniboxingBuild extends Build {
   )
 
   val pluginDeps = Seq(
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-library" % scalaVer,
-      "org.scala-lang" % "scala-reflect" % scalaVer,
-      "org.scala-lang" % "scala-compiler" % scalaVer,
-      "org.scala-lang" % "scala-partest" % scalaVer, 
-      "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
-    )
+    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVer
   )
 
   val classloaderDeps = Seq(
@@ -118,7 +101,16 @@ object MiniboxingBuild extends Build {
     )
   }
 
-  val testsDeps = Seq(
+  val junitDeps: Seq[Setting[_]] = Seq(
+    libraryDependencies ++= Seq(
+      "org.scalacheck" %% "scalacheck" % "1.10.0" % "test",
+      "com.novocode" % "junit-interface" % "0.10-M2" % "test"
+    ),
+    parallelExecution in Test := false,
+    testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
+  )
+
+  val testsDeps: Seq[Setting[_]] = junitDeps ++ Seq(
     getJarsTask,
     fork in Test := true,
     javaOptions in Test <+= (dependencyClasspath in Runtime) map { path =>
@@ -129,13 +121,17 @@ object MiniboxingBuild extends Build {
       val cp = "-Xbootclasspath/a:"+path.map(_.data).filter(isBoot).mkString(":")
       // println(cp)
       cp
-    }
+    },
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-partest" % scalaVer, 
+      "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
+    )
   )
 
   lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
   lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps) dependsOn(runtime)
-  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps)
+  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
   lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter) dependsOn (plugin, runtime)
