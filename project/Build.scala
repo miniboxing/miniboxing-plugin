@@ -113,7 +113,7 @@ object MiniboxingBuild extends Build {
   val testsDeps: Seq[Setting[_]] = junitDeps ++ Seq(
     getJarsTask,
     fork in Test := true,
-    javaOptions in Test <+= (dependencyClasspath in Runtime) map { path =>
+    javaOptions in Test <+= (dependencyClasspath in Runtime, packageBin in Compile in plugin) map { (path, _) =>
       def isBoot(file: java.io.File) = 
         ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
         (file.toString contains "target/scala-2.10") // this makes me cry, seriously sbt...
