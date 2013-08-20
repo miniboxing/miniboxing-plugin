@@ -45,14 +45,52 @@ object MiniboxingBuild extends Build {
       ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
-    )
+    ),
+
+    // common info to all projects
+    version := "0.1-SNAPSHOT",
+    organization := "org.scala-miniboxing",
+    licenses := Seq("BSD-style" -> url("http://www.scala-lang.org/license.html")),
+    homepage := Some(url("http://scala-miniboxing.org"))
+  )
+
+
+  val publishDeps = Seq(
+    // sonatype
+    publishMavenStyle := true,
+    publishTo <<= version { (v: String) =>
+      val nexus = "https://oss.sonatype.org/"
+      if (v.trim.endsWith("SNAPSHOT"))
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    },
+    publishArtifact in Test := false,
+    // pomIncludeRepository := { _ => false },
+    pomExtra := (
+      <scm>
+        <url>git@github.com:miniboxing/miniboxing-plugin.git</url>
+        <connection>scm:git:git@github.com:miniboxing/miniboxing-plugin.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>VladUreche</id>
+          <name>Vlad Ureche</name>
+          <url>http://vladureche.ro</url>
+        </developer>
+      </developers>)
+  )
+
+  val nopublishDeps = Seq(
+    publish := { }, 
+    publishLocal := { }
   )
 
   val runtimeDeps = Seq(
     scalacOptions ++= Seq("-optimize", "-Yinline-warnings")
   )
 
-  val pluginDeps = defaults ++ Seq(
+  val pluginDeps = Seq(
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-library" % scalaVer,
       "org.scala-lang" % "scala-reflect" % scalaVer,
@@ -89,20 +127,16 @@ object MiniboxingBuild extends Build {
         (file.toString contains "target/scala-2.10") // this makes me cry, seriously sbt...
 
       val cp = "-Xbootclasspath/a:"+path.map(_.data).filter(isBoot).mkString(":")
-      println(cp)
+      // println(cp)
       cp
     }
   )
 
-  lazy val _mboxing    = Project(id = "miniboxing",             base = file(".")) aggregate (runtime, plugin, classloader, tests, benchmarks)
-  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults)
-  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ pluginDeps) dependsOn(runtime)
-  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ classloaderDeps)
-  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
-  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
-  // @Cristi: The project will be called "miniboxing-lib-bench". You can run it with "sbt miniboxing-lib-bench/run"
-  // I don't think we'll need the classloader, as only the array operations are affected by the megamorphic problem
-  // (well, the other Any methods that we rewire may also be affected but we don't really need them at this point)
-  // BTW, we'll use type tags, not the dispatchers, as they proved more stable.
-  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ scalaMeter) dependsOn (plugin, runtime)
+  lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
+  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps)
+  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps) dependsOn(runtime)
+  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps)
+  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
+  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
+  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter) dependsOn (plugin, runtime)
 }
