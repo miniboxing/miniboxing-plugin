@@ -38,7 +38,7 @@ object MiniboxingBuild extends Build {
 
     // common info to all projects
     version := "0.1-SNAPSHOT",
-    organization := "org.scala-miniboxing",
+    organization := "org.scala-miniboxing.plugins",
     licenses := Seq("BSD-style" -> url("http://www.scala-lang.org/license.html")),
     homepage := Some(url("http://scala-miniboxing.org"))
   )
