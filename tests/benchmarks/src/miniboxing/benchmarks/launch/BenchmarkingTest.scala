@@ -12,6 +12,7 @@ object BenchmarkingTest extends ScalameterBenchTest
                            with HardcodedMiniboxingSimpleLI // linear
                            with HardcodedMiniboxingSimpleNI // no inline
                            with HardcodedMiniboxingSimpleCL
+                           with HardcodedMiniboxingSimple_JavaRT // new Java runtime
                            with HardcodedMiniboxingDispatcherBenchTest
                            with HardcodedMiniboxingDispatcherBenchTestCL
                            with IdealBenchTest
@@ -46,6 +47,10 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingSimpleNI(true)
   testHardcodedMiniboxingSimpleClassLoader(false)
   testHardcodedMiniboxingSimpleClassLoader(true)
+  testHardcodedMiniboxingSimple_JavaRT(false, Nil)
+  testHardcodedMiniboxingSimple_JavaRT(false, List("-XX:MaxInlineSize=120"))
+  testHardcodedMiniboxingSimple_JavaRT(true, Nil)
+  testHardcodedMiniboxingSimple_JavaRT(true, List("-XX:MaxInlineSize=120"))
   testSpecialized(false)
   testSpecialized(true)
   testGeneric(false)
