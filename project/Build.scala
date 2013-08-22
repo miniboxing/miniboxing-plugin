@@ -43,32 +43,40 @@ object MiniboxingBuild extends Build {
     homepage := Some(url("http://scala-miniboxing.org"))
   )
 
-
-  val publishDeps = Seq(
-    // sonatype
-    publishMavenStyle := true,
-    publishTo <<= version { (v: String) =>
-      val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
-        Some("snapshots" at nexus + "content/repositories/snapshots")
-      else
-        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-    },
-    publishArtifact in Test := false,
-    pomIncludeRepository := { _ => false },
-    pomExtra := (
-      <scm>
-        <url>git@github.com:miniboxing/miniboxing-plugin.git</url>
-        <connection>scm:git:git@github.com:miniboxing/miniboxing-plugin.git</connection>
-      </scm>
-      <developers>
-        <developer>
-          <id>VladUreche</id>
-          <name>Vlad Ureche</name>
-          <url>http://vladureche.ro</url>
-        </developer>
-      </developers>)
-  )
+  val publishCredFile = "miniboxing.maven.credentials-file"
+  val publishDeps: Seq[Setting[_]] = sys.props.get(publishCredFile) match {
+    case Some(fileName) => 
+      Seq(
+        // sonatype
+        publishMavenStyle := true,
+        publishTo <<= version { (v: String) =>
+          val nexus = "https://oss.sonatype.org/"
+          if (v.trim.endsWith("SNAPSHOT"))
+            Some("snapshots" at nexus + "content/repositories/snapshots")
+          else
+            Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+        },
+        publishArtifact in Test := false,
+        pomIncludeRepository := { _ => false },
+        pomExtra := (
+          <scm>
+            <url>git@github.com:miniboxing/miniboxing-plugin.git</url>
+            <connection>scm:git:git@github.com:miniboxing/miniboxing-plugin.git</connection>
+          </scm>
+          <developers>
+            <developer>
+              <id>VladUreche</id>
+              <name>Vlad Ureche</name>
+              <url>http://vladureche.ro</url>
+            </developer>
+          </developers>),
+        credentials += Credentials({ new java.io.File(sys.props("miniboxing.maven.credentials-file")) })
+      )
+   case None => 
+     Seq(
+       publish <<= streams.map(_.log.info("Publishing to Sonatype is disabled since the \"" + publishCredFile + "\" variable is not set."))
+     )
+  }
 
   val nopublishDeps = Seq(
     publish := { }, 
