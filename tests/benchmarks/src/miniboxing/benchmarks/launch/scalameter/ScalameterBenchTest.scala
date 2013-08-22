@@ -39,7 +39,7 @@ trait ScalameterBenchTest extends PerformanceTest
   )
 
   // Finally a less verbose reporter!
-  def reporter = new LoggingReporter {
+  @transient lazy val reporter = new LoggingReporter {
     override def report(result: CurveData, persistor: Persistor) {
       var output = f"${result.context.scope}%40s:  "
 
