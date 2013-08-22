@@ -55,6 +55,9 @@ object BenchmarkingTest extends ScalameterBenchTest
   testSpecialized(true)
   testGeneric(false)
   testGeneric(true)
+
+  // forced print results
+  printResults()
 }
 
 
