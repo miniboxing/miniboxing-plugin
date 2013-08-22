@@ -62,6 +62,11 @@ trait ScalameterBenchTest extends PerformanceTest
 
       println(output)
     }
+
+    override def report(result: Tree[CurveData], persistor: Persistor) = {
+      printResults()
+      true
+    }
   }
 
   def persistor = Persistor.None
@@ -79,7 +84,6 @@ trait ScalameterBenchTest extends PerformanceTest
       }
     }
   }
-
 
   def printResults() = {
     println("\n\n\n")

@@ -20,7 +20,7 @@ object BenchmarkingTest extends ScalameterBenchTest
                            with Serializable{
 
   // the number of independent samples to use
-  lazy val sampleCount = 20
+  lazy val sampleCount = 2
 
   // the test size
   lazy val testSizes = {
@@ -58,9 +58,6 @@ object BenchmarkingTest extends ScalameterBenchTest
   testSpecialized(true)
   testGeneric(false)
   testGeneric(true)
-
-  // forced print results
-  printResults()
 }
 
 
