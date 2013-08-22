@@ -18,7 +18,7 @@ public class MiniboxArray2 {
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static <T> Object mbarray_new(int len, byte tag) {
-    if (tag >= MiniboxConstants.SHORT)
+    if (tag < MiniboxConstants.INT)
       return mbarray_new_1(len, tag);
     else
       return mbarray_new_2(len, tag);
@@ -45,7 +45,7 @@ public class MiniboxArray2 {
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static long mbarray_apply_minibox(Object array, int idx, byte tag) {
-    if (tag >= MiniboxConstants.CHAR)
+    if (tag < MiniboxConstants.SHORT)
       return mbarray_apply_minibox_1(array, idx, tag);
     else if (tag < MiniboxConstants.INT)
       return mbarray_apply_minibox_2(array, idx, tag);
@@ -111,7 +111,7 @@ public class MiniboxArray2 {
 //////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static void mbarray_update_minibox(Object array, int idx, long value, byte tag) {
-    if (tag >= MiniboxConstants.CHAR)
+    if (tag < MiniboxConstants.SHORT)
       mbarray_update_minibox_1(array, idx, value, tag);
     else
       mbarray_update_minibox_disp2(array, idx, value, tag);
@@ -180,7 +180,7 @@ public class MiniboxArray2 {
 //////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static int mbarray_length(Object array, byte tag) {
-    if (tag >= MiniboxConstants.CHAR)
+    if (tag < MiniboxConstants.SHORT)
       return mbarray_length_1(array, tag);
     else if (tag < MiniboxConstants.INT)
       return mbarray_length_2(array, tag);
