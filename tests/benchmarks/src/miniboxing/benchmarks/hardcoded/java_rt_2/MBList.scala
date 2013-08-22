@@ -1,4 +1,4 @@
-package miniboxing.benchmarks.hardcoded.java_rt
+package miniboxing.benchmarks.hardcoded.java_rt_2
 
 import miniboxing.runtime.MiniboxConstants._
 import miniboxing.runtime.MiniboxConversions._

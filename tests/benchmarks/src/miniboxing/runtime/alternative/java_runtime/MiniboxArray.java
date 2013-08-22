@@ -1,4 +1,4 @@
-package miniboxing.runtime.java;
+package miniboxing.runtime.alternative.java_runtime;
 import miniboxing.runtime.MiniboxConstants;
 
 public class MiniboxArray {
