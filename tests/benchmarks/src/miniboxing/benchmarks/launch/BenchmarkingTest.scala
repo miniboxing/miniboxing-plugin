@@ -14,6 +14,7 @@ object BenchmarkingTest extends ScalameterBenchTest
                            with HardcodedMiniboxingSimpleCL
                            with HardcodedMiniboxingSimple_JavaRT_1 // new Java runtime
                            with HardcodedMiniboxingSimple_JavaRT_2 // new Java runtime
+                           with HardcodedMiniboxingSimple_JavaRT_3 // new Java runtime
                            with HardcodedMiniboxingDispatcherBenchTest
                            with HardcodedMiniboxingDispatcherBenchTestCL
                            with IdealBenchTest
@@ -54,6 +55,8 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingSimple_JavaRT_1(true, List("-XX:MaxInlineSize=120"))
   testHardcodedMiniboxingSimple_JavaRT_2(false)
   testHardcodedMiniboxingSimple_JavaRT_2(true)
+  testHardcodedMiniboxingSimple_JavaRT_3(false)
+  testHardcodedMiniboxingSimple_JavaRT_3(true)
   testSpecialized(false)
   testSpecialized(true)
   testGeneric(false)
