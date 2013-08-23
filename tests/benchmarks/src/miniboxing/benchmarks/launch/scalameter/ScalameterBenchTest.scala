@@ -39,7 +39,7 @@ trait ScalameterBenchTest extends PerformanceTest
   )
 
   // Finally a less verbose reporter!
-  def reporter = new LoggingReporter {
+  @transient lazy val reporter = new LoggingReporter {
     override def report(result: CurveData, persistor: Persistor) {
       var output = f"${result.context.scope}%40s:  "
 
@@ -63,7 +63,7 @@ trait ScalameterBenchTest extends PerformanceTest
       println(output)
     }
 
-    override def report(result: Tree[CurveData], persistor: Persistor): Boolean = {
+    override def report(result: Tree[CurveData], persistor: Persistor) = {
       printResults()
       true
     }
@@ -71,11 +71,11 @@ trait ScalameterBenchTest extends PerformanceTest
 
   def persistor = Persistor.None
 
-  def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit) = {
+  def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit, extraJVMFlags: List[String] = Nil) = {
     performance of transformation in {
       measure method tag in {
-        using(sizes) config (exec.independentSamples -> sampleCount) setUp {
-          size => testSize = size; System.gc(); setup(size); System.gc();
+        using(sizes) config (exec.independentSamples -> sampleCount, exec.jvmflags -> extraJVMFlags.mkString(" ")) setUp {
+          size => testSize = size; System.gc(); setup(size); System.gc()
         } tearDown {
           teardown; size => testSize = 0
         } in {
@@ -84,7 +84,6 @@ trait ScalameterBenchTest extends PerformanceTest
       }
     }
   }
-
 
   def printResults() = {
     println("\n\n\n")
