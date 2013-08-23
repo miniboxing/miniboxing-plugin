@@ -7,13 +7,13 @@ public class MiniboxArray2 {
 
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-  private final static boolean toBool(long value) {
-    return (value == 0)?false:true;
-  }
-
-  private final static long toLong(boolean value) {
-    return (value)?0l:1l;
-  }
+//  private final static boolean toBool(long value) {
+//    return (value == 0)?false:true;
+//  }
+//
+//  private final static long toLong(boolean value) {
+//    return (value)?0l:1l;
+//  }
 
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
@@ -45,30 +45,25 @@ public class MiniboxArray2 {
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static long mbarray_apply_minibox(Object array, int idx, byte tag) {
-    if (tag < MiniboxConstants.SHORT)
+    if (tag <= MiniboxConstants.SHORT)
       return mbarray_apply_minibox_1(array, idx, tag);
-    else if (tag < MiniboxConstants.INT)
-      return mbarray_apply_minibox_2(array, idx, tag);
     else
-      return mbarray_apply_minibox_3(array, idx, tag);
+      return mbarray_apply_minibox_2(array, idx, tag);
   }
 
   private final static long mbarray_apply_minibox_1(Object array, int idx, byte tag) {
     if (tag == MiniboxConstants.BOOLEAN)
-      return toLong(((boolean[])array)[idx]);
-    else
+      return ((boolean[])array)[idx]?1:0;
+    else if (tag == MiniboxConstants.BYTE)
       return ((byte[])array)[idx];
+    else
+      return ((short[])array)[idx];
   }
 
   private final static long mbarray_apply_minibox_2(Object array, int idx, byte tag) {
-    if (tag == MiniboxConstants.SHORT)
-      return ((short[])array)[idx];
-    else
+    if (tag == MiniboxConstants.CHAR)
       return ((char[])array)[idx];
-  }
-
-  private final static long mbarray_apply_minibox_3(Object array, int idx, byte tag) {
-    if (tag == MiniboxConstants.INT)
+    else if (tag == MiniboxConstants.INT)
       return ((int[])array)[idx];
     else
       return ((long[])array)[idx];
@@ -111,36 +106,25 @@ public class MiniboxArray2 {
 //////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
   public final static void mbarray_update_minibox(Object array, int idx, long value, byte tag) {
-    if (tag < MiniboxConstants.SHORT)
+    if (tag <= MiniboxConstants.SHORT)
       mbarray_update_minibox_1(array, idx, value, tag);
     else
-      mbarray_update_minibox_disp2(array, idx, value, tag);
-  }
-
-  private final static void mbarray_update_minibox_disp2(Object array, int idx, long value, byte tag) {
-    if (tag < MiniboxConstants.INT)
       mbarray_update_minibox_2(array, idx, value, tag);
-    else
-      mbarray_update_minibox_3(array, idx, value, tag);
   }
-
 
   private final static void mbarray_update_minibox_1(Object array, int idx, long value, byte tag) {
     if (tag == MiniboxConstants.BOOLEAN)
-      ((boolean[])array)[idx] = toBool(value);
-    else
+      ((boolean[])array)[idx] = (value == 0) ? false:true;
+    else if (tag == MiniboxConstants.BYTE)
       ((byte[])array)[idx] = (byte)value;
+    else
+      ((short[])array)[idx] = (short)value;
   }
 
   private final static void mbarray_update_minibox_2(Object array, int idx, long value, byte tag) {
-    if (tag == MiniboxConstants.SHORT)
-      ((short[])array)[idx] = (short)value;
-    else
+    if (tag == MiniboxConstants.CHAR)
       ((char[])array)[idx] = (char)value;
-  }
-
-  private final static void mbarray_update_minibox_3(Object array, int idx, long value, byte tag) {
-    if (tag == MiniboxConstants.INT)
+    else if (tag == MiniboxConstants.INT)
       ((int[])array)[idx] = (int)value;
     else
       ((long[])array)[idx] = value;
