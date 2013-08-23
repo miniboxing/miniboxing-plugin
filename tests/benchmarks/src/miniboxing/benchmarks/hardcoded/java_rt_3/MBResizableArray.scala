@@ -1,10 +1,9 @@
 package miniboxing.benchmarks.hardcoded.java_rt_3
 
-import miniboxing.runtime.alternative.java_runtime.MiniboxArray3._
 import miniboxing.runtime.MiniboxConstants._
-import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxDispatch._
-import scala.Int.int2long
+import miniboxing.runtime.alternative.java_runtime.MiniboxConversions3._
+import miniboxing.runtime.alternative.java_runtime.MiniboxDispatch3._
+import miniboxing.runtime.alternative.java_runtime.MiniboxArray3._
 
 /*
  * The arrays are tricky since we need to use the natural representation for them.
@@ -124,7 +123,7 @@ class MBResizableArray_class_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizab
 
 
   // add
-  def add(elem: Tsp) = add_J(box2minibox(elem), T_TypeTag)
+  def add(elem: Tsp) = add_J(box2minibox_tt(elem, T_TypeTag), T_TypeTag)
   def add_J(elem: Long, T_Type_m: Byte) = {
     extend_J()
     //array.asInstanceOf[Array[Tsp]](elemCount) = elem
@@ -149,7 +148,7 @@ class MBResizableArray_class_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizab
 
 
   // contains
-  def contains(elem: Tsp): Boolean = contains_J(box2minibox(elem), T_TypeTag)
+  def contains(elem: Tsp): Boolean = contains_J(box2minibox_tt(elem, T_TypeTag), T_TypeTag)
   def contains_J(elem: Long, T_Type_m: Byte): Boolean = {
     var pos = 0
     while (pos < elemCount_J){
@@ -165,7 +164,7 @@ class MBResizableArray_class_J[Tsp: Manifest](T_TypeTag: Byte) extends MBResizab
   def length_J: Int = elemCount_J
 
   // setElement
-  def setElement(p: Int, t: Tsp): Unit = setElement_J(p, box2minibox(t), T_TypeTag)
+  def setElement(p: Int, t: Tsp): Unit = setElement_J(p, box2minibox_tt(t, T_TypeTag), T_TypeTag)
   def setElement_J(p: Int, t: Long, T_Type_m: Byte) = {
     //array.asInstanceOf[Array[Tsp]](p) = t
     mbarray_update_minibox(array_J, p, t, T_TypeTag)
@@ -291,7 +290,7 @@ class MBResizableArray_L[Tsp: Manifest]() extends MBResizableArray[Tsp] {
     array(p)
   }
 
-  def getElement_J(p: Int, T_Type_m: Byte): Long = box2minibox(getElement(p))
+  def getElement_J(p: Int, T_Type_m: Byte): Long = box2minibox_tt(getElement(p), T_Type_m)
 
   // toString
   override def toString(): String = {

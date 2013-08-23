@@ -1,8 +1,8 @@
 package miniboxing.benchmarks.hardcoded.java_rt_3
 
 import miniboxing.runtime.MiniboxConstants._
-import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxDispatch._
+import miniboxing.runtime.alternative.java_runtime.MiniboxConversions3._
+import miniboxing.runtime.alternative.java_runtime.MiniboxDispatch3._
 import miniboxing.classloader.MiniboxingClassLoader
 
 trait MBList[T] {
@@ -44,7 +44,7 @@ class MBList_class_J[Tsp](_head: Long, _tail: MBList[Tsp], T_TypeTag: Byte) exte
   def toString_J = minibox2box[Tsp](head_J(T_TypeTag), T_TypeTag).toString + (if (tail != null) (", " + tail.toString_J) else "")
 
   // contains
-  def contains(e: Tsp): Boolean = contains_J(box2minibox(e), T_TypeTag)
+  def contains(e: Tsp): Boolean = contains_J(box2minibox_tt[Tsp](e, T_TypeTag), T_TypeTag)
   def contains_J(e: Long, T_Type_m: Byte): Boolean = {
 
     @annotation.tailrec def containsTail(list: MBList[Tsp], e: Long): Boolean =
@@ -83,7 +83,7 @@ class MBList_L[Tsp](_head: Tsp, _tail: MBList[Tsp]) extends MBList[Tsp] {
 
   // head
   def head: Tsp = _head
-  def head_J(T_Type_m: Byte): Long = box2minibox(head)
+  def head_J(T_Type_m: Byte): Long = box2minibox_tt(head, T_Type_m)
 
   // tail
   def tail: MBList[Tsp] = _tail
