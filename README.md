@@ -16,18 +16,18 @@ Specialization generates **1000 classes**. Just change `@specialized` to `@minib
 To see the benchmarks we performed, have a look at the [OOPSLA 2013 paper](https://github.com/miniboxing/miniboxing-plugin/blob/wip/docs/2013-07-oopsla-preprint.pdf) we just prepared. They include performance evaluations, bytecode size comparisons and many more. Also, the [docs](https://github.com/miniboxing/miniboxing-plugin/tree/wip/docs) directory contains a series of papers and presentations which explain many aspects of the miniboxing transformation.
 
 ## Using the Plugin ##
-At this point, the miniboxing plugin is not ready for industry use. However, we do publish a [nightly maven artifact](https://scala-webapps.epfl.ch/jenkins/view/All/job/miniboxing-wip-nightly/) on sonatype, so anyone can try the current transformation. To get started, have a look at the [example miniboxing project](https://github.com/miniboxing/miniboxing-plugin-example) we prepared. 
+At this point, the miniboxing plugin is not production-ready, although it can compile [spire](https://github.com/non/spire). However, we do publish a [nightly maven artifact](https://scala-webapps.epfl.ch/jenkins/view/All/job/miniboxing-wip-nightly/) on Sonatype, so anyone can try the current transformation. To get started, have a look at the [example miniboxing project](https://github.com/miniboxing/miniboxing-plugin-example) we prepared. 
 
-**Mind the gap:** there are still many [bugs](https://github.com/miniboxing/miniboxing-plugin/issues?state=open) and [known limitatins](https://github.com/miniboxing/miniboxing-plugin/wiki/Details-|-Known-Limitations), so you're in for a thrill! Also, don't hesitate to add bugs to the tracker, good reductions that can be easily reproduced are highly appreciated!
+**Mind the gap:** there are still many [bugs](https://github.com/miniboxing/miniboxing-plugin/issues?state=open) and [known limitations](https://github.com/miniboxing/miniboxing-plugin/wiki/Details-|-Known-Limitations), so you're in for a thrill! Also, don't hesitate to add bugs to the tracker, good reductions that can be easily reproduced are highly appreciated!
 
 ## Hacking the Plugin ##
 The [wiki](https://github.com/miniboxing/miniboxing-plugin/wiki) is a good place to start looking into installing, testing, benchmarking and hacking on the miniboxing plugin. Also have a look at the [docs](https://github.com/miniboxing/miniboxing-plugin/tree/wip/docs) directory, which contains some good resources.
 
 ###Repository organization###
  - wip is the working branch, most current version of the plugin
- - master is usually a bit behind wip, but should be stable (let's make it clear: alpha-stable, no production-ready!)
+ - master is usually a bit behind wip, but should be stable (alpha-stable, no production-ready!)
  - sbt is used for compilation and testing
- - the repository contains several sbt projects:
+ - the repository contains several sbt sub-projects:
    - `components/plugin`      - the actual Scala compiler plugin
    - `components/runtime`     - the runtime support for the transformed code
    - `components/classloader` - the classloader used for runtime class specialization
