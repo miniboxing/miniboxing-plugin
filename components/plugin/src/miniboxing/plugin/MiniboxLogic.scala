@@ -1,6 +1,7 @@
 package miniboxing.plugin
 
 import scala.tools.nsc.Global
+import scala.collection.immutable.ListMap
 
 trait MiniboxLogic {
   self: MiniboxComponent =>
@@ -139,6 +140,10 @@ trait MiniboxLogic {
         }).toMap
     }
   }
+
+  // TODO: This will also take the storage type
+  def storageType(tparam: Symbol) =
+    tparam.tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
 
   def notSpecializable(clazz: Symbol, mbr: Symbol) =
     mbr.isMethod && mbr.isSynthetic ||

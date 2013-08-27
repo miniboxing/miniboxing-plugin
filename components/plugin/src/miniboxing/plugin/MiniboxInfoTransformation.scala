@@ -5,6 +5,7 @@ import scala.tools.nsc.transform.InfoTransform
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker.Analyzer
+import scala.collection.immutable.ListMap
 
 trait MiniboxInfoTransformation extends InfoTransform {
   self: MiniboxComponent =>
@@ -199,7 +200,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // T -> Long
       val implEnv: TypeEnv = pspec flatMap {
         case (p, Boxed)     => None // stays the same
-        case (p, Miniboxed) => Some((pmap(p), LongClass.tpe))
+        case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
       }
       // T -> Tsp
       val ifaceEnv: TypeEnv = pmap mapValues (_.tpe)
@@ -428,7 +429,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
           var newMbr = member
           if (!PartialSpec.isAllAnyRef(spec)) {
             val env: TypeEnv = spec map {
-              case (p, v) => (p, if (v == Boxed) p.tpe else LongClass.tpe)
+              case (p, v) =>
+                (p, if (v == Boxed) p.tpe else storageType(p))
             }
 
             newMbr = member.cloneSymbol(origin)
