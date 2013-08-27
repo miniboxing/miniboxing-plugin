@@ -772,10 +772,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
 
-      println("DUPLICATING")
-      println(miniboxedEnv)
-
-      println(tree)
+//      println("DUPLICATING")
+//      println(miniboxedEnv)
+//      println(tree)
 
       val d = new Duplicator(castmap)
       debuglog("-->d DUPLICATING: " + tree)
@@ -795,11 +794,11 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         tree,
         source.enclClass,
         symbol.enclClass,
-        miniboxedEnv
+        MiniboxSubst(miniboxedEnv)
       ))
 
-      println(tree2)
-      println("\n\n")
+//      println(tree2)
+//      println("\n\n")
 
       // get back flags
       for (clazz <- specializedBase)
