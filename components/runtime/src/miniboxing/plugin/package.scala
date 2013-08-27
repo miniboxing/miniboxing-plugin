@@ -8,11 +8,3 @@ package object plugin {
   @deprecated(message = "Please use `scala.miniboxed` instead of `miniboxing.plugin.minispec`.")
   type minispec = scala.miniboxed
 }
-
-package plugin {
-  /**
-   * This class should only appear in the tree during the `minibox` phase
-   * and should be cleaned up afterwards, during the `minibox-cleanup` phase.
-   */
-  class storage extends annotation.StaticAnnotation
-}

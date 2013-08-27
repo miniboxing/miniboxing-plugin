@@ -106,10 +106,6 @@ trait MiniboxLogic {
 
   final val MINIBOXED = 1L << 46 // we define our own flag
 
-  /** TODO: Document this */
-  case class MiniboxingTypeEnv(shallowEnv: TypeEnv, deepEnv: TypeEnv)
-  object EmptyMbTypeEnv extends MiniboxingTypeEnv(EmptyTypeEnv, EmptyTypeEnv)
-
   object PartialSpec {
 
     def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
