@@ -80,6 +80,8 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     override def transform(tree: Tree): Tree = miniboxTransform(tree)
 
     def miniboxTransform(tree: Tree): Tree = {
+      //System.exit(0)
+
       curTree = tree
       // make sure specializations have been performed
       tree match {
