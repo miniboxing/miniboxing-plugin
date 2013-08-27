@@ -181,7 +181,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
 
       val env: TypeEnv = pspec flatMap {
         case (p, Boxed)     => None // stays the same
-        case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
+        case (p, Miniboxed) => Some((p, storageType(pmap(p))))
       }
 
       // Insert the newly created symbol in our various maps that are used by
@@ -253,8 +253,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
         newMbr setFlag MINIBOXED
         newMbr modifyInfo { info =>
 
-          miniboxedArgs(newMbr) = Set()
-
           val info0 = info.asSeenFrom(spec.tpe, m.owner)
           val info1 = info0.substThis(origin, spec)
           val info2 =
@@ -264,12 +262,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
             } else
               info1
 
-          val paramUpdate = m.info.paramss.flatten.zip(info2.paramss.flatten).toMap
-          miniboxedArgs(newMbr) = miniboxedArgs.getOrElse(m, Set()).map({ case (s, t) => (paramUpdate(s), pmap(t.typeSymbol).tpe)})
-
           info2
         }
 
+        // TODO: Is this okay?
         typeEnv(newMbr) = typeEnv(spec)
         localTypeTags(newMbr) = localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._1)).zip(newMbr.info.params).toMap
         debug(spec + " entering: " + newMbr)
@@ -294,7 +290,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
             case _ =>
               tpe
           }
-          miniboxedArgs(newCtor) = Set() // TODO: Need to completely remove this
           overloads.get(ctor) match {
             case Some(map) => map += pspec -> newCtor
             case None => overloads(ctor) = HashMap(pspec -> newCtor)
@@ -420,7 +415,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (tparam, newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
-              miniboxedArgs(newMbr) = Set() // TODO: Completely remove miniboxedArgs
               localTypeTags(newMbr) = localTags.toMap
               val tagParams = localTags.map(_._2)
               val info1 =
@@ -432,7 +426,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
                     val tpe = MethodType(tagParams ::: args, ret).substSym(targs, ntargs)
                     assert((tagParams ::: args).length == tpe.params.length, tagParams + ", " + args + ", " + tpe.params)
                     val update = ((tagParams ::: args) zip tpe.params).toMap
-                    miniboxedArgs(newMbr) = miniboxedArgs(newMbr).map({ case (arg, t) => (update(arg), t) })
                     localTypeTags(newMbr) = localTypeTags(newMbr).map({ case (t, tag) => (t, update(tag)) })
                     PolyType(ntargs, tpe)
                   case _ => ???
@@ -475,8 +468,6 @@ trait MiniboxInfoTransformation extends InfoTransform {
             }
 
             newMembers ::= newMbr
-          } else {
-            miniboxedArgs(newMbr) = Set()
           }
 
           overloadsOfMember(spec) = newMbr
@@ -596,11 +587,8 @@ trait MiniboxInfoTransformation extends InfoTransform {
                   for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
                     yield (deepEnv(tparam), newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
                 val updateParams = (member.info.params zip info1.params).toMap
-                val oldMiniboxedArgs = miniboxedArgs.getOrElse(member, Set())
                 val oldLocalTypeTags = localTypeTags.getOrElse(member, Map())
-                val updMiniboxedArgs = oldMiniboxedArgs.map({ case (tag, tpe) => (updateParams(tag), tpe)})
                 val updLocalTypeTags = oldLocalTypeTags.map({ case (tpe, tag) => (tpe, updateParams(tag))})
-                miniboxedArgs(newMbr) = updMiniboxedArgs // TODO: Remove miniboxed args!
                 localTypeTags(newMbr) = updLocalTypeTags ++ localTags
                 normalSpec(newMbr) = pspec.map({ case (tp, state) => (deepEnv(tp), state)})
                 val tagParams = localTags.map(_._2)

@@ -195,11 +195,6 @@ trait MiniboxSpecializationInfo {
   val normbase = new mutable.HashMap[Symbol, Symbol]
 
   /**
-   * The set of miniboxed arguments a member takes
-   */
-  val miniboxedArgs = new mutable.HashMap[Symbol, mutable.Set[(Symbol, Type)]]
-
-  /**
    * Map from original type parameters to new type parameters
    */
   val typeParamMap = new mutable.HashMap[Symbol, ParamMap]

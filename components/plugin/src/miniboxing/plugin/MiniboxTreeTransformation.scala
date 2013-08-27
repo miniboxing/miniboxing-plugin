@@ -767,35 +767,18 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty) = {
 
       val symbol = tree.symbol
-      val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Set())
       val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyTypeEnv)
-      // TODO: Clean this up
-      val miniboxedEnvDeep = miniboxedEnv
-      val miniboxedEnvShallow = miniboxedEnv
       val miniboxedTypeTags = typeTagTrees(symbol)
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
-      val currentReturn = symbol.tpe.finalResultType
-      val originalReturn = source.tpe.finalResultType
-      val miniboxedReturn = ((currentReturn =:= LongTpe) && !(originalReturn =:= LongTpe))
-      debug(s"miniboxedReturn: current:${currentReturn} original:${originalReturn} miniboxedReturn:${miniboxedReturn}")
-      if (miniboxedReturn) {
-        assert(miniboxedEnvShallow(miniboxedEnvDeep(originalReturn.typeSymbol).typeSymbol) =:= LongTpe,
-            s"Mismatching return type: current: ${currentReturn}, original: ${originalReturn}, typeEnv: ${miniboxedEnvShallow}")
-      }
 
-      val preparer = new MiniboxTreePreparer(unit,
-                                             source.enclClass,
-                                             currentClass,
-                                             miniboxedSyms,
-                                             miniboxedEnvDeep,
-                                             miniboxedEnvShallow,
-                                             miniboxedTypeTags,
-                                             miniboxedReturn)
-      val tree1 = preparer.transform(tree)
+      println("DUPLICATING")
+      println(miniboxedEnv)
+
+      println(tree)
 
       val d = new Duplicator(castmap)
-      debuglog("-->d DUPLICATING: " + tree1)
+      debuglog("-->d DUPLICATING: " + tree)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid
@@ -809,23 +792,20 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val tree2 = beforeMinibox(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
-        tree1,
+        tree,
         source.enclClass,
         symbol.enclClass,
-        miniboxedEnvShallow
+        miniboxedEnv
       ))
+
+      println(tree2)
+      println("\n\n")
 
       // get back flags
       for (clazz <- specializedBase)
         clazz.setFlag(ABSTRACT | TRAIT)
 
-      val specializer = new MiniboxTreeSpecializer(unit, symbol, Nil, miniboxedTypeTags, miniboxedEnvShallow)
-      val tree3 = specializer.transform(tree2)
-
-      val specializer2 = new MiniboxDefSpecializer(unit, miniboxedTypeTags, miniboxedEnvShallow)
-      val tree4 = specializer2.transform(tree3)
-
-      tree4
+      tree2
     }
 
     /** Put the body of 'source' as the right hand side of the method 'tree'.
