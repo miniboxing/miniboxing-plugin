@@ -30,14 +30,13 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, env: scala.collection.Map[Symbol, Type]): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, _envSubstitution: TypeMap): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
     } else resetClassOwners
 
-    envSubstitution = new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
-    debuglog("retyped with env: " + env)
+    envSubstitution = _envSubstitution
 
     newBodyDuplicator(context).typed(tree)
   }
@@ -55,13 +54,7 @@ abstract class Duplicators extends Analyzer {
 
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _
-  private var envSubstitution: SubstTypeMap = _
-
-  private class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
-    protected override def matches(sym1: Symbol, sym2: Symbol) =
-      if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
-      else sym1 eq sym2
-  }
+  private var envSubstitution: TypeMap = _
 
   private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches.newMap[Symbol, Tree]()
 

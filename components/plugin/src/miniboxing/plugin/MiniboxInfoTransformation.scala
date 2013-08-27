@@ -94,37 +94,30 @@ trait MiniboxInfoTransformation extends InfoTransform {
     }
   }
 
-  private def miniboxSubst(env: TypeEnv, tpe: Type): Type = {
-    // Deep transformation, which redirects T to T$sp
-    val (deepKeys, deepValues) = env.toList.unzip
-    val deepSubst = new SubstTypeMap(deepKeys, deepValues)
+  class SubstSkolemsTypeMap(from: List[Symbol], to: List[Type]) extends SubstTypeMap(from, to) {
+    protected override def matches(sym1: Symbol, sym2: Symbol) =
+      if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
+      else sym1 eq sym2
+  }
 
-//    // Shallow transformation, which redirects T$sp to Long if T$sp represents a miniboxed value
-//    val (shallowKeys, shallowValues) = shallowEnv.toList.unzip
-//    var mboxedParams = List[(Symbol, Type)]()
-//
-//    val shallowSubst = new SubstTypeMap(shallowKeys, shallowValues) {
-//      override def mapOver(tp: Type): Type = tp match {
-//        case TypeRef(pre, sym, args) =>
-//          shallowEnv.get(sym) match {
-//            case Some(tpe) if args.isEmpty => tpe
-//            case _ => tp // we don't want the mapper to go further inside the type
-//          }
-//        case MethodType(params, result) =>
-//          val paramTypes = params.map(_.tpe)
-//          val params1 = mapOver(params)
-//          mboxedParams :::= (params1 zip paramTypes).collect({ case (p1, t) if p1.tpe == LongClass.tpe && t != LongClass.tpe => (p1, t) })
-//          val result1 = this(result)
-//          if ((params1 eq params) && (result1 eq result)) tp
-//          else copyMethodType(tp, params1, result1.substSym(params, params1))
-//        case _ =>
-//          super.mapOver(tp)
-//      }
-//    }
-
-//    (shallowSubst(deepSubst(tpe)), mboxedParams)
-    // TODO: Does this work?
-    deepSubst(tpe)
+  case class MiniboxSubst(env: TypeEnv) extends TypeMap {
+    val (keys, shallowTypes) = env.toList.unzip
+    val deepTypes = shallowTypes.map(_.filterAnnotations(_.tpe != StorageClass.tpe))
+    val deepSubst = new SubstSkolemsTypeMap(keys, deepTypes)
+    val shallowSubst = new SubstSkolemsTypeMap(keys, shallowTypes) {
+      override def mapOver(tp: Type) = {
+        val res = tp match {
+          case TypeRef(pre, sym, args) if (!keys.contains(sym)) =>
+            deepSubst(tp)
+          case _ =>
+            super.mapOver(tp)
+        }
+//        println(tp + " ==> " +res)
+        res
+      }
+    }
+    def apply(tp: Type) = shallowSubst(tp)
+    def mapOverDeep(tp: Type) = deepSubst(tp)
   }
 
   /*
@@ -198,9 +191,10 @@ trait MiniboxInfoTransformation extends InfoTransform {
       // create the type of the new class
       val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
       val specializeParents = specializeParentsTypeMapForSpec(spec, origin, localPspec)
+      val specializedTypeMap = MiniboxSubst(env)
       val specializedInfoType: Type = {
         val sParents = (origin.info.parents ::: List(origin.tpe)) map {
-          t => miniboxSubst(env, t)
+          t => specializedTypeMap(t)
         } map specializeParents
 
         val newTParams: List[Symbol] = origin.typeParams.map(pmap)
@@ -258,7 +252,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           val info2 =
             if (m.isTerm && !m.isMethod) {
               // this is where we specialize fields:
-              miniboxSubst(env, info1)
+              specializedTypeMap(info1)
             } else
               info1
 
@@ -279,7 +273,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
         newCtor modifyInfo { info =>
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
           val info1 = info0.substThis(origin, spec) // Is this still necessary?
-          val info2 = miniboxSubst(env, info1)
+          val info2 = specializedTypeMap(info1)
           val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor, 0))
           localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
           def transformArgs(tpe: Type): Type = tpe match {
@@ -402,16 +396,16 @@ trait MiniboxInfoTransformation extends InfoTransform {
           var newMbr = member
           if (!PartialSpec.isAllAnyRef(spec)) {
             val env: TypeEnv = spec map {
-              case (p, v) =>
-                (p, if (v == Boxed) p.tpe else storageType(p))
+              case (p, v) => (p, if (v == Boxed) p.tpe else storageType(p))
             }
+            val specializedTypeMap = MiniboxSubst(env)
 
             newMbr = member.cloneSymbol(origin)
 
             newMbr setFlag MINIBOXED
             newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
             newMbr modifyInfo (info => {
-              val info0 = miniboxSubst(env, info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
+              val info0 = specializedTypeMap(info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (tparam, newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
@@ -565,6 +559,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
           val normalizationsOfMember = new HashMap[PartialSpec, Symbol]
 
           val env = typeEnv.getOrElse(member, EmptyTypeEnv)
+          val specializedTypeMap = MiniboxSubst(env)
           val newMembers = (for (pspec <- pspecs) yield {
             var newMbr = member
             if (!PartialSpec.isAllAnyRef(pspec)) {
@@ -580,7 +575,7 @@ trait MiniboxInfoTransformation extends InfoTransform {
                     case (p, Boxed)     => None // stays the same
                     case (p, Miniboxed) => Some((deepEnv(p), storageType(deepEnv(p))))
                   }
-                val info1 = miniboxSubst(env, info0.resultType)
+                val info1 = specializedTypeMap(info0.resultType)
                 typeParamMap(newMbr) = deepEnv.map(_.swap).toMap
                 typeEnv(newMbr) = env ++ normalizedEnv
                 val localTags =
