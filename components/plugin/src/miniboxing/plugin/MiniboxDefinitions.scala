@@ -10,7 +10,7 @@ trait MiniboxDefinitions {
   import miniboxing.runtime.MiniboxConstants._
 
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
-  lazy val StorageClass = rootMirror.getRequiredClass("miniboxing.plugin.storage")
+  lazy val StorageClass = rootMirror.getRequiredClass("scala.storage")
 
   // array ops
   lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")

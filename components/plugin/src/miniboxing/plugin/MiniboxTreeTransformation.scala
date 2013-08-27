@@ -80,7 +80,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
     override def transform(tree: Tree): Tree = miniboxTransform(tree)
 
     def miniboxTransform(tree: Tree): Tree = {
-      //System.exit(0)
 
       curTree = tree
       // make sure specializations have been performed
@@ -482,7 +481,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
       val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
-      val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
+      val mapTpar = typeEnv.getOrElse(inClass, Map.empty)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
@@ -532,7 +531,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
       val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
-      val mapTpar = typeEnv.getOrElse(inClass, MiniboxingTypeEnv(Map.empty, Map.empty)).deepEnv
+      val mapTpar = typeEnv.getOrElse(inClass, EmptyTypeEnv)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
@@ -762,7 +761,6 @@ trait MiniboxTreeTransformation extends TypingTransformers {
      */
     private def specializeDefDefBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
       val meth = addDefDefBody(tree, source)
-
       duplicateBody(meth, source, castmap)
     }
 
@@ -770,9 +768,10 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
       val symbol = tree.symbol
       val miniboxedSyms = miniboxedArgs.getOrElse(symbol, Set())
-      val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyMbTypeEnv)
-      val miniboxedEnvDeep = miniboxedEnv.deepEnv
-      val miniboxedEnvShallow = miniboxedEnv.shallowEnv
+      val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyTypeEnv)
+      // TODO: Clean this up
+      val miniboxedEnvDeep = miniboxedEnv
+      val miniboxedEnvShallow = miniboxedEnv
       val miniboxedTypeTags = typeTagTrees(symbol)
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
@@ -813,7 +812,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         tree1,
         source.enclClass,
         symbol.enclClass,
-        miniboxedEnvDeep
+        miniboxedEnvShallow
       ))
 
       // get back flags
@@ -845,7 +844,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if base.getOrElse(symbol, NoSymbol) == symbol =>
           (tparams, Nil, vparams, tpt)
       }
-      val env = typeEnv.getOrElse(symbol, EmptyMbTypeEnv).deepEnv // TODO
+      val env = typeEnv.getOrElse(symbol, EmptyTypeEnv)
       val boundTvars = env.keySet
       val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
       if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)
