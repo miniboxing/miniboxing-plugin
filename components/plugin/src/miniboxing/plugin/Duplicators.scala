@@ -30,13 +30,14 @@ abstract class Duplicators extends Analyzer {
    *  the old class with the new class, and map symbols through the given 'env'. The
    *  environment is a map from type skolems to concrete types (see SpecializedTypes).
    */
-  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, _envSubstitution: TypeMap): Tree = {
+  def retyped(context: Context, tree: Tree, oldThis: Symbol, newThis: Symbol, _subst: TypeMap, _deepSubst: TypeMap): Tree = {
     if (oldThis ne newThis) {
       oldClassOwner = oldThis
       newClassOwner = newThis
     } else resetClassOwners
 
-    envSubstitution = _envSubstitution
+    envSubstitution = _subst
+    envDeepSubst = _deepSubst
 
     newBodyDuplicator(context).typed(tree)
   }
@@ -55,6 +56,7 @@ abstract class Duplicators extends Analyzer {
   private var oldClassOwner: Symbol = _
   private var newClassOwner: Symbol = _
   private var envSubstitution: TypeMap = _
+  private var envDeepSubst: TypeMap = _
 
   private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches.newMap[Symbol, Tree]()
 
@@ -120,8 +122,8 @@ abstract class Duplicators extends Analyzer {
     }
 
     /** Fix the given type by replacing invalid symbols with the new ones. */
-    def fixType(tpe: Type): Type = {
-      val tpe1 = envSubstitution(tpe)
+    def fixType(tpe: Type, deep: Boolean = false): Type = {
+      val tpe1 = if (deep) envDeepSubst(tpe) else envSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
       // known problem: asSeenFrom on an abstract type produced by creating new syms
       // from symbols bound in existential types crashes the AsSeenFromMap
@@ -292,6 +294,12 @@ abstract class Duplicators extends Analyzer {
       }
 
       tree match {
+        case TypeApply(sel, tpes) =>
+          val nsel = sel
+          for (ttree <- tpes)
+            ttree.tpe = fixType(ttree.tpe, deep = true)
+          super.typed(TypeApply(nsel, tpes), mode, pt)
+
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
           ttree.tpe = fixType(ttree.tpe)

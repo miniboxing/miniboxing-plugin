@@ -789,12 +789,14 @@ trait MiniboxTreeTransformation extends TypingTransformers {
         else
           clazz.resetFlag(ABSTRACT | TRAIT)
 
+      val mbSubst = MiniboxSubst(miniboxedEnv)
       val tree2 = beforeMinibox(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
         tree,
         source.enclClass,
         symbol.enclClass,
-        MiniboxSubst(miniboxedEnv)
+        mbSubst,
+        mbSubst.deepSubst
       ))
 
 //      println(tree2)
