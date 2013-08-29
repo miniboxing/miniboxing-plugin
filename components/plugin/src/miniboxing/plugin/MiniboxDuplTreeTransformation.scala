@@ -22,6 +22,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
    */
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
+    import global._
+
     def reportError[T](body: =>T)(handler: TypeError => T): T =
       try body
       catch {
@@ -72,10 +74,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     def localTypeTagTrees(symbol: Symbol): Map[Symbol, Tree] =
       localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))})
-
-    import global._
-
-    def afterMinibox[T](f: => T): T = atPhase(ownPhase.next)(f)
 
     override def transform(tree: Tree): Tree = miniboxTransform(tree)
 
