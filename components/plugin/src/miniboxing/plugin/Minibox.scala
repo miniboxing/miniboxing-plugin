@@ -1,11 +1,9 @@
 package miniboxing.plugin
 
-import scala.tools.nsc
 import scala.tools.nsc.Global
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
-import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 
@@ -30,13 +28,13 @@ trait MiniboxDuplComponent extends
     with MiniboxSpecializationInfo
     with MiniboxDefinitions {
 
-  def mboxPhase: StdPhase
+  def mboxDuplPhase: StdPhase
 
   def afterMinibox[T](op: => T): T =
-    global.afterPhase(mboxPhase)(op)
+    global.afterPhase(mboxDuplPhase)(op)
 
   def beforeMinibox[T](op: => T): T =
-    global.beforePhase(mboxPhase)(op)
+    global.beforePhase(mboxDuplPhase)(op)
 
   def flag_log: Boolean
   def flag_debug: Boolean
@@ -67,10 +65,12 @@ trait PostTyperComponent extends
   PluginComponent with
   TypingTransformers {
 
-  import global._; import Flags._
+  import global._
+  import global.Flag._
   val miniboxing: MiniboxDuplComponent { val global: PostTyperComponent.this.global.type }
 }
 
+/** Main miniboxing class */
 class Minibox(val global: Global) extends Plugin {
   import global._
 
@@ -113,36 +113,6 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
     s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n")
 
-  private object MiniboxDuplPhase extends MiniboxDuplComponent {
-
-    val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("refchecks")
-    override val runsRightAfter = Some("uncurry")
-    val phaseName = Minibox.this.name + "-dupl"
-
-    def flag_log = Minibox.this.flag_log
-    def flag_debug = Minibox.this.flag_debug
-    def flag_stats = Minibox.this.flag_stats
-    def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
-    def flag_loader_friendly = Minibox.this.flag_loader_friendly
-
-    var mboxPhase : StdPhase = _
-    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mboxPhase = new Phase(prev)
-      mboxPhase
-    }
-
-    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-      override def transform(tree: Tree) = {
-        // execute the tree transformer after all symbols have been processed
-        val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
-        val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
-        tree2.foreach(tree => assert(tree.tpe != null, tree))
-        tree2
-      }
-    }
-  }
-
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
@@ -157,7 +127,36 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
-  private lazy val MiniboxSpecPhase = new {
+  private object MiniboxDuplPhase extends MiniboxDuplComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List("refchecks")
+    override val runsRightAfter = Some("uncurry")
+    val phaseName = Minibox.this.name + "-dupl"
+
+    def flag_log = Minibox.this.flag_log
+    def flag_debug = Minibox.this.flag_debug
+    def flag_stats = Minibox.this.flag_stats
+    def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
+    def flag_loader_friendly = Minibox.this.flag_loader_friendly
+
+    var mboxDuplPhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxDuplPhase = new Phase(prev)
+      mboxDuplPhase
+    }
+
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = {
+        // execute the tree transformer after all symbols have been processed
+        val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
+        val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
+        tree2.foreach(tree => assert(tree.tpe != null, tree))
+        tree2
+      }
+    }
+  }
+
+  private object MiniboxSpecPhase extends {
     val minibox: MiniboxDuplPhase.type = MiniboxDuplPhase
   } with MiniboxSpecComponent {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -169,10 +168,10 @@ class Minibox(val global: Global) extends Plugin {
     def flag_debug = Minibox.this.flag_debug
     def flag_stats = Minibox.this.flag_stats
 
-    var mboxPhase : StdPhase = _
+    var mboxSpecPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mboxPhase = new Phase(prev)
-      mboxPhase
+      mboxSpecPhase = new Phase(prev)
+      mboxSpecPhase
     }
   }
 
@@ -187,7 +186,8 @@ class Minibox(val global: Global) extends Plugin {
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PreTyperPhase.phaseName
       def apply(unit: CompilationUnit) {
-        import global._; import Flags._
+        import global._
+        import global.Flag._
         for (sym <- miniboxing.specializedBase)
           if (miniboxing.originalTraitFlag(sym))
             sym.resetFlag(ABSTRACT)
@@ -208,7 +208,8 @@ class Minibox(val global: Global) extends Plugin {
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PostTyperPhase.phaseName
       def apply(unit: CompilationUnit) {
-        import global._; import Flags._
+        import global._
+        import global.Flag._
         for (sym <- miniboxing.specializedBase)
           sym.setFlag(ABSTRACT | TRAIT)
       }
