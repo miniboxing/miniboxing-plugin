@@ -30,11 +30,8 @@ trait MiniboxDuplComponent extends
 
   def mboxDuplPhase: StdPhase
 
-  def afterMinibox[T](op: => T): T =
-    global.afterPhase(mboxDuplPhase)(op)
-
-  def beforeMinibox[T](op: => T): T =
-    global.beforePhase(mboxDuplPhase)(op)
+  def afterMinibox[T](op: => T): T = global.afterPhase(mboxDuplPhase)(op)
+  def beforeMinibox[T](op: => T): T = global.beforePhase(mboxDuplPhase)(op)
 
   def flag_log: Boolean
   def flag_debug: Boolean
@@ -50,6 +47,12 @@ trait MiniboxSpecComponent extends
     with MiniboxPostTreeTransformer {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxSpecComponent.this.global.type }
+
+  def mboxSpecPhase: StdPhase
+
+  def afterMiniboxSpec[T](op: => T): T = global.afterPhase(mboxSpecPhase)(op)
+  def beforeMiniboxSpec[T](op: => T): T = global.beforePhase(mboxSpecPhase)(op)
+
   def flag_log: Boolean
   def flag_debug: Boolean
   def flag_stats: Boolean
