@@ -19,7 +19,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
-    override def transform(tree: Tree): Tree = afterMiniboxSpec(specTransform(tree))
+    override def transform(tree: Tree): Tree = afterMiniboxSpec(checkNoStorage(specTransform(tree)))
 
     def specTransform(tree: Tree): Tree = {
 //      println("specTransform(" + tree + ")")
@@ -30,21 +30,42 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
       tree match {
         case EmptyTree =>
           EmptyTree
-        case _: TypeTree =>
-          if (tree.tpe.hasAnnotation(StorageClass))
-            tree.tpe = LongTpe
-          tree
         case _ =>
           val tree1 = super.transform(tree)
-          if (tree1.tpe.hasAnnotation(StorageClass))
-            tree1.tpe = LongTpe
-          val newTpe = tree.tpe
+          val oldTpe = tree.tpe
+          val newTpe = deepTransformation(tree.tpe)
+          tree.tpe = newTpe
+          assert(noStorageAnnot(tree.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
 //          if (oldTpe.hasAnnotation(StorageClass) && newTpe =:= LongTpe)
 //            println("Need box2minibox conversion at: " + tree1)
 //          else if (newTpe.hasAnnotation(StorageClass) && oldTpe =:= LongTpe)
 //            println("Need minibox2box conversion at: " + tree1)
+          println(tree1 + ": " + newTpe)
           tree1
       }
     }
+
+    def checkNoStorage(tree: Tree) = {
+      for (t <- tree)
+        assert(noStorageAnnot(t.tpe), t + ": " + t.tpe)
+      tree
+    }
+
+    def noStorageAnnot(t: Type): Boolean = {
+      var hasStorage = false
+      new TypeMap {
+        def apply(tp: Type): Type = mapOver(tp)
+        override def mapOver(tp: Type): Type = tp match {
+          case _ if tp hasAnnotation(StorageClass) =>
+            hasStorage = true
+            tp
+          case _ =>
+            super.mapOver(tp)
+        }
+      }.apply(t)
+
+      !hasStorage
+    }
+
   }
 }

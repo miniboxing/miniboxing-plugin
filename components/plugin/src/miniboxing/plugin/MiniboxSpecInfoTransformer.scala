@@ -10,20 +10,19 @@ trait MiniboxPostInfoTransformer extends InfoTransform {
   import minibox._
 
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    val tpe2 = tpe match {
-      case MethodType(args, ret) =>
-        MethodType(args, transform(ret))
-      case _ =>
-        transform(tpe)
-    }
+    val tpe2 = deepTransformation(tpe)
 //    if (!(tpe =:= tpe2))
 //      println(sym + "  old: " + tpe + "  new: " + tpe2)
     tpe2
   }
 
-  def transform(tpe: Type): Type =
-    if (tpe.hasAnnotation(StorageClass))
-      LongTpe
-    else
-      tpe
+  lazy val deepTransformation: TypeMap = new TypeMap {
+    def apply(tpe: Type): Type = mapOver(tpe)
+    override def mapOver(tpe: Type): Type = tpe match {
+      case tpe if tpe.hasAnnotation(StorageClass) =>
+        LongTpe
+      case _ =>
+        super.mapOver(tpe)
+    }
+  }
 }
