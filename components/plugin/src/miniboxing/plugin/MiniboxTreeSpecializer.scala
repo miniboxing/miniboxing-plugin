@@ -6,8 +6,9 @@ import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker._
 import scala.collection.mutable.{ Map => MMap }
 
+// TODO: Replace this, yaay!
 trait MiniboxTreeSpecializer extends TypingTransformers {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._

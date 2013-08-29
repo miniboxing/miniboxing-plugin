@@ -5,8 +5,9 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.mutable
 import scala.tools.nsc.typechecker._
 
+// TODO: Replace this, yaay!
 trait MiniboxPeepholeTransformation extends TypingTransformers {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._

@@ -4,7 +4,7 @@ import scala.tools.nsc.Global
 import scala.collection.immutable.ListMap
 
 trait MiniboxLogic {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._

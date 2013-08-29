@@ -4,7 +4,7 @@ import java.io.PrintWriter
 import scala.tools.nsc.Global
 
 trait MiniboxLogging {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   val global: Global
 
