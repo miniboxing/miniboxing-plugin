@@ -7,8 +7,8 @@ import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker.Analyzer
 import scala.collection.immutable.ListMap
 
-trait MiniboxInfoTransformation extends InfoTransform {
-  self: MiniboxComponent =>
+trait MiniboxDuplInfoTransformation extends InfoTransform {
+  self: MiniboxDuplComponent =>
 
   import global._
   import Flags._

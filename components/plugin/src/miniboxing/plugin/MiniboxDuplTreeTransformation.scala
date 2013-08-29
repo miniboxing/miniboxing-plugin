@@ -7,8 +7,8 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.typechecker._
 
-trait MiniboxTreeTransformation extends TypingTransformers {
-  self: MiniboxComponent =>
+trait MiniboxDuplTreeTransformation extends TypingTransformers {
+  self: MiniboxDuplComponent =>
 
   import global._
   import global.definitions._
@@ -33,9 +33,9 @@ trait MiniboxTreeTransformation extends TypingTransformers {
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type]) extends {
-      val global: MiniboxTreeTransformation.this.global.type = MiniboxTreeTransformation.this.global
-      val miniboxing: MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type } =
-        MiniboxTreeTransformation.this.asInstanceOf[MiniboxComponent { val global: MiniboxTreeTransformation.this.global.type }]
+      val global: MiniboxDuplTreeTransformation.this.global.type = MiniboxDuplTreeTransformation.this.global
+      val miniboxing: MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type } =
+        MiniboxDuplTreeTransformation.this.asInstanceOf[MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type }]
     } with miniboxing.plugin.Duplicators {
       private val (castfrom, castto) = casts.unzip
       private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)

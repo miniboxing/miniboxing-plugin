@@ -3,7 +3,7 @@ package miniboxing.plugin
 import scala.collection.mutable
 
 trait MiniboxSpecializationInfo {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._

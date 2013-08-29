@@ -294,11 +294,12 @@ abstract class Duplicators extends Analyzer {
       }
 
       tree match {
+        // The point is: any type application should
+        // not update the type parameters to @storage
         case TypeApply(sel, tpes) =>
-          val nsel = sel
           for (ttree <- tpes)
             ttree.tpe = fixType(ttree.tpe, deep = true)
-          super.typed(TypeApply(nsel, tpes), mode, pt)
+          super.typed(TypeApply(sel, tpes), mode, pt)
 
         case ttree @ TypeTree() =>
           // log("fixing tpe: " + tree.tpe + " with sym: " + tree.tpe.typeSymbol)
