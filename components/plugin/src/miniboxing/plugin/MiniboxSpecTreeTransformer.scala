@@ -58,13 +58,20 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
         case Apply(fun, args) =>
           val nfun = specTransform(fun)
           val nargs = args.map(specTransform)
-          println(tree)
+          val aargs =
+            for ((narg, tpe) <- nargs zip fun.tpe.paramTypes) yield
+              if (!(narg.tpe =:= LongTpe) && (tpe =:= LongTpe))
+                convert_box_to_minibox(narg, currentMethod, currentClass)
+              else if ((narg.tpe =:= LongTpe) && !(tpe =:= LongTpe))
+                convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
+              else
+                narg
+          println()
+          println(tree + ": " + tree.tpe)
           println("after: " + fun.tpe)
           println("args: " + args.map(_.tpe).mkString(", "))
-          // TODO: For the arguments, if the argument's type is Tsp @storage and the
-          // function's argument is Tsp, we should apply minibox2box to convert it to
-          // the miniboxed representation
-          localTyper.typed(Apply(nfun, args))
+          println(aargs)
+          localTyper.typed(Apply(nfun, aargs))
         case _ =>
           val tree1 = super.transform(tree)
           val oldTpe = tree.tpe
