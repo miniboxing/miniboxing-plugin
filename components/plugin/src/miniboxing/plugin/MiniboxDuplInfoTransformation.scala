@@ -172,9 +172,9 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val pmap = ParamMap(origin.typeParams, spec)
       typeParamMap(spec) = pmap.map(_.swap).toMap
 
-      val env: TypeEnv = pspec flatMap {
-        case (p, Boxed)     => None // stays the same
-        case (p, Miniboxed) => Some((p, storageType(pmap(p))))
+      val env: TypeEnv = pspec.map {
+        case (p, Boxed)     => (p, pmap(p).tpeHK)
+        case (p, Miniboxed) => (p, storageType(pmap(p)))
       }
 
       // Insert the newly created symbol in our various maps that are used by

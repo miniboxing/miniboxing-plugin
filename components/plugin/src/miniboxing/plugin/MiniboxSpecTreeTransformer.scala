@@ -66,18 +66,23 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
                 convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
               else
                 narg
-          println()
-          println(tree + ": " + tree.tpe)
-          println("after: " + fun.tpe)
-          println("args: " + args.map(_.tpe).mkString(", "))
-          println(aargs)
+//          println()
+//          println(tree + ": " + tree.tpe)
+//          println("after: " + fun.tpe)
+//          println("args: " + args.map(_.tpe).mkString(", "))
+//          println(aargs)
           localTyper.typed(Apply(nfun, aargs))
         case _ =>
           val tree1 = super.transform(tree)
           val oldTpe = tree.tpe
           val newTpe = deepTransformation(tree.tpe)
-          tree.tpe = newTpe
-          assert(noStorageAnnot(tree.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
+          tree1.tpe = newTpe
+//          if (tree.isInstanceOf[Block]) {
+//            println
+//            println(tree)
+//            println(tree1.tpe)
+//          }
+          assert(noStorageAnnot(tree1.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
           // TODO: If the current type is Tsp (not Tsp @storage), and Tsp should be miniboxed,
           // we should use box2minibox to convert it to the miniboxed representation.
           tree1
