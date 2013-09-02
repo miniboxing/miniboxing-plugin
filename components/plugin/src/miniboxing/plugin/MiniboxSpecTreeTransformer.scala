@@ -87,11 +87,9 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
           val tree2 =
             if (!tree1.isInstanceOf[TypeTree] &&
                 newTpe.typeSymbol.isTypeParameterOrSkolem &&
-                tags.isDefinedAt(newTpe.typeSymbol)) {
-              println
-              println("Converting box to minibox: " + tree1 + ": " + showRaw(newTpe))
+                tags.isDefinedAt(newTpe.typeSymbol))
               localTyper.typed(convert_box_to_minibox(tree1, currentMethod, currentClass))
-            } else
+            else
               tree1
 
           assert(noStorageAnnot(tree2.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
