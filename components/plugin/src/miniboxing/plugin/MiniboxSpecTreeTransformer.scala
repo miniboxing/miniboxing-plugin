@@ -52,9 +52,8 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
       if (tree.hasSymbol)
         tree.symbol.info // force new info on the symbol
 
-      tree match {
-        case EmptyTree =>
-          EmptyTree
+      // minibox => box conversion
+      val tree1 = tree match {
         case Apply(fun, args) =>
           val nfun = specTransform(fun)
           val nargs = args.map(specTransform)
@@ -66,27 +65,40 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
                 convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
               else
                 narg
-//          println()
-//          println(tree + ": " + tree.tpe)
-//          println("after: " + fun.tpe)
-//          println("args: " + args.map(_.tpe).mkString(", "))
-//          println(aargs)
           localTyper.typed(Apply(nfun, aargs))
+        case _ =>
+          tree
+      }
+
+      // box => minibox conversion
+      val tree2 = tree1 match {
+        case EmptyTree =>
+          EmptyTree
         case _ =>
           val tree1 = super.transform(tree)
           val oldTpe = tree.tpe
           val newTpe = deepTransformation(tree.tpe)
           tree1.tpe = newTpe
-//          if (tree.isInstanceOf[Block]) {
-//            println
-//            println(tree)
-//            println(tree1.tpe)
-//          }
-          assert(noStorageAnnot(tree1.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
-          // TODO: If the current type is Tsp (not Tsp @storage), and Tsp should be miniboxed,
-          // we should use box2minibox to convert it to the miniboxed representation.
-          tree1
+
+          // TODO: Getting type tags just to test whether the type
+          // is miniboxed is a bit heavy-handed - maybe we can use
+          // a lighter trick for this.
+          lazy val tags = typeTagTrees(currentMethod, currentClass)
+          val tree2 =
+            if (!tree1.isInstanceOf[TypeTree] &&
+                newTpe.typeSymbol.isTypeParameterOrSkolem &&
+                tags.isDefinedAt(newTpe.typeSymbol)) {
+              println
+              println("Converting box to minibox: " + tree1 + ": " + showRaw(newTpe))
+              localTyper.typed(convert_box_to_minibox(tree1, currentMethod, currentClass))
+            } else
+              tree1
+
+          assert(noStorageAnnot(tree2.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
+          tree2
       }
+
+      tree2
     }
   }
 }
