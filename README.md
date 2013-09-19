@@ -1,3 +1,4 @@
+<img src="http://scala-miniboxing.org/mbox2-thumbnail.png" alt="Miniboxing Logo" align="right">
 #Miniboxing Plugin for Scala#
 
 Miniboxing is a lightweight approach to specializing generic classes in the Scala compiler. It revisits the current [specialization](http://infoscience.epfl.ch/record/150134/files/p42-dragos.pdf) transformation, but makes different choices aimed at reducing the bytecode without sacrificing execution speed.
