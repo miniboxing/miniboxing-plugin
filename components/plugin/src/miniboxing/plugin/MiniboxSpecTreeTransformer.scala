@@ -54,61 +54,51 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 //      val crtindent = indent
 //      indent += 2
 //      println(" " * crtindent + " --> " + tree0)
-      val oldTpe = tree0.tpe
 
       // force new info on the symbol
       if (tree0.hasSymbol)
         tree0.symbol.info
 
-      // record the type before we modify it
-      val funtpe = tree0 match {
-        case Apply(fun, _) => fun.tpe
-        case _ => NoType
-      }
-
       // transform subtrees of the tree
-      val tree = super.transform(tree0)
+      val tree1 = super.transform(tree0)
 
       // minibox => box conversion
-      val tree1 = tree match {
+      val tree2 = tree match {
         case Apply(nfun, nargs) =>
           val aargs =
-            for ((narg, tpe) <- nargs zip funtpe.paramTypes) yield
+            for ((narg, tpe) <- nargs zip nfun.tpe.paramTypes) yield
               if (!(narg.tpe =:= LongTpe) && (tpe =:= LongTpe))
                 convert_box_to_minibox(narg, currentMethod, currentClass)
               else if ((narg.tpe =:= LongTpe) && !(tpe =:= LongTpe))
                 convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
               else
                 narg
-          val tree2 = localTyper.typed(Apply(nfun, aargs))
-          tree2
+          localTyper.typed(Apply(nfun, aargs))
         case _ =>
-          tree
+          tree1
       }
 
       // box => minibox conversion
-      val tree2 = tree1 match {
+      val tree3 = tree2 match {
         case EmptyTree =>
           EmptyTree
         case _ =>
-          val oldTpe = tree1.tpe
-          val newTpe = deepTransformation(tree1.tpe)
-          tree1.tpe = newTpe
+          tree2.tpe = deepTransformation(tree2.tpe)
 
           // TODO: Getting type tags just to test whether the type
           // is miniboxed is a bit heavy-handed - maybe we can use
           // a lighter trick for this.
           lazy val tags = typeTagTrees(currentMethod, currentClass)
-          val tree2 =
-            if (!tree1.isInstanceOf[TypeTree] &&
-                newTpe.typeSymbol.isTypeParameterOrSkolem &&
-                tags.isDefinedAt(newTpe.typeSymbol))
-              localTyper.typed(convert_box_to_minibox(tree1, currentMethod, currentClass))
+          val ntree =
+            if (!tree2.isInstanceOf[TypeTree] &&
+                tree2.tpe.typeSymbol.isTypeParameterOrSkolem &&
+                tags.isDefinedAt(tree2.tpe.typeSymbol))
+              localTyper.typed(convert_box_to_minibox(tree2, currentMethod, currentClass))
             else
-              tree1
+              tree2
 
-          assert(noStorageAnnot(tree2.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
-          tree2
+          assert(noStorageAnnot(ntree.tpe))
+          ntree
       }
 
 //      indent -= 2
