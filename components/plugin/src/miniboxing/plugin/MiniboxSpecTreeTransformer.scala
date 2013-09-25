@@ -63,7 +63,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
       val tree1 = super.transform(tree0)
 
       // minibox => box conversion
-      val tree2 = tree match {
+      val tree2 = tree1 match {
         case Apply(nfun, nargs) =>
           val aargs =
             for ((narg, tpe) <- nargs zip nfun.tpe.paramTypes) yield
@@ -104,7 +104,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 //      indent -= 2
 //      println(" " * crtindent + " --> " + tree2)
 
-      tree2
+      tree3
     }
   }
 }
