@@ -187,25 +187,12 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               localTyper.typed(deriveDefDef(tree)(_ => rhs1))
 
             // forward to the target methods, making casts as prescribed
-            case ForwardTo(ttagArgs, target, retCast, paramCasts) =>
-              val targetTpe =
-                if (target.tpe.typeParams.isEmpty)
-                  target.tpe
-                else
-                  target.tpe.resultType.instantiateTypeParams(target.tpe.typeParams, tparams.map(_.symbol.tpeHK))
-
+            case ForwardTo(target) =>
               val (ttagWrapperArgs, wrapperParams) = separateTypeTagArgsInTree(vparams)
-              val (ttagFormalArgs, targetParams) = separateTypeTagArgsInType(targetTpe, tparams.map(_.symbol.tpeHK))
 
-              assert(wrapperParams.length == targetParams.length, "Different number of parameters for forward from " + tree.symbol.defString + " to " + target.defString + ": " + wrapperParams + " vs " + targetParams)
-
-              val params1 =
-                ((wrapperParams zip targetParams) zip paramCasts) map {
-                  case ((p, t), paramCast) =>
-                    cast(Ident(p.symbol), t.tpe, paramCast)
-                }
-              val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpeHK), ttagArgs.map(gen.mkAttributedRef(_)) ::: params1)
-              super.transform(localTyper.typed(deriveDefDef(tree)(_ => cast(rhs1, tpt.tpe, retCast))))
+              val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpeHK), wrapperParams.map(param => Ident(param.symbol)))
+              val rhs2 = localTyper.typed(rhs1)
+              super.transform(localTyper.typed(deriveDefDef(tree)(_ => rhs2)))
 
             // copy the body of the `original` method
             case SpecializedImplementationOf(target) =>

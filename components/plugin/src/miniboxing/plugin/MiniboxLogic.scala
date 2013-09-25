@@ -28,6 +28,9 @@ trait MiniboxLogic {
   case object Miniboxed extends SpecInfo
   case object Boxed extends SpecInfo
   type PartialSpec = immutable.Map[Symbol, SpecInfo]
+  implicit class RichPartialSpec(pspec: PartialSpec) {
+    def allAnyRef: PartialSpec = pspec.keys.map(tp => (tp, Boxed)).toMap
+  }
 
   /**
    * For a set of type parameters, get all the possible partial specializations.

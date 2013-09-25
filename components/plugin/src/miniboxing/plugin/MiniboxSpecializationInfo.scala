@@ -20,12 +20,12 @@ trait MiniboxSpecializationInfo {
    *
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
-  case class ForwardTo(tagParams: List[Symbol], method: Symbol, ret: CastInfo, params: List[CastInfo])(overrider: Boolean) extends MethodInfo {
+  case class ForwardTo(base: Symbol)(overrider: Boolean) extends MethodInfo {
     override def toString =
       if (overrider)
-        "is an override which forwards to " + method
+        "is an override which forwards to the specialized member"
       else
-        "is a forwarder to " + method
+        "is a forwarder to the specialized member"
   }
 
   /*
