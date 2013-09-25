@@ -311,15 +311,16 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               if (overloads(mbr)(pspec) == mbr) {
                 if (mbr.hasAccessorFlag) {
                   memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
-                    case Some(ForwardTo(_, original, _, _)) =>
-                      FieldAccessor(newMembers(original.accessed))
+                    case Some(ForwardTo(target)) =>
+                      FieldAccessor(newMembers(target.accessed))
                     case _ =>
                       global.error("Unaccounted case: " + memberSpecializationInfo.get(mbr)); ???
                   }
                 } else {
                   memberSpecializationInfo.get(mbr) match {
-                    case Some(ForwardTo(_, original, _, _)) =>
-                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(original)
+                    case Some(ForwardTo(target)) =>
+                      // TODO TOPIC/ERASURE: Check if this is okay.
+                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(target)
                     case Some(x) =>
                       global.error("Unaccounted case: " + x)
                     case None =>
@@ -327,11 +328,13 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                   }
                 }
               } else {
-                val target = newMembers(overloads(mbr)(pspec))
+                // here, we're forwarding to the all-AnyRef member, knowing that the
+                // redirection algorithm will direct to the appropriate member later
+                val target = newMembers(overloads(mbr)(pspec.allAnyRef))
                 val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttype, ttag) => (pmap.getOrElse(ttype, ttype), ttag) } ++ globalTypeTags(spec)
                 val targTagMap = localTypeTags.getOrElse(target, Map.empty)
                 newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
-                memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, wrapTagMap, target, targTagMap)
+                memberSpecializationInfo(newMbr) = genForwardingInfo(target)
               }
             } else {
               memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
@@ -470,7 +473,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         }
 
         for (spec <- specs; newMbr <- overloadsOfMember get spec)
-          memberSpecializationInfo(newMbr) = genForwardingInfo(newMbr, localTypeTags.getOrElse(newMbr, Map.empty), member, Map.empty)
+          // TODO TOPIC/ERASURE: Check this is correct, it may be wrong
+          memberSpecializationInfo(newMbr) = genForwardingInfo(member)
       }
 
       // TODO: Do we want to keep overrides?
@@ -533,12 +537,13 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             // direct to the most specific override instead of the generic member:
             localTypeTags(overrider) = typeTags
             memberSpecializationInfo(overrider) =
-              if (localOverload == NoSymbol)
-                genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
-              else {
-                val targTagMap = localTypeTags.getOrElse(localOverload, Map.empty)
-                genForwardingInfo(overrider, typeTags, localOverload, targTagMap, overrider = true)
-              }
+              genForwardingInfo(sym, overrider = true)
+//              if (localOverload == NoSymbol)
+//                genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
+//              else {
+//                val targTagMap = localTypeTags.getOrElse(localOverload, Map.empty)
+//                genForwardingInfo(overrider, typeTags, localOverload, targTagMap, overrider = true)
+//              }
 
             scope1 enter overrider
           }
@@ -618,7 +623,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 typeEnv(newMbr) = newDeepEnv
                 SpecializedImplementationOf(baseMbr)
 
-              case Some(ForwardTo(_, target0, _, _)) =>
+              case Some(ForwardTo(target0)) =>
 
                 // take the normalized version of the target
                 val updateTparam = (member.typeParams zip target0.typeParams).toMap
@@ -638,7 +643,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 // println(wrapperTypeTags)
                 // println(targetTypeTags)
 
-                genForwardingInfo(newMbr, wrapperTypeTags, target, targetTypeTags)
+                genForwardingInfo(target0)
 
               case None =>
                 SpecializedImplementationOf(member)
@@ -746,63 +751,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
    * Generate the information about how arguments and return value should
    * be converted when forwarding to `target`.
    */
-  private def genForwardingInfo(wrapper: Symbol, wrapperTags: Map[Symbol, Symbol], target: Symbol, targetTags: Map[Symbol, Symbol], overrider: Boolean = false): ForwardTo = {
-
-    // TODO: only basic parameters should go here
-    val (wtpe, ttpe) = (wrapper.info, target.info) match {
-      case (PolyType(wtparams, wtpe), PolyType(ttparams, ttpe)) =>
-        (wtpe, ttpe.instantiateTypeParams(ttparams, wtparams.map(_.tpe)))
-      case (wtpe, ttpe) =>
-        (wtpe, ttpe)
-    }
-
-    def genCastInfo(srcType: Type, tgtType: Type): CastInfo = {
-      val srcTypeSymbol: Symbol = srcType.typeSymbol
-      val tgtTypeSymbol: Symbol = tgtType.typeSymbol
-
-      val res = if (srcTypeSymbol == LongClass && tgtTypeSymbol != LongClass)
-        CastMiniboxToBox(wrapperTags(tgtTypeSymbol))
-      else if (srcTypeSymbol != LongClass && tgtTypeSymbol == LongClass)
-        CastBoxToMinibox(wrapperTags(srcTypeSymbol))
-      else if ((srcTypeSymbol == tgtTypeSymbol) && (srcType =:= tgtType))
-        NoCast
-      else {
-        log(wrapper + ": " + wrapper.tpe + " ==> " + wtpe)
-        log(target + ": " + target.tpe + " ==> " + ttpe)
-        log(srcTypeSymbol)
-        log(tgtTypeSymbol)
-        log("A cast which is neither boxing, nor unboxing when handling `ForwardTo`.")
-        log(srcTypeSymbol)
-        log(tgtTypeSymbol)
-        log(srcType)
-        log(tgtType)
-        ???
-      }
-      res
-    }
-
-    def params(target: Symbol, tpe: Type, tparams: List[Symbol]): (List[Symbol], List[Symbol]) =
-      if (!target.isMethod || (!target.name.toString.contains("_J") && !target.name.toString.contains("_L")))
-        (Nil, tpe.params)
-      else
-        separateTypeTagArgsInType(tpe, tparams.map(_.tpe)) // we instantiate the type separately
-
-    def typeTagParams = {
-      val targetTParams = targetTags.map(_.swap).toMap
-      val targs = params(target, target.info, wrapper.typeParams)._1.map(targetTParams)
-      val tagParams = targs.map(wrapperTags)
-      tagParams
-    }
-
-
-    val wrapParams = params(wrapper, wtpe, Nil)._2.map(_.tpe)
-    val targParams = params(target, ttpe, Nil)._2.map(_.tpe)
-    assert(wrapParams.length == targParams.length, (wrapParams, targParams))
-    val paramCasts = (wrapParams zip targParams) map {
-      case (wtp, ttp) => genCastInfo(wtp, ttp)
-    }
-    val retCast = genCastInfo(ttpe.finalResultType, wtpe.finalResultType)
-
-    ForwardTo(typeTagParams, target, retCast, paramCasts)(overrider)
+  private def genForwardingInfo(base: Symbol, overrider: Boolean = false): ForwardTo = {
+    ForwardTo(base)(overrider)
   }
 }
