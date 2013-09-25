@@ -26,7 +26,7 @@ The [wiki](https://github.com/miniboxing/miniboxing-plugin/wiki) is a good place
 
 ###Repository organization###
  - wip is the working branch, most current version of the plugin
- - master is usually a bit behind wip, but should be stable (alpha-stable, no production-ready!)
+ - master is usually a bit behind wip, but should be stable (alpha-stable, not production-ready!)
  - sbt is used for compilation and testing
  - the repository contains several sbt sub-projects:
    - `components/plugin`      - the actual Scala compiler plugin

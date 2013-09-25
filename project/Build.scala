@@ -34,15 +34,7 @@ object MiniboxingBuild extends Build {
       ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
-    ),
-
-    // common info to all projects
-    version := "0.1-SNAPSHOT",
-    organization := "org.scala-miniboxing.plugins",
-    organizationName := "LAMP/EPFL",
-    organizationHomepage := "http://lamp.epfl.ch",
-    licenses := Seq("BSD-style" -> url("http://www.scala-lang.org/license.html")),
-    homepage := Some(url("http://scala-miniboxing.org"))
+    )
   )
 
   val publishCredFile = "miniboxing.maven.credentials-file"
