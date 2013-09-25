@@ -22,6 +22,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   }
 
   def checkNoStorage(tree: Tree) = {
+    println(tree)
     for (t <- tree)
       assert(noStorageAnnot(t.tpe), t + ": " + t.tpe)
     tree
@@ -47,25 +48,40 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
     override def transform(tree: Tree): Tree = specTransform(tree)
 
-    def specTransform(tree: Tree): Tree = {
-      val oldTpe = tree.tpe
-      if (tree.hasSymbol)
-        tree.symbol.info // force new info on the symbol
+    var indent = 0
+
+    def specTransform(tree0: Tree): Tree = {
+//      val crtindent = indent
+//      indent += 2
+//      println(" " * crtindent + " --> " + tree0)
+      val oldTpe = tree0.tpe
+
+      // force new info on the symbol
+      if (tree0.hasSymbol)
+        tree0.symbol.info
+
+      // record the type before we modify it
+      val funtpe = tree0 match {
+        case Apply(fun, _) => fun.tpe
+        case _ => NoType
+      }
+
+      // transform subtrees of the tree
+      val tree = super.transform(tree0)
 
       // minibox => box conversion
       val tree1 = tree match {
-        case Apply(fun, args) =>
-          val nfun = specTransform(fun)
-          val nargs = args.map(specTransform)
+        case Apply(nfun, nargs) =>
           val aargs =
-            for ((narg, tpe) <- nargs zip fun.tpe.paramTypes) yield
+            for ((narg, tpe) <- nargs zip funtpe.paramTypes) yield
               if (!(narg.tpe =:= LongTpe) && (tpe =:= LongTpe))
                 convert_box_to_minibox(narg, currentMethod, currentClass)
               else if ((narg.tpe =:= LongTpe) && !(tpe =:= LongTpe))
                 convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
               else
                 narg
-          localTyper.typed(Apply(nfun, aargs))
+          val tree2 = localTyper.typed(Apply(nfun, aargs))
+          tree2
         case _ =>
           tree
       }
@@ -75,9 +91,8 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
         case EmptyTree =>
           EmptyTree
         case _ =>
-          val tree1 = super.transform(tree)
-          val oldTpe = tree.tpe
-          val newTpe = deepTransformation(tree.tpe)
+          val oldTpe = tree1.tpe
+          val newTpe = deepTransformation(tree1.tpe)
           tree1.tpe = newTpe
 
           // TODO: Getting type tags just to test whether the type
@@ -95,6 +110,9 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
           assert(noStorageAnnot(tree2.tpe), tree + "   <old>: " + oldTpe + "   <new>: " + newTpe)
           tree2
       }
+
+//      indent -= 2
+//      println(" " * crtindent + " --> " + tree2)
 
       tree2
     }
