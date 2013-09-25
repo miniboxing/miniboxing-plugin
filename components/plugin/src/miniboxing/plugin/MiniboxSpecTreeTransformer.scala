@@ -62,18 +62,26 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
       // transform subtrees of the tree
       val tree1 = super.transform(tree0)
 
+      def adapt(arg: Tree, ftpe: Type) = {
+        val narg =
+          if (!(arg.tpe =:= LongTpe) && (ftpe =:= LongTpe))
+            convert_box_to_minibox(arg, currentMethod, currentClass)
+          else if ((arg.tpe =:= LongTpe) && !(ftpe =:= LongTpe))
+            convert_minibox_to_box(arg, ftpe, currentMethod, currentClass)
+          else
+            arg
+        localTyper.typed(narg)
+      }
+
       // minibox => box conversion
       val tree2 = tree1 match {
         case Apply(nfun, nargs) =>
           val aargs =
-            for ((narg, tpe) <- nargs zip nfun.tpe.paramTypes) yield
-              if (!(narg.tpe =:= LongTpe) && (tpe =:= LongTpe))
-                convert_box_to_minibox(narg, currentMethod, currentClass)
-              else if ((narg.tpe =:= LongTpe) && !(tpe =:= LongTpe))
-                convert_minibox_to_box(narg, tpe, currentMethod, currentClass)
-              else
-                narg
+            for ((narg, tpe) <- nargs zip nfun.tpe.paramTypes)
+              yield adapt(narg, tpe)
           localTyper.typed(Apply(nfun, aargs))
+        case DefDef(_, _, _, _, tpt, rhs) if rhs != EmptyTree =>
+          localTyper.typed(deriveDefDef(tree1)(_ => adapt(rhs, tpt.tpe)))
         case _ =>
           tree1
       }
