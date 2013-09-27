@@ -72,13 +72,22 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
             for ((arg, ptpe) <- args zip funParamTypes)
               yield specTransform(arg, boxed = !ptpe.hasAnnotation(StorageClass))
           val ntree = Apply(nfun, nargs)
-//          println()
-//          println(ntree)
-//          println(args zip funParamTypes zip nargs)
+          //  println()
+          //  println(ntree)
+          //  println(args zip funParamTypes zip nargs)
           localTyper.typed(ntree)
-        // TODO: Do we still need these?
-        //case DefDef(_, _, _, _, tpt, rhs) if rhs != EmptyTree =>
-        //  localTyper.typed(deriveDefDef(tree1)(_ => atOwner(tree1.symbol)(adapt(rhs, tpt.tpe))))
+        case DefDef(mods, name, tparams, vparamss, tpt, rhs) if rhs != EmptyTree =>
+          val origRet = beforeMiniboxSpec(tree0.symbol.tpe.finalResultType)
+          val boxed = !origRet.hasAnnotation(StorageClass)
+          val ntparams = tparams.map(transform(_).asInstanceOf[TypeDef])
+          val nvparamss = vparamss.map(_.map(transform(_).asInstanceOf[ValDef]))
+          val ntpt = transform(tpt)
+          val nrhs = atOwner(tree0.symbol)(localTyper.typed(specTransform(rhs, boxed)))
+          val ntree = DefDef(mods, name, ntparams, nvparamss, ntpt, nrhs).setSymbol(tree0.symbol)
+          //  println(tree0.symbol)
+          //  println(origRet)
+          //  println(ntree)
+          localTyper.typed(ntree)
         //case ValDef(_, _, tpt, rhs) if rhs != EmptyTree =>
         //  localTyper.typed(deriveValDef(tree1)(_ => adapt(rhs, tpt.tpe)))
         // TODO: LabelDef
