@@ -46,64 +46,74 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
-    override def transform(tree: Tree): Tree = specTransform(tree)
+    override def transform(tree: Tree): Tree = specTransform(tree, boxed = false)
 
     var indent = 0
 
-    def specTransform(tree0: Tree): Tree = {
+    def specTransform(tree0: Tree, boxed: Boolean): Tree = {
 //      val crtindent = indent
 //      indent += 2
 //      println(" " * crtindent + " --> " + tree0)
+
+      val origTpe = tree0.tpe
 
       // force new info on the symbol
       if (tree0.hasSymbol)
         tree0.symbol.info
 
-      // transform subtrees of the tree
-      val tree1 = super.transform(tree0)
-
-      def adapt(arg: Tree, ftpe: Type) = {
-        val narg =
-          if (!(arg.tpe =:= LongTpe) && (ftpe =:= LongTpe))
-            convert_box_to_minibox(arg, currentMethod, currentClass)
-          else if ((arg.tpe =:= LongTpe) && !(ftpe =:= LongTpe))
-            convert_minibox_to_box(arg, ftpe, currentMethod, currentClass)
-          else
-            arg
-        localTyper.typed(narg)
-      }
-
-      // minibox => box conversion
-      val tree2 = tree1 match {
-        case Apply(nfun, nargs) =>
-          val aargs =
-            for ((narg, tpe) <- nargs zip nfun.tpe.paramTypes)
-              yield adapt(narg, tpe)
-          localTyper.typed(Apply(nfun, aargs))
-        case DefDef(_, _, _, _, tpt, rhs) if rhs != EmptyTree =>
-          localTyper.typed(deriveDefDef(tree1)(_ => adapt(rhs, tpt.tpe)))
+      // constraints-based tree transformations
+      val tree1 = tree0 match {
+        case Apply(fun, args) =>
+          val funTpe = fun.tpe
+          val funParamTypes = beforeMiniboxSpec(funTpe.paramTypes)
+          val nfun = transform(fun)
+          // adapted arguments
+          val nargs =
+            for ((arg, ptpe) <- args zip funParamTypes)
+              yield specTransform(arg, boxed = !ptpe.hasAnnotation(StorageClass))
+          val ntree = Apply(nfun, nargs)
+//          println()
+//          println(ntree)
+//          println(args zip funParamTypes zip nargs)
+          localTyper.typed(ntree)
+        // TODO: Do we still need these?
+        //case DefDef(_, _, _, _, tpt, rhs) if rhs != EmptyTree =>
+        //  localTyper.typed(deriveDefDef(tree1)(_ => atOwner(tree1.symbol)(adapt(rhs, tpt.tpe))))
+        //case ValDef(_, _, tpt, rhs) if rhs != EmptyTree =>
+        //  localTyper.typed(deriveValDef(tree1)(_ => adapt(rhs, tpt.tpe)))
+        // TODO: LabelDef
         case _ =>
-          tree1
+          super.transform(tree0)
       }
 
-      // box => minibox conversion
-      val tree3 = tree2 match {
+      // conversion-based tree transformations
+      val tree2 = tree1 match {
         case EmptyTree =>
           EmptyTree
         case _ =>
-          tree2.tpe = deepTransformation(tree2.tpe)
+          val oldTpe = origTpe
+          val newTpe = deepTransformation(oldTpe)
+          tree1.tpe = newTpe
 
-          // TODO: Getting type tags just to test whether the type
-          // is miniboxed is a bit heavy-handed - maybe we can use
-          // a lighter trick for this.
-          lazy val tags = typeTagTrees(currentMethod, currentClass)
           val ntree =
-            if (!tree2.isInstanceOf[TypeTree] &&
-                tree2.tpe.typeSymbol.isTypeParameterOrSkolem &&
-                tags.isDefinedAt(tree2.tpe.typeSymbol))
-              localTyper.typed(convert_box_to_minibox(tree2, currentMethod, currentClass))
-            else
-              tree2
+            if (oldTpe.hasAnnotation(StorageClass))
+              if (boxed)
+                localTyper.typed(convert_minibox_to_box(tree1, oldTpe.withoutAnnotations, currentMethod, currentClass))
+              else
+                tree1
+            else // oldTpe doesn't have StorageClass annotation, thus is boxed
+              if (boxed)
+                tree1
+              else {
+                // optimistically minibox values
+                lazy val tags = typeTagTrees(currentMethod, currentClass)
+                if (!tree1.isInstanceOf[TypeTree] &&
+                     tree1.tpe.typeSymbol.isTypeParameterOrSkolem &&
+                     tags.isDefinedAt(tree1.tpe.typeSymbol))
+                  localTyper.typed(convert_box_to_minibox(tree1, currentMethod, currentClass))
+                else
+                  tree1
+              }
 
           assert(noStorageAnnot(ntree.tpe))
           ntree
@@ -112,7 +122,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 //      indent -= 2
 //      println(" " * crtindent + " --> " + tree2)
 
-      tree3
+      tree2
     }
   }
 }
