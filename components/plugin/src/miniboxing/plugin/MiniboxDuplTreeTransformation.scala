@@ -32,7 +32,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     val tpe = tree.tpe
     val tags = typeTagTrees(currentOwner)
     // sanity checks
-    assert(tpe != LongTpe, tree + " expecting .tpe to be Tsp, not Long.")
+    // this is a wrong assumption, violated when overriding miniboxed type params by long:
+    // assert(tpe != LongTpe, tree + " expecting .tpe to be Tsp, not Long.")
     assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
 
     gen.mkMethodCall(box2minibox, List(tpe), List(tree, tags(tpe.typeSymbol)))
