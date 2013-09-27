@@ -17,41 +17,46 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
   import memberSpecializationInfo._
 
   /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_minibox_to_box(tree: Tree, tpe: Type, currentMethod: Symbol, currentClass: Symbol): Tree = {
+  def convert_minibox_to_box(tree: Tree, tpe: Type, currentOwner: Symbol): Tree = {
     val tpe1 = tree.tpe
-    val tags = typeTagTrees(currentMethod, currentClass)
+    val tags = typeTagTrees(currentOwner)
     // sanity checks
     assert(tpe1 == LongTpe, tree + " expecting .tpe to be Long, not " + tpe + ".")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentMethod + " of " + currentClass)
+    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
 
     gen.mkMethodCall(minibox2box, List(tpe), List(tree, tags(tpe.typeSymbol)))
   }
 
   /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_box_to_minibox(tree: Tree, currentMethod: Symbol, currentClass: Symbol): Tree = {
+  def convert_box_to_minibox(tree: Tree, currentOwner: Symbol): Tree = {
     val tpe = tree.tpe
-    val tags = typeTagTrees(currentMethod, currentClass)
+    val tags = typeTagTrees(currentOwner)
     // sanity checks
     assert(tpe != LongTpe, tree + " expecting .tpe to be Tsp, not Long.")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentMethod + " of " + currentClass)
+    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
 
     gen.mkMethodCall(box2minibox, List(tpe), List(tree, tags(tpe.typeSymbol)))
   }
 
+  var ttindent = 0
+
   // TODO: This should be:
   // 1) lazy in computing the trees
   // 2) moved over to miniboxing logic, as it's not specific to trees
-  def typeTagTrees(member: Symbol, clazz: Symbol) = {
-    Map.empty ++
-    inheritedDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
-    primaryDeferredTypeTags.getOrElse(clazz, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
-    globalTypeTags.getOrElse(clazz, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-    member.ownerChain.filter(_.isMethod).reverse.foldLeft(Map.empty[Symbol, Tree])((m, s) => m ++ localTypeTagTrees(s)) ++
-    standardTypeTagTrees // override existing type tags
+  def typeTagTrees(owner: Symbol): Map[Symbol, Tree] = {
+    ttindent += 1
+//    println("  " * ttindent + " <= type tag trees for " + owner + " owner chain: " + owner.ownerChain.reverse)
+    val prev = if (owner.owner != NoSymbol) typeTagTrees(owner.owner) else Map.empty
+    val res = prev ++
+      inheritedDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
+      primaryDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
+      globalTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
+      localTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
+      standardTypeTagTrees // override existing type tags
+//    println("  " * ttindent + " => type tag trees for " + owner + ": " + res)
+    ttindent -= 1
+    res
   }
-
-  def localTypeTagTrees(symbol: Symbol): Map[Symbol, Tree] =
-    localTypeTags.getOrElse(symbol, Map.empty).map({case (t, tag) => (t, Ident(tag))})
 
   /**
    * The tree transformer that adds the trees for the specialized classes inside
@@ -100,8 +105,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
-    def typeTagTrees(member: Symbol = currentMethod, clazz: Symbol = currentClass) =
-      MiniboxDuplTreeTransformation.this.typeTagTrees(member, clazz)
+    def typeTagTrees(member: Symbol = currentOwner) =
+      MiniboxDuplTreeTransformation.this.typeTagTrees(member)
 
     override def transform(tree: Tree): Tree = miniboxTransform(tree)
 

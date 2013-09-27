@@ -136,14 +136,16 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
                 tree1
               case Boxed =>
                 if (oldTpe.hasAnnotation(StorageClass))
-                  localTyper.typed(convert_minibox_to_box(tree1, oldTpe.withoutAnnotations, currentMethod, currentClass))
+                  localTyper.typed(convert_minibox_to_box(tree1, oldTpe.withoutAnnotations, currentOwner))
                 else
                   tree1
               case Miniboxed =>
                 if (oldTpe.hasAnnotation(StorageClass))
                   tree1
-                else
-                  localTyper.typed(convert_box_to_minibox(tree1, currentMethod, currentClass))
+                else {
+                  println(tree1)
+                  localTyper.typed(convert_box_to_minibox(tree1, currentOwner))
+                }
             }
 
           assert(noStorageAnnot(ntree.tpe))
