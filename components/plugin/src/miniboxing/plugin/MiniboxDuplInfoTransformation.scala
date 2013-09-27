@@ -112,7 +112,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           case _ =>
             super.mapOver(tp)
         }
-//        println(tp + " ==> " +res)
         res
       }
     }
@@ -564,7 +563,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val normalizationsOfMember = new HashMap[PartialSpec, Symbol]
 
           val env = typeEnv.getOrElse(member, EmptyTypeEnv)
-          val specializedTypeMap = MiniboxSubst(env)
           val newMembers = (for (pspec <- pspecs) yield {
             var newMbr = member
             if (!PartialSpec.isAllAnyRef(pspec)) {
@@ -580,7 +578,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                     case (p, Boxed)     => None // stays the same
                     case (p, Miniboxed) => Some((deepEnv(p), storageType(deepEnv(p))))
                   }
-                val info1 = specializedTypeMap(info0.resultType)
+                val normalizedTypeMap = MiniboxSubst(normalizedEnv)
+                val info1 = normalizedTypeMap(info0.resultType)
                 typeParamMap(newMbr) = deepEnv.map(_.swap).toMap
                 typeEnv(newMbr) = env ++ normalizedEnv
                 val localTags =
