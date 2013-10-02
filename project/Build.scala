@@ -39,7 +39,7 @@ object MiniboxingBuild extends Build {
 
   val publishCredFile = "miniboxing.maven.credentials-file"
   val publishDeps: Seq[Setting[_]] = sys.props.get(publishCredFile) match {
-    case Some(fileName) => 
+    case Some(credFile) => 
       Seq(
         // sonatype
         publishMavenStyle := true,
@@ -64,7 +64,7 @@ object MiniboxingBuild extends Build {
               <url>http://vladureche.ro</url>
             </developer>
           </developers>),
-        credentials += Credentials({ new java.io.File(sys.props("miniboxing.maven.credentials-file")) })
+        credentials += Credentials({ new java.io.File(credFile) })
       )
    case None => 
      Seq(
