@@ -95,8 +95,8 @@ object MiniboxingBuild extends Build {
   )
 
   val scalaMeter = {
-    val sMeter  = Seq("com.github.axel22" %% "scalameter" % "0.3")
-    // val sMeter  = Seq("com.github.axel22" % "scalameter_2.10.0" % "0.2.1-SNAPSHOT") // published locally
+    // nightlies!!! https://github.com/axel22/scalameter/pull/33
+    val sMeter  = Seq("com.github.axel22" %% "scalameter" % "0.4-SNAPSHOT")
     Seq(
       libraryDependencies ++= sMeter, 
       testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
