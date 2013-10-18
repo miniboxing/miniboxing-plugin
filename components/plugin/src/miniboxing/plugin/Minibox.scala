@@ -81,10 +81,10 @@ class Minibox(val global: Global) extends Plugin {
   override val optionsHelp: Option[String] = Some(
     s"  -P:${name}:log               log miniboxing signature transformations\n" +
     s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)\n" +
-    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)" +
-    s"  -P:${name}:hijack-spec       hijack the @specialized(...) notation for miniboxing" +
-    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations" +
-    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)")
+    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)\n" +
+    s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing\n" +
+    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
+    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n")
 
   private object MiniboxPhase extends MiniboxComponent {
 
