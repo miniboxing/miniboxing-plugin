@@ -57,7 +57,7 @@ object MiniboxConversions {
    * As a workaround, in our test examples we manually insert minibox2box
    * in such places.
    */
-  @inline final def minibox2box[T](l: Long, tag: Byte) : T = {
+  final def minibox2box[T](l: Long, tag: Byte) : T = {
     val ret: Any = tag.asInstanceOf[Byte] match {
       // See https://issues.scala-lang.org/browse/SI-6956
       case UNIT => ()
@@ -78,7 +78,7 @@ object MiniboxConversions {
    *  We do not need to return the type tag also since it is known in the
    *  calling context.
    */
-  @inline final def box2minibox(a: Any): Long = a match {
+  final def box2minibox(a: Any): Long = a match {
     case b : Boolean => if (b) 1 else 0
     case b : Byte => b.toLong
     case u : Unit => 0
@@ -94,7 +94,7 @@ object MiniboxConversions {
   /*
    *  Used in the rewiring, to keep the type and tag on all types
    */
-  @inline final def box2minibox_tt[T](a: T, tag: Byte): Long = a match {
+  final def box2minibox_tt[T](a: T, tag: Byte): Long = a match {
     case b : Boolean => if (b) 1 else 0
     case b : Byte => b.toLong
     case u : Unit => 0
