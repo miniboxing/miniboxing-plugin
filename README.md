@@ -3,6 +3,8 @@
 
 Miniboxing is a lightweight approach to specializing generic classes in the Scala compiler. It revisits the current [specialization](http://infoscience.epfl.ch/record/150134/files/p42-dragos.pdf) transformation, but makes different choices aimed at reducing the bytecode without sacrificing execution speed.
 
+#### Check out [the scala-miniboxing.org website](http://scala-miniboxing.org).
+
 ##Why use Miniboxing?##
 **Short answer:** because it matches the performance of specialization, without the bytecode blowup. For the `Tuple3` class:
 ```
