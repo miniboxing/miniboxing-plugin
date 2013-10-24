@@ -31,7 +31,7 @@ object MiniboxingBuild extends Build {
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
     resolvers in ThisBuild ++= Seq(
-      ScalaToolsSnapshots,
+      // ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
     )
@@ -39,7 +39,7 @@ object MiniboxingBuild extends Build {
 
   val publishCredFile = "miniboxing.maven.credentials-file"
   val publishDeps: Seq[Setting[_]] = sys.props.get(publishCredFile) match {
-    case Some(credFile) => 
+    case Some(credFile) =>
       Seq(
         // sonatype
         publishMavenStyle := true,
@@ -66,14 +66,14 @@ object MiniboxingBuild extends Build {
           </developers>),
         credentials += Credentials({ new java.io.File(credFile) })
       )
-   case None => 
+   case None =>
      Seq(
        publish <<= streams.map(_.log.info("Publishing to Sonatype is disabled since the \"" + publishCredFile + "\" variable is not set."))
      )
   }
 
   val nopublishDeps = Seq(
-    publish := { }, 
+    publish := { },
     publishLocal := { }
   )
 
@@ -98,7 +98,7 @@ object MiniboxingBuild extends Build {
     // nightlies!!! https://github.com/axel22/scalameter/pull/33
     val sMeter  = Seq("com.github.axel22" %% "scalameter" % "0.4-SNAPSHOT")
     Seq(
-      libraryDependencies ++= sMeter, 
+      libraryDependencies ++= sMeter,
       testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework")
     )
   }
@@ -116,7 +116,7 @@ object MiniboxingBuild extends Build {
     getJarsTask,
     fork in Test := true,
     javaOptions in Test <+= (dependencyClasspath in Runtime, packageBin in Compile in plugin) map { (path, _) =>
-      def isBoot(file: java.io.File) = 
+      def isBoot(file: java.io.File) =
         ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
         (file.toString contains "target/scala-2.10") // this makes me cry, seriously sbt...
 
@@ -125,7 +125,7 @@ object MiniboxingBuild extends Build {
       cp
     },
     libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-partest" % scalaVer, 
+      "org.scala-lang" % "scala-partest" % scalaVer,
       "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
     )
   )
