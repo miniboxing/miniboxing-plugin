@@ -101,38 +101,34 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             localTyper.typedPos(tree.pos)(packageTree)
           }
 
-        /*
-         * This is either a class that has nothing to do with miniboxing or that is the base
-         * class (now trait) for the specialization.
-         *
-         * Also collect the bodies of the methods that need to be copied and specialized.
-         */
-        case Template(parents, self, body) if { afterMinibox(tree.symbol.enclClass.info); specializedBase(tree.symbol.enclClass) } =>
-          MethodBodiesCollector(tree)
-          val traitSym = tree.symbol.enclClass
-          val traitDecls = afterMinibox(traitSym.info).decls.toList
-          val specClassesTpls = createSpecializedClassesTrees(body)
-          val specClassesTped = specClassesTpls map localTyper.typed
-          val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
-          val parents1 = map2(traitSym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
-          val tree1 = localTyper.typedPos(tree.pos)(
-            treeCopy.Template(tree, parents1, self,
-              atOwner(currentOwner)(transformTrees(body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers ::: specClassesTped))))
-          tree1
-
-        /*
-         * The tree of a specialized class is empty for the moment, but we
-         * create symbols for the methods - give them an empty body.
-         */
         case Template(parents, self, body) =>
           MethodBodiesCollector(tree)
-          val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
-          val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
-          val parents1 = map2(currentOwner.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
-          val templateDef = treeCopy.Template(tree, parents1, self, memberDefs)
-          val tree1 = localTyper.typedPos(tree.pos)(templateDef)
-          tree1
+          afterMinibox(tree.symbol.enclClass.info)
 
+          if (specializedBase(tree.symbol.enclClass)) {
+            //  This is either a class that has nothing to do with miniboxing or that is the base
+            //  class (now trait) for the specialization.
+            //  Also collect the bodies of the methods that need to be copied and specialized.
+            val traitSym = tree.symbol.enclClass
+            val traitDecls = afterMinibox(traitSym.info).decls.toList
+            val specClassesTpls = createSpecializedClassesTrees(body)
+            val specClassesTped = specClassesTpls map localTyper.typed
+            val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
+            val parents1 = map2(traitSym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+            val tree1 = localTyper.typedPos(tree.pos)(
+              treeCopy.Template(tree, parents1, self,
+                atOwner(currentOwner)(transformTrees(body.filter(defdef => traitDecls.contains(defdef.symbol)) ::: specMembers ::: specClassesTped))))
+            tree1
+          } else {
+            //  The tree of a specialized class is empty for the moment, but we
+            //  create symbols for the methods - give them an empty body.
+            val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
+            val memberDefs = atOwner(currentOwner)(transformTrees(body ::: specMembers))
+            val parents1 = map2(currentOwner.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+            val templateDef = treeCopy.Template(tree, parents1, self, memberDefs)
+            val tree1 = localTyper.typedPos(tree.pos)(templateDef)
+            tree1
+          }
         /*
          * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
          */
