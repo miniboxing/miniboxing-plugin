@@ -43,6 +43,19 @@ trait HijackComponent extends
   def flag_hijack_spec: Boolean
 }
 
+trait PreTyperComponent extends
+  PluginComponent with
+  TypingTransformers {
+  val miniboxing: MiniboxComponent { val global: PreTyperComponent.this.global.type }
+}
+
+trait PostTyperComponent extends
+  PluginComponent with
+  TypingTransformers {
+
+  import global._; import Flags._
+  val miniboxing: MiniboxComponent { val global: PostTyperComponent.this.global.type }
+}
 
 class Minibox(val global: Global) extends Plugin {
   import global._
@@ -50,7 +63,7 @@ class Minibox(val global: Global) extends Plugin {
   val name = "minibox"
   val description = "spcializes generic classes"
 
-  val components = List[PluginComponent](HijackPhase, MiniboxPhase)
+  val components = List[PluginComponent](HijackPhase, MiniboxPhase, PreTyperPhase, PostTyperPhase)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
@@ -128,6 +141,44 @@ class Minibox(val global: Global) extends Plugin {
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = tree
     }
+  }
 
+  private object PreTyperPhase extends {
+    val miniboxing: MiniboxPhase.type = MiniboxPhase
+  } with PreTyperComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List()
+    override val runsRightAfter = Some("parser")
+    val phaseName = "mb-pretyper"
+
+    def newPhase(_prev: Phase) = new StdPhase(_prev) {
+      override def name = PreTyperPhase.phaseName
+      def apply(unit: CompilationUnit) {
+        import global._; import Flags._
+        for (sym <- miniboxing.specializedBase)
+          if (miniboxing.originalTraitFlag(sym))
+            sym.resetFlag(ABSTRACT)
+          else
+            sym.resetFlag(ABSTRACT | TRAIT)
+      }
+    }
+  }
+
+  private object PostTyperPhase extends {
+    val miniboxing: MiniboxPhase.type = MiniboxPhase
+  } with PreTyperComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List("typer")
+    override val runsRightAfter = Some("typer")
+    val phaseName = "mb-posttyper"
+
+    def newPhase(_prev: Phase) = new StdPhase(_prev) {
+      override def name = PostTyperPhase.phaseName
+      def apply(unit: CompilationUnit) {
+        import global._; import Flags._
+        for (sym <- miniboxing.specializedBase)
+          sym.setFlag(ABSTRACT | TRAIT)
+      }
+    }
   }
 }
