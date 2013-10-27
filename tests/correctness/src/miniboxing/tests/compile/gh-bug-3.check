@@ -5,16 +5,16 @@ package miniboxing.tests.compile {
     def hashMode_J(T_TypeTag: Byte): Long
   };
   class BUG3_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.BUG3[Tsp] {
-    def <init>(miniboxing$tests$compile$BUG3_J|T_TypeTag: Byte): miniboxing.tests.compile.BUG3_J[Tsp] = {
+    def <init>(miniboxing|tests|compile|BUG3_J|T_TypeTag: Byte): miniboxing.tests.compile.BUG3_J[Tsp] = {
       BUG3_J.super.<init>();
       ()
     };
-    def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.miniboxing$tests$compile$BUG3_J|T_TypeTag), BUG3_J.this.miniboxing$tests$compile$BUG3_J|T_TypeTag);
+    def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag), BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag);
     def hashMode_J(T_TypeTag: Byte): Long = {
       val headhash: Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
       headhash
     };
-    <paramaccessor> private[this] val miniboxing$tests$compile$BUG3_J|T_TypeTag: Byte = _
+    <paramaccessor> private[this] val miniboxing|tests|compile|BUG3_J|T_TypeTag: Byte = _
   };
   class BUG3_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.BUG3[Tsp] {
     def <init>(): miniboxing.tests.compile.BUG3_L[Tsp] = {

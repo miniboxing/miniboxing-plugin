@@ -8,10 +8,10 @@ Specializing class TParams1...
 
   // specialized class:
   class TParams1_J[Tsp] extends TParams1[Tsp] {
-    def <init>(val miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] // is a specialized implementation of constructor TParams1
+    def <init>(val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] // is a specialized implementation of constructor TParams1
     def foo[X](t: Tsp,x: X): Int                                           // is a forwarder to method foo_J
     def foo_J[X](val T_TypeTag: Byte,t: Long,x: X): Int                    // is a specialized implementation of method foo
-    private[this] val miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag: Byte // no info
+    private[this] val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte // no info
   }
 
   // specialized class:
@@ -31,13 +31,13 @@ package miniboxing.tests.compile.tparams {
     def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int
   };
   class TParams1_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
-    def <init>(miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] = {
+    def <init>(miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] = {
       TParams1_J.super.<init>();
       ()
     };
-    def foo[X >: Nothing <: Any](t: Tsp, x: X): Int = TParams1_J.this.foo_J[X](TParams1_J.this.miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TParams1_J.this.miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag), x);
+    def foo[X >: Nothing <: Any](t: Tsp, x: X): Int = TParams1_J.this.foo_J[X](TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag), x);
     def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int = 12;
-    <paramaccessor> private[this] val miniboxing$tests$compile$tparams$TParams1_J|T_TypeTag: Byte = _
+    <paramaccessor> private[this] val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte = _
   };
   class TParams1_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
     def <init>(): miniboxing.tests.compile.tparams.TParams1_L[Tsp] = {

@@ -5,13 +5,13 @@ package miniboxing.tests.compile {
     def extend_J(T_TypeTag: Byte): Int
   };
   class LocalValuesHandling_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {
-    def <init>(miniboxing$tests$compile$LocalValuesHandling_J|T_TypeTag: Byte): miniboxing.tests.compile.LocalValuesHandling_J[Tsp] = {
+    def <init>(miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag: Byte): miniboxing.tests.compile.LocalValuesHandling_J[Tsp] = {
       LocalValuesHandling_J.super.<init>();
       ()
     };
-    def extend(): Int = LocalValuesHandling_J.this.extend_J(LocalValuesHandling_J.this.miniboxing$tests$compile$LocalValuesHandling_J|T_TypeTag);
+    def extend(): Int = LocalValuesHandling_J.this.extend_J(LocalValuesHandling_J.this.miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag);
     def extend_J(T_TypeTag: Byte): Int = LocalValuesHandling_J.this.x.+(1);
-    <paramaccessor> private[this] val miniboxing$tests$compile$LocalValuesHandling_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag: Byte = _;
     private[this] val x: Int = 0
   };
   class LocalValuesHandling_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {

@@ -2,15 +2,15 @@
 package miniboxing.tests.compile.breeze3 {
   abstract trait Vector[@miniboxed E >: Nothing <: Any] extends Object;
   class Vector_J[Esp >: Nothing <: Any] extends Object with miniboxing.tests.compile.breeze3.Vector[Esp] {
-    def <init>(miniboxing$tests$compile$breeze3$Vector_J|E_TypeTag: Byte, size: Int): miniboxing.tests.compile.breeze3.Vector_J[Esp] = {
+    def <init>(miniboxing|tests|compile|breeze3|Vector_J|E_TypeTag: Byte, size: Int): miniboxing.tests.compile.breeze3.Vector_J[Esp] = {
       Vector_J.super.<init>();
       ()
     };
-    def <init>(miniboxing$tests$compile$breeze3$Vector_J|E_TypeTag: Byte): miniboxing.tests.compile.breeze3.Vector_J[Esp] = {
-      Vector_J.this.<init>(miniboxing$tests$compile$breeze3$Vector_J|E_TypeTag, 10);
+    def <init>(miniboxing|tests|compile|breeze3|Vector_J|E_TypeTag: Byte): miniboxing.tests.compile.breeze3.Vector_J[Esp] = {
+      Vector_J.this.<init>(miniboxing|tests|compile|breeze3|Vector_J|E_TypeTag, 10);
       ()
     };
-    <paramaccessor> private[this] val miniboxing$tests$compile$breeze3$Vector_J|E_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|breeze3|Vector_J|E_TypeTag: Byte = _;
     <paramaccessor> private[this] val size: Int = _
   };
   class Vector_L[Esp >: Nothing <: Any] extends Object with miniboxing.tests.compile.breeze3.Vector[Esp] {

@@ -21,8 +21,8 @@ Specializing class Complex...
 
   // specialized class:
   case class Complex_J[Tsp] extends Product with Serializable with Complex[Tsp] {
-    def <init>(val miniboxing$tests$compile$Complex_J|T_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
-    private[this] val miniboxing$tests$compile$Complex_J|T_TypeTag: Byte   // no info
+    def <init>(val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
+    private[this] val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte   // no info
     private[this] val t1: Long                                             // is a specialized implementation of value t1
     private[this] val t2: Long                                             // is a specialized implementation of value t2
     val t1(): Tsp                                                          // is a forwarder to value t1_J
@@ -102,16 +102,16 @@ package miniboxing.tests.compile {
     <synthetic> private def readResolve(): Object = compile.this.Complex
   };
   case class Complex_J[Tsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
-    def <init>(miniboxing$tests$compile$Complex_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex_J[Tsp] = {
+    def <init>(miniboxing|tests|compile|Complex_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex_J[Tsp] = {
       Complex_J.super.<init>();
       ()
     };
-    <paramaccessor> private[this] val miniboxing$tests$compile$Complex_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte = _;
     <caseaccessor> <paramaccessor> private[this] val t1: Long = _;
     <caseaccessor> <paramaccessor> private[this] val t2: Long = _;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t1_J(Complex_J.this.miniboxing$tests$compile$Complex_J|T_TypeTag), Complex_J.this.miniboxing$tests$compile$Complex_J|T_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t1_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
     <stable> <caseaccessor> <accessor> <paramaccessor> def t1_J(T_TypeTag: Byte): Long = Complex_J.this.t1;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t2_J(Complex_J.this.miniboxing$tests$compile$Complex_J|T_TypeTag), Complex_J.this.miniboxing$tests$compile$Complex_J|T_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2_J(T_TypeTag: Byte): Long = Complex_J.this.t2
   };
   case class Complex_L[Tsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {

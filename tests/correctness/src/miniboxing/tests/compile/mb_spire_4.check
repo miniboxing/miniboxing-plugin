@@ -8,7 +8,7 @@ Specializing trait Dist...
 
   // specialized class:
   abstract trait Dist_J[Asp] extends Dist[Asp] {
-    def miniboxing$tests$compile$Dist_J|A_TypeTag(): Byte                  // is a type tag
+    def miniboxing|tests|compile|Dist_J|A_TypeTag(): Byte                  // is a type tag
     def sample[CC[A] <: Iterable[A]](n: Int,implicit a: Asp,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a forwarder to method sample_J
     def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Long,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a specialized implementation of method sample
   }
@@ -29,8 +29,8 @@ package miniboxing.tests.compile {
     def sample_J[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A]
   };
   abstract trait Dist_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist[Asp] {
-    def miniboxing$tests$compile$Dist_J|A_TypeTag(): Byte;
-    def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_J.this.sample_J[CC](Dist_J.this.miniboxing$tests$compile$Dist_J|A_TypeTag(), n, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist_J.this.miniboxing$tests$compile$Dist_J|A_TypeTag()), cbf);
+    def miniboxing|tests|compile|Dist_J|A_TypeTag(): Byte;
+    def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_J.this.sample_J[CC](Dist_J.this.miniboxing|tests|compile|Dist_J|A_TypeTag(), n, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist_J.this.miniboxing|tests|compile|Dist_J|A_TypeTag()), cbf);
     def sample_J[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = cbf.apply().result()
   };
   abstract trait Dist_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist[Asp] {

@@ -65,7 +65,9 @@ trait MiniboxLogic {
    * parameter `tparam`
    */
   def typeTagName(clazz: Symbol, tparam: Symbol): TermName =
-    nme.expandedName(shortTypeTagName(tparam), clazz, "|")
+    // See #55 for an explanation of why I did this: https://github.com/miniboxing/miniboxing-plugin/issues/55
+    newTermName(clazz.fullName('|') + "|" + shortTypeTagName(tparam))
+    // nme.expandedName(shortTypeTagName(tparam), clazz, "|")
 
   def shortTypeTagName(tparam: Symbol): TermName =
     newTermName(tparam.name.toString + "_TypeTag")

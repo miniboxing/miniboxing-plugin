@@ -12,11 +12,11 @@ package miniboxing.tests.compile.bug53 {
       };
       abstract trait BUG53[@miniboxed T >: Nothing <: Any] extends Object;
       class BUG53_J[Tsp >: Nothing <: Any] extends Object with X.this.BUG53[Tsp] {
-        def <init>(miniboxing$tests$compile$bug53$Test2$X$BUG53_J|T_TypeTag: Byte): X.this.BUG53_J[Tsp] = {
+        def <init>(miniboxing|tests|compile|bug53|Test2|X|BUG53_J|T_TypeTag: Byte): X.this.BUG53_J[Tsp] = {
           BUG53_J.super.<init>();
           ()
         };
-        <paramaccessor> private[this] val miniboxing$tests$compile$bug53$Test2$X$BUG53_J|T_TypeTag: Byte = _
+        <paramaccessor> private[this] val miniboxing|tests|compile|bug53|Test2|X|BUG53_J|T_TypeTag: Byte = _
       };
       class BUG53_L[Tsp >: Nothing <: Any] extends Object with X.this.BUG53[Tsp] {
         def <init>(): X.this.BUG53_L[Tsp] = {

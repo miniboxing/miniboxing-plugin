@@ -6,7 +6,7 @@ Specializing trait C...
 
   // specialized class:
   abstract trait C_J[Tsp] extends C[Tsp] {
-    def miniboxing$tests$compile$inheritance$traits$C_J|T_TypeTag(): Byte  // is a type tag
+    def miniboxing|tests|compile|inheritance|traits|C_J|T_TypeTag(): Byte  // is a type tag
   }
 
   // specialized class:
@@ -20,7 +20,7 @@ Specializing trait C...
 package miniboxing.tests.compile.inheritance.traits {
   abstract trait C[@miniboxed T >: Nothing <: Any] extends Object;
   abstract trait C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
-    def miniboxing$tests$compile$inheritance$traits$C_J|T_TypeTag(): Byte
+    def miniboxing|tests|compile|inheritance|traits|C_J|T_TypeTag(): Byte
   };
   abstract trait C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp]
 }

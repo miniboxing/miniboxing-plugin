@@ -14,9 +14,9 @@ Specializing class MyTuple2...
 
   // specialized class:
   class MyTuple2_JJ[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing$tests$compile$MyTuple2_JJ|T1_TypeTag: Byte,val miniboxing$tests$compile$MyTuple2_JJ|T2_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.MyTuple2_JJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
-    private[this] val miniboxing$tests$compile$MyTuple2_JJ|T1_TypeTag: Byte // no info
-    private[this] val miniboxing$tests$compile$MyTuple2_JJ|T2_TypeTag: Byte // no info
+    def <init>(val miniboxing|tests|compile|MyTuple2_JJ|T1_TypeTag: Byte,val miniboxing|tests|compile|MyTuple2_JJ|T2_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.MyTuple2_JJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    private[this] val miniboxing|tests|compile|MyTuple2_JJ|T1_TypeTag: Byte // no info
+    private[this] val miniboxing|tests|compile|MyTuple2_JJ|T2_TypeTag: Byte // no info
     private[this] val t1: Long                                             // is a specialized implementation of value t1
     private[this] val t2: Long                                             // is a specialized implementation of value t2
     val t1(): T1sp                                                         // is a forwarder to value t1_JJ
@@ -31,8 +31,8 @@ Specializing class MyTuple2...
 
   // specialized class:
   class MyTuple2_LJ[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing$tests$compile$MyTuple2_LJ|T2_TypeTag: Byte,t1: T1sp,t2: Long): miniboxing.tests.compile.MyTuple2_LJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
-    private[this] val miniboxing$tests$compile$MyTuple2_LJ|T2_TypeTag: Byte // no info
+    def <init>(val miniboxing|tests|compile|MyTuple2_LJ|T2_TypeTag: Byte,t1: T1sp,t2: Long): miniboxing.tests.compile.MyTuple2_LJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    private[this] val miniboxing|tests|compile|MyTuple2_LJ|T2_TypeTag: Byte // no info
     private[this] val t1: T1sp                                             // is a specialized implementation of value t1
     private[this] val t2: Long                                             // is a specialized implementation of value t2
     val t1(): T1sp                                                         // is a forwarder to value t1_LJ
@@ -47,8 +47,8 @@ Specializing class MyTuple2...
 
   // specialized class:
   class MyTuple2_JL[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing$tests$compile$MyTuple2_JL|T1_TypeTag: Byte,t1: Long,t2: T2sp): miniboxing.tests.compile.MyTuple2_JL[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
-    private[this] val miniboxing$tests$compile$MyTuple2_JL|T1_TypeTag: Byte // no info
+    def <init>(val miniboxing|tests|compile|MyTuple2_JL|T1_TypeTag: Byte,t1: Long,t2: T2sp): miniboxing.tests.compile.MyTuple2_JL[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    private[this] val miniboxing|tests|compile|MyTuple2_JL|T1_TypeTag: Byte // no info
     private[this] val t1: Long                                             // is a specialized implementation of value t1
     private[this] val t2: T2sp                                             // is a specialized implementation of value t2
     val t1(): T1sp                                                         // is a forwarder to value t1_JL

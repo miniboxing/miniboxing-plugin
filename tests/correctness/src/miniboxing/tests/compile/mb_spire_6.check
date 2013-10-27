@@ -10,12 +10,12 @@ Specializing class TailCallsCrasher...
 
   // specialized class:
   class TailCallsCrasher_J[Asp] extends TailCallsCrasher[Asp] {
-    def <init>(val miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] // is a specialized implementation of constructor TailCallsCrasher
+    def <init>(val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] // is a specialized implementation of constructor TailCallsCrasher
     final def zzz1(x: Asp): Asp                                            // is a forwarder to method zzz1_J
     final def zzz1_J(val A_TypeTag: Byte,x: Long): Long                    // is a specialized implementation of method zzz1
     private[this] def zzz2(x: Asp): Asp                                    // is a forwarder to method zzz2_J
     private[this] def zzz2_J(val A_TypeTag: Byte,x: Long): Long            // is a specialized implementation of method zzz2
-    private[this] val miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag: Byte // no info
+    private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte // no info
   }
 
   // specialized class:
@@ -39,15 +39,15 @@ package miniboxing.tests.compile {
     private[this] def zzz2_J(A_TypeTag: Byte, x: Long): Long
   };
   class TailCallsCrasher_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.TailCallsCrasher[Asp] {
-    def <init>(miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] = {
+    def <init>(miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] = {
       TailCallsCrasher_J.super.<init>();
       ()
     };
-    final def zzz1(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz1_J(TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag);
+    final def zzz1(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz1_J(TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag);
     @scala.annotation.tailrec final def zzz1_J(A_TypeTag: Byte, x: Long): Long = TailCallsCrasher_J.this.zzz1_J(A_TypeTag, x);
-    private[this] def zzz2(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz2_J(TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag);
+    private[this] def zzz2(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz2_J(TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag);
     @scala.annotation.tailrec private[this] def zzz2_J(A_TypeTag: Byte, x: Long): Long = TailCallsCrasher_J.this.zzz2_J(A_TypeTag, x);
-    <paramaccessor> private[this] val miniboxing$tests$compile$TailCallsCrasher_J|A_TypeTag: Byte = _
+    <paramaccessor> private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte = _
   };
   class TailCallsCrasher_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.TailCallsCrasher[Asp] {
     def <init>(): miniboxing.tests.compile.TailCallsCrasher_L[Asp] = {

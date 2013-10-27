@@ -294,7 +294,7 @@ trait MiniboxTreeTransformation extends TypingTransformers {
             }
 
         // Constructor call rewiring for specialized classes
-        //   new C[Int](3) => new C_J[Int](INT)(3.toInt)
+        //   new C[Int](3)              => new C_J[Int](INT, 3.toInt)
         //   <interface>.this.<init>(3) => <specialized>.this.<init>(...)
         case Apply(ctor @ Select(qual, nme.CONSTRUCTOR), args) if {
           qual match {
