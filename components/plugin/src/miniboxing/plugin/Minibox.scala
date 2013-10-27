@@ -169,7 +169,7 @@ class Minibox(val global: Global) extends Plugin {
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
-    override val runsRightAfter = Some("typer")
+    //override val runsRightAfter = Some("typer")
     val phaseName = "mb-posttyper"
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
