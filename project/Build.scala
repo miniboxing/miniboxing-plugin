@@ -6,7 +6,7 @@ import AssemblyKeys._
 
 object MiniboxingBuild extends Build {
 
-  val scalaVer = "2.10.4-SNAPSHOT"
+  val scalaVer = "2.10.3"
 
   // http://stackoverflow.com/questions/6506377/how-to-get-list-of-dependency-jars-from-an-sbt-0-10-0-project
   val getJars = TaskKey[Unit]("get-jars")
