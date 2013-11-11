@@ -111,6 +111,32 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     override def transform(tree: Tree): Tree = miniboxTransform(tree)
 
+    def miniboxQualifier(pos: Position, tpe: Type): Type = {
+      val oldClass = tpe.typeSymbol
+      val newClass =
+        extractSpec(tpe, currentMethod, currentClass) match {
+          case Some(pspec) =>
+            specializedClasses(oldClass)(pspec)
+          case None =>
+            global.reporter.error(pos, "Unable to rewire term, this will probably lead to invalid bytecode.")
+            oldClass
+        }
+
+      tpe match {
+        case TypeRef(pre, _, targs) =>
+          typeRef(pre, newClass, targs)
+        case ThisType(_) =>
+          ThisType(newClass)
+      }
+    }
+
+    def extractQualifierType(tree: Tree): Type =
+      tree match {
+        case New(cl)     => cl.tpe
+        case This(clazz) => appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
+        case _ => tree.tpe
+      }
+
     def miniboxTransform(tree: Tree): Tree = {
 
       curTree = tree
@@ -245,6 +271,60 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
           debug(" <= " + result)
           super.transform(result)
+
+        // rewiring new class construction
+        // new C[Int] => new C_J[Int]
+        case New(cl) if specializedClasses.isDefinedAt(cl.tpe.typeSymbol) =>
+          val newType = miniboxQualifier(tree.pos, cl.tpe)
+          localTyper.typedOperator(New(TypeTree(newType)))
+
+        // rewiring this calls
+        // new C[Int] => new C_J[Int]
+        case This(cl) if specializedClasses.isDefinedAt(tree.symbol) =>
+          val newType = miniboxQualifier(tree.pos, tree.tpe)
+          localTyper.typed(This(newType.typeSymbol))
+
+        // rewiring member selection
+        case Select(oldQual, mbr) if specializedClasses.isDefinedAt(extractQualifierType(oldQual).typeSymbol) =>
+          val oldMbrSym = tree.symbol
+          val oldQualTpe: Type = extractQualifierType(oldQual)
+          val newQual = transform(oldQual)
+          val newQualTpe: Type = extractQualifierType(newQual)
+
+          val spec = extractSpec(oldQual.tpe, currentMethod, currentClass)
+
+          // new C[Int] => new C_J[Int]
+          // new C[Int].C#<init> => new C_J[Int].C_J#<init>
+          val oldQualSym = oldQualTpe.typeSymbol
+          val newQualSym = newQualTpe.typeSymbol
+
+          // patching according to the new qualifier
+          val newMbrSym =
+            if (oldQualSym != newQualSym) {
+              val pspec = partialSpec(newQualSym)
+              assert(specializedClasses(oldQualSym).isDefinedAt(pspec))
+              assert(overloads.isDefinedAt(oldMbrSym))
+              assert(overloads(oldMbrSym).isDefinedAt(pspec))
+              overloads(oldMbrSym)(pspec)
+            } else
+              oldMbrSym
+
+          // patching according to the specialization
+          val specMbrSym = {
+            val tpe1 = newQualTpe baseType (newMbrSym.owner)
+            extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
+              case Some(pspec) if !PartialSpec.isAllAnyRef(pspec) && overloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
+                val newMethodSym = overloads(newMbrSym)(pspec)
+                newMethodSym
+              case other =>
+                newMbrSym
+            }
+          }
+
+          //
+          val ntree = localTyper.typedOperator(treeCopy.Select(tree, newQual, specMbrSym.name).setSymbol(specMbrSym))
+          ntree
+
 
 //        // Super constructor call rewiring for:
 //        //  - non-specialized classes
