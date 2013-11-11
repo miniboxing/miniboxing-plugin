@@ -195,7 +195,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // create the type of the new class
       val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
       val specializeParents = specializeParentsTypeMapForSpec(spec, origin, localPspec)
-      val specializedTypeMapOuter = MiniboxSubst(envOuter)
+      val specializedTypeMapOuter = MiniboxSubst(pmap.map({ case (tpSym, ntpSym) => (tpSym, ntpSym.tpeHK)}))
       val specializedTypeMapInner = MiniboxSubst(envInner)
       val specializedInfoType: Type = {
         val sParents = (origin.info.parents ::: List(origin.tpe)) map {

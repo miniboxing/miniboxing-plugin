@@ -121,7 +121,10 @@ trait MiniboxSpecializationInfo {
 
   object ParamMap {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
-      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, p.name.append("sp")))
+      // TODO: Enable this:
+      // def newName(p: Symbol): Name = if (p.hasAnnotation(MinispecClass)) p.name.append("sp") else p.name
+      def newName(p: Symbol): Name = p.name.append("sp")
+      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, newName(p)))
       newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
       (oldParams zip newParams).toMap
     }

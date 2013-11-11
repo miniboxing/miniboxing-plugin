@@ -1,4 +1,5 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait LocalValuesHandling[@miniboxed T >: Nothing <: Any] extends Object {
     def extend(): Int;
@@ -25,4 +26,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
