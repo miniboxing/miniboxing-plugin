@@ -378,6 +378,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
     def widen(specs: List[PartialSpec]): List[Symbol] = {
 
+      origin setFlag(MINIBOXED)
+
       baseClass(origin) = origin
       typeParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
       inheritedDeferredTypeTags(origin) = HashMap()

@@ -130,8 +130,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
     }
 
-    def extractQualifierType(tree: Tree): Type =
-      tree match {
+    def extractQualifierType(tree: Tree): Type = tree match {
         case New(cl)     => cl.tpe
         case This(clazz) => appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
         case _ => tree.tpe
@@ -246,7 +245,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
               val tree1 = specializeDefDefBody(ddef, target)
               debuglog("implementation: " + tree1)
-              tree1
+              super.transform(tree1)
 
             case _: Interface | _ : DeferredTypeTag =>
               tree
@@ -260,7 +259,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               super.transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, List(vparams), tpt, localTyper.typed(Block(Ident(Predef_???))))))
               sys.error("Unknown info type: " + info)
           }
-          super.transform(res)
+          res
 
         case vdef @ ValDef(mods, name, tpt, EmptyTree) if hasInfo(vdef) =>
           memberSpecializationInfo(tree.symbol) match {
@@ -303,7 +302,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          tree1
 
         // rewiring member selection
-        case Select(oldQual, mbr) if specializedClasses.isDefinedAt(extractQualifierType(oldQual).typeSymbol) =>
+        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) =>
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
           val newQual = transform(oldQual)
@@ -342,6 +341,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           //
           val ntree = localTyper.typedOperator(gen.mkAttributedSelect(newQual, specMbrSym))
 //          println()
+//          println("initial tree: " + tree + " : " + tree.tpe)
 //          println("rewiring original: " + oldMbrSym.defString + " (onwer: " + oldMbrSym.owner + ")")
 //          println("rewiring step 1:   " + newMbrSym.defString + " (onwer: " + newMbrSym.owner + ")")
 //          println("rewiring step 2:   " + specMbrSym.defString + " (onwer: " + specMbrSym.owner + ")")
@@ -395,6 +395,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val localTagArgs = tparamInsts.map(typeTags)
 
           val tree1 = gen.mkMethodCall(newFun, localTagArgs ::: args)
+//          println(tree + " ==> " + tree1)
 //          println()
 //          println(tree1)
 //          println(tree1.tpe)
