@@ -137,6 +137,13 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case _ => tree.tpe
       }
 
+    def extractFunctionQualifierType(tree: Tree): Type = tree match {
+      case Select(newQual, _) => newQual.tpe
+      case TypeApply(fun, _) => extractFunctionQualifierType(fun)
+      case Apply(fun, _) => extractFunctionQualifierType(fun)
+      case _ => NoType
+    }
+
     def miniboxTransform(tree: Tree): Tree = {
 
       curTree = tree
@@ -279,10 +286,21 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           localTyper.typedOperator(New(TypeTree(newType)))
 
         // rewiring this calls
-        // new C[Int] => new C_J[Int]
+        // C.this.foo => C_J.this.foo
         case This(cl) if specializedClasses.isDefinedAt(tree.symbol) =>
           val newType = miniboxQualifier(tree.pos, tree.tpe)
           localTyper.typed(This(newType.typeSymbol))
+
+//        case Select(Super(ths, name), member) =>
+//          println("retyping super: " + tree)
+//          val tree1 = localTyper.typedOperator(Select(Super(transform(ths), name), member))
+//          // catch the overloaded thief red-handed next time
+//          if (tree1.symbol.isOverloaded) {
+//            for (sym <- tree1.symbol.alternatives)
+//              println(sym.defString + "   " + sym.ownerChain)
+//            println(currentClass.baseClasses)
+//          }
+//          tree1
 
         // rewiring member selection
         case Select(oldQual, mbr) if specializedClasses.isDefinedAt(extractQualifierType(oldQual).typeSymbol) =>
@@ -322,9 +340,68 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           }
 
           //
-          val ntree = localTyper.typedOperator(treeCopy.Select(tree, newQual, specMbrSym.name).setSymbol(specMbrSym))
+          val ntree = localTyper.typedOperator(gen.mkAttributedSelect(newQual, specMbrSym))
+//          println()
+//          println("rewiring original: " + oldMbrSym.defString + " (onwer: " + oldMbrSym.owner + ")")
+//          println("rewiring step 1:   " + newMbrSym.defString + " (onwer: " + newMbrSym.owner + ")")
+//          println("rewiring step 2:   " + specMbrSym.defString + " (onwer: " + specMbrSym.owner + ")")
           ntree
 
+        case TypeApply(oldFun, targs) =>
+          // TODO
+          super.transform(tree)
+
+        case Apply(oldFun, args) =>
+          val oldMethodSym = oldFun.symbol
+          val oldMethodTpe = oldFun.tpe
+          val newFun = transform(oldFun)
+          val newMethodSym = newFun.symbol
+          val newMethodTpe = newFun.tpe
+
+          // 1. Get the type arguments
+          val targs = newFun match {
+            case TypeApply(_, targs) => targs
+            case _ => Nil
+          }
+
+          // 1. Generate type tags
+          val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info, targs.map(_.tpe))
+          val tagsToTparams1 = localTypeTags.getOrElse(newMethodSym, Map()).map(_.swap).toMap
+          val tparamInsts = for (tagSym <- tagSyms) yield {
+            try {
+              val tparam = tagsToTparams1(tagSym)
+              val instOwner = extractFunctionQualifierType(newFun).baseType(tparam.owner)
+              val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
+              if (targs != null) assert(newMethodSym.info.typeParams.length == targs.length, "Type parameter mismatch in rewiring from " + oldMethodSym.defString + " to " + newMethodSym.defString + ": " + targs)
+              val tparamFromNormToInst = if (targs != null) (newMethodSym.info.typeParams zip targs.map(_.tpe)).toMap else Map.empty
+              val tparamToInst = tparamFromQualToInst ++ tparamFromNormToInst
+              tparamToInst(tparam).typeSymbol
+            } catch {
+              case ex: Exception =>
+                println("Tag not found:")
+                println(newMethodSym.defString)
+                println(tagSyms)
+                println(argTypes)
+                println(tagsToTparams1)
+                println(currentClass)
+                println(currentMethod)
+                println(typeTagTrees())
+                ex.printStackTrace()
+                System.exit(1)
+                ???
+            }
+          }
+          val typeTags = typeTagTrees()
+          val localTagArgs = tparamInsts.map(typeTags)
+
+          val tree1 = gen.mkMethodCall(newFun, localTagArgs ::: args)
+//          println()
+//          println(tree1)
+//          println(tree1.tpe)
+//          println(newFun)
+//          println(newFun.symbol.defString)
+//          println(newFun.tpe)
+          localTyper.typed(tree1)
 
 //        // Super constructor call rewiring for:
 //        //  - non-specialized classes
@@ -680,79 +757,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           None
       }
     }
-
-    def rewiredMethodCall(
-          newQual: Tree,
-          oldMethodSym: Symbol,
-          oldMethodTpe: Type,
-          newMethodSym: Symbol,
-          newMethodTpe: Type,
-          args: List[Tree],
-          targs: List[Tree]) = {
-
-      // 1. Generate type tags
-      val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info, if (targs == null) Nil else targs.map(_.tpe))
-      // Tag -> Type param
-      val tagsToTparams1 = localTypeTags.getOrElse(newMethodSym, Map()).map(_.swap).toMap
-      val tparamInsts = for (tagSym <- tagSyms) yield {
-        try {
-          val tparam = tagsToTparams1(tagSym)
-          val instOwner = newQual.tpe.baseType(tparam.owner)
-          val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
-          if (targs != null) assert(newMethodSym.info.typeParams.length == targs.length, "Type parameter mismatch in rewiring from " + oldMethodSym.defString + " to " + newMethodSym.defString + ": " + targs)
-          val tparamFromNormToInst = if (targs != null) (newMethodSym.info.typeParams zip targs.map(_.tpe)).toMap else Map.empty
-          val tparamToInst = tparamFromQualToInst ++ tparamFromNormToInst
-          tparamToInst(tparam).typeSymbol
-        } catch {
-          case ex: Exception =>
-            println("Tag not found:")
-            println(newMethodSym.defString)
-            println(tagSyms)
-            println(argTypes)
-            println(tagsToTparams1)
-            println(currentClass)
-            println(currentMethod)
-            println(typeTagTrees())
-            ex.printStackTrace()
-            System.exit(1)
-            ???
-        }
-      }
-      val typeTags = typeTagTrees()
-      val localTagArgs = tparamInsts.map(typeTags)
-
-      // 2. Adapt arguments
-      val adaptedArgs =
-        if (args != null)
-          for((pForm, pAct) <- (argTypes zip args)) yield {
-            // pAct is always encoded using boxing
-            // pForm may be encoded using either miniboxing OR boxing
-            if ((pForm.tpe == LongTpe) &&(pAct.tpe != LongTpe))
-              gen.mkMethodCall(box2minibox, List(pAct.tpe), List(pAct, typeTags(pAct.tpe.typeSymbol)))
-            else
-              pAct
-          }
-        else
-          Nil
-
-      // TODO: Implement type parameter translation
-      val method = gen.mkAttributedSelect(newQual, newMethodSym)
-      val tapp = if (targs == null) method else gen.mkTypeApply(method, targs)
-      val aapp = gen.mkMethodCall(tapp, localTagArgs ::: adaptedArgs)
-
-      // 3. Adapt return type
-      val unpackedTree =
-        (newMethodTpe.finalResultType, oldMethodTpe.finalResultType) match {
-          case (`LongTpe`, other) if other != LongTpe =>
-            gen.mkMethodCall(minibox2box, List(other), List(aapp, typeTags(other.typeSymbol)))
-          case _ =>
-            aapp
-        }
-      val unpacked = localTyper.typed(unpackedTree)
-
-      unpacked
-    }
-
 
     def ltypedpos(tree: Tree): Tree =
       localTyper.typedPos(curTree.pos)(tree)

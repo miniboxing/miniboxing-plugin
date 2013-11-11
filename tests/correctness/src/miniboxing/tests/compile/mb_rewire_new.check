@@ -1,4 +1,4 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait TN[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
@@ -43,4 +43,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

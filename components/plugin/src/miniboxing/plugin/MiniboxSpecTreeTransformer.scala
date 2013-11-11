@@ -22,7 +22,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   }
 
   def checkNoStorage(tree: Tree) = {
-    println(tree)
+    //println(tree)
     for (t <- tree)
       assert(noStorageAnnot(t.tpe), t + ": " + t.tpe)
     tree
@@ -143,7 +143,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
                 if (oldTpe.hasAnnotation(StorageClass))
                   tree1
                 else {
-                  println(tree1)
+                  //println(tree1)
                   localTyper.typed(convert_box_to_minibox(tree1, currentOwner))
                 }
             }
