@@ -351,7 +351,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // TODO
           super.transform(tree)
 
-        case Apply(oldFun, args) =>
+        case Apply(oldFun, oldArgs) =>
+          val args = oldArgs.map(transform(_))
           val oldMethodSym = oldFun.symbol
           val oldMethodTpe = oldFun.tpe
           val newFun = transform(oldFun)
