@@ -171,15 +171,20 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val pmap = ParamMap(origin.typeParams, spec)
       typeParamMap(spec) = pmap.map(_.swap).toMap
 
-      val env: TypeEnv = pspec.map {
+      val envOuter: TypeEnv = pspec.map {
         case (p, Boxed)     => (p, pmap(p).tpeHK)
         case (p, Miniboxed) => (p, storageType(pmap(p)))
+      }
+
+      val envInner: TypeEnv = pspec.flatMap {
+        case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
+        case _ => None
       }
 
       // Insert the newly created symbol in our various maps that are used by
       // the tree transformer.
       specializedClasses(origin) += pspec -> spec
-      typeEnv(spec) = env
+      typeEnv(spec) = envOuter
       partialSpec(spec) = pspec
 
       // declarations inside the specialized class - to be filled in later
@@ -190,10 +195,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // create the type of the new class
       val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
       val specializeParents = specializeParentsTypeMapForSpec(spec, origin, localPspec)
-      val specializedTypeMap = MiniboxSubst(env)
+      val specializedTypeMapOuter = MiniboxSubst(envOuter)
+      val specializedTypeMapInner = MiniboxSubst(envInner)
       val specializedInfoType: Type = {
         val sParents = (origin.info.parents ::: List(origin.tpe)) map {
-          t => specializedTypeMap(t)
+          t => specializedTypeMapOuter(t)
         } map specializeParents
 
         val newTParams: List[Symbol] = origin.typeParams.map(pmap)
@@ -251,7 +257,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val info2 =
             if (m.isTerm && !m.isMethod) {
               // this is where we specialize fields:
-              specializedTypeMap(info1)
+              specializedTypeMapInner(info1)
             } else
               info1
 
@@ -272,7 +278,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         newCtor modifyInfo { info =>
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
           val info1 = info0.substThis(origin, spec) // Is this still necessary?
-          val info2 = specializedTypeMap(info1)
+          val info2 = specializedTypeMapInner(info1)
           val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor, 0))
           localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
           def transformArgs(tpe: Type): Type = tpe match {
