@@ -351,6 +351,64 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // TODO
           super.transform(tree)
 
+//        // Array application
+//        case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
+//          val tags = typeTagTrees()
+//          val tree1 = array.tpe.widen.typeArgs match {
+//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+//              val tag = tags(tpe.typeSymbol)
+//              val tree1 = gen.mkMethodCall(mbarray_apply, List(array, pos, tag))
+//              val tree2 = gen.mkCast(tree1, storageType(tpe.typeSymbol))
+//              stats("rewrote array apply: " + tree + " ==> " + tree2)
+//              tree2
+//            case _ =>
+//              super.transform(tree)
+//          }
+//          localTyper.typed(tree1)
+//
+//        // Array update
+//        case Apply(update @ Select(array, _), List(pos, element)) if update.symbol == Array_update =>
+//          val tags = typeTagTrees()
+//          val tree1 = array.tpe.widen.typeArgs match {
+//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+//              val tag = tags(tpe.typeSymbol)
+//              val element1 = gen.mkCast(element, LongTpe)
+//              val tree2 = gen.mkMethodCall(mbarray_update, List(array, pos, element1, tag))
+//              stats("rewrote array update: " + tree + " ==> " + tree2)
+//              tree2
+//            case _ =>
+//              super.transform(tree)
+//          }
+//          localTyper.typed(tree1)
+//
+//         // Array new
+//        case Apply(newArray @ Select(manifest, _), List(size)) if newArray.symbol == Manifest_newArray =>
+//          val tags = typeTagTrees()
+//          val tree1 = manifest.tpe.widen.typeArgs match {
+//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+//              val tag = tags(tpe.typeSymbol)
+//              val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(size, tag))
+//              stats("rewrote array new: " + tree + " ==> " + tree1)
+//              tree1
+//            case _ =>
+//              super.transform(tree)
+//          }
+//          localTyper.typed(tree1)
+//
+//        // Array length
+//        case Apply(length @ Select(array, _), Nil) if length.symbol == Array_length =>
+//          val tags = typeTagTrees()
+//          val tree1 = array.tpe.widen.typeArgs match {
+//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+//              val tag = tags(tpe.typeSymbol)
+//              val tree1 = gen.mkMethodCall(mbarray_length, List(array, tag))
+//              stats("rewrote array length: " + tree + " ==> " + tree1)
+//              tree1
+//            case _ =>
+//              super.transform(tree)
+//          }
+//          localTyper.typed(tree1)
+
         case Apply(oldFun, oldArgs) =>
           val args = oldArgs.map(transform(_))
           val oldMethodSym = oldFun.symbol
@@ -599,65 +657,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
           unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
           localTyper.typed(gen.mkAttributedRef(Predef_???))
-
-//        // Array application
-//        case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
-//          val tags = typeTagTrees()
-//          val tree1 = array.tpe.widen.typeArgs match {
-//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-//              val tag = tags(tpe.typeSymbol)
-//              val tree1 = gen.mkMethodCall(mbarray_apply, List(array, pos, tag))
-//              val tree2 = gen.mkMethodCall(minibox2box, List(tpe), List(tree1, tag))
-//              stats("rewrote array apply: " + tree + " ==> " + tree2)
-//              tree2
-//            case _ =>
-//              super.transform(tree)
-//          }
-//          localTyper.typed(tree1)
-//
-//        // Array update
-//        case Apply(update @ Select(array, _), List(pos, element)) if update.symbol == Array_update =>
-//          val tags = typeTagTrees()
-//          val tree1 = array.tpe.widen.typeArgs match {
-//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-//              val tag = tags(tpe.typeSymbol)
-//              val tree1 = gen.mkMethodCall(box2minibox, List(tpe), List(element, tag))
-//              val tree2 = gen.mkMethodCall(mbarray_update, List(array, pos, tree1, tag))
-//              stats("rewrote array update: " + tree + " ==> " + tree2)
-//              tree2
-//            case _ =>
-//              super.transform(tree)
-//          }
-//          localTyper.typed(tree1)
-//
-//        // Array new
-//        case Apply(newArray @ Select(manifest, _), List(size)) if newArray.symbol == Manifest_newArray =>
-//          val tags = typeTagTrees()
-//          val tree1 = manifest.tpe.widen.typeArgs match {
-//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-//              val tag = tags(tpe.typeSymbol)
-//              val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(size, tag))
-//              //val tree2 = gen.mkAsInstanceOf(tree1, tree.tpe)
-//              stats("rewrote array new: " + tree + " ==> " + tree1)
-//              tree1
-//            case _ =>
-//              super.transform(tree)
-//          }
-//          localTyper.typed(tree1)
-//
-//        // Array length
-//        case Apply(length @ Select(array, _), Nil) if length.symbol == Array_length =>
-//          val tags = typeTagTrees()
-//          val tree1 = array.tpe.widen.typeArgs match {
-//            case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-//              val tag = tags(tpe.typeSymbol)
-//              val tree1 = gen.mkMethodCall(mbarray_length, List(array, tag))
-//              stats("rewrote array length: " + tree + " ==> " + tree1)
-//              tree1
-//            case _ =>
-//              super.transform(tree)
-//          }
-//          localTyper.typed(tree1)
 
         case _ =>
           super.transform(tree)

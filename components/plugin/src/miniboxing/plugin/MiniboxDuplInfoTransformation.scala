@@ -23,23 +23,25 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
   /** Type transformation. It is applied to all symbols, compiled or loaded.
    *  If it is a 'no-specialization' run, it is applied only to loaded symbols. */
-  override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    try {
-      tpe.resultType match {
-        case cinfo @ ClassInfoType(parents, decls, origin) if !unspecializableClass(tpe) =>
-          val tparams  = tpe.typeParams
-          if (tparams.isEmpty)
-            afterMinibox(parents map (_.typeSymbol.info))
-          specialize(origin, cinfo, typeEnv.getOrElse(origin, EmptyTypeEnv))
-        case _ =>
-          tpe
+  override def transformInfo(sym: Symbol, tpe: Type): Type =
+//    if (isRuntimeSymbol(sym))
+//      transformRuntimeSymbolInfo(sym, tpe)
+//    else
+      try {
+        tpe.resultType match {
+          case cinfo @ ClassInfoType(parents, decls, origin) if !unspecializableClass(tpe) =>
+            val tparams  = tpe.typeParams
+            if (tparams.isEmpty)
+              afterMinibox(parents map (_.typeSymbol.info))
+            specialize(origin, cinfo, typeEnv.getOrElse(origin, EmptyTypeEnv))
+          case _ =>
+            tpe
+        }
+      } catch {
+        case t: Throwable =>
+          t.printStackTrace(System.err)
+          throw t
       }
-    } catch {
-      case t: Throwable =>
-        t.printStackTrace(System.err)
-        throw t
-    }
-  }
 
   def separateTypeTagArgsInTree(args: List[Tree]): (List[Tree], List[Tree]) = args match {
     case ttarg :: rest if ttarg.symbol.name.toString.endsWith("_TypeTag") =>

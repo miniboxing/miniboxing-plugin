@@ -1,11 +1,14 @@
 package miniboxing.plugin
 
 import scala.tools.nsc.plugins.PluginComponent
+import scala.reflect.internal.Flags
+import scala.collection.immutable.ListMap
 
 trait MiniboxDefinitions {
   this: PluginComponent =>
 
   import global._
+  import Flags._
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
@@ -71,4 +74,32 @@ trait MiniboxDefinitions {
 
   // Manifest's newArray
   lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
+
+  // TODO: This will also take the storage type
+  def storageType(tparam: Symbol): Type =
+    tparam.tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
+
+  lazy val opStorageClass = Map(
+    mbarray_apply -> LongClass,
+    mbarray_update -> LongClass,
+    mbarray_length -> LongClass,
+    mbarray_new -> LongClass,
+    tag_hashCode -> LongClass,
+    tag_toString -> LongClass,
+    tag_== -> LongClass,
+    notag_== -> LongClass,
+    other_== -> LongClass
+  )
+
+//  def isRuntimeSymbol(sym: Symbol) =
+//    opStorageClass.isDefinedAt(sym)
+//
+//  def transformRuntimeSymbolInfo(sym: Symbol, info: Type): Type = {
+//    val tp = sym.newTypeSymbol(newTypeName("$T$"), sym.pos, 0L)
+//    tp.info = TypeBounds(NothingTpe, AnyTpe)
+//    val tt = storageType(deriveFreshSkolems(List(tp)).head)
+//    val res = info.substituteSymbols(opStorageClass(sym) :: Nil, tp :: Nil)
+//    println(sym + ": " + info + " ==> " + res)
+//    res
+//  }
 }

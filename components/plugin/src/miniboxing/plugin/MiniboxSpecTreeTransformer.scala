@@ -113,6 +113,9 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
           super.transform(tree0)
       }
 
+//      if (constraint != NoConstraint)
+//        println(tree1 + " : " + origTpe + " (" + constraint + ")")
+
       // conversion-based tree transformations
       val tree2 = tree1 match {
         case EmptyTree =>

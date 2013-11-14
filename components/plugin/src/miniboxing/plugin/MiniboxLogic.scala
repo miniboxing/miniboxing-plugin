@@ -140,10 +140,6 @@ trait MiniboxLogic {
     }
   }
 
-  // TODO: This will also take the storage type
-  def storageType(tparam: Symbol): Type =
-    tparam.tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
-
   def notSpecializable(clazz: Symbol, mbr: Symbol) =
     mbr.isMethod && mbr.isSynthetic ||
     (mbr.alias != NoSymbol) && !(overloads.isDefinedAt(mbr.alias))
