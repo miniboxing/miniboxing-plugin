@@ -108,8 +108,8 @@ object MiniboxConversions {
   }
 
   /** This conversion is only used as a marker in the tree */
-  private def marker_minibox2box[T](a: T @storage, tag: Byte): T = ???
+  def marker_minibox2box[T](a: T @storage): T = ???
 
   /** This conversion is only used as a marker in the tree */
-  private def marker_box2minibox[T](a: T, tag: Byte): T @storage = ???
+  def marker_box2minibox[T](a: T): T @storage = ???
 }

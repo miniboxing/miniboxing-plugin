@@ -765,29 +765,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     def ltyped(tree: Tree): Tree =
       localTyper.typed(tree)
 
-    /*
-     * Casts a `tree` to a given type `tpe` as result of a `ForwardTo`
-     * information being processed. The cast is perform as indicated by
-     * the `cinfo`.
-     */
-    private def cast(tree: Tree, tpe: Type, cinfo: CastInfo) = {
-      val tree0 = ltypedpos(tree)
-      val tree1 = cinfo match {
-        case NoCast =>
-          tree0
-        case AsInstanceOfCast =>
-          gen.mkAsInstanceOf(tree0, tpe, true, false)
-        case CastMiniboxToBox(tag) =>
-          val tagref = localTyper.typed(gen.mkAttributedRef(tag))
-          gen.mkMethodCall(minibox2box, List(tpe), List(tree0, tagref))
-        case CastBoxToMinibox(tag) =>
-          val tagref = localTyper.typed(gen.mkAttributedRef(tag))
-          gen.mkMethodCall(box2minibox, List(tree0.tpe), List(tree0, tagref))
-      }
-      val tree2 = ltypedpos(tree1)
-      tree2
-    }
-
     /**
      * In `MiniboxInfoTransform` we create only symbols for methods.
      * Here we add empty bodies for them.

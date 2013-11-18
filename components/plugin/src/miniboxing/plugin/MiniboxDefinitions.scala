@@ -33,8 +33,15 @@ trait MiniboxDefinitions {
   // conversions
   lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversions")
   // type tag conversions
-  lazy val minibox2box       =  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
-  lazy val box2minibox       =  definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
+  lazy val minibox2box        = definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
+  lazy val box2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
+
+  // artificially created marker methods
+  lazy val marker_minibox2box =
+    newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(tpar => (Some(List(tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil))), tpar.head.tpeHK))
+  lazy val marker_box2minibox =
+    newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_box2minibox"), 0L)(tpar => (Some(List(tpar.head.tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil)))
+
   // direct conversions
   lazy val x2minibox = Map(
       UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("UnitToMinibox")),
