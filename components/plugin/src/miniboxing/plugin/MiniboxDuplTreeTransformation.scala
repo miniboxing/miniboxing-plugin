@@ -89,7 +89,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         override def castType(tree: Tree, pt: Type): Tree = {
           // log(" expected type: " + pt)
           // log(" tree type: " + tree.tpe)
-          tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
+          // tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
           // log(" tree type: " + tree.tpe)
 //          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
 //            val casttpe = CastMap(tree.tpe)

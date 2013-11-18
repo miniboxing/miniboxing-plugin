@@ -284,6 +284,7 @@ abstract class Duplicators extends Analyzer {
      *  namer/typer handle them, or Idents that refer to them.
      */
     override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
+      // val pt = WildcardType
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
       if (tree.hasSymbol && tree.symbol != NoSymbol
@@ -431,35 +432,6 @@ abstract class Duplicators extends Analyzer {
           val tree1 = super.typed(ntree, mode, pt)
           // log("plain this typed to: " + tree1)
           tree1
-/* no longer needed, because Super now contains a This(...)
-        case Super(qual, mix) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) =>
-          val tree1 = Super(qual, mix)
-          log("changed " + tree + " to " + tree1)
-          super.typed(atPos(tree.pos)(tree1))
-*/
-        case Match(scrut, cases) =>
-          val scrut1   = typed(scrut, EXPRmode | BYVALmode, WildcardType)
-          val scrutTpe = scrut1.tpe.widen
-          val cases1 = {
-            if (scrutTpe.isFinalType) cases filter {
-              case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
-                // the typed pattern is not incompatible with the scrutinee type
-                scrutTpe matchesPattern fixType(tpt.tpe)
-              case CaseDef(Typed(_, tpt), EmptyTree, body) =>
-                // the typed pattern is not incompatible with the scrutinee type
-                scrutTpe matchesPattern fixType(tpt.tpe)
-              case _ => true
-            }
-            // Without this, AnyRef specializations crash on patterns like
-            //   case _: Boolean => ...
-            // Not at all sure this is safe.
-            else if (scrutTpe <:< AnyRefClass.tpe)
-              cases filterNot (_.pat.tpe <:< AnyValClass.tpe)
-            else
-              cases
-          }
-
-          super.typed(atPos(tree.pos)(Match(scrut, cases1)), mode, pt)
 
         case EmptyTree =>
           // no need to do anything, in particular, don't set the type to null, EmptyTree.tpe_= asserts
@@ -473,6 +445,7 @@ abstract class Duplicators extends Analyzer {
           }
           val ntree = castType(tree, pt)
           val res = super.typed(ntree, mode, pt)
+          //println(res + " ==> " + res.tpe + "  (" + pt + ")")
           res
       }
     }
