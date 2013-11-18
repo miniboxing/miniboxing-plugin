@@ -19,4 +19,4 @@ class miniboxed extends annotation.StaticAnnotation
  * This class should only appear in the tree during the `minibox` phase
  * and should be cleaned up afterwards, during the `minibox-cleanup` phase.
  */
-private class storage extends Annotation with TypeConstraint
+class storage extends Annotation with TypeConstraint

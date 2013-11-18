@@ -107,4 +107,9 @@ object MiniboxConversions {
     case _ => sys.error("Trying to unbox a reference type")
   }
 
+  /** This conversion is only used as a marker in the tree */
+  private def marker_minibox2box[T](a: T @storage, tag: Byte): T = ???
+
+  /** This conversion is only used as a marker in the tree */
+  private def marker_box2minibox[T](a: T, tag: Byte): T @storage = ???
 }
