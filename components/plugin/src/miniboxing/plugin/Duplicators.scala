@@ -444,7 +444,7 @@ abstract class Duplicators extends Analyzer {
             tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
           }
           val ntree = castType(tree, pt)
-          println("dupl: " + ntree + ":" + tree.tpe + "  " + pt)
+          //println("dupl: " + ntree + ":" + tree.tpe + "  " + pt)
           val res = super.typed(ntree, mode, pt)
           //println(res + " ==> " + res.tpe + "  (" + pt + ")")
           res
