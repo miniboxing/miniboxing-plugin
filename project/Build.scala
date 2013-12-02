@@ -31,7 +31,6 @@ object MiniboxingBuild extends Build {
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
     resolvers in ThisBuild ++= Seq(
-      ScalaToolsSnapshots,
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
     )
