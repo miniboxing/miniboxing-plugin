@@ -31,7 +31,7 @@ class TestSuite {
   // TODO: This needs to be general, it's currently a mess
   private[this] def pluginCompilerFlag() =
     try {
-      "-Xplugin:" + files(List("components", "plugin", "target", "scala-2.10"), ".jar").head.toString
+      "-Xplugin:" + files(List("..", "..", "components", "plugin", "target", "scala-2.10"), ".jar").head.toString
     } catch {
       case x: NoSuchElementException =>
         sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")
@@ -44,7 +44,7 @@ class TestSuite {
     // use carefully:
 //    UPDATE_CHECKFILE = true
 
-    for (source <- files(List("tests", "correctness", "src", "miniboxing", "tests", "compile"), ".scala")) {
+    for (source <- files(List("src", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
 
       // source code:
