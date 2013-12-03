@@ -98,7 +98,12 @@ class Minibox(val global: Global) extends Plugin {
   val name = "minibox"
   val description = "spcializes generic classes"
 
-  val components = List[PluginComponent](HijackPhase, MiniboxDuplPhase, MiniboxSpecPhase, PreTyperPhase, PostTyperPhase)
+  val components = List[PluginComponent](HijackPhase,
+                                         MiniboxDuplPhase,
+                                         MiniboxAdaptPhase,
+                                         MiniboxSpecPhase,
+                                         PreTyperPhase,
+                                         PostTyperPhase)
   //global.addAnnotationChecker(MiniboxDuplPhase.StorageAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
