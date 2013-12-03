@@ -26,6 +26,11 @@ At this point, the miniboxing plugin is not production-ready, although it can co
 ## Hacking the Plugin ##
 The [wiki](https://github.com/miniboxing/miniboxing-plugin/wiki) is a good place to start looking into installing, testing, benchmarking and hacking on the miniboxing plugin. Also have a look at the [docs](https://github.com/miniboxing/miniboxing-plugin/tree/wip/docs) directory, which contains some good resources.
 
+The development branches are:
+ - [master](https://github.com/miniboxing/miniboxing-plugin/tree/master) is always stable, usually outdated
+ - [wip](https://github.com/miniboxing/miniboxing-plugin/tree/wip) is pretty stable, usually has the last resonably stable developments
+ - [topic/erasure-rebase](https://github.com/miniboxing/miniboxing-plugin/tree/topic/erasure-rebase) contains the most recent developments, but expect tests to be broken most of the time
+
 ###Repository organization###
  - wip is the working branch, most current version of the plugin
  - master is usually a bit behind wip, but should be stable (alpha-stable, not production-ready!)
