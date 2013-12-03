@@ -41,6 +41,23 @@ trait MiniboxDuplComponent extends
   def flag_loader_friendly: Boolean
 }
 
+/** Introduces explicit adaptations from `T` to `@storage T` and back */
+trait MiniboxAdaptComponent extends
+    PluginComponent
+    with MiniboxAdaptTreeTransformer {
+
+  val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
+
+  import global._
+  class AdaptPhase(prev: Phase) extends StdPhase(prev) {
+    override def name = MiniboxAdaptComponent.this.phaseName
+    def apply(unit: CompilationUnit): Unit = {
+      newTransformer(unit).transformUnit(unit)
+    }
+  }
+}
+
+
 /** Specializer component `T @storage -> Long` */
 trait MiniboxSpecComponent extends
     PluginComponent
@@ -161,12 +178,23 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
+  private object MiniboxAdaptPhase extends {
+    val minibox: MiniboxDuplPhase.type = MiniboxDuplPhase
+  } with MiniboxAdaptComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(MiniboxDuplPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxDuplPhase.phaseName)
+    val phaseName = Minibox.this.name + "-adapt"
+
+    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new AdaptPhase(prev)
+  }
+
   private object MiniboxSpecPhase extends {
     val minibox: MiniboxDuplPhase.type = MiniboxDuplPhase
   } with MiniboxSpecComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxDuplPhase.phaseName)
-    override val runsRightAfter = Some(MiniboxDuplPhase.phaseName)
+    val runsAfter = List(MiniboxAdaptPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxAdaptPhase.phaseName)
     val phaseName = Minibox.this.name + "-spec"
 
     def flag_log = Minibox.this.flag_log
