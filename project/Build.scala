@@ -37,8 +37,18 @@ object MiniboxingBuild extends Build {
   )
 
   val publishCredFile = "miniboxing.maven.credentials-file"
-  val publishDeps: Seq[Setting[_]] = sys.props.get(publishCredFile) match {
-    case Some(credFile) => 
+  val publishRealm = "MINIBOXING_MAVEN_REALM"
+  val publishDomain = "MINIBOXING_MAVEN_DOMAIN"
+  val publishUser = "MINIBOXING_MAVEN_USER"
+  val publishPass = "MINIBOXING_MAVEN_PASS"
+  val publishCredAvailable = sys.props.isDefinedAt(publishCredFile) || 
+                             sys.env.isDefinedAt(publishRealm) && 
+                             sys.env.isDefinedAt(publishDomain) && 
+                             sys.env.isDefinedAt(publishUser) && 
+                             sys.env.isDefinedAt(publishPass)
+
+  val publishDeps: Seq[Setting[_]] = publishCredAvailable match {
+    case true => 
       Seq(
         // sonatype
         publishMavenStyle := true,
@@ -63,11 +73,21 @@ object MiniboxingBuild extends Build {
               <url>http://vladureche.ro</url>
             </developer>
           </developers>),
-        credentials += Credentials({ new java.io.File(credFile) })
+        {
+          sys.props.get(publishCredFile) match {
+            case Some(credFile) => 
+              credentials += Credentials(new java.io.File(credFile))
+            case None =>
+              credentials += Credentials(sys.env(publishRealm),
+                                         sys.env(publishDomain),
+                                         sys.env(publishUser),
+                                         sys.env(publishPass))
+          }
+        }
       )
-   case None => 
+   case false => 
      Seq(
-       publish <<= streams.map(_.log.info("Publishing to Sonatype is disabled since the \"" + publishCredFile + "\" variable is not set."))
+       publish <<= streams.map(_.log.info(s"""Publishing to Sonatype is disabled since neither the "$publishCredFile" nor "$publishRealm"/"$publishDomain"/"$publishUser"/"$publishPass" are set."""))
      )
   }
 
