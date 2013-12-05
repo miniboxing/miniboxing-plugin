@@ -7,38 +7,68 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.{ mutable, immutable }
 import scala.collection.mutable.Set
 import scala.collection.mutable.{ Map => MMap }
+import util.returning
+import scala.collection.mutable.ListBuffer
 
 trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   self: MiniboxAdaptComponent =>
 
+  import minibox._
   import global._
 
-  object TreeAdapter extends {
-    val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
-  } with TreeAdapter
+  class AdaptPhase(prev: Phase) extends StdPhase(prev) {
+    override def name = MiniboxAdaptTreeTransformer.this.phaseName
+    def apply(unit: CompilationUnit): Unit = {
+      object TreeChecker extends {
+        val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
+      } with TreeCheckers
 
-  def newTransformer(unit: CompilationUnit): Transformer = new TypingTransformer(unit) {
-    override def transform(tree: Tree): Tree =
-      TreeAdapter.adapted(localTyper.context1.asInstanceOf[TreeAdapter.Context], tree)
+      TreeChecker.check(unit)
+      //newTransformer(unit).transformUnit(unit)
+    }
   }
 
-  abstract class TreeAdapter extends Analyzer {
+  abstract class TreeCheckers extends Analyzer {
     import global._
-    import definitions.{ AnyRefClass, AnyValClass }
-    val StorageClass = minibox.StorageClass.asInstanceOf[Symbol]
 
-    def adapted(context: Context, tree: Tree): Tree =
-      (new Adapter(context)).typed(tree)
+    private def wrap[T](msg: => Any)(body: => Unit) {
+      try body
+      catch { case x: Throwable =>
+        Console.println("Caught " + x)
+        Console.println(msg)
+        x.printStackTrace
+      }
+    }
 
-    class Adapter(_context: Context) extends Typer(_context) {
+    def check(unit: CompilationUnit) {
+      val context = rootContext(unit)
+      val checker = new TreeChecker(context)
+      checker.typed(unit.body)
+    }
+
+    override def newTyper(context: Context): Typer = new TreeChecker(context)
+
+    class TreeChecker(context0: Context) extends Typer(context0) {
+      override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
+        templ
+
       override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
-        val oldTpe = tree.tpe
-        tree.tpe = null
-        super.typed(tree, mode, WildcardType)
-        //if (tree.tpe.hasAnnotation(StorageClass) != oldTpe.hasAnnotation(StorageClass))
-        println(tree)
-        println("new = " + tree.tpe + " vs old: " + oldTpe)
-        tree
+        returning(tree) {
+          case EmptyTree | TypeTree() => ()
+          case _ if tree.tpe != null  =>
+//            println("TREE: " + tree)
+            val oldTpe = tree.tpe
+            tree.tpe = null
+            super.typed(tree, mode, WildcardType) match {
+              case _: Literal     => ()
+              case x if x ne tree => ???
+              case _              => ()
+            }
+            val newTpe = tree.tpe
+            if (oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol]) != newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol]))
+              println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
+          case _ => ()
+        }
       }
     }
   }

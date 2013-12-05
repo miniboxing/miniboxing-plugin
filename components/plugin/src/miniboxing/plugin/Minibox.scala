@@ -47,14 +47,6 @@ trait MiniboxAdaptComponent extends
     with MiniboxAdaptTreeTransformer {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
-
-  import global._
-  class AdaptPhase(prev: Phase) extends StdPhase(prev) {
-    override def name = MiniboxAdaptComponent.this.phaseName
-    def apply(unit: CompilationUnit): Unit = {
-      newTransformer(unit).transformUnit(unit)
-    }
-  }
 }
 
 
@@ -191,7 +183,7 @@ class Minibox(val global: Global) extends Plugin {
     override val runsRightAfter = Some(MiniboxDuplPhase.phaseName)
     val phaseName = Minibox.this.name + "-adapt"
 
-    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new AdaptPhase(prev)
+    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new AdaptPhase(prev.asInstanceOf[minibox.Phase])
   }
 
   private object MiniboxSpecPhase extends {
