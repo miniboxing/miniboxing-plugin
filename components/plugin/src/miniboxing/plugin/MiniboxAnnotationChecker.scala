@@ -34,21 +34,7 @@ trait MiniboxAnnotationCheckers {
      *  An implementation cannot rely on canAdaptAnnotations being called
      *  before. If the implementing class cannot do the adaptiong, it
      *  should return the tree unchanged.*/
-    override def adaptAnnotations(tree: Tree, mode: Int, pt: Type): Tree = {
-      println()
-      println(tree + "   " + mode + "   " + tree.tpe + "   " + pt)
-      if (tree.tpe.dealiasWiden.hasAnnotation(StorageClass) && !pt.dealiasWiden.hasAnnotation(StorageClass)) {
-        println(marker_minibox2box.tpe)
-        gen.mkMethodCall(marker_minibox2box, List(tree.tpe.typeSymbol.tpeHK), List(tree))
-      }
-      else if (!tree.tpe.dealiasWiden.hasAnnotation(StorageClass) && pt.dealiasWiden.hasAnnotation(StorageClass)) {
-        println(marker_box2minibox.tpe)
-        gen.mkMethodCall(marker_box2minibox, List(tree.tpe.typeSymbol.tpeHK), List(tree))
-      }
-      else {
-        println("left alone")
-        tree
-      }
-    }
+//    override def adaptAnnotations(tree: Tree, mode: Int, pt: Type): Tree = {
+//    }
   }
 }

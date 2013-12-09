@@ -33,6 +33,11 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   }
 
   abstract class TreeAdapters extends Analyzer {
+//    val global: Global
+//    val minibox: MiniboxAdaptTreeTransformer { val global: TreeAdapters.this.global.type }
+//
+//    import global._
+//    import minibox._
     import global._
 
     private def wrap[T](msg: => Any)(body: => Unit) {
@@ -47,7 +52,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
       val checker = new TreeAdapter(context)
-      checker.typed(unit.body)
+      unit.body = checker.typed(unit.body)
+      unit.body
     }
 
     override def newTyper(context: Context): Typer =
@@ -57,8 +63,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
-      override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
-        val t2 = tree match {
+      override def typed(tree: Tree, mode: Int, pt: Type): Tree =
+        tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
           case _ if tree.tpe != null  =>
@@ -68,14 +74,24 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             tree.tpe = null
             val res: Tree = silent(_.typed(tree, mode, pt)) match {
               case SilentTypeError(err) =>
-                // println("Type error (!!!): " + err)
                 tree.tpe = oldTpe
-//                println(tree + "  : " + tree.getClass)
-//                println(tree.symbol + "  " + tree.symbol.tpe)
-//                println(oldTpe + " vs " + pt)
-                oldTree.tpe = pt
-                assert(oldTree.tpe != null)
-                oldTree
+                println(oldTpe + " vs " + pt)
+                val newTpe = pt
+                val hAnnot1 = oldTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                val hAnnot2 = newTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                if (hAnnot1 && !hAnnot2) {
+                  //println(marker_minibox2box.tpe)
+                  super.typed(gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree)), mode, pt)
+                }
+                else if (!hAnnot1 && hAnnot2) {
+                  //println(marker_box2minibox.tpe)
+                  super.typed(gen.mkMethodCall(marker_box2minibox.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree)), mode, pt)
+                }
+                else {
+                  println("Don't know how to adapt:")
+                  println(tree)
+                  ???
+                }
               case SilentResultValue(res: Tree) =>
                 assert(res.tpe != null)
                 res
@@ -83,8 +99,6 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
 //                  case tree2: Tree =>
 //                    // adaptation is done here:
 //                    val newTpe = if (tree2.tpe != null) tree2.tpe else NoType
-//                    val hAnnot1 = oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-//                    val hAnnot2 = newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
 //                    if (hAnnot1 != hAnnot2)
 //                      println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
 //                    tree2
@@ -92,15 +106,13 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
 //              case SilentResultValue(t: Tree) => t
 //              case t: Tree => t
             }
+//            println(res)
             res
           case _ =>
             val tree2 = super.typed(tree, mode, pt)
             assert(tree2.tpe != null)
             tree2
         }
-        assert(t2.tpe != null)
-        t2
-      }
     }
   }
 }
