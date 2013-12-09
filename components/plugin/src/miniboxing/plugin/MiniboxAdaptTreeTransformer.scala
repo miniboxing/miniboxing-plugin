@@ -19,20 +19,20 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   class AdaptPhase(prev: Phase) extends StdPhase(prev) {
     override def name = MiniboxAdaptTreeTransformer.this.phaseName
     def apply(unit: CompilationUnit): Unit = {
-      println("starting adapt")
 
       object TreeAdapter extends {
         val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
-      } with TreeCheckers
+      } with TreeAdapters
 
       // boil frog, boil!
       global.addAnnotationChecker(StorageAnnotationChecker)
 
-      TreeAdapter.check(unit)
+      val tree = TreeAdapter.adapt(unit)
+      tree.foreach(node => assert(node.tpe != null, node))
     }
   }
 
-  abstract class TreeCheckers extends Analyzer {
+  abstract class TreeAdapters extends Analyzer {
     import global._
 
     private def wrap[T](msg: => Any)(body: => Unit) {
@@ -44,51 +44,63 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       }
     }
 
-    def check(unit: CompilationUnit) {
+    def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
-      val checker = new TreeChecker(context)
+      val checker = new TreeAdapter(context)
       checker.typed(unit.body)
     }
 
-    override def newTyper(context: Context): Typer = {
-//      println("new typer in " + context)
-      new TreeChecker(context)
-    }
+    override def newTyper(context: Context): Typer =
+      new TreeAdapter(context)
 
-    class TreeChecker(context0: Context) extends Typer(context0) {
+    class TreeAdapter(context0: Context) extends Typer(context0) {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
-      override def typed(tree: Tree, mode: Int, pt: Type): Tree =
-        tree match {
+      override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
+        val t2 = tree match {
           case EmptyTree | TypeTree() =>
-            tree
+            super.typed(tree, mode, pt)
           case _ if tree.tpe != null  =>
 //            println("TREE: " + tree)
+            val oldTree = tree.duplicate
             val oldTpe = tree.tpe
             tree.tpe = null
             val res: Tree = silent(_.typed(tree, mode, pt)) match {
               case SilentTypeError(err) =>
                 // println("Type error (!!!): " + err)
-                println(oldTpe + " vs " + pt)
-                tree.setType(oldTpe)
-              case SilentResultValue(res) => res match {
-                case tree2: Tree =>
-                  // adaptation is done here:
-                  val newTpe = if (tree2.tpe != null) tree2.tpe else NoType
-                  val hAnnot1 = oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-                  val hAnnot2 = newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-                  if (hAnnot1 != hAnnot2)
-                    println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
-                  tree2
-              }
+                tree.tpe = oldTpe
+//                println(tree + "  : " + tree.getClass)
+//                println(tree.symbol + "  " + tree.symbol.tpe)
+//                println(oldTpe + " vs " + pt)
+                oldTree.tpe = pt
+                assert(oldTree.tpe != null)
+                oldTree
+              case SilentResultValue(res: Tree) =>
+                assert(res.tpe != null)
+                res
+//                res match {
+//                  case tree2: Tree =>
+//                    // adaptation is done here:
+//                    val newTpe = if (tree2.tpe != null) tree2.tpe else NoType
+//                    val hAnnot1 = oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+//                    val hAnnot2 = newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+//                    if (hAnnot1 != hAnnot2)
+//                      println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
+//                    tree2
+//              }
 //              case SilentResultValue(t: Tree) => t
 //              case t: Tree => t
             }
             res
           case _ =>
-            super.typed(tree, mode, pt)
+            val tree2 = super.typed(tree, mode, pt)
+            assert(tree2.tpe != null)
+            tree2
         }
+        assert(t2.tpe != null)
+        t2
+      }
     }
   }
 }
