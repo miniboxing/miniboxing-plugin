@@ -1,6 +1,8 @@
 
 name := "miniboxing"
 
+scalaVersion in Global := "2.10.3"
+
 version in Global := "0.1-SNAPSHOT"
 
 organization in Global := "org.scala-miniboxing.plugins"
