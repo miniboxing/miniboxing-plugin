@@ -14,3 +14,7 @@ env:
    - MINIBOXING_MAVEN_DOMAIN="oss.sonatype.org"
    - secure: "YH2L0Ex1sxRZTz9+I3z5bKH6OwQa3yQ/SrDj9btf4JfXAoMkBgMXSi8/SIYzDKrkng2rmxcyocoNYcj3DHiRZxwoLO8OU6zaABh6LgtqfA+IfQTMuqyf/2Msphowgcm5biVFmBXQNIQfGf/Wpzv5F7uoz1drKtOMOTnmjkKbP60="
    - secure: "gtMP4tLkBQaoqrdahvqBYtSAMp9wWe0CRZA5oE/sen0Soww5QYOtsCGlNkzDO0LrUxL4Dsux/3Wlu2oF0/zWanadKwKpKxXMmIBhn716bbHm51L7JZdixdWEyYP7IkDXPqm1WYqAcNgDk97TFBDv9FRdX4ZeuXwg1uMyugFYJeQ="
+branches:
+  only:
+    - master
+    - wip
