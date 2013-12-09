@@ -6,8 +6,6 @@ import AssemblyKeys._
 
 object MiniboxingBuild extends Build {
 
-  val scalaVer = "2.10.3"
-
   // http://stackoverflow.com/questions/6506377/how-to-get-list-of-dependency-jars-from-an-sbt-0-10-0-project
   val getJars = TaskKey[Unit]("get-jars")
   val getJarsTask = getJars <<= (target, fullClasspath in Runtime) map { (target, cp) =>
@@ -16,8 +14,6 @@ object MiniboxingBuild extends Build {
   }
 
   val defaults = Defaults.defaultSettings ++ assemblySettings ++ Seq(
-    scalaVersion := scalaVer,
-    scalaBinaryVersion := "2.10",
     scalaSource in Compile <<= baseDirectory(_ / "src"),
     javaSource in Compile <<= baseDirectory(_ / "src"),
     scalaSource in Test <<= baseDirectory(_ / "test"),
@@ -101,7 +97,7 @@ object MiniboxingBuild extends Build {
   )
 
   val pluginDeps = Seq(
-    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVer
+    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value
   )
 
   val classloaderDeps = Seq(
@@ -143,7 +139,7 @@ object MiniboxingBuild extends Build {
       cp
     },
     libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-partest" % scalaVer, 
+      "org.scala-lang" % "scala-partest" % scalaVersion.value, 
       "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
     )
   )
