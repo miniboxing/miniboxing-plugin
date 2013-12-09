@@ -19,12 +19,16 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   class AdaptPhase(prev: Phase) extends StdPhase(prev) {
     override def name = MiniboxAdaptTreeTransformer.this.phaseName
     def apply(unit: CompilationUnit): Unit = {
-      object TreeChecker extends {
+      println("starting adapt")
+
+      object TreeAdapter extends {
         val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
       } with TreeCheckers
 
-      TreeChecker.check(unit)
-      //newTransformer(unit).transformUnit(unit)
+      // boil frog, boil!
+      global.addAnnotationChecker(StorageAnnotationChecker)
+
+      TreeAdapter.check(unit)
     }
   }
 
@@ -46,30 +50,45 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       checker.typed(unit.body)
     }
 
-    override def newTyper(context: Context): Typer = new TreeChecker(context)
+    override def newTyper(context: Context): Typer = {
+//      println("new typer in " + context)
+      new TreeChecker(context)
+    }
 
     class TreeChecker(context0: Context) extends Typer(context0) {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
-      override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
-        returning(tree) {
-          case EmptyTree | TypeTree() => ()
+      override def typed(tree: Tree, mode: Int, pt: Type): Tree =
+        tree match {
+          case EmptyTree | TypeTree() =>
+            tree
           case _ if tree.tpe != null  =>
 //            println("TREE: " + tree)
             val oldTpe = tree.tpe
             tree.tpe = null
-            super.typed(tree, mode, WildcardType) match {
-              case _: Literal     => ()
-              case x if x ne tree => ???
-              case _              => ()
+            val res: Tree = silent(_.typed(tree, mode, pt)) match {
+              case SilentTypeError(err) =>
+                // println("Type error (!!!): " + err)
+                println(oldTpe + " vs " + pt)
+                tree.setType(oldTpe)
+              case SilentResultValue(res) => res match {
+                case tree2: Tree =>
+                  // adaptation is done here:
+                  val newTpe = if (tree2.tpe != null) tree2.tpe else NoType
+                  val hAnnot1 = oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                  val hAnnot2 = newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                  if (hAnnot1 != hAnnot2)
+                    println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
+                  tree2
+              }
+//              case SilentResultValue(t: Tree) => t
+//              case t: Tree => t
             }
-            val newTpe = tree.tpe
-            if (oldTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol]) != newTpe.hasAnnotation(StorageClass.asInstanceOf[Symbol]))
-              println(s"Mismatch: $oldTpe vs $newTpe:\n$tree\n")
-          case _ => ()
+            res
+          case _ =>
+            super.typed(tree, mode, pt)
         }
-      }
     }
   }
 }

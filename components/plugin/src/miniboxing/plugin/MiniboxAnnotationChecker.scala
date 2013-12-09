@@ -3,9 +3,10 @@ package miniboxing.plugin
 import scala.tools.nsc.plugins.PluginComponent
 
 trait MiniboxAnnotationCheckers {
-  this: MiniboxDuplComponent =>
+  this: MiniboxAdaptComponent =>
 
   import global._
+  import minibox._
 
   object StorageAnnotationChecker extends AnnotationChecker{
     /** Check the annotations on two types conform. */
@@ -23,8 +24,9 @@ trait MiniboxAnnotationCheckers {
      *  that has an annotated type to the given type tp, taking
      *  into account the given mode (see method adapt in trait Typers).*/
     override def canAdaptAnnotations(tree: Tree, mode: Int, pt: Type): Boolean = {
-      println("canAdaptAnnotations? " + tree)
-      !tree.isInstanceOf[TypeTree]
+      //println("canAdaptAnnotations? " + tree)
+      //!tree.isInstanceOf[TypeTree]
+      false
     }
 
     /** Adapt a tree that has an annotated type to the given type tp,

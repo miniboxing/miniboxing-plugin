@@ -26,8 +26,7 @@ trait MiniboxDuplComponent extends
     with MiniboxTreeSpecializer
     with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
-    with MiniboxDefinitions
-    with MiniboxAnnotationCheckers {
+    with MiniboxDefinitions {
 
   def mboxDuplPhase: StdPhase
 
@@ -44,7 +43,8 @@ trait MiniboxDuplComponent extends
 /** Introduces explicit adaptations from `T` to `@storage T` and back */
 trait MiniboxAdaptComponent extends
     PluginComponent
-    with MiniboxAdaptTreeTransformer {
+    with MiniboxAdaptTreeTransformer
+    with MiniboxAnnotationCheckers {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
 }
@@ -96,7 +96,6 @@ class Minibox(val global: Global) extends Plugin {
                                          MiniboxSpecPhase,
                                          PreTyperPhase,
                                          PostTyperPhase)
-  //global.addAnnotationChecker(MiniboxDuplPhase.StorageAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
