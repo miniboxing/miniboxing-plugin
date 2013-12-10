@@ -75,7 +75,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             val res: Tree = silent(_.typed(tree, mode, pt)) match {
               case SilentTypeError(err) =>
                 tree.tpe = oldTpe
-                println(oldTpe + " vs " + pt)
+                // println(oldTpe + " vs " + pt)
                 val newTpe = pt
                 val hAnnot1 = oldTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
                 val hAnnot2 = newTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])

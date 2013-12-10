@@ -106,10 +106,4 @@ object MiniboxConversions {
     case d : Double => java.lang.Double.doubleToRawLongBits(d)
     case _ => sys.error("Trying to unbox a reference type")
   }
-
-  /** This conversion is only used as a marker in the tree */
-  def marker_minibox2box[T](a: T @storage): T = ???
-
-  /** This conversion is only used as a marker in the tree */
-  def marker_box2minibox[T](a: T): T @storage = ???
 }

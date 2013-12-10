@@ -13,7 +13,28 @@ trait MiniboxDefinitions {
   import miniboxing.runtime.MiniboxConstants._
 
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
-  lazy val StorageClass = rootMirror.getRequiredClass("scala.storage")
+  /**
+   * This class should only appear in the tree during the `minibox` phase
+   * and should be cleaned up afterwards, during the `minibox-cleanup` phase.
+   */
+  lazy val StorageClass = {
+    // This is what is should look like:
+    // ```
+    //   package __root__.scala {
+    //     class storage extends Annotation with TypeConstraint
+    //   }
+    // ```
+    val AnnotationName = "scala.annotation.Annotation"
+    val TypeConstrName = "scala.annotation.TypeConstraint"
+    val AnnotationTpe = rootMirror.getRequiredClass(AnnotationName).tpe
+    val TypeConstrTpe = rootMirror.getRequiredClass(TypeConstrName).tpe
+
+    val StorageName = newTypeName("storage")
+    val StorageSym = ScalaPackageClass.newClassSymbol(StorageName, NoPosition, 0L)
+    StorageSym setInfoAndEnter ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym)
+    StorageSym
+  }
+
 
   // array ops
   lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")
@@ -99,16 +120,4 @@ trait MiniboxDefinitions {
     notag_== -> LongClass,
     other_== -> LongClass
   )
-
-//  def isRuntimeSymbol(sym: Symbol) =
-//    opStorageClass.isDefinedAt(sym)
-//
-//  def transformRuntimeSymbolInfo(sym: Symbol, info: Type): Type = {
-//    val tp = sym.newTypeSymbol(newTypeName("$T$"), sym.pos, 0L)
-//    tp.info = TypeBounds(NothingTpe, AnyTpe)
-//    val tt = storageType(deriveFreshSkolems(List(tp)).head)
-//    val res = info.substituteSymbols(opStorageClass(sym) :: Nil, tp :: Nil)
-//    println(sym + ": " + info + " ==> " + res)
-//    res
-//  }
 }
