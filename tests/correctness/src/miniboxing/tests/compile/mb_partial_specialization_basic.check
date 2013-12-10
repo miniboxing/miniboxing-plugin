@@ -25,6 +25,7 @@ Specializing class UhOh1...
 
 
 [Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait UhOh1[@miniboxed X >: Nothing <: Any, Y >: Nothing <: Any] extends Object {

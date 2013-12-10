@@ -1,9 +1,9 @@
 package miniboxing.tests.correctness.erasure.torture1
 
-class A[@miniboxed T](val a: Array[T]) {
+class A[@miniboxed T](val a: T, val b: T) {
   def foo(c: Boolean): Any = {
-    val x = if (c) a(0) else a(1)
-    val y = a(0) :: a(1) :: Nil
-    if (c) c else y
+    val x = if (c) a else b
+    val y = a :: b :: Nil
+    if (c) a else y
   }
 }
