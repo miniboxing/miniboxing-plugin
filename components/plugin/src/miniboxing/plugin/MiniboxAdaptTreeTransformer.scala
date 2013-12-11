@@ -67,18 +67,22 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
+          case Select(mbox, mth) if mbox.tpe != null && mbox.tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol]) =>
+            val box = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(mbox.tpe.dealiasWiden.typeSymbol.tpeHK), List(mbox))
+            val sel = Select(box, mth)
+            super.typed(sel, mode, pt)
           case _ if tree.tpe != null  =>
-//            println("TREE: " + tree)
+            //println("TREE: " + tree + " pt = " + pt)
             val oldTree = tree.duplicate
             val oldTpe = tree.tpe
             tree.tpe = null
             val res: Tree = silent(_.typed(tree, mode, pt)) match {
               case SilentTypeError(err) =>
                 tree.tpe = oldTpe
-                // println(oldTpe + " vs " + pt)
                 val newTpe = pt
                 val hAnnot1 = oldTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
                 val hAnnot2 = newTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                println(s"${oldTpe.dealiasWiden} vs ${pt.dealiasWiden} ($hAnnot1 vs $hAnnot2)")
                 if (hAnnot1 && !hAnnot2) {
                   //println(marker_minibox2box.tpe)
                   super.typed(gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree)), mode, pt)
