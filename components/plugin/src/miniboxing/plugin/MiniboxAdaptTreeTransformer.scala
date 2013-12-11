@@ -82,7 +82,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
                 val newTpe = pt
                 val hAnnot1 = oldTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
                 val hAnnot2 = newTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-                println(s"${oldTpe.dealiasWiden} vs ${pt.dealiasWiden} ($hAnnot1 vs $hAnnot2)")
+                //println(s"${oldTpe.dealiasWiden} vs ${pt.dealiasWiden} ($hAnnot1 vs $hAnnot2)")
                 if (hAnnot1 && !hAnnot2) {
                   //println(marker_minibox2box.tpe)
                   super.typed(gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree)), mode, pt)

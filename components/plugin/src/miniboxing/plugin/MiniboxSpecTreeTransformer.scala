@@ -134,6 +134,40 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
             }
             localTyper.typed(tree1)
 
+          // simplify equality between miniboxed values
+          case tree@Apply(Select(MiniboxToBox(val1, targ1), eqeq), List(MiniboxToBox(val2, targ2))) if tree.symbol == Any_== =>
+            val tags = typeTagTrees(currentOwner)
+            val tag1 = tags(targ1.dealiasWiden.typeSymbol)
+            val tag2 = tags(targ2.dealiasWiden.typeSymbol)
+            val tree1 = {
+              if ((tag1 == tag2) || (tag1.symbol == tag2.symbol))
+                gen.mkMethodCall(notag_==, List(transform(val1), transform(val2)))
+              else
+                gen.mkMethodCall(tag_==, List(transform(val1), tag1, transform(val2), tag2))
+            }
+            localTyper.typed(tree1)
+
+          // simplify equality between miniboxed values 2 - comparison with other values
+          case tree@Apply(Select(MiniboxToBox(val1, targ1), eqeq), List(arg)) if tree.symbol == Any_== =>
+            val tags = typeTagTrees(currentOwner)
+            val tag1 = tags(targ1.dealiasWiden.typeSymbol)
+            val tree1 = gen.mkMethodCall(other_==, List(transform(val1), tag1, transform(arg)))
+            localTyper.typed(tree1)
+
+          // simplify hashCode
+          case tree@Apply(Select(MiniboxToBox(val1, targ1), hash), _) if tree.symbol == Any_hashCode =>
+            val tags = typeTagTrees(currentOwner)
+            val tag1 = tags(targ1.dealiasWiden.typeSymbol)
+            val tree1 = gen.mkMethodCall(tag_hashCode, List(transform(val1), tag1))
+            localTyper.typed(tree1)
+
+          // simplify toString
+          case tree@Apply(Select(MiniboxToBox(val1, targ1), toString), _) if tree.symbol == Any_toString =>
+            val tags = typeTagTrees(currentOwner)
+            val tag1 = tags(targ1.dealiasWiden.typeSymbol)
+            val tree1 = gen.mkMethodCall(tag_toString, List(transform(val1), tag1))
+            localTyper.typed(tree1)
+
           case BoxToMinibox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
             localTyper.typed(gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol))))
@@ -141,8 +175,6 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
           case MiniboxToBox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
             localTyper.typed(gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol))))
-
-          // TODO: Add other
 
           case _ =>
             super.transform(tree0)
