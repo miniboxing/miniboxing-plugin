@@ -1,4 +1,6 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait VerifyArrayOps[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> def x(): Array[T];
@@ -14,15 +16,15 @@ package miniboxing.tests.compile {
     def reverse(): Unit = VerifyArrayOps_J.this.reverse_J(VerifyArrayOps_J.this.miniboxing|tests|compile|VerifyArrayOps_J|T_TypeTag);
     def reverse_J(T_TypeTag: Byte): Unit = {
       var i: Int = 0;
-      var j: Int = MiniboxArray.this.mbarray_length(VerifyArrayOps_J.this.x(), T_TypeTag).-(1);
+      var j: Int = MiniboxArray.this.mbarray_length(VerifyArrayOps_J.this.x_J(T_TypeTag), T_TypeTag).-(1);
       while$1(){
         if (i.<(j))
           {
             {
-              val t1: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), i, T_TypeTag);
-              val t2: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x(), j, T_TypeTag);
-              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), i, t2, T_TypeTag);
-              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x(), j, t1, T_TypeTag);
+              val t1: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x_J(T_TypeTag), i, T_TypeTag);
+              val t2: Long = MiniboxArray.this.mbarray_apply_minibox(VerifyArrayOps_J.this.x_J(T_TypeTag), j, T_TypeTag);
+              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x_J(T_TypeTag), i, t2, T_TypeTag);
+              MiniboxArray.this.mbarray_update_minibox(VerifyArrayOps_J.this.x_J(T_TypeTag), j, t1, T_TypeTag);
               i = i.+(1);
               j = j.-(1)
             };
@@ -71,4 +73,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

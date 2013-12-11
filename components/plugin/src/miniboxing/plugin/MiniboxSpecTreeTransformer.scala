@@ -49,6 +49,21 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   case object Boxed extends Constraint
   case object NoConstraint extends Constraint
 
+  class CoercionExtractor {
+    def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type)] = tree match {
+      case Apply(TypeApply(fun, List(targ)), List(inner)) if fun.symbol == sym => Some(inner, targ.tpe)
+      case _ => None
+    }
+  }
+
+  object MiniboxToBox extends CoercionExtractor {
+    def unapply(tree: Tree): Option[(Tree, Type)] = unapply(tree, marker_minibox2box)
+  }
+
+  object BoxToMinibox extends CoercionExtractor {
+    def unapply(tree: Tree): Option[(Tree, Type)] = unapply(tree, marker_box2minibox)
+  }
+
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
     override def transform(tree0: Tree): Tree = {
@@ -62,13 +77,73 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
       val tree1 =
         tree0 match {
-          case Apply(TypeApply(fun, List(targ)), List(tree)) if fun.symbol == marker_box2minibox =>
+
+          // Array application
+          case BoxToMinibox(tree@Apply(apply @ Select(array, _), List(pos)), _) if apply.symbol == Array_apply =>
+            val tags = typeTagTrees(currentOwner)
+            val tree1 = array.tpe.widen.typeArgs match {
+              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+                val tag = tags(tpe.typeSymbol)
+                val tree1 = gen.mkMethodCall(mbarray_apply, List(transform(array), transform(pos), tag))
+                stats("rewrote array apply: " + tree + " ==> " + tree1)
+                tree1
+              case _ =>
+                super.transform(tree)
+            }
+            localTyper.typed(tree1)
+
+          // Array update
+          case tree@Apply(update@Select(array, _), List(pos, MiniboxToBox(element, _))) if update.symbol == Array_update =>
+            val tags = typeTagTrees(currentOwner)
+            val tree1 = array.tpe.widen.typeArgs match {
+              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+                val tag = tags(tpe.typeSymbol)
+                val tree2 = gen.mkMethodCall(mbarray_update, List(transform(array), transform(pos), transform(element), tag))
+                stats("rewrote array update: " + tree + " ==> " + tree2)
+                tree2
+              case _ =>
+                super.transform(tree)
+            }
+            localTyper.typed(tree1)
+
+           // Array new
+          case tree@Apply(newArray @ Select(manifest, _), List(size)) if newArray.symbol == Manifest_newArray =>
+            val tags = typeTagTrees(currentOwner)
+            val tree1 = manifest.tpe.widen.typeArgs match {
+              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+                val tag = tags(tpe.typeSymbol)
+                val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(transform(size), tag))
+                stats("rewrote array new: " + tree + " ==> " + tree1)
+                tree1
+              case _ =>
+                super.transform(tree)
+            }
+            localTyper.typed(tree1)
+
+          // Array length
+          case tree@Apply(length @ Select(array, _), Nil) if length.symbol == Array_length =>
+            val tags = typeTagTrees(currentOwner)
+            val tree1 = array.tpe.widen.typeArgs match {
+              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
+                val tag = tags(tpe.typeSymbol)
+                val tree1 = gen.mkMethodCall(mbarray_length, List(transform(array), tag))
+                stats("rewrote array length: " + tree + " ==> " + tree1)
+                tree1
+              case _ =>
+                super.transform(tree)
+            }
+            localTyper.typed(tree1)
+
+          case BoxToMinibox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
-            localTyper.typed(gen.mkMethodCall(box2minibox, List(targ.tpe), List(transform(tree), tags(targ.tpe.typeSymbol))))
-          case Apply(TypeApply(fun, List(targ)), List(tree)) if fun.symbol == marker_minibox2box =>
+            localTyper.typed(gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol))))
+
+          case MiniboxToBox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
-            localTyper.typed(gen.mkMethodCall(minibox2box, List(targ.tpe), List(transform(tree), tags(targ.tpe.typeSymbol))))
-          // TODO: Add other 
+            localTyper.typed(gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol))))
+
+          // TODO: Add other
+
           case _ =>
             super.transform(tree0)
         }
