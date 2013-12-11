@@ -1,0 +1,41 @@
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.correctness.erasure.torture3 {
+  abstract trait A[@miniboxed T >: Nothing <: Any] extends Object {
+    def foo(c: T): Any;
+    def foo_J(T_TypeTag: Byte, c: Long): Any
+  };
+  class A_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
+    def <init>(miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture3.A_J[Tsp] = {
+      A_J.super.<init>();
+      ()
+    };
+    def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag));
+    def foo_J(T_TypeTag: Byte, c: Long): Any = {
+      val x: Any = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag);
+      val hc: Int = MiniboxDispatch.this.mboxed_hashCode(c, T_TypeTag);
+      val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, T_TypeTag, 3);
+      val ts: String = MiniboxDispatch.this.mboxed_toString(c, T_TypeTag);
+      ()
+    };
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte = _
+  };
+  class A_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture3.A_L[Tsp] = {
+      A_L.super.<init>();
+      ()
+    };
+    def foo(c: Tsp): Any = {
+      val x: Any = c;
+      val hc: Int = c.hashCode();
+      val eq: Boolean = c.==(3);
+      val ts: String = c.toString();
+      ()
+    };
+    def foo_J(T_TypeTag: Byte, c: Long): Any = A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+  }
+}
+
+[Now checking: minibox-spec]
+
