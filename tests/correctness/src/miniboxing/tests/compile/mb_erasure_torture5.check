@@ -1,0 +1,40 @@
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.correctness.erasure.torture5 {
+  abstract trait A[@miniboxed T >: Nothing <: Int] extends Object {
+    def foo(c: T): Any;
+    def foo_J(T_TypeTag: Byte, c: Long): Any
+  };
+  class A_J[Tsp >: Nothing <: Int] extends Object with miniboxing.tests.correctness.erasure.torture5.A[Tsp] {
+    def <init>(miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture5.A_J[Tsp] = {
+      A_J.super.<init>();
+      ()
+    };
+    def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag));
+    def foo_J(T_TypeTag: Byte, c: Long): Any = {
+      def foo_tail(c: Long, cond: Boolean): Long = if (cond)
+        foo_tail(c, cond.unary_!())
+      else
+        c;
+      MiniboxConversions.this.minibox2box[Tsp](foo_tail(c, true), T_TypeTag)
+    };
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte = _
+  };
+  class A_L[Tsp >: Nothing <: Int] extends Object with miniboxing.tests.correctness.erasure.torture5.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture5.A_L[Tsp] = {
+      A_L.super.<init>();
+      ()
+    };
+    def foo(c: Tsp): Any = {
+      def foo_tail(c: Tsp, cond: Boolean): Tsp = if (cond)
+        foo_tail(c, cond.unary_!())
+      else
+        c;
+      foo_tail(c, true)
+    };
+    def foo_J(T_TypeTag: Byte, c: Long): Any = A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+  }
+}
+
+[Now checking: minibox-spec]
