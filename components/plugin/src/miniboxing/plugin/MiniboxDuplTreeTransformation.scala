@@ -345,11 +345,12 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println("rewiring original: " + oldMbrSym.defString + " (onwer: " + oldMbrSym.owner + ")")
 //          println("rewiring step 1:   " + newMbrSym.defString + " (onwer: " + newMbrSym.owner + ")")
 //          println("rewiring step 2:   " + specMbrSym.defString + " (onwer: " + specMbrSym.owner + ")")
+//          println(ntree.tpe)
           ntree
 
         case TypeApply(oldFun, targs) =>
           // TODO
-          super.transform(tree)
+          localTyper.typed(treeCopy.TypeApply(tree, transform(oldFun), targs.map(transform)))
 
         case Apply(oldFun, oldArgs) =>
           val args = oldArgs.map(transform(_))
@@ -396,14 +397,16 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val localTagArgs = tparamInsts.map(typeTags)
 
           val tree1 = gen.mkMethodCall(newFun, localTagArgs ::: args)
-//          println(tree + " ==> " + tree1)
 //          println()
+//          println(tree + " ==> " + tree1)
 //          println(tree1)
 //          println(tree1.tpe)
 //          println(newFun)
 //          println(newFun.symbol.defString)
 //          println(newFun.tpe)
-          localTyper.typed(tree1)
+          val tree2 = localTyper.typed(tree1)
+//          println("after")
+          tree2
 
 //        // Super constructor call rewiring for:
 //        //  - non-specialized classes
