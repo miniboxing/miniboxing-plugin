@@ -1,4 +1,6 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait BUG3[@miniboxed T >: Nothing <: Any] extends Object {
     def hashMode(): T;
@@ -11,7 +13,7 @@ package miniboxing.tests.compile {
     };
     def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag), BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag);
     def hashMode_J(T_TypeTag: Byte): Long = {
-      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
+      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
       headhash
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|BUG3_J|T_TypeTag: Byte = _
@@ -29,4 +31,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
