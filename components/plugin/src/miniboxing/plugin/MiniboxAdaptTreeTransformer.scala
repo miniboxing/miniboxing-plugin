@@ -63,7 +63,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
-      override def typed(tree: Tree, mode: Int, pt: Type): Tree =
+      override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
+//        println(tree)
         tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
@@ -71,7 +72,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             val box = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(mbox.tpe.dealiasWiden.typeSymbol.tpeHK), List(mbox))
             val sel = Select(box, mth)
             super.typed(sel, mode, pt)
-          case _ if tree.tpe != null  =>
+          case _ if tree.tpe != null =>
             //println("TREE: " + tree + " pt = " + pt)
             val oldTree = tree.duplicate
             val oldTpe = tree.tpe
@@ -117,6 +118,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             assert(tree2.tpe != null)
             tree2
         }
+      }
     }
   }
 }
