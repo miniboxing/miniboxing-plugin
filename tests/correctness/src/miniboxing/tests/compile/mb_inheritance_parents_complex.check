@@ -174,7 +174,9 @@ Specializing class Derived6...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait Base1[@miniboxed B11 >: Nothing <: Any, @miniboxed B12 >: Nothing <: Any] extends Object;
   abstract trait Base2[B21 >: Nothing <: Any, @miniboxed B22 >: Nothing <: Any] extends Object;
@@ -304,4 +306,4 @@ package miniboxing.tests.compile.inheritance {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

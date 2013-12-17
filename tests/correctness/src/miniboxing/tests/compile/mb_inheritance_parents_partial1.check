@@ -31,7 +31,9 @@ Specializing class F1...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait F1[@miniboxed T >: Nothing <: Any, @miniboxed R >: Nothing <: Any] extends Object;
   class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Boolean] {
@@ -70,4 +72,4 @@ package miniboxing.tests.compile.inheritance {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

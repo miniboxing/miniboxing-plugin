@@ -16,7 +16,9 @@ Specializing trait C...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance.traits {
   abstract trait C[@miniboxed T >: Nothing <: Any] extends Object;
   abstract trait C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
@@ -25,4 +27,4 @@ package miniboxing.tests.compile.inheritance.traits {
   abstract trait C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp]
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
