@@ -409,7 +409,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             }
           }
           val typeTags = typeTagTrees()
-          val localTagArgs = tparamInsts.map(typeTags)
+          val localTagArgs = tparamInsts.map(typeTags).map(localTyper.typed(_))
 
           val tree1 = gen.mkMethodCall(newFun, localTagArgs ::: args)
 //          println()
