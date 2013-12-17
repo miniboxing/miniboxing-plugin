@@ -5,34 +5,36 @@ Specializing class TN...
     def foo(): miniboxing.tests.compile.tparams.TN[T,String]
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String]
     val t(): T
-    val t_J(val T_TypeTag: Byte): Long
+    val t_J(val T_TypeTag: Byte): T @storage
   }
 
   // specialized class:
   class TN_J[Tsp, Xsp] extends TN[Tsp,Xsp] {
-    def <init>(val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte,t: Long): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] // is a specialized implementation of constructor TN
-    def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String]             // is a forwarder to method foo_J
+    def <init>(val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte,t: Tsp @storage): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] // is a specialized implementation of constructor TN
+    def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String]             // is a forwarder to the specialized member
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte // no info
-    private[this] val t: Long                                              // is a specialized implementation of value t
-    val t(): Tsp                                                           // is a forwarder to value t_J
-    val t_J(val T_TypeTag: Byte): Long                                     // is a setter or getter for value t
+    private[this] val t: Tsp @storage                                      // is a specialized implementation of value t
+    val t(): Tsp                                                           // is a forwarder to the specialized member
+    val t_J(val T_TypeTag: Byte): Tsp @storage                             // is a setter or getter for value t
   }
 
   // specialized class:
   class TN_L[Tsp, Xsp] extends TN[Tsp,Xsp] {
     def <init>(t: Tsp): miniboxing.tests.compile.tparams.TN_L[Tsp,Xsp]     // is a specialized implementation of constructor TN
     def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String]             // is a specialized implementation of method foo
-    def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a forwarder to method foo
+    def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a forwarder to the specialized member
     private[this] val t: Tsp                                               // is a specialized implementation of value t
     val t(): Tsp                                                           // is a setter or getter for value t
-    val t_J(val T_TypeTag: Byte): Long                                     // is a forwarder to value t
+    val t_J(val T_TypeTag: Byte): Tsp @storage                             // is a forwarder to the specialized member
   }
 
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.tparams {
   abstract trait TN[@miniboxed T >: Nothing <: Any, X >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
@@ -46,7 +48,7 @@ package miniboxing.tests.compile.tparams {
       ()
     };
     def test[T >: Nothing <: Any](t: T): String = {
-      new miniboxing.tests.compile.tparams.TN_J[Int,String](5, MiniboxConversions.this.box2minibox_tt[Int(1)](1, 5));
+      new miniboxing.tests.compile.tparams.TN_J[Int,String](5, MiniboxConversions.this.box2minibox_tt[Int](1, 5));
       new miniboxing.tests.compile.tparams.TN_L[String,String]("xxx");
       new miniboxing.tests.compile.tparams.TN_L[T,String](t);
       new String("yyy")
@@ -77,4 +79,4 @@ package miniboxing.tests.compile.tparams {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
