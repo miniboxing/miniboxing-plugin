@@ -3,13 +3,13 @@ Specializing class MBList...
   // interface:
   abstract trait MBList[T] extends Object {
     def contains(e: T): Boolean
-    def contains_J(val T_TypeTag: Byte,e: Long): Boolean
+    def contains_J(val T_TypeTag: Byte,e: T @storage): Boolean
     def length(): Int
     def length_J(val T_TypeTag: Byte): Int
     def toString2(): String
     def toString2_J(val T_TypeTag: Byte): String
     final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[T],e: T): Boolean
-    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],e: Long): Boolean
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],e: T @storage): Boolean
     final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
     final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
     override def hashCode(): Int
@@ -17,34 +17,34 @@ Specializing class MBList...
     override def toString(): String
     override def toString_J(val T_TypeTag: Byte): String
     val head(): T
-    val head_J(val T_TypeTag: Byte): Long
+    val head_J(val T_TypeTag: Byte): T @storage
     val tail(): miniboxing.benchmarks.minibox.MBList[T]
     val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[T]
   }
 
   // specialized class:
   class MBList_J[Tsp] extends MBList[Tsp] {
-    def <init>(val miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte,head: Long,tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_J[Tsp] // is a specialized implementation of constructor MBList
-    def contains(e: Tsp): Boolean                                          // is a forwarder to method contains_J
-    def contains_J(val T_TypeTag: Byte,e: Long): Boolean                   // is a specialized implementation of method contains
-    def length(): Int                                                      // is a forwarder to method length_J
+    def <init>(val miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte,head: Tsp @storage,tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_J[Tsp] // is a specialized implementation of constructor MBList
+    def contains(e: Tsp): Boolean                                          // is a forwarder to the specialized member
+    def contains_J(val T_TypeTag: Byte,e: Tsp @storage): Boolean           // is a specialized implementation of method contains
+    def length(): Int                                                      // is a forwarder to the specialized member
     def length_J(val T_TypeTag: Byte): Int                                 // is a specialized implementation of method length
-    def toString2(): String                                                // is a forwarder to method toString2_J
+    def toString2(): String                                                // is a forwarder to the specialized member
     def toString2_J(val T_TypeTag: Byte): String                           // is a specialized implementation of method toString2
-    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a forwarder to method containsTail_J
-    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Long): Boolean // is a specialized implementation of method containsTail
-    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to method tailHash_J
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a forwarder to the specialized member
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage): Boolean // is a specialized implementation of method containsTail
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
     final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
-    override def hashCode(): Int                                           // is a forwarder to method hashCode_J
+    override def hashCode(): Int                                           // is a forwarder to the specialized member
     override def hashCode_J(val T_TypeTag: Byte): Int                      // is a specialized implementation of method hashCode
-    override def toString(): String                                        // is a forwarder to method toString_J
+    override def toString(): String                                        // is a forwarder to the specialized member
     override def toString_J(val T_TypeTag: Byte): String                   // is a specialized implementation of method toString
-    private[this] val head: Long                                           // is a specialized implementation of value head
+    private[this] val head: Tsp @storage                                   // is a specialized implementation of value head
     private[this] val miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte // no info
     private[this] val tail: miniboxing.benchmarks.minibox.MBList[Tsp]      // is a specialized implementation of value tail
-    val head(): Tsp                                                        // is a forwarder to value head_J
-    val head_J(val T_TypeTag: Byte): Long                                  // is a setter or getter for value head
-    val tail(): miniboxing.benchmarks.minibox.MBList[Tsp]                  // is a forwarder to value tail_J
+    val head(): Tsp                                                        // is a forwarder to the specialized member
+    val head_J(val T_TypeTag: Byte): Tsp @storage                          // is a setter or getter for value head
+    val tail(): miniboxing.benchmarks.minibox.MBList[Tsp]                  // is a forwarder to the specialized member
     val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] // is a setter or getter for value tail
   }
 
@@ -52,31 +52,33 @@ Specializing class MBList...
   class MBList_L[Tsp] extends MBList[Tsp] {
     def <init>(head: Tsp,tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_L[Tsp] // is a specialized implementation of constructor MBList
     def contains(e: Tsp): Boolean                                          // is a specialized implementation of method contains
-    def contains_J(val T_TypeTag: Byte,e: Long): Boolean                   // is a forwarder to method contains
+    def contains_J(val T_TypeTag: Byte,e: Tsp @storage): Boolean           // is a forwarder to the specialized member
     def length(): Int                                                      // is a specialized implementation of method length
-    def length_J(val T_TypeTag: Byte): Int                                 // is a forwarder to method length
+    def length_J(val T_TypeTag: Byte): Int                                 // is a forwarder to the specialized member
     def toString2(): String                                                // is a specialized implementation of method toString2
-    def toString2_J(val T_TypeTag: Byte): String                           // is a forwarder to method toString2
+    def toString2_J(val T_TypeTag: Byte): String                           // is a forwarder to the specialized member
     final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a specialized implementation of method containsTail
-    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Long): Boolean // is a forwarder to method containsTail
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage): Boolean // is a forwarder to the specialized member
     final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
-    final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to method tailHash
+    final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
     override def hashCode(): Int                                           // is a specialized implementation of method hashCode
-    override def hashCode_J(val T_TypeTag: Byte): Int                      // is a forwarder to method hashCode
+    override def hashCode_J(val T_TypeTag: Byte): Int                      // is a forwarder to the specialized member
     override def toString(): String                                        // is a specialized implementation of method toString
-    override def toString_J(val T_TypeTag: Byte): String                   // is a forwarder to method toString
+    override def toString_J(val T_TypeTag: Byte): String                   // is a forwarder to the specialized member
     private[this] val head: Tsp                                            // is a specialized implementation of value head
     private[this] val tail: miniboxing.benchmarks.minibox.MBList[Tsp]      // is a specialized implementation of value tail
     val head(): Tsp                                                        // is a setter or getter for value head
-    val head_J(val T_TypeTag: Byte): Long                                  // is a forwarder to value head
+    val head_J(val T_TypeTag: Byte): Tsp @storage                          // is a forwarder to the specialized member
     val tail(): miniboxing.benchmarks.minibox.MBList[Tsp]                  // is a setter or getter for value tail
-    val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] // is a forwarder to value tail
+    val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] // is a forwarder to the specialized member
   }
 
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.benchmarks.minibox {
   abstract trait MBList[@miniboxed T >: Nothing <: Any] extends Object {
     <stable> <accessor> <paramaccessor> def head(): T;
@@ -189,4 +191,4 @@ package miniboxing.benchmarks.minibox {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
