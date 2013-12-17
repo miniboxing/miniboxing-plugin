@@ -7,8 +7,8 @@ Specializing class C...
 
   // specialized class:
   class C_J[Tsp] extends C[Tsp] {
-    def <init>(val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte,c: Long): miniboxing.tests.compile.nested.C_J[Tsp] // is a specialized implementation of constructor C
-    private[this] val c: Long                                              // is a specialized implementation of value c
+    def <init>(val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte,c: Tsp @storage): miniboxing.tests.compile.nested.C_J[Tsp] // is a specialized implementation of constructor C
+    private[this] val c: Tsp @storage                                      // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte  // no info
   }
 
@@ -29,8 +29,8 @@ Specializing class D...
 
   // specialized class:
   class D_J[Usp] extends C.this.D[Usp] {
-    def <init>(val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte,d: Long): C.this.D_J[Usp] // is a specialized implementation of constructor D
-    private[this] val d: Long                                              // is a specialized implementation of value d
+    def <init>(val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte,d: Usp @storage): C.this.D_J[Usp] // is a specialized implementation of constructor D
+    private[this] val d: Usp @storage                                      // is a specialized implementation of value d
     private[this] val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte // no info
   }
 
@@ -43,7 +43,9 @@ Specializing class D...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.nested {
   abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
     abstract trait D[@miniboxed U >: Nothing <: Any] extends Object;
@@ -80,4 +82,4 @@ package miniboxing.tests.compile.nested {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

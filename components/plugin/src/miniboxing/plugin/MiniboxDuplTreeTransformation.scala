@@ -279,6 +279,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           debug(" <= " + result)
           super.transform(result)
 
+        // Error on accessing non-existing fields
+        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
+          unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
+          localTyper.typed(gen.mkAttributedRef(Predef_???))
+
         // rewiring new class construction
         // new C[Int] => new C_J[Int]
         case New(cl) if specializedClasses.isDefinedAt(cl.tpe.typeSymbol) =>
@@ -612,11 +617,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //                }
 //            }
 //          super.transform(tree1)
-
-        // Error on accessing non-existing fields
-        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
-          unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
-          localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         case _ =>
           super.transform(tree)
