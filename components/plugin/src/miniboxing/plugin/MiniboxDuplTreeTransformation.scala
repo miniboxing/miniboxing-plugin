@@ -131,10 +131,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractQualifierType(tree: Tree): Type = tree match {
-        case New(cl)     => cl.tpe
-        case This(clazz) => appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
-        case _ => tree.tpe
-      }
+      case New(cl)     => afterMinibox(cl.tpe.typeSymbol.info); cl.tpe
+      case This(clazz) => afterMinibox(currentClass.info); appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
+      case Super(qual, _) => tree.tpe
+      case _ => tree.tpe
+    }
 
     def extractFunctionQualifierType(tree: Tree): Type = tree match {
       case Select(newQual, _) => newQual.tpe
@@ -301,32 +302,45 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          }
 //          tree1
 
-        // rewiring member selection
-        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) =>
+        // rewire super constructors, which need special treatment
+        case Select(sup@Super(ths, _), mbr) if (mbr == nme.CONSTRUCTOR) =>
+          localTyper.typedOperator(Select(Super(transform(ths), sup.mix), nme.CONSTRUCTOR))
+
+        // rewire member selection
+        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) || oldQual.isInstanceOf[Super] =>
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
-          val newQual = transform(oldQual)
-          val newQualTpe: Type = extractQualifierType(newQual)
-
+          val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
+          val (newQual: Tree, newQualTpe: Type, newQualSym: Symbol) =
+            oldQual match {
+              case sup @ Super(ths, _) =>
+                // rewriting member selection on the fly, otherwise this won't work :(
+                val selTree = localTyper.typedOperator(Select(Super(transform(ths), sup.mix), mbr))
+                val Select(supTree, _) = selTree
+                val ntpe = supTree.tpe baseType selTree.symbol.owner
+                (supTree, ntpe, selTree.symbol.owner)
+              case _ =>
+                val nqual = transform(oldQual)
+                val ntpe = extractQualifierType(nqual)
+                (nqual, ntpe, ntpe.typeSymbol)
+            }
           val spec = extractSpec(oldQual.tpe, currentMethod, currentClass)
 
-          // new C[Int] => new C_J[Int]
-          // new C[Int].C#<init> => new C_J[Int].C_J#<init>
-          val oldQualSym = oldQualTpe.typeSymbol
-          val newQualSym = newQualTpe.typeSymbol
-
-          // patching according to the new qualifier
+          // patching for the corresponding symbol in the new receiver
+          // new C[Int].foo => new C_J[Int].foo
+          // note: constructors are updated in the next step, as their class overloads are recorded
           val newMbrSym =
-            if (oldQualSym != newQualSym) {
-              val pspec = partialSpec(newQualSym)
-              assert(specializedClasses(oldQualSym).isDefinedAt(pspec))
-              assert(overloads.isDefinedAt(oldMbrSym))
-              assert(overloads(oldMbrSym).isDefinedAt(pspec))
-              overloads(oldMbrSym)(pspec)
+            if ((oldQualSym != newQualSym) &&
+                (baseClass.getOrElse(newQualSym, NoSymbol) == oldQualSym) &&
+                (oldMbrSym.name != nme.CONSTRUCTOR)) {
+              val updSym = newQualSym.tpe.member(oldMbrSym.name).filter(_.allOverriddenSymbols contains oldMbrSym)
+              assert(!updSym.isOverloaded && updSym != NoSymbol)
+              updSym
             } else
               oldMbrSym
 
-          // patching according to the specialization
+          // patching according to the receiver's specialization
+          // new C[Int].foo_J => new C_J[Int].foo_J
           val specMbrSym = {
             val tpe1 = newQualTpe baseType (newMbrSym.owner)
             extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
@@ -342,6 +356,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val ntree = localTyper.typedOperator(gen.mkAttributedSelect(newQual, specMbrSym))
 //          println()
 //          println("initial tree: " + tree + " : " + tree.tpe)
+//          println(s"$oldQual ($oldQualSym) vs $newQual ($newQualSym)")
 //          println("rewiring original: " + oldMbrSym.defString + " (onwer: " + oldMbrSym.owner + ")")
 //          println("rewiring step 1:   " + newMbrSym.defString + " (onwer: " + newMbrSym.owner + ")")
 //          println("rewiring step 2:   " + specMbrSym.defString + " (onwer: " + specMbrSym.owner + ")")
