@@ -17,7 +17,7 @@ package miniboxing.tests.correctness.erasure.torture5 {
         foo_tail(c, cond.unary_!())
       else
         c;
-      MiniboxConversions.this.minibox2box[Tsp](foo_tail(c, true), T_TypeTag)
+      MiniboxConversions.this.minibox2box[Tsp](foo_tail(c, true), A_J.this.miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag)
     };
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte = _
   };

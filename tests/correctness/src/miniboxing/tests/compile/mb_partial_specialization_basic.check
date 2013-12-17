@@ -38,7 +38,7 @@ package miniboxing.tests.compile {
       ()
     };
     def foo(x: Xsp, y: Ysp): Xsp = MiniboxConversions.this.minibox2box[Xsp](UhOh1_J.this.foo_J(UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag, MiniboxConversions.this.box2minibox_tt[Xsp](x, UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag), y), UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag);
-    def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = UhOh1_J.this.foo_J(X_TypeTag, x, y);
+    def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = UhOh1_J.this.foo_J(UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag, x, y);
     <paramaccessor> private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte = _
   };
   class UhOh1_L[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends Object with miniboxing.tests.compile.UhOh1[Xsp,Ysp] {
