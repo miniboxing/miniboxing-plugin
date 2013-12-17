@@ -18,7 +18,9 @@ Specializing class CC...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Now checking: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait CC[@miniboxed T >: Nothing <: Any] extends Object;
   class DC[U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CC_L[U] {
@@ -42,4 +44,4 @@ package miniboxing.tests.compile.inheritance {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
