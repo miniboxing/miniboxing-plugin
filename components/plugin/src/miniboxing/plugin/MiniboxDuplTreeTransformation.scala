@@ -49,10 +49,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //    println("  " * ttindent + " <= type tag trees for " + owner + " owner chain: " + owner.ownerChain.reverse)
     val prev = if (owner.owner != NoSymbol) typeTagTrees(owner.owner) else Map.empty
     val res = prev ++
-      localTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
       inheritedDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       primaryDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       globalTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
+      localTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
       standardTypeTagTrees // override existing type tags
 //    println("  " * ttindent + " => type tag trees for " + owner + ": " + res)
     ttindent -= 1

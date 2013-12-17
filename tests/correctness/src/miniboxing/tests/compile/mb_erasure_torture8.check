@@ -19,7 +19,7 @@ package miniboxing.tests.correctness.erasure.torture8 {
       scala.this.Predef.println("hello");
       c;
       scala.this.Predef.println("world");
-      MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag)
+      MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag)
     };
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte = _
   };

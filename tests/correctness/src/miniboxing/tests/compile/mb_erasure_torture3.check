@@ -13,10 +13,10 @@ package miniboxing.tests.correctness.erasure.torture3 {
     };
     def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag));
     def foo_J(T_TypeTag: Byte, c: Long): Any = {
-      val x: Any = MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag);
-      val hc: Int = MiniboxDispatch.this.mboxed_hashCode(c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag);
-      val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag, 3);
-      val ts: String = MiniboxDispatch.this.mboxed_toString(c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag);
+      val x: Any = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag);
+      val hc: Int = MiniboxDispatch.this.mboxed_hashCode(c, T_TypeTag);
+      val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, T_TypeTag, 3);
+      val ts: String = MiniboxDispatch.this.mboxed_toString(c, T_TypeTag);
       ()
     };
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte = _

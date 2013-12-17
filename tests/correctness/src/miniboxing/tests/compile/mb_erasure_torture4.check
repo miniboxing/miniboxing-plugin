@@ -13,13 +13,13 @@ package miniboxing.tests.correctness.erasure.torture4 {
     };
     def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag));
     def foo_J(T_TypeTag: Byte, c: Long): Any = {
-      val x: Int = MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag);
-      val y: Int = MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag).+(x);
-      val z: Int = x.+(MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag));
+      val x: Int = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag);
+      val y: Int = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag).+(x);
+      val z: Int = x.+(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag));
       scala.this.Predef.println(x);
       scala.this.Predef.println(y);
       scala.this.Predef.println(z);
-      scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag))
+      scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
     };
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag: Byte = _
   };

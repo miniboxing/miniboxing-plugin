@@ -15,10 +15,10 @@ package miniboxing.tests.compile {
     };
     def foo(t1: Tsp, t2: Any): String = CCC_J.this.foo_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), t2);
     def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String = {
-      MiniboxDispatch.this.mboxed_hashCode(CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag);
-      MiniboxDispatch.this.mboxed_eqeq_notag(CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), t1);
-      MiniboxDispatch.this.mboxed_eqeq_other(CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag, t2);
-      MiniboxDispatch.this.mboxed_toString(CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag)
+      MiniboxDispatch.this.mboxed_hashCode(CCC_J.this.t_J(T_TypeTag), T_TypeTag);
+      MiniboxDispatch.this.mboxed_eqeq_notag(CCC_J.this.t_J(T_TypeTag), t1);
+      MiniboxDispatch.this.mboxed_eqeq_other(CCC_J.this.t_J(T_TypeTag), T_TypeTag, t2);
+      MiniboxDispatch.this.mboxed_toString(CCC_J.this.t_J(T_TypeTag), T_TypeTag)
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|CCC_J|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
