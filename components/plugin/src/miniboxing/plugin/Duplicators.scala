@@ -243,6 +243,14 @@ abstract class Duplicators extends Analyzer {
             invalidateAll(tparams ::: vparamss.flatten)
             tree.symbol = NoSymbol
 
+          case tdef @ TypeDef(_, _, tparams, rhs) =>
+            tdef.symbol = NoSymbol
+            invalidateAll(tparams)
+
+          case cdef @ ClassDef(_, _, tparams, impl) =>
+            cdef.symbol = NoSymbol
+            invalidateAll(tparams)
+
           case _ =>
             tree.symbol = NoSymbol
         }
