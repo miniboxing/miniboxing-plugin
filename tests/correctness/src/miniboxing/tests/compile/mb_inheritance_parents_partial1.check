@@ -32,7 +32,7 @@ Specializing class F1...
 
 
 [Now checking: minibox-dupl]
-[Now checking: minibox-adapt]
+[Not checkable: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait F1[@miniboxed T >: Nothing <: Any, @miniboxed R >: Nothing <: Any] extends Object;

@@ -2,7 +2,7 @@ newSource1.scala:9: warning: a pure expression does nothing in statement positio
     c
     ^
 [Now checking: minibox-dupl]
-[Now checking: minibox-adapt]
+[Not checkable: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness.erasure.torture8 {
   abstract trait A[@miniboxed T >: Nothing <: Int] extends Object {

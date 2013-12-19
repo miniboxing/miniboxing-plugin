@@ -18,6 +18,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
 
   class AdaptPhase(prev: Phase) extends StdPhase(prev) {
     override def name = MiniboxAdaptTreeTransformer.this.phaseName
+    override def checkable = false
     def apply(unit: CompilationUnit): Unit = {
 
       object TreeAdapter extends {

@@ -1,5 +1,5 @@
 [Now checking: minibox-dupl]
-[Now checking: minibox-adapt]
+[Not checkable: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait BUG3[@miniboxed T >: Nothing <: Any] extends Object {

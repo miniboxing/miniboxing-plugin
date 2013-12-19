@@ -77,7 +77,7 @@ Specializing class MBList...
 
 
 [Now checking: minibox-dupl]
-[Now checking: minibox-adapt]
+[Not checkable: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.benchmarks.minibox {
   abstract trait MBList[@miniboxed T >: Nothing <: Any] extends Object {
