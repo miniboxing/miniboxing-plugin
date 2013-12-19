@@ -11,9 +11,10 @@ trait MiniboxAnnotationCheckers {
   object StorageAnnotationChecker extends AnnotationChecker{
     /** Check the annotations on two types conform. */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean = {
-//      println(tpe1)
-//      println(tpe2)
-      tpe1.dealiasWiden.hasAnnotation(StorageClass) == tpe2.dealiasWiden.hasAnnotation(StorageClass)
+      val res = tpe1.dealiasWiden.hasAnnotation(StorageClass) == tpe2.dealiasWiden.hasAnnotation(StorageClass)
+//      println()
+//      println(s"annotationsConform: $tpe1 vs $tpe2: $res")
+      res
     }
 
     /** Modify the type that has thus far been inferred
@@ -26,6 +27,7 @@ trait MiniboxAnnotationCheckers {
     override def canAdaptAnnotations(tree: Tree, mode: Int, pt: Type): Boolean = {
       //println("canAdaptAnnotations? " + tree)
       //!tree.isInstanceOf[TypeTree]
+//      tree.tpe.dealiasWiden.hasAnnotation(StorageClass) == pt.dealiasWiden.hasAnnotation(StorageClass)
       false
     }
 
@@ -35,6 +37,9 @@ trait MiniboxAnnotationCheckers {
      *  before. If the implementing class cannot do the adaptiong, it
      *  should return the tree unchanged.*/
 //    override def adaptAnnotations(tree: Tree, mode: Int, pt: Type): Tree = {
+//      tree.tpe.dealiasWiden.hasAnnotation(StorageClass) == pt.dealiasWiden.hasAnnotation(StorageClass)
+//      tree.tpe = pt
+//      tree
 //    }
   }
 }
