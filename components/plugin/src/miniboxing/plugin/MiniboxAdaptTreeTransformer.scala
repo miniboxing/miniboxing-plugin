@@ -89,6 +89,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             super.typed(sel, mode, pt)
           case _ if tree.tpe != null =>
             //println("TREE: " + tree + " pt = " + pt)
+            // **TODO: Isn't def adapt a better place to hook into the typer?**
             val oldTree = tree.duplicate
             val oldTpe = tree.tpe
             tree.tpe = null
