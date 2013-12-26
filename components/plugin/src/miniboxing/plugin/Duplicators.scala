@@ -121,6 +121,15 @@ abstract class Duplicators extends Analyzer {
       }
     }
 
+    var forceDeep = false
+    def withDeepSubst[T](f: => T): T = {
+      val forceDeep0 = forceDeep
+      forceDeep = true
+      val res: T = f
+      forceDeep = forceDeep0
+      res
+    }
+
     /** Fix the given type by replacing invalid symbols with the new ones. */
     def fixType(tpe: Type, deep: Boolean = false): Type = {
       val tpe1 = if (deep) envDeepSubst(tpe) else envSubstitution(tpe)
@@ -238,9 +247,21 @@ abstract class Duplicators extends Analyzer {
             debuglog("newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
 
-          case DefDef(_, name, tparams, vparamss, _, rhs) =>
+          case vdef @ ValDef(mods, name, tpt, rhs) =>
+            tpt.tpe = fixType(vdef.symbol.info, deep = forceDeep)
+            vdef.symbol = NoSymbol
+
+          case DefDef(_, name, tparams, vparamss, tpt, rhs) =>
             // invalidate parameters
-            invalidateAll(tparams ::: vparamss.flatten)
+            debuglog("invalidate defdef: " + tree.symbol + "  " + tree.symbol.allOverriddenSymbols + "   " + tree.symbol.owner)
+            if (tree.symbol.allOverriddenSymbols.isEmpty) {
+              invalidateAll(tparams ::: vparamss.flatten)
+              tpt.tpe = fixType(tpt.tpe)
+            } else {
+              invalidateAll(tparams)
+              withDeepSubst(invalidateAll(vparamss.flatten))
+              tpt.tpe = fixType(tpt.tpe, true)
+            }
             tree.symbol = NoSymbol
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
@@ -329,8 +350,7 @@ abstract class Duplicators extends Analyzer {
           tree.tpe = null
           super.typed(tree, mode, pt)
 
-        case ddef @ DefDef(_, _, _, _, tpt, rhs) =>
-          ddef.tpt.tpe = fixType(ddef.tpt.tpe)
+        case ddef @ DefDef(_, _, vparamss, _, tpt, rhs) =>
           ddef.tpe = null
           // workaround for SI-7662: https://issues.scala-lang.org/browse/SI-7662
           if (ddef.symbol != null)

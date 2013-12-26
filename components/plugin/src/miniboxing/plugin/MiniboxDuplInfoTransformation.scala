@@ -31,8 +31,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         tpe.resultType match {
           case cinfo @ ClassInfoType(parents, decls, origin) if !unspecializableClass(tpe) =>
             val tparams  = tpe.typeParams
-            if (tparams.isEmpty)
-              afterMinibox(parents map (_.typeSymbol.info))
             specialize(origin, cinfo, typeEnv.getOrElse(origin, EmptyTypeEnv))
           case _ =>
             tpe
@@ -690,7 +688,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
     specs.map(_.map(_._1.setFlag(MINIBOXED))) // TODO: Only needs to be done once per type parameter
 
-    if (specs.nonEmpty) {
+    val tpe = if (specs.nonEmpty) {
       log("Specializing " + origin + "...\n")
 
       // step1: widen the class or trait
@@ -752,8 +750,18 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val scope2 = addSpecialOverrides(Map.empty, Map.empty, origin, scope1)
       val scope3 = addDeferredTypeTagImpls(origin, scope2)
       val scope4 = normalizeMembers(origin, scope3)
+      // make all structural refinement members private (members may be added by special overrides and normalizations)
       GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
     }
+
+    for (mbr <- tpe.decls) {
+      if (mbr.isStructuralRefinementMember) {
+        println(s"SETTING PROTECTED: ${mbr.defString} in $origin: ${mbr.isStructuralRefinementMember}")
+        mbr.setFlag(PROTECTED)
+      }
+    }
+
+    tpe
   }
 
   /**
