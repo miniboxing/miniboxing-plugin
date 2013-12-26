@@ -62,7 +62,7 @@ Specializing class SpCls8...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness {
   abstract trait SpCls8Tgt[@miniboxed U >: Nothing <: Any] extends Object {
     def normalized[@miniboxed V >: Nothing <: Any](u: U, v: V): V;

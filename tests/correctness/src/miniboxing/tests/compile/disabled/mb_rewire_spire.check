@@ -1,4 +1,4 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Cplx[@miniboxed A >: Nothing <: Any] extends Object {
     def isZero(): Boolean;

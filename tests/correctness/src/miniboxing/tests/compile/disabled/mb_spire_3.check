@@ -50,7 +50,7 @@ Specializing class ArrayOps...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Order2[@miniboxed A >: Nothing <: Any] extends Object {
     def max(x: A, y: A): A;

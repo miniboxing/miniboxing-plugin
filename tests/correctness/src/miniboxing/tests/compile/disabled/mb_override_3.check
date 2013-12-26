@@ -145,7 +145,7 @@ Specializing trait Base33...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Base31[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object {
     def overrideMe(t1: T, t2: T, t3: T, s: S): T;

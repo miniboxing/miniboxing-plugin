@@ -30,7 +30,7 @@ Specializing class SpCls7...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness {
   object SpCls7Obj extends Object {
     def <init>(): miniboxing.tests.correctness.SpCls7Obj.type = {

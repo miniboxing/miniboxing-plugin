@@ -30,7 +30,7 @@ Specializing class SpCls3...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness {
   abstract trait SpCls3[@miniboxed S >: Nothing <: Any] extends Object {
     def normalizeMe[@miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.SpCls3[T];

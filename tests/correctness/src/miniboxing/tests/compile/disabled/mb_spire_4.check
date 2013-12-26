@@ -22,7 +22,7 @@ Specializing trait Dist...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Dist[@miniboxed A >: Nothing <: Any] extends Object { self: miniboxing.tests.compile.Dist[A] =>
     def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: A, cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A];

@@ -79,7 +79,7 @@ Specializing class Base43...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   class Base41[T >: Nothing <: Any, S >: Nothing <: Any] extends Object {
     def <init>(): miniboxing.tests.compile.Base41[T,S] = {

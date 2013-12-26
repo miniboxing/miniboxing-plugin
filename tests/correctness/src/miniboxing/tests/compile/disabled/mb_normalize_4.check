@@ -122,7 +122,7 @@ Specializing class SpCls4...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness {
   abstract trait SpCls4Tuple2[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any] extends Object with Product with Serializable {
     <stable> <caseaccessor> <accessor> <paramaccessor> def u(): U;

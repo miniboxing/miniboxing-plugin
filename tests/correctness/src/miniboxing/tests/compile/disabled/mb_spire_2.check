@@ -45,7 +45,7 @@ Specializing class Complex...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Complex[@miniboxed T >: Nothing <: Any] extends Object with Product with Serializable {
     <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): T;

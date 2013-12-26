@@ -30,7 +30,7 @@ Specializing class HijackMe2...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait HijackMe2[@miniboxed T >: Nothing <: Any] extends Object {
     def hijackMeToo[@miniboxed U >: Nothing <: Any](t: T, u: U): Nothing;
