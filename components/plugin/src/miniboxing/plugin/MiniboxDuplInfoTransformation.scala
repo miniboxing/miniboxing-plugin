@@ -496,6 +496,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       def specializedOverriddenMembers(sym: Symbol): Symbol = {
         for (baseOSym <- sym.allOverriddenSymbols) {
+
+          // Check we're not incorrectly overriding normalized members:
+          // class B           {          def foo[@miniboxed T, U] = ???            }
+          // class C extends B { override def foo[@miniboxed T, @miniboxed U] = ??? } // OK
+          // class C extends D { override def foo[@miniboxed T, U] = ??? }            // NOT OK
           if (sym.typeParams.nonEmpty) {
             val tparamMap = (baseOSym.typeParams zip sym.typeParams).toMap
             val tparamMiss = baseOSym.typeParams.filter(tparam =>
@@ -522,7 +527,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         NoSymbol
       }
 
-    if (clazz.isClass)
+    if (clazz.isClass) // class or trait
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
         specializedOverriddenMembers(sym).toOption.foreach(oSym => {
           val localOverload = overloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
@@ -541,10 +546,19 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val typeTags = globalTypeTags.getOrElse(clazz, Map.empty) ++
                            localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
 
-            // direct to the most specific override instead of the generic member:
+            // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
+            // when using nested class specialization:
+            // ```
+            //   abstract class C[T, U] { def foo(t: T, u: U): Any }
+            //   class X[Y] { new C[Int, Y] { def foo(t: Int, u: Y) = ??? }
+            // ```
+            // which method should carry the body in class X_J? foo or foo_JJ?
+            //  * `foo`    gets t: Int unboxed and u: Y boxed
+            //  * `foo_JJ` gets both t and u as miniboxed, which is still suboptimal, but better
             localTypeTags(overrider) = typeTags
-            memberSpecializationInfo(overrider) =
-              genForwardingInfo(sym, overrider = true)
+            templateMembers += sym
+            memberSpecializationInfo(sym) = genForwardingInfo(overrider, overrider = true)
+            memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
 //              if (localOverload == NoSymbol)
 //                genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
 //              else {
