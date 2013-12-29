@@ -11,8 +11,8 @@ package miniboxing.tests.compile.sup1 {
       D.super.<init>(5);
       ()
     };
-    override def foo(i: Int): Int = MiniboxConversions.this.minibox2box[Int](D.super.foo_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5)), 5);
-    override def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Int](D.this.foo(MiniboxConversions.this.minibox2box[Int](t, 5)), 5)
+    override def foo(i: Int): Int = MiniboxConversions.this.minibox2box[Int](D.this.foo_J(5, MiniboxConversions.this.box2minibox_tt[Int](i, 5)), 5);
+    override def foo_J(T_TypeTag: Byte, t: Long): Long = D.super.foo_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5))
   };
   class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
     def <init>(miniboxing|tests|compile|sup1|C_J|T_TypeTag: Byte): miniboxing.tests.compile.sup1.C_J[Tsp] = {

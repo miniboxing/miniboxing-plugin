@@ -239,7 +239,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpeHK), wrapperParams.map(param => Ident(param.symbol)))
 //              println()
 //              println("deriving defdef from " + tree)
-              val rhs2 = transform(localTyper.typed(rhs1))
+              val rhs2 = atOwner(ddef.symbol)(transform(localTyper.typed(rhs1)))
               val defdef = localTyper.typed(deriveDefDef(tree)(_ => rhs2))
 //              println(defdef)
               defdef
@@ -433,6 +433,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println(newFun)
 //          println(newFun.symbol.defString)
 //          println(newFun.tpe)
+//          println(tree1)
           val tree2 = localTyper.typed(tree1)
 //          println("after")
           tree2
