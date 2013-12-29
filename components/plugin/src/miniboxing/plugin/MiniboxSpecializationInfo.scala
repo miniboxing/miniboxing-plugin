@@ -162,13 +162,13 @@ trait MiniboxSpecializationInfo {
   val normalSpec = new mutable.HashMap[Symbol, PartialSpec]
 
   /**
-   * Records for each of the specialized classes the type parameter to tag field
+   * Records for each of the specialized classes the tag field to type parameter
    * correspondence. These are local type tags, used in all members.
    */
   val globalTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 
   /**
-   * Records for each of the specialized classes the type parameter to tag field
+   * Records for each of the specialized classes the tag field to type parameter
    * correspondence. These are local type tags, used in each member.
    */
   val localTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
@@ -177,8 +177,6 @@ trait MiniboxSpecializationInfo {
    * `defferredTypeTags` keeps a list of members that represent type tags
    * in a trait -- unlike type tags in a class, which are fields, these are
    * methods which the inheriting class overrides
-   * NOTE: The inner map is inverted, member -> tparam instead of
-   * tparam -> member as inside localTypeTags and globalTypeTags
    */
   val inheritedDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
   val primaryDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]

@@ -223,7 +223,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           }
 
           specScope enter sym
-          (pmap(tparam), sym)
+          (sym, pmap(tparam))
         })
 
       // Record the new mapping for type tags to the fields carrying them
@@ -241,8 +241,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               base(newMbr) = mbr
           }
           val update = (mbr.info.params zip newMbr.info.params).toMap
-          localTypeTags(newMbr) = localTypeTags.getOrElse(mbr, Map.empty).map({ case (tpe, tag) => (tpe, update(tag))})
-          println(newMbr + "  " + localTypeTags(newMbr))
+          localTypeTags(newMbr) = localTypeTags.getOrElse(mbr, Map.empty).map({ case (tag, tparam) => (update(tag), tparam)})
           globalTypeTags(newMbr) = globalTypeTags(spec)
           (mbr, newMbr)
         }).toMap
@@ -267,8 +266,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
         // TODO: Is this okay?
         typeEnv(newMbr) = typeEnv(spec)
-        localTypeTags(newMbr) = localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._1)).zip(newMbr.info.params).toMap
-        println(newMbr + "  " + localTypeTags(newMbr))
+        localTypeTags(newMbr) = newMbr.info.params.zip(localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._2))).toMap
         debug(spec + " entering: " + newMbr)
         specScope enter newMbr
       }
@@ -281,8 +279,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
           val info1 = info0.substThis(origin, spec) // Is this still necessary?
           val info2 = specializedTypeMapInner(info1)
-          val tagParams = typeTagMap map (_._2.cloneSymbol(newCtor, 0))
-          localTypeTags(newCtor) = typeTagMap.map(_._1).zip(tagParams).toMap
+          val tagParams = typeTagMap map (_._1.cloneSymbol(newCtor, 0))
+          localTypeTags(newCtor) = tagParams.zip(typeTagMap.map(_._2)).toMap
           def transformArgs(tpe: Type): Type = tpe match {
             case MethodType(params, ret) =>
               MethodType(tpe.params, transformArgs(ret))
@@ -338,8 +336,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 // here, we're forwarding to the all-AnyRef member, knowing that the
                 // redirection algorithm will direct to the appropriate member later
                 val target = newMembers(overloads(mbr)(pspec.allAnyRef))
-                val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttype, ttag) => (pmap.getOrElse(ttype, ttype), ttag) } ++ globalTypeTags(spec)
-                val targTagMap = localTypeTags.getOrElse(target, Map.empty)
+                // val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttag, ttype) => (ttag, pmap.getOrElse(ttype, ttype)) } ++ globalTypeTags(spec)
+                // val targTagMap = localTypeTags.getOrElse(target, Map.empty)
                 newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
                 memberSpecializationInfo(newMbr) = genForwardingInfo(target)
               }
@@ -420,10 +418,9 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               val info0 = specializedTypeMap(info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
-                  yield (tparam, newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                  yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), tparam)
               localTypeTags(newMbr) = localTags.toMap
-              println(newMbr + "  " + localTypeTags(newMbr))
-              val tagParams = localTags.map(_._2)
+              val tagParams = localTags.map(_._1)
               val info1 =
                 info0 match {
                   case MethodType(args, ret) =>
@@ -433,8 +430,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                     val tpe = MethodType(tagParams ::: args, ret).substSym(targs, ntargs)
                     assert((tagParams ::: args).length == tpe.params.length, tagParams + ", " + args + ", " + tpe.params)
                     val update = ((tagParams ::: args) zip tpe.params).toMap
-                    localTypeTags(newMbr) = localTypeTags(newMbr).map({ case (t, tag) => (t, update(tag)) })
-                    println(newMbr + "  " + localTypeTags(newMbr))
+                    localTypeTags(newMbr) = localTypeTags(newMbr).map({ case (tag, t) => (update(tag), t) })
                     PolyType(ntargs, tpe)
                   case _ => ???
                 }
@@ -547,8 +543,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val baseClazz = oSym.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = globalTypeTags.getOrElse(clazz, Map.empty) ++
-                           localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))})
+            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))}) ++
+                           globalTypeTags.getOrElse(clazz, Map.empty)
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
             // when using nested class specialization:
@@ -560,9 +556,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             //  * `foo`    gets t: Int unboxed and u: Y boxed
             //  * `foo_JJ` gets both t and u as miniboxed, which is still suboptimal, but better
             localTypeTags(overrider) = typeTags
-            println(localTypeTags.getOrElse(oSym, Map.empty))
-            println(localTypeTags.getOrElse(oSym, Map.empty).map({ case (tpe, tag) => (tparamUpdate(tpe), paramUpdate(tag))}))
-            println(overrider + "  " + localTypeTags(overrider) + " 1!!")
             templateMembers += sym
             memberSpecializationInfo(sym) = genForwardingInfo(sym, overrider = true)
             memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
@@ -615,12 +608,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 typeEnv(newMbr) = env ++ normalizedEnv
                 val localTags =
                   for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
-                    yield (deepEnv(tparam), newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe))
+                    yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), deepEnv(tparam))
                 val updateParams = (member.info.params zip info1.params).toMap
                 val oldLocalTypeTags = localTypeTags.getOrElse(member, Map())
-                val updLocalTypeTags = oldLocalTypeTags.map({ case (tpe, tag) => (tpe, updateParams(tag))})
+                val updLocalTypeTags = oldLocalTypeTags.map({ case (tag, tpe) => (updateParams(tag), tpe)})
                 localTypeTags(newMbr) = updLocalTypeTags ++ localTags
-                println(newMbr + "   " + localTypeTags(newMbr))
                 normalSpec(newMbr) = pspec.map({ case (tp, state) => (deepEnv(tp), state)})
                 val tagParams = localTags.map(_._2)
                 GenPolyType(info0.typeParams, MethodType(tagParams ::: info1.params, info1.resultType))
@@ -662,10 +654,10 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 val target = normalizations.get(target0).flatMap(_.get(pspecUpd)).getOrElse(target0)
 
                 val globalTypeTagsMap = typeEnv.getOrElse(clazz, EmptyTypeEnv)
-                val globalTypeTagsUpd = globalTypeTags.getOrElse(clazz, Map.empty).map({case (tpar, tag) => (globalTypeTagsMap.getOrElse(tpar, tpar.tpe).typeSymbol, tag)})
+                val globalTypeTagsUpd = globalTypeTags.getOrElse(clazz, Map.empty).map({case (tag, tpar) => (tag, globalTypeTagsMap.getOrElse(tpar, tpar.tpe).typeSymbol)})
                 val updateTparam2 = (newMbr.typeParams zip target.typeParams).toMap
                 val wrapperTypeTags = globalTypeTagsUpd ++ localTypeTags(newMbr) ++
-                                      localTypeTags(newMbr).map({ case (tpar, tag) => (updateTparam2.getOrElse(tpar, tpar), tag)})
+                                      localTypeTags(newMbr).map({ case (tag, tpar) => (tag, updateTparam2.getOrElse(tpar, tpar))})
 
                 val targetTypeTags = localTypeTags.getOrElse(target, Map())
                 // println("ORIGIN: " + member.defString)
@@ -780,7 +772,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
     for (mbr <- tpe.decls) {
       if (mbr.isStructuralRefinementMember) {
-        println(s"SETTING PROTECTED: ${mbr.defString} in $origin: ${mbr.isStructuralRefinementMember}")
+//        println(s"SETTING PROTECTED: ${mbr.defString} in $origin: ${mbr.isStructuralRefinementMember}")
         mbr.setFlag(PROTECTED)
       }
     }

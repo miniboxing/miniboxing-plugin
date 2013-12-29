@@ -51,8 +51,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     val res = prev ++
       inheritedDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       primaryDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
-      globalTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      localTypeTags.getOrElse(owner, Map.empty).map({case (t, tag) => (t, Ident(tag))}) ++
+      globalTypeTags.getOrElse(owner, Map.empty).map({case (tag, t) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
+      localTypeTags.getOrElse(owner, Map.empty).map({case (tag, t) => (t, Ident(tag))}) ++
       standardTypeTagTrees // override existing type tags
 //    println("  " * ttindent + " => type tag trees for " + owner + ": " + res)
     ttindent -= 1
@@ -396,7 +396,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
           // 1. Generate type tags
           val (tagSyms, argTypes) = separateTypeTagArgsInType(newMethodSym.info, targs.map(_.tpe))
-          val tagsToTparams1 = localTypeTags.getOrElse(newMethodSym, Map()).map(_.swap).toMap
+          val tagsToTparams1 = localTypeTags.getOrElse(newMethodSym, Map()).toMap
           val tparamInsts = for (tagSym <- tagSyms) yield {
             try {
               val tparam = tagsToTparams1(tagSym)
