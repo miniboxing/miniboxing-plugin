@@ -543,8 +543,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val baseClazz = oSym.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))}) ++
-                           globalTypeTags.getOrElse(clazz, Map.empty)
+            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
             // when using nested class specialization:
@@ -556,17 +555,21 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             //  * `foo`    gets t: Int unboxed and u: Y boxed
             //  * `foo_JJ` gets both t and u as miniboxed, which is still suboptimal, but better
             localTypeTags(overrider) = typeTags
-            templateMembers += sym
-            memberSpecializationInfo(sym) = genForwardingInfo(sym, overrider = true)
-            memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
-            overloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (pspec -> overrider)
 
-//              if (localOverload == NoSymbol)
-//                genForwardingInfo(overrider, typeTags, sym, Map.empty, overrider = true)
-//              else {
-//                val targTagMap = localTypeTags.getOrElse(localOverload, Map.empty)
-//                genForwardingInfo(overrider, typeTags, localOverload, targTagMap, overrider = true)
-//              }
+            memberSpecializationInfo.get(sym) match {
+              // if sym is a forwarder to a more specialized member, let the overrider forward to
+              // the the most specialized member, else we're losing optimality
+              case Some(ForwardTo(moreSpec)) =>
+                memberSpecializationInfo(overrider) = genForwardingInfo(sym, overrider = true)
+
+              // if sym is the most specialized version of the code, then just move it over to the
+              // new overrider symbol, exactly like in the example above -- `foo_JJ`
+              case _ =>
+                templateMembers += sym
+                memberSpecializationInfo(sym) = genForwardingInfo(sym, overrider = true)
+                memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
+            }
+            overloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (pspec -> overrider)
 
             scope1 enter overrider
           }

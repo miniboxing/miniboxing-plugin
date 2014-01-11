@@ -52,7 +52,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       inheritedDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       primaryDeferredTypeTags.getOrElse(owner, Map.empty).map({case (method, t) => (t, { gen.mkMethodCall(method, List())})}) ++
       globalTypeTags.getOrElse(owner, Map.empty).map({case (tag, t) => (t, gen.mkAttributedSelect(gen.mkAttributedThis(tag.owner),tag))}) ++
-      localTypeTags.getOrElse(owner, Map.empty).map({case (tag, t) => (t, Ident(tag))}) ++
+      localTypeTags.getOrElse(owner, Map.empty).map({case (tag, t) => (t, gen.mkAttributedIdent(tag))}) ++
       standardTypeTagTrees // override existing type tags
 //    println("  " * ttindent + " => type tag trees for " + owner + ": " + res)
     ttindent -= 1
@@ -808,6 +808,16 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
 
       def getMethodBody(meth: Symbol) = body(meth)
+//        try{
+//          body(meth)
+//        } catch {
+//          case e: Throwable =>
+//            println()
+//            println(meth.defString)
+//            println(body.values)
+//            println("not found")
+//            (localTyper.typed(gen.mkMethodCall(Predef_???, Nil)), meth.paramss)
+//        }
       def getFieldBody(fld: Symbol) = body(fld)._1
     }
 
@@ -818,6 +828,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
      *  `castmap`.
      */
     private def specializeDefDefBody(tree: DefDef, source: Symbol, castmap: TypeEnv = Map.empty) = {
+//      println()
+//      println(tree)
+//      println(memberSpecializationInfo(tree.symbol))
+//      println(currentOwner.ownerChain.reverse)
       val meth = addDefDefBody(tree, source)
       duplicateBody(meth, source, castmap)
     }
