@@ -125,6 +125,11 @@ trait MiniboxSpecializationInfo {
       // def newName(p: Symbol): Name = if (p.hasAnnotation(MinispecClass)) p.name.append("sp") else p.name
       def newName(p: Symbol): Name = p.name.append("sp")
       val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, newName(p)))
+
+      // Update references to old type parameters to the new type parameters
+      // See https://github.com/miniboxing/miniboxing-plugin/issues/36 for details.
+      newParams.map(_.modifyInfo(info => info.substituteSymbols(oldParams, newParams)))
+
       newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
       (oldParams zip newParams).toMap
     }

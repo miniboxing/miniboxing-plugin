@@ -70,7 +70,9 @@ abstract class Duplicators extends Analyzer {
     class FixInvalidSyms extends TypeMap {
 
       def apply(tpe: Type): Type = {
-        mapOver(tpe)
+        val res = mapOver(tpe)
+        // println("type patch: " + tpe + " ==> " + res)
+        res
       }
 
       override def mapOver(tpe: Type): Type = tpe match {
