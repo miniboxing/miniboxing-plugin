@@ -298,7 +298,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         // C.this.foo => C_J.this.foo
         case This(cl) if specializedClasses.isDefinedAt(tree.symbol) =>
           val newType = miniboxQualifier(tree.pos, tree.tpe)
-          localTyper.typed(This(newType.typeSymbol))
+          val res = localTyper.typed(This(newType.typeSymbol))
+//          println(tree + " ==> " + res)
+          res
 
 //        case Select(Super(ths, name), member) =>
 //          println("retyping super: " + tree)
@@ -401,10 +403,15 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             try {
               val tparam = tagsToTparams1(tagSym)
               val instOwner = extractFunctionQualifierType(newFun).baseType(tparam.owner)
+//              println(newFun)
+//              println(extractFunctionQualifierType(newFun))
+//              println(instOwner + "  " + instOwner.typeSymbol)
               val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
               if (targs != null) assert(newMethodSym.info.typeParams.length == targs.length, "Type parameter mismatch in rewiring from " + oldMethodSym.defString + " to " + newMethodSym.defString + ": " + targs)
               val tparamFromNormToInst = if (targs != null) (newMethodSym.info.typeParams zip targs.map(_.tpe)).toMap else Map.empty
               val tparamToInst = tparamFromQualToInst ++ tparamFromNormToInst ++ ScalaValueClasses.map(sym => (sym, sym.tpe))
+//              println(tparamFromQualToInst)
+//              println(tparamToInst)
               tparam.map(tparamToInst(_).typeSymbol)
             } catch {
               case ex: Exception =>
@@ -690,8 +697,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
       qualTpe match {
-        case ThisType(cls) if (cls == inClass) =>
+        case ThisType(cls) if baseClass.isDefinedAt(inClass) && baseClass(inClass) == cls =>
           Some(pSpecFromBaseClass)
+//      since we don't specialize nested classes, this case will never occur:
+//        case t: ThisType =>
+//          extractSpec(t.widen, inMethod, inClass)
         case SingleType(pre, x) =>
           extractSpec(qualTpe.widen, inMethod, inClass)
         case PolyType(tparams, rest) =>
