@@ -617,7 +617,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 val updLocalTypeTags = oldLocalTypeTags.map({ case (tag, tpe) => (updateParams(tag), tpe)})
                 localTypeTags(newMbr) = updLocalTypeTags ++ localTags
                 normalSpec(newMbr) = pspec.map({ case (tp, state) => (deepEnv(tp), state)})
-                val tagParams = localTags.map(_._2)
+                val tagParams = localTags.map(_._1)
                 GenPolyType(info0.typeParams, MethodType(tagParams ::: info1.params, info1.resultType))
               })
 

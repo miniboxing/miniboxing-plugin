@@ -182,7 +182,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val specClassesTped = specClassesTpls map localTyper.typed
 
           // members
-          val specMembers = createMethodTrees(tree.symbol.enclClass) map localTyper.typed
+          val specMembers = createMethodTrees(tree.symbol.enclClass) map (localTyper.typed)
           val bodyDefs =
             if (specializedBase(tree.symbol.enclClass))
               body.filter(defdef => decls.contains(defdef.symbol))

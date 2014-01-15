@@ -88,7 +88,7 @@ trait MiniboxLogic {
 
   def needsSpecialization(clazz: Symbol, member: Symbol) = flag_spec_no_opt || {
     val tparams = clazz.typeParams.filter(isSpecialized(clazz, _))
-    val res = member.info.params.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
+    val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
     tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
     res
   }

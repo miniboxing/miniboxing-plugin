@@ -42,7 +42,7 @@ class TestSuite {
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
     // use carefully:
-//    UPDATE_CHECKFILE = true
+    UPDATE_CHECKFILE = true
 
     for (source <- files(List("src", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
