@@ -336,10 +336,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                 (nqual, ntpe, ntpe.typeSymbol)
             }
           val spec = extractSpec(oldQual.tpe, currentMethod, currentClass)
-//          println()
-//          println(tree)
-//          println(oldQual.tpe)
-//          println(spec)
 
           // patching for the corresponding symbol in the new receiver
           // new C[Int].foo => new C_J[Int].foo
@@ -378,9 +374,41 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println(ntree.tpe)
           ntree
 
-        case TypeApply(oldFun, targs) =>
-          // TODO
-          localTyper.typed(treeCopy.TypeApply(tree, transform(oldFun), targs.map(transform)))
+//        case TypeApply(oldFun, targs) =>
+//          // TODO
+//          localTyper.typed(treeCopy.TypeApply(tree, transform(oldFun), targs.map(transform)))
+
+        case tapply @ TypeApply(oldFun @ Select(qual, fn), targs) =>
+          afterMinibox(oldFun.symbol.owner.info)
+          val oldSym = oldFun.symbol
+          val oldType = tapply.tpe
+          val newFun = transform(oldFun)
+          val Select(newQual, _) = newFun
+          val newSym = newFun.symbol
+
+          // find the normalized member
+          val normSym =
+            extractNormSpec(targs.map(_.tpe), newFun.symbol, currentMethod, currentClass) match {
+              case Some(newSym) => newSym
+              case None => newFun.symbol
+            }
+
+          // replace the member by the normalized member
+          val tree1 = if (normSym != newSym)
+            TypeApply(Select(newQual, newSym), targs.map(transform))
+          else
+            treeCopy.TypeApply(tree, newFun, targs.map(transform))
+
+//          println()
+//          println("initial tree: " + tree + " : " + tree.tpe)
+//          println(s"$oldSym (${oldSym.defString}) vs $newSym (${newSym.defString})")
+//          println("rewiring original: " + oldSym.defString + " (onwer: " + oldSym.owner + ")")
+//          println("rewiring step 1:   " + newSym.defString + " (onwer: " + newSym.owner + ")")
+//          println("rewiring step 2:   " + normSym.defString + " (onwer: " + normSym.owner + ")")
+//          println(tree1)
+
+          val tree2 = localTyper.typed(tree1)
+          tree2
 
         case Apply(oldFun, oldArgs) =>
           val args = oldArgs.map(transform(_))
