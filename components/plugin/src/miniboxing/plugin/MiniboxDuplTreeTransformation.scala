@@ -395,7 +395,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
           // replace the member by the normalized member
           val tree1 = if (normSym != newSym)
-            TypeApply(Select(newQual, newSym), targs.map(transform))
+            TypeApply(Select(newQual, normSym), targs.map(transform))
           else
             treeCopy.TypeApply(tree, newFun, targs.map(transform))
 
@@ -405,7 +405,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println("rewiring original: " + oldSym.defString + " (onwer: " + oldSym.owner + ")")
 //          println("rewiring step 1:   " + newSym.defString + " (onwer: " + newSym.owner + ")")
 //          println("rewiring step 2:   " + normSym.defString + " (onwer: " + normSym.owner + ")")
-//          println(tree1)
+//          println("res: " + tree1)
 
           val tree2 = localTyper.typed(tree1)
           tree2
@@ -706,6 +706,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        println("rewiring target: " + target.defString)
 //        println(pspec)
 //        println(normalizations.get(target))
+//        println(!notSpecializable(target.owner, target))
+//        println(target.typeParams.exists(isSpecialized(target.owner, _)))
         if (!notSpecializable(target.owner, target) && target.typeParams.exists(isSpecialized(target.owner, _))) {
           assert(normalizations.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
           assert(normalizations(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizations(target))
