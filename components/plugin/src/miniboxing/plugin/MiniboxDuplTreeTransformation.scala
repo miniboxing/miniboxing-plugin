@@ -397,7 +397,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val tree1 = if (normSym != newSym)
             TypeApply(Select(newQual, normSym), targs.map(transform))
           else
-            treeCopy.TypeApply(tree, newFun, targs.map(transform))
+            TypeApply(newFun, targs.map(transform))
 
 //          println()
 //          println("initial tree: " + tree + " : " + tree.tpe)
@@ -406,8 +406,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println("rewiring step 1:   " + newSym.defString + " (onwer: " + newSym.owner + ")")
 //          println("rewiring step 2:   " + normSym.defString + " (onwer: " + normSym.owner + ")")
 //          println("res: " + tree1)
-
-          val tree2 = localTyper.typed(tree1)
+          val tree2 = localTyper.typedOperator(tree1)
+//          println("     : " + tree2.tpe)
           tree2
 
         case Apply(oldFun, oldArgs) =>
@@ -726,7 +726,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
+
       qualTpe match {
+        case ThisType(cls) if baseClass.isDefinedAt(inClass) && inClass == cls =>
+          Some(PartialSpec.allAnyRefPSpec(cls))
         case ThisType(cls) if baseClass.isDefinedAt(inClass) && baseClass(inClass) == cls =>
           Some(pSpecFromBaseClass)
 //      since we don't specialize nested classes, this case will never occur:
