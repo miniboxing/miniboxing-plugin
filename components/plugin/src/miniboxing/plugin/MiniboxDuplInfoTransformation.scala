@@ -600,15 +600,20 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               newMbr modifyInfo (info0 => {
                 info0.typeParams.foreach(_.removeAnnotation(MinispecClass))
                 val deepEnv: Map[Symbol, Symbol] = member.typeParams.zip(info0.typeParams).toMap
-                val normalizedEnv =
+                val normalizedSignatureEnv = // <new tparam> ==> @storage <new tparam>
                   pspec flatMap {
                     case (p, Boxed)     => None // stays the same
                     case (p, Miniboxed) => Some((deepEnv(p), storageType(deepEnv(p))))
                   }
-                val normalizedTypeMap = MiniboxSubst(normalizedEnv)
+                val normalizedBodyEnv = // <old tparam> ==> @storage <new tparam>
+                  pspec flatMap {
+                    case (p, Boxed)     => None // stays the same
+                    case (p, Miniboxed) => Some((p, storageType(deepEnv(p))))
+                  }
+                val normalizedTypeMap = MiniboxSubst(normalizedSignatureEnv)
                 val info1 = normalizedTypeMap(info0.resultType)
                 typeParamMap(newMbr) = deepEnv.map(_.swap).toMap
-                typeEnv(newMbr) = env ++ normalizedEnv
+                typeEnv(newMbr) = env ++ normalizedBodyEnv
                 val localTags =
                   for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
                     yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), deepEnv(tparam))

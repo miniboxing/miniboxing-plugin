@@ -394,10 +394,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             }
 
           // replace the member by the normalized member
+          val ntargs = targs.map(transform)
           val tree1 = if (normSym != newSym)
-            TypeApply(Select(newQual, normSym), targs.map(transform))
+            TypeApply(Select(newQual, normSym), ntargs)
           else
-            TypeApply(newFun, targs.map(transform))
+            TypeApply(newFun, ntargs)
 
 //          println()
 //          println("initial tree: " + tree + " : " + tree.tpe)
@@ -432,7 +433,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               val tparam = tagsToTparams1(tagSym)
               val instOwner = extractFunctionQualifierType(newFun).baseType(tparam.owner)
 //              println()
-//              println(newFun)
+//              println(nTewFun)
 //              println(extractFunctionQualifierType(newFun))
 //              println(instOwner + "  " + instOwner.typeSymbol)
               val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
@@ -889,7 +890,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
 
-//      println("DUPLICATING")
+//      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
 //      println(miniboxedEnv)
 //      println(tree)
 
