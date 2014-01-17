@@ -296,7 +296,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
         // rewiring this calls
         // C.this.foo => C_J.this.foo
-        case This(cl) if specializedClasses.isDefinedAt(tree.symbol) =>
+        case This(cl) if specializedClasses.isDefinedAt(tree.symbol) && !currentOwner.ownerChain.contains(tree.symbol)=>
           val newType = miniboxQualifier(tree.pos, tree.tpe)
           val res = localTyper.typed(This(newType.typeSymbol))
 //          println(tree + " ==> " + res)
@@ -431,6 +431,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             try {
               val tparam = tagsToTparams1(tagSym)
               val instOwner = extractFunctionQualifierType(newFun).baseType(tparam.owner)
+//              println()
 //              println(newFun)
 //              println(extractFunctionQualifierType(newFun))
 //              println(instOwner + "  " + instOwner.typeSymbol)
@@ -729,7 +730,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       qualTpe match {
         case ThisType(cls) if baseClass.isDefinedAt(inClass) && inClass == cls =>
-          Some(PartialSpec.allAnyRefPSpec(cls))
+          // we're in the interface
+          None
         case ThisType(cls) if baseClass.isDefinedAt(inClass) && baseClass(inClass) == cls =>
           Some(pSpecFromBaseClass)
 //      since we don't specialize nested classes, this case will never occur:
