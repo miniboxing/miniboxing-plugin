@@ -9,6 +9,7 @@ import scala.collection.mutable.Set
 import scala.collection.mutable.{ Map => MMap }
 import util.returning
 import scala.collection.mutable.ListBuffer
+import scala.util.DynamicVariable
 
 trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   self: MiniboxAdaptComponent =>
@@ -87,17 +88,43 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       def supertyped(tree: Tree, mode: Int, pt: Type): Tree =
         super.typed(tree, mode, pt)
 
+      def hasStorageAnnotation(tpe: Type) =
+        tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+
+      val catchApply = new DynamicVariable(true)
+
       override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
         val ind = indent
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false))
+
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
-          case Select(mbox, mth) if mbox.tpe != null && mbox.tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol]) =>
+
+          case Select(mbox, mth) if mbox.tpe != null && hasStorageAnnotation(mbox.tpe) =>
             val box = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(mbox.tpe.dealiasWiden.typeSymbol.tpeHK), List(mbox))
             val sel = Select(box, mth)
             super.typed(sel, mode, pt)
+
+          // IMPORTANT NOTE: This case follows from the problem of overloading methods
+          // if method m(t: T) is not overloaded, the argument is type-checked with pt=T
+          // if method m(t: T) is overloaded, the argument is type-checked with pt=WildcardType and then the correct
+          //                                  method overload is chosen. But we don't want that -- the overload is okay,
+          //                                  but we need to adapt method arguments correctly. So we override the Apply
+          //                                  type-checking procedure to eliminate overload resolution
+          case Apply(fun, args) if fun.symbol != marker_minibox2box && tree.tpe != null && tree.tpe != ErrorType && catchApply.value =>
+            val nargs =
+              for ((arg, desiredTpe) <- (args zip fun.tpe.paramTypes)) yield
+                typed(arg, mode, desiredTpe)
+            val nfun =
+              super.typedOperator(fun)
+
+            // type the updated application:
+            val app = super.typed(Apply(nfun, nargs))
+            // adapt return type:
+            val app2 = catchApply.withValue(false)(typed(app, mode, pt))
+            app2
 
           // IMPORTANT NOTE: ErrorType should be allowed to bubble up, since there will certainly be
           // a silent_.typed ready to catch the error and perform the correct rewriting upstream.
@@ -110,8 +137,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             val res: Tree = silent(_.typed(tree, mode, pt)) match {
               case SilentTypeError(err) =>
                 val newTpe = pt
-                val hAnnot1 = oldTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-                val hAnnot2 = newTpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+                val hAnnot1 = hasStorageAnnotation(oldTpe)
+                val hAnnot2 = hasStorageAnnotation(newTpe)
                 adaptdbg(ind, "adapting:")
                 adaptdbg(ind, s"$tree ::: ${oldTpe.dealiasWiden} vs ${pt.dealiasWiden} ($hAnnot1 vs $hAnnot2)")
 
