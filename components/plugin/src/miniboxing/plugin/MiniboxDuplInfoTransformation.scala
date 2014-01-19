@@ -134,7 +134,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
    * setters and getters in place. The effect is that the class automatically
    * becomes an interface
    */
-  private def removeClassFields(clazz: Symbol, decls1: Scope): Scope = {
+  private def adaptClassFields(clazz: Symbol, decls1: Scope): Scope = {
     val decls = decls1.cloneScope
     for (mbr <- decls) {
       if (mbr.isMethod) mbr.setFlag(DEFERRED)
@@ -273,7 +273,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // adding the type tags as constructor arguments
       for (ctor <- decls.filter(sym => sym.name == nme.CONSTRUCTOR)) {
-        val newCtor = ctor.cloneSymbol(spec)
+        val newCtor = ctor.cloneSymbol(spec).setPos(ctor.pos)
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
@@ -743,7 +743,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
       val parents1 = artificialAnyRef ::: originTpe.parents
 
-      val scope2 = removeClassFields(origin, scope1)
+      val scope2 = adaptClassFields(origin, scope1)
       val scope3 = normalizeMembers(origin, scope2)
 
       log("  // interface:")

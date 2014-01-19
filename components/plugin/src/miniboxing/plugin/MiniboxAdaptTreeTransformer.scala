@@ -27,11 +27,35 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       } with TreeAdapters
 
       // boil frog, boil!
+      // TODO: Move this to plugin init
       global.addAnnotationChecker(StorageAnnotationChecker)
+
+      // do this before adapting the tree, so we crash'n'burn
+      // if any instantiation wasn't done properly.
+//      adaptClassFields()
 
       val tree = TreeAdapter.adapt(unit)
       tree.foreach(node => assert(node.tpe != null, node))
     }
+
+//    /*
+//     * This removes fields and constructors from a class while leaving the
+//     * setters and getters in place. The effect is that the class automatically
+//     * becomes an interface
+//     */
+//    private def adaptClassFields() = {
+//      import global.Flag._
+//      import global.definitions._
+//
+//      // can be applied as many times as necessary
+//      for (clazz <- specializedBase) {
+//        val decls = clazz.info.decls
+//        for (mbr <- decls) {
+//          if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
+//            decls unlink mbr
+//        }
+//      }
+//    }
   }
 
   abstract class TreeAdapters extends Analyzer {

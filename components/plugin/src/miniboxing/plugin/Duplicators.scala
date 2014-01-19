@@ -9,6 +9,7 @@ import scala.tools.nsc._
 import scala.tools.nsc.typechecker._
 import scala.tools.nsc.symtab.Flags
 import scala.collection.{ mutable, immutable }
+import scala.util.DynamicVariable
 
 /** Duplicate trees and re-type check them, taking care to replace
  *  and create fresh symbols for new local definitions.
@@ -300,6 +301,13 @@ abstract class Duplicators extends Analyzer {
      */
     def castType(tree: Tree, pt: Type): Tree = tree
 
+    var indent = 0
+    def dupldbg(ind: Int, msg: String): Unit = {
+      println("  " * ind + msg)
+    }
+
+    var rewireThis = new scala.util.DynamicVariable(true)
+
     /** Special typer method for re-type checking trees. It expects a typed tree.
      *  Returns a typed tree that has fresh symbols for all definitions in the original tree.
      *
@@ -316,6 +324,11 @@ abstract class Duplicators extends Analyzer {
      */
     override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
       // val pt = WildcardType
+      val ind = indent
+      indent += 1
+      dupldbg(ind, " in:  " + tree + ": " + pt)
+
+
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
       if (tree.hasSymbol && tree.symbol != NoSymbol
@@ -325,7 +338,7 @@ abstract class Duplicators extends Analyzer {
         tree.symbol = NoSymbol
       }
 
-      tree match {
+      val res = tree match {
         // The point is: any type application should
         // not update the type parameters to @storage
         case TypeApply(sel, tpes) =>
@@ -444,10 +457,16 @@ abstract class Duplicators extends Analyzer {
             // since rewiring constructors is complicated business, we'd rather leave the constructor call
             // from the original class and then have it rewired later. Also, since retyping will trigger the
             // This(oldClass) => This(newClass) rewiring, we just leave the tree as it was before
-            tree
+            println("before ctor")
+            val thsTree = rewireThis.withValue(false){ super.typed(This(oldClassOwner)) }
+            val selTree = Select(thsTree, sel)
+            println("after ctor")
+            // NOTE: We do name selection on the old class owner here, since the constructors don't match
+            //       anymore and the logic to rewire constructors is already in place in the DuplTreeTransformer
+            super.typed(atPos(tree.pos)(selTree), mode, pt)
           }
 
-        case This(_) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) =>
+        case This(_) if (oldClassOwner ne null) && (tree.symbol == oldClassOwner) && rewireThis.value =>
 //          val tree1 = Typed(This(newClassOwner), TypeTree(fixType(tree.tpe.widen)))
           // log("selection on this: " + tree)
           val tree1 = This(newClassOwner)
@@ -479,6 +498,11 @@ abstract class Duplicators extends Analyzer {
           //println(res + " ==> " + res.tpe + "  (" + pt + ")")
           res
       }
+
+      dupldbg(ind, " out: " + res + ": " + res.tpe)
+      indent -= 1
+
+      res
     }
 
   }

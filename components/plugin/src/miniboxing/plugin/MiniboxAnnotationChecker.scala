@@ -12,6 +12,9 @@ trait MiniboxAnnotationCheckers {
     /** Check the annotations on two types conform. */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean = {
       val res = tpe1.dealiasWiden.hasAnnotation(StorageClass) == tpe2.dealiasWiden.hasAnnotation(StorageClass)
+      // TODO: Add phase-dependent output -- T and @storage T are compatible
+      //       before minibox-adapt and are not compatible afterwards
+      //       otherwise REPL + miniboxing-plugin = crash'n'burn
 //      println()
 //      println(s"annotationsConform: $tpe1 vs $tpe2: $res")
       res
