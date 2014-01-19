@@ -274,6 +274,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // adding the type tags as constructor arguments
       for (ctor <- decls.filter(sym => sym.name == nme.CONSTRUCTOR)) {
         val newCtor = ctor.cloneSymbol(spec).setPos(ctor.pos)
+
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
           val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
@@ -289,14 +290,30 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             case _ =>
               tpe
           }
+          // add the new constructor as an overload for the original constructor
           overloads.get(ctor) match {
             case Some(map) => map += pspec -> newCtor
             case None => overloads(ctor) = HashMap(pspec -> newCtor)
           }
           val info3 = transformArgs(info2)
+
+          // dummy constructor
+          if (!tagParams.isEmpty) {
+            val dummyCtor = ctor.cloneSymbol(spec).setPos(ctor.pos)
+            dummyCtor.setInfo(info3.cloneInfo(dummyCtor))
+            overloads.get(dummyCtor) match {
+              case Some(map) => map += pspec -> newCtor
+              case None => overloads(ctor) = HashMap(pspec -> newCtor)
+            }
+            dummyConstructors += dummyCtor
+            specScope enter dummyCtor
+          }
+
           MethodType(tagParams.toList ::: info3.params, info3.resultType)
         }
         memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
+
+
         specScope enter newCtor
       }
 

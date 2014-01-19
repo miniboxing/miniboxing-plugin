@@ -205,10 +205,9 @@ trait MiniboxSpecializationInfo {
    */
   val typeParamMap = new mutable.HashMap[Symbol, ParamMap]
 
-//  /**
-//   * The constructors correspondence
-//   * from the new constructor to the old one
-//   */
-//  val constructorMap = new mutable.HashMap[/* new constructor */ Symbol, /* original constructor */ Symbol]
+  /**
+   * A list of dummy constructors necessary to satisfy the duplicator
+   */
+  val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
 }
 
