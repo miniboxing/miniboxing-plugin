@@ -56,6 +56,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         }
       }
 
+      // remove dummy constructors
       for (dummy <- dummyConstructors)
         dummy.owner.info.decls unlink dummy
     }

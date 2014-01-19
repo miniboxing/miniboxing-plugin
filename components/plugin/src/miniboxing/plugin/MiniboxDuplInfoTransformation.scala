@@ -303,7 +303,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             dummyCtor.setInfo(info3.cloneInfo(dummyCtor))
             overloads.get(dummyCtor) match {
               case Some(map) => map += pspec -> newCtor
-              case None => overloads(ctor) = HashMap(pspec -> newCtor)
+              case None => overloads(dummyCtor) = HashMap(pspec -> newCtor)
             }
             dummyConstructors += dummyCtor
             specScope enter dummyCtor

@@ -358,7 +358,16 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               case Some(pspec) if !PartialSpec.isAllAnyRef(pspec) && overloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
                 val newMethodSym = overloads(newMbrSym)(pspec)
                 newMethodSym
-              case other =>
+//              case Some(pspec) =>
+//                println()
+//                println(!PartialSpec.isAllAnyRef(pspec))
+//                println(newMbrSym.defString)
+//                println(pspec)
+//                println(overloads.get(newMbrSym))
+//                println(overloads.get(newMbrSym).flatMap(_.get(pspec)))
+//                println(pspec)
+//                newMbrSym
+              case _ =>
                 newMbrSym
             }
           }
@@ -372,11 +381,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println("rewiring step 1:   " + newMbrSym.defString + " (onwer: " + newMbrSym.owner + ")")
 //          println("rewiring step 2:   " + specMbrSym.defString + " (onwer: " + specMbrSym.owner + ")")
 //          println(ntree.tpe)
-          ntree
 
-//        case TypeApply(oldFun, targs) =>
-//          // TODO
-//          localTyper.typed(treeCopy.TypeApply(tree, transform(oldFun), targs.map(transform)))
+          assert(!dummyConstructors(ntree.symbol), "dummy constructor: " + ntree.symbol.defString + " left in tree " + tree)
+          ntree
 
         case tapply @ TypeApply(oldFun @ Select(qual, fn), targs) =>
           afterMinibox(oldFun.symbol.owner.info)
@@ -728,6 +735,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
+
+//      println(showRaw(qualTpe) + " in " + inClass + " and " + inMethod)
 
       qualTpe match {
         case ThisType(cls) if baseClass.isDefinedAt(inClass) && inClass == cls =>
