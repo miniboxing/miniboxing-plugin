@@ -773,7 +773,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       classes foreach { cls =>
         log("  // specialized class:")
         log("  " + cls.defString + " {")
-        for (decl <- cls.info.decls.toList.sortBy(_.defString))
+        for (decl <- cls.info.decls.toList.sortBy(_.defString) if !dummyConstructors(decl))
           log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
         log("  }\n")
       }

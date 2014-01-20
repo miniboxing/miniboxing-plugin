@@ -105,7 +105,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         new TreeAdapter(context)
       }
 
-    def adaptdbg(ind: Int, msg: String): Unit = {
+    def adaptdbg(ind: Int, msg: => String): Unit = {
 //      println("  " * ind + msg)
     }
 
