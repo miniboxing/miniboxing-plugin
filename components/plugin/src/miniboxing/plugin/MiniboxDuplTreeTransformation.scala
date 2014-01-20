@@ -302,21 +302,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          println(tree + " ==> " + res)
           res
 
-//        case Select(Super(ths, name), member) =>
-//          println("retyping super: " + tree)
-//          val tree1 = localTyper.typedOperator(Select(Super(transform(ths), name), member))
-//          // catch the overloaded thief red-handed next time
-//          if (tree1.symbol.isOverloaded) {
-//            for (sym <- tree1.symbol.alternatives)
-//              println(sym.defString + "   " + sym.ownerChain)
-//            println(currentClass.baseClasses)
-//          }
-//          tree1
-
-        // rewire super constructors, which need special treatment
-        case Select(sup@Super(ths, _), mbr) if (mbr == nme.CONSTRUCTOR) =>
-          localTyper.typedOperator(Select(Super(transform(ths), sup.mix), nme.CONSTRUCTOR))
-
         // rewire member selection
         case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) || oldQual.isInstanceOf[Super] || overloads.isDefinedAt(tree.symbol) =>
           val oldMbrSym = tree.symbol

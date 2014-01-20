@@ -307,6 +307,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             }
             dummyConstructors += dummyCtor
             specScope enter dummyCtor
+//            println("dummy constructor: " + dummyCtor.defString)
           }
 
           MethodType(tagParams.toList ::: info3.params, info3.resultType)
