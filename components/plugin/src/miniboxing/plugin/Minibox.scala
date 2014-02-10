@@ -61,7 +61,7 @@ class Minibox(val global: Global) extends Plugin {
   import global._
 
   val name = "minibox"
-  val description = "spcializes generic classes"
+  val description = "specializes generic classes"
 
   val components = List[PluginComponent](HijackPhase, MiniboxPhase, PreTyperPhase, PostTyperPhase)
 
