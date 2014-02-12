@@ -47,6 +47,7 @@ trait MiniboxAdaptComponent extends
     with MiniboxAnnotationCheckers {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
+  def mboxAdaptPhase: StdPhase
 }
 
 
@@ -96,6 +97,9 @@ class Minibox(val global: Global) extends Plugin {
                                          MiniboxSpecPhase,
                                          PreTyperPhase,
                                          PostTyperPhase)
+
+  // LDL adaptation
+  global.addAnnotationChecker(MiniboxAdaptPhase.StorageAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
@@ -182,7 +186,11 @@ class Minibox(val global: Global) extends Plugin {
     override val runsRightAfter = Some(MiniboxDuplPhase.phaseName)
     val phaseName = Minibox.this.name + "-adapt"
 
-    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new AdaptPhase(prev.asInstanceOf[minibox.Phase])
+    var mboxAdaptPhase : StdPhase = _
+    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxAdaptPhase = new AdaptPhase(prev.asInstanceOf[minibox.Phase])
+      mboxAdaptPhase
+    }
   }
 
   private object MiniboxSpecPhase extends {

@@ -26,10 +26,6 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
       } with TreeAdapters
 
-      // boil frog, boil!
-      // TODO: Move this to plugin init
-      global.addAnnotationChecker(StorageAnnotationChecker)
-
       // do this before adapting the tree, so we crash'n'burn
       // if any instantiation wasn't done properly.
       adaptClassFieldsAndCtors()
