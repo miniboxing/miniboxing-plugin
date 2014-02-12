@@ -1,4 +1,14 @@
 #!/bin/bash
+if [ "$MINIBOXING_PATH" == "" ] 
+then 
+  MINIBOXING_PATH="`dirname \"$0\"`"              # relative
+  MINIBOXING_PATH="`( cd \"$MINIBOXING_PATH\" && pwd )`"  # absolutized and normalized
+fi
+if [ "$SCALA_PATH" == "" ] 
+then
+  SCALA_PATH="`dirname $(which scalac)`"
+  SCALA_PATH="`( cd \"$SCALA_PATH\" && pwd )`"
+fi
 
 if [ "$MINIBOXING_PATH" == "" -o "$SCALA_PATH" == "" -o ! -f $SCALA_PATH/scalac -o ! -d $MINIBOXING_PATH/components ]
 then
