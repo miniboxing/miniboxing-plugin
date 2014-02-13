@@ -103,7 +103,7 @@ trait MiniboxLogic {
     clazz.typeParams.exists(isSpecialized(clazz, _))
 
   def isSpecialized(clazz: Symbol, tparam: Symbol): Boolean = {
-    beforeMinibox(tparam.info) // make sure the annotation hijacker updated it
+    beforeMiniboxDupl(tparam.info) // make sure the annotation hijacker updated it
     tparam hasAnnotation MinispecClass
   }
 

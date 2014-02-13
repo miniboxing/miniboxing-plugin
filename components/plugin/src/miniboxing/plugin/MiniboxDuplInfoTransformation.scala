@@ -69,7 +69,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     override def apply(tp: Type): Type = tp match {
       case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
         val pre1 = this(pre)
-        afterMinibox(sym.info)
+        afterMiniboxDupl(sym.info)
         specializedClasses(sym).get(extractPSpec(tref)) match {
           case Some(sym1) =>
             val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
@@ -205,7 +205,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         val newTParams: List[Symbol] = origin.typeParams.map(pmap)
         GenPolyType(newTParams, ClassInfoType(sParents, specScope, spec))
       }
-      afterMinibox(spec setInfo specializedInfoType)
+      afterMiniboxDupl(spec setInfo specializedInfoType)
 
       // Add type tag fields for each parameter. Will be copied in specialized subclasses.
       val typeTagMap: List[(Symbol, Symbol)] =
@@ -726,7 +726,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     // begin specialize
 
     // force info on parents to get all specialized metadata
-    afterMinibox(originTpe.parents.map(_.typeSymbol.info))
+    afterMiniboxDupl(originTpe.parents.map(_.typeSymbol.info))
     val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
     specs.map(_.map(_._1.setFlag(MINIBOXED))) // TODO: Only needs to be done once per type parameter
 
@@ -751,7 +751,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           origin.owner.info.decls.unlink(existing)
 
         // TODO: overrides in the specialized class
-        afterMinibox(origin.owner.info.decls enter spc)
+        afterMiniboxDupl(origin.owner.info.decls enter spc)
 
         spc
       }

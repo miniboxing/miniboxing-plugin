@@ -30,7 +30,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       // if any instantiation wasn't done properly.
       adaptClassFieldsAndCtors()
 
-      val tree = TreeAdapter.adapt(unit)
+      val tree = afterMiniboxAdapt(TreeAdapter.adapt(unit))
       tree.foreach(node => assert(node.tpe != null, node))
     }
 

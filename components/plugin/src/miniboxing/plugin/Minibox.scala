@@ -30,8 +30,8 @@ trait MiniboxDuplComponent extends
 
   def mboxDuplPhase: StdPhase
 
-  def afterMinibox[T](op: => T): T = global.afterPhase(mboxDuplPhase)(op)
-  def beforeMinibox[T](op: => T): T = global.beforePhase(mboxDuplPhase)(op)
+  def afterMiniboxDupl[T](op: => T): T = global.afterPhase(mboxDuplPhase)(op)
+  def beforeMiniboxDupl[T](op: => T): T = global.beforePhase(mboxDuplPhase)(op)
 
   def flag_log: Boolean
   def flag_debug: Boolean
@@ -47,7 +47,11 @@ trait MiniboxAdaptComponent extends
     with MiniboxAnnotationCheckers {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
+
   def mboxAdaptPhase: StdPhase
+
+  def afterMiniboxAdapt[T](op: => T): T = global.afterPhase(mboxAdaptPhase)(op)
+  def beforeMiniboxAdapt[T](op: => T): T = global.beforePhase(mboxAdaptPhase)(op)
 }
 
 
@@ -170,8 +174,8 @@ class Minibox(val global: Global) extends Plugin {
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
-        val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
-        val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
+        val tree1 = afterMiniboxDupl(new MiniboxTreeTransformer(unit).transform(tree))
+        val tree2 = afterMiniboxDupl(new MiniboxPeepholeTransformer(unit).transform(tree1))
         tree2.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
         tree2
       }

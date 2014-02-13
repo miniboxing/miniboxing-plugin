@@ -131,8 +131,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractQualifierType(tree: Tree): Type = tree match {
-      case New(cl)     => afterMinibox(cl.tpe.typeSymbol.info); cl.tpe
-      case This(clazz) => afterMinibox(currentClass.info); appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
+      case New(cl)     => afterMiniboxDupl(cl.tpe.typeSymbol.info); cl.tpe
+      case This(clazz) => afterMiniboxDupl(currentClass.info); appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
       case Super(qual, _) => tree.tpe
       case _ => tree.tpe
     }
@@ -149,7 +149,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       curTree = tree
       // make sure specializations have been performed
       tree match {
-        case t: SymTree if t.symbol != null => afterMinibox(t.symbol.info)
+        case t: SymTree if t.symbol != null => afterMiniboxDupl(t.symbol.info)
         case _ =>
       }
 
@@ -169,13 +169,13 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
         case Template(parents, self, body) =>
           MethodBodiesCollector(tree)
-          afterMinibox(tree.symbol.enclClass.info)
+          afterMiniboxDupl(tree.symbol.enclClass.info)
 
           //  This is either a class that has nothing to do with miniboxing or that is the base
           //  class (now trait) for the specialization.
           //  Also collect the bodies of the methods that need to be copied and specialized.
           val sym = tree.symbol.enclClass
-          val decls = afterMinibox(sym.info).decls.toList
+          val decls = afterMiniboxDupl(sym.info).decls.toList
 
           // specialized classes inside this template
           val specClassesTpls = createSpecializedClassesTrees(body)
@@ -284,7 +284,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           super.transform(result)
 
         // Error on accessing non-existing fields
-        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMinibox(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
+        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
           unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
           localTyper.typed(gen.mkAttributedRef(Predef_???))
 
@@ -390,7 +390,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           ntree
 
         case tapply @ TypeApply(oldFun @ Select(qual, fn), targs) =>
-          afterMinibox(oldFun.symbol.owner.info)
+          afterMiniboxDupl(oldFun.symbol.owner.info)
           val oldSym = oldFun.symbol
           val oldType = tapply.tpe
           val newFun = transform(oldFun)
@@ -491,7 +491,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        //  - specialized classes
 //        case Select(sup @ Super(ths, name), member)
 //          if (member != nme.CONSTRUCTOR) && {
-//            afterMinibox(sup.tpe.typeSymbol.info)
+//            afterMiniboxDupl(sup.tpe.typeSymbol.info)
 //            (sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents)) || baseClass.isDefinedAt(sup.symbol) && (baseClass(sup.symbol) != sup.symbol)
 //          } =>
 //          val tree1 = localTyper.typedOperator(Select(Super(ths, name), member))
@@ -505,7 +505,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //
 //        // Redirect method calls without type parameters
 //        case Apply(sel @ Select(qual, fn), args) if {
-//          afterMinibox(sel.symbol.owner.info)
+//          afterMiniboxDupl(sel.symbol.owner.info)
 //          base.isDefinedAt(tree.symbol) &&
 //          (base(tree.symbol) == tree.symbol)
 //        } =>
@@ -537,7 +537,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        //  - specialized classes
 //        case Apply(sel @ Select(sup @ Super(ths, name), nme.CONSTRUCTOR), args)
 //          if {
-//            afterMinibox(sup.tpe.typeSymbol.info)
+//            afterMiniboxDupl(sup.tpe.typeSymbol.info)
 //            // either the parents changed, or class is specialized (specialized classes
 //            // don't exist before minibox, thus their parents don't *change* but *appear*)
 //            (sup.symbol.info.parents != beforeMinibox(sup.symbol.info.parents)) || baseClass.isDefinedAt(sup.symbol) && (baseClass(sup.symbol) != sup.symbol) &&
@@ -565,7 +565,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        //   <interface>.this.<init>(3) => <specialized>.this.<init>(...)
 //        case Apply(ctor @ Select(qual, nme.CONSTRUCTOR), args) if {
 //          qual match {
-//            case New(cl) => afterMinibox(cl.symbol.info)
+//            case New(cl) => afterMiniboxDupl(cl.symbol.info)
 //            case _ =>
 //          }
 //          specializedClasses.isDefinedAt(qual.tpe.typeSymbol) } =>
@@ -610,7 +610,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //
 //        // Redirect method calls with type parameters
 //        case Apply(tapply @ TypeApply(sel @ Select(qual, fn), targs), args) =>
-//          afterMinibox(sel.symbol.owner.info)
+//          afterMiniboxDupl(sel.symbol.owner.info)
 //          val oldMethodSym = tree.symbol
 //          val oldMethodType = tapply.tpe
 //          val tree1 =
@@ -652,7 +652,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //          tree1
 //
 //        // Redirect field selections
-//        case Select(qual, fn) if { afterMinibox(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
+//        case Select(qual, fn) if { afterMiniboxDupl(tree.symbol.owner.info); base.isDefinedAt(tree.symbol) && base(tree.symbol) == tree.symbol && !tree.symbol.isMethod } =>
 //          val oldMethodSym = tree.symbol
 //          val oldMethodType = tree.tpe
 //          val tree1 =
@@ -689,7 +689,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
 
       if (normbase.isDefinedAt(target)) {
-        val tparams = afterMinibox(target.info).typeParams
+        val tparams = afterMiniboxDupl(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + inMethod + " of " + inClass + ": " + targs.length)
         val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
           pair match {
@@ -757,7 +757,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           extractSpec(rest, inMethod, inClass)
         case TypeRef(pre, clazz, args) =>
           import miniboxing.runtime.MiniboxConstants._
-          val tparams = afterMinibox(baseClass.getOrElse(clazz, clazz).info).typeParams
+          val tparams = afterMiniboxDupl(baseClass.getOrElse(clazz, clazz).info).typeParams
           val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
             pair match {
               // case (2.3)
@@ -820,7 +820,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       for (tree <- classdefs)
         tree match {
           case ClassDef(_, _, _, impl) =>
-            afterMinibox(tree.symbol.info)
+            afterMiniboxDupl(tree.symbol.info)
             val classSymbol = tree.symbol
 
             if (isSpecializableClass(classSymbol)) {
@@ -921,7 +921,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           clazz.resetFlag(ABSTRACT | TRAIT)
 
       val mbSubst = MiniboxSubst(miniboxedEnv)
-      val tree2 = beforeMinibox(d.retyped(
+      val tree2 = beforeMiniboxDupl(d.retyped(
         localTyper.context1.asInstanceOf[d.Context],
         tree,
         source.enclClass,
