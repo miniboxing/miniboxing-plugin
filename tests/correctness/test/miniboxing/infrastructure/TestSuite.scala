@@ -37,7 +37,7 @@ class TestSuite {
         sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")
     }
 
-  @Test def testCompileOutput = {
+  @Test def testCompileOutput() = {
     var failed = false
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
@@ -55,14 +55,14 @@ class TestSuite {
       val output = new CompileTest(code, flags).compilationOutput()
       import scala.collection.JavaConversions._
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
-      val output_lines = asJavaList(output.split("\n").toList.map(stripTrailingWS))
-      val expect_lines = asJavaList(expect.split("\n").toList.map(stripTrailingWS))
+      val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS))
+      val expect_lines = seqAsJavaList(expect.split("\n").toList.map(stripTrailingWS))
       val sdiff = DiffUtils.diff(expect_lines, output_lines)
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
       if (sdiff.getDeltas().size() != 0) {
         if (UPDATE_CHECKFILE) {
-          System.err.println("[ UP ] " + check_file + "\n")
+          System.err.println("[ UP ] " + "\n" + check_file + "\n")
           Some(new PrintWriter(check_file)).foreach{p => p.write(output_lines.mkString("\n")); p.close}
         } else
           System.err.println("[FAIL]")

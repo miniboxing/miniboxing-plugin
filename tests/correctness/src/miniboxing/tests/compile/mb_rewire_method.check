@@ -1,4 +1,6 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait TR[@miniboxed T >: Nothing <: Any] extends Object {
     def foo(t: T): T;
@@ -16,7 +18,7 @@ package miniboxing.tests.compile {
       ()
     };
     def test[T >: Nothing <: Any](): T = {
-      MiniboxConversions.this.minibox2box[Int](new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)), 5);
+      new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5));
       new miniboxing.tests.compile.TR_L[String]().foo("xxx");
       new miniboxing.tests.compile.TR_L[T]().foo(scala.this.Predef.???())
     }
@@ -67,4 +69,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

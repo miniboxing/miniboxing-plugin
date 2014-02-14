@@ -1,4 +1,4 @@
-package miniboxing.tests.compile
+package miniboxing.tests.compile.separate
 
 object Test2 extends App {
   val a = new MBResizableArray[Int](implicitly[Manifest[Int]])

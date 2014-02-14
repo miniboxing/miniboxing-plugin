@@ -106,5 +106,4 @@ object MiniboxConversions {
     case d : Double => java.lang.Double.doubleToRawLongBits(d)
     case _ => sys.error("Trying to unbox a reference type")
   }
-
 }

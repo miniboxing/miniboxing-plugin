@@ -9,10 +9,10 @@ Specializing class CC...
 
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
-    def <init>(val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte,c: Long): miniboxing.tests.compile.nested.CC_J[Tsp] // is a specialized implementation of constructor CC
-    def test(): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp]          // is a forwarder to method test_J
+    def <init>(val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte,c: Tsp @storage): miniboxing.tests.compile.nested.CC_J[Tsp] // is a specialized implementation of constructor CC
+    def test(): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp]          // is a forwarder to the specialized member
     def test_J(val T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] // is a specialized implementation of method test
-    private[this] val c: Long                                              // is a specialized implementation of value c
+    private[this] val c: Tsp @storage                                      // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte // no info
   }
 
@@ -20,7 +20,7 @@ Specializing class CC...
   class CC_L[Tsp] extends CC[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.CC_L[Tsp]          // is a specialized implementation of constructor CC
     def test(): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp]          // is a specialized implementation of method test
-    def test_J(val T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp] // is a forwarder to method test
+    def test_J(val T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp] // is a forwarder to the specialized member
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
 
@@ -35,8 +35,8 @@ Specializing class DD...
 
   // specialized class:
   class DD_J[Usp] extends CC.this.DD[Usp] {
-    def <init>(val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte,d: Long): CC.this.DD_J[Usp] // is a specialized implementation of constructor DD
-    private[this] val d: Long                                              // is a specialized implementation of value d
+    def <init>(val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte,d: Usp @storage): CC.this.DD_J[Usp] // is a specialized implementation of constructor DD
+    private[this] val d: Usp @storage                                      // is a specialized implementation of value d
     private[this] val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte // no info
   }
 
@@ -49,7 +49,9 @@ Specializing class DD...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.nested {
   abstract trait CC[@miniboxed T >: Nothing <: Any] extends Object {
     abstract trait DD[@miniboxed U >: Nothing <: Any] extends Object;
@@ -92,4 +94,4 @@ package miniboxing.tests.compile.nested {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

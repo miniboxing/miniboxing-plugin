@@ -3,62 +3,62 @@ Specializing class MyTuple2...
   // interface:
   abstract trait MyTuple2[T1, T2] extends Object {
     val t1(): T1
-    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long
-    val t1_JL(val T1_TypeTag: Byte): Long
+    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T1 @storage
+    val t1_JL(val T1_TypeTag: Byte): T1 @storage
     val t1_LJ(val T2_TypeTag: Byte): T1
     val t2(): T2
-    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long
+    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T2 @storage
     val t2_JL(val T1_TypeTag: Byte): T2
-    val t2_LJ(val T2_TypeTag: Byte): Long
+    val t2_LJ(val T2_TypeTag: Byte): T2 @storage
   }
 
   // specialized class:
   class MyTuple2_JJ[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing|tests|compile|MyTuple2_JJ|T1_TypeTag: Byte,val miniboxing|tests|compile|MyTuple2_JJ|T2_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.MyTuple2_JJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    def <init>(val miniboxing|tests|compile|MyTuple2_JJ|T1_TypeTag: Byte,val miniboxing|tests|compile|MyTuple2_JJ|T2_TypeTag: Byte,t1: T1sp @storage,t2: T2sp @storage): miniboxing.tests.compile.MyTuple2_JJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
     private[this] val miniboxing|tests|compile|MyTuple2_JJ|T1_TypeTag: Byte // no info
     private[this] val miniboxing|tests|compile|MyTuple2_JJ|T2_TypeTag: Byte // no info
-    private[this] val t1: Long                                             // is a specialized implementation of value t1
-    private[this] val t2: Long                                             // is a specialized implementation of value t2
-    val t1(): T1sp                                                         // is a forwarder to value t1_JJ
-    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a setter or getter for value t1
-    val t1_JL(val T1_TypeTag: Byte): Long                                  // is a forwarder to value t1_JJ
-    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to value t1_JJ
-    val t2(): T2sp                                                         // is a forwarder to value t2_JJ
-    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a setter or getter for value t2
-    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to value t2_JJ
-    val t2_LJ(val T2_TypeTag: Byte): Long                                  // is a forwarder to value t2_JJ
+    private[this] val t1: T1sp @storage                                    // is a specialized implementation of value t1
+    private[this] val t2: T2sp @storage                                    // is a specialized implementation of value t2
+    val t1(): T1sp                                                         // is a forwarder to the specialized member
+    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T1sp @storage    // is a setter or getter for value t1
+    val t1_JL(val T1_TypeTag: Byte): T1sp @storage                         // is a forwarder to the specialized member
+    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to the specialized member
+    val t2(): T2sp                                                         // is a forwarder to the specialized member
+    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T2sp @storage    // is a setter or getter for value t2
+    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to the specialized member
+    val t2_LJ(val T2_TypeTag: Byte): T2sp @storage                         // is a forwarder to the specialized member
   }
 
   // specialized class:
   class MyTuple2_LJ[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing|tests|compile|MyTuple2_LJ|T2_TypeTag: Byte,t1: T1sp,t2: Long): miniboxing.tests.compile.MyTuple2_LJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    def <init>(val miniboxing|tests|compile|MyTuple2_LJ|T2_TypeTag: Byte,t1: T1sp,t2: T2sp @storage): miniboxing.tests.compile.MyTuple2_LJ[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
     private[this] val miniboxing|tests|compile|MyTuple2_LJ|T2_TypeTag: Byte // no info
     private[this] val t1: T1sp                                             // is a specialized implementation of value t1
-    private[this] val t2: Long                                             // is a specialized implementation of value t2
-    val t1(): T1sp                                                         // is a forwarder to value t1_LJ
-    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t1_LJ
-    val t1_JL(val T1_TypeTag: Byte): Long                                  // is a forwarder to value t1_LJ
+    private[this] val t2: T2sp @storage                                    // is a specialized implementation of value t2
+    val t1(): T1sp                                                         // is a forwarder to the specialized member
+    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T1sp @storage    // is a forwarder to the specialized member
+    val t1_JL(val T1_TypeTag: Byte): T1sp @storage                         // is a forwarder to the specialized member
     val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a setter or getter for value t1
-    val t2(): T2sp                                                         // is a forwarder to value t2_LJ
-    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t2_LJ
-    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to value t2_LJ
-    val t2_LJ(val T2_TypeTag: Byte): Long                                  // is a setter or getter for value t2
+    val t2(): T2sp                                                         // is a forwarder to the specialized member
+    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T2sp @storage    // is a forwarder to the specialized member
+    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to the specialized member
+    val t2_LJ(val T2_TypeTag: Byte): T2sp @storage                         // is a setter or getter for value t2
   }
 
   // specialized class:
   class MyTuple2_JL[T1sp, T2sp] extends MyTuple2[T1sp,T2sp] {
-    def <init>(val miniboxing|tests|compile|MyTuple2_JL|T1_TypeTag: Byte,t1: Long,t2: T2sp): miniboxing.tests.compile.MyTuple2_JL[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
+    def <init>(val miniboxing|tests|compile|MyTuple2_JL|T1_TypeTag: Byte,t1: T1sp @storage,t2: T2sp): miniboxing.tests.compile.MyTuple2_JL[T1sp,T2sp] // is a specialized implementation of constructor MyTuple2
     private[this] val miniboxing|tests|compile|MyTuple2_JL|T1_TypeTag: Byte // no info
-    private[this] val t1: Long                                             // is a specialized implementation of value t1
+    private[this] val t1: T1sp @storage                                    // is a specialized implementation of value t1
     private[this] val t2: T2sp                                             // is a specialized implementation of value t2
-    val t1(): T1sp                                                         // is a forwarder to value t1_JL
-    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t1_JL
-    val t1_JL(val T1_TypeTag: Byte): Long                                  // is a setter or getter for value t1
-    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to value t1_JL
-    val t2(): T2sp                                                         // is a forwarder to value t2_JL
-    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t2_JL
+    val t1(): T1sp                                                         // is a forwarder to the specialized member
+    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T1sp @storage    // is a forwarder to the specialized member
+    val t1_JL(val T1_TypeTag: Byte): T1sp @storage                         // is a setter or getter for value t1
+    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to the specialized member
+    val t2(): T2sp                                                         // is a forwarder to the specialized member
+    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T2sp @storage    // is a forwarder to the specialized member
     val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a setter or getter for value t2
-    val t2_LJ(val T2_TypeTag: Byte): Long                                  // is a forwarder to value t2_JL
+    val t2_LJ(val T2_TypeTag: Byte): T2sp @storage                         // is a forwarder to the specialized member
   }
 
   // specialized class:
@@ -67,16 +67,18 @@ Specializing class MyTuple2...
     private[this] val t1: T1sp                                             // is a specialized implementation of value t1
     private[this] val t2: T2sp                                             // is a specialized implementation of value t2
     val t1(): T1sp                                                         // is a setter or getter for value t1
-    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t1
-    val t1_JL(val T1_TypeTag: Byte): Long                                  // is a forwarder to value t1
-    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to value t1
+    val t1_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T1sp @storage    // is a forwarder to the specialized member
+    val t1_JL(val T1_TypeTag: Byte): T1sp @storage                         // is a forwarder to the specialized member
+    val t1_LJ(val T2_TypeTag: Byte): T1sp                                  // is a forwarder to the specialized member
     val t2(): T2sp                                                         // is a setter or getter for value t2
-    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): Long             // is a forwarder to value t2
-    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to value t2
-    val t2_LJ(val T2_TypeTag: Byte): Long                                  // is a forwarder to value t2
+    val t2_JJ(val T1_TypeTag: Byte,val T2_TypeTag: Byte): T2sp @storage    // is a forwarder to the specialized member
+    val t2_JL(val T1_TypeTag: Byte): T2sp                                  // is a forwarder to the specialized member
+    val t2_LJ(val T2_TypeTag: Byte): T2sp @storage                         // is a forwarder to the specialized member
   }
 
 
 
 
-[Now checking: minibox]
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[Now checking: minibox-spec]

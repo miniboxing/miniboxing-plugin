@@ -18,7 +18,7 @@ Specializing class C...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait C[@miniboxed T >: Nothing <: Any] extends Object;
   class D extends miniboxing.tests.compile.inheritance.C_J[Int] {

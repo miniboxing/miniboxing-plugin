@@ -18,7 +18,9 @@ Specializing class HijackMe...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait HijackMe[@miniboxed T >: Nothing <: Any] extends Object;
   class HijackMe_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
@@ -36,4 +38,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

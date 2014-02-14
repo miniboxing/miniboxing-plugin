@@ -1,9 +1,10 @@
 package miniboxing.plugin
+package metadata
 
 import scala.collection.mutable
 
 trait MiniboxSpecializationInfo {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._
@@ -20,12 +21,12 @@ trait MiniboxSpecializationInfo {
    *
    * E.g. `apply` forwards to `apply$mcII$sp` in `Function1$mcII$sp`.
    */
-  case class ForwardTo(tagParams: List[Symbol], method: Symbol, ret: CastInfo, params: List[CastInfo])(overrider: Boolean) extends MethodInfo {
+  case class ForwardTo(base: Symbol)(overrider: Boolean) extends MethodInfo {
     override def toString =
       if (overrider)
-        "is an override which forwards to " + method
+        "is an override which forwards to the specialized member"
       else
-        "is a forwarder to " + method
+        "is a forwarder to the specialized member"
   }
 
   /*
@@ -121,7 +122,15 @@ trait MiniboxSpecializationInfo {
 
   object ParamMap {
     def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
-      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, p.name.append("sp")))
+      // TODO: Enable this:
+      // def newName(p: Symbol): Name = if (p.hasAnnotation(MinispecClass)) p.name.append("sp") else p.name
+      def newName(p: Symbol): Name = p.name.append("sp")
+      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, newName(p)))
+
+      // Update references to old type parameters to the new type parameters
+      // See https://github.com/miniboxing/miniboxing-plugin/issues/36 for details.
+      newParams.map(_.modifyInfo(info => info.substituteSymbols(oldParams, newParams)))
+
       newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
       (oldParams zip newParams).toMap
     }
@@ -150,7 +159,7 @@ trait MiniboxSpecializationInfo {
    * Type environment of a class:
    * Needed by the duplicator to replace the symbols in the old tree.
    */
-  val typeEnv = new mutable.HashMap[Symbol, MiniboxingTypeEnv]
+  val typeEnv = new mutable.HashMap[Symbol, TypeEnv]
 
   /**
    * Partial specialization corresponding to a class.
@@ -159,13 +168,13 @@ trait MiniboxSpecializationInfo {
   val normalSpec = new mutable.HashMap[Symbol, PartialSpec]
 
   /**
-   * Records for each of the specialized classes the type parameter to tag field
+   * Records for each of the specialized classes the tag field to type parameter
    * correspondence. These are local type tags, used in all members.
    */
   val globalTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
 
   /**
-   * Records for each of the specialized classes the type parameter to tag field
+   * Records for each of the specialized classes the tag field to type parameter
    * correspondence. These are local type tags, used in each member.
    */
   val localTypeTags = new mutable.HashMap[Symbol, Map[Symbol, Symbol]]
@@ -174,8 +183,6 @@ trait MiniboxSpecializationInfo {
    * `defferredTypeTags` keeps a list of members that represent type tags
    * in a trait -- unlike type tags in a class, which are fields, these are
    * methods which the inheriting class overrides
-   * NOTE: The inner map is inverted, member -> tparam instead of
-   * tparam -> member as inside localTypeTags and globalTypeTags
    */
   val inheritedDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
   val primaryDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
@@ -195,13 +202,13 @@ trait MiniboxSpecializationInfo {
   val normbase = new mutable.HashMap[Symbol, Symbol]
 
   /**
-   * The set of miniboxed arguments a member takes
-   */
-  val miniboxedArgs = new mutable.HashMap[Symbol, mutable.Set[(Symbol, Type)]]
-
-  /**
    * Map from original type parameters to new type parameters
    */
   val typeParamMap = new mutable.HashMap[Symbol, ParamMap]
+
+  /**
+   * A list of dummy constructors necessary to satisfy the duplicator
+   */
+  val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
 }
 

@@ -1,21 +1,23 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
-package miniboxing.tests.compile {
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.separate {
   object Test2 extends Object with App {
-    def <init>(): miniboxing.tests.compile.Test2.type = {
+    def <init>(): miniboxing.tests.compile.separate.Test2.type = {
       Test2.super.<init>();
       ()
     };
-    private[this] val a: miniboxing.tests.compile.MBResizableArray[Int] = new miniboxing.tests.compile.MBResizableArray_J[Int](5, scala.this.Predef.implicitly[scala.reflect.Manifest[Int]](reflect.this.ManifestFactory.Int()));
-    <stable> <accessor> def a(): miniboxing.tests.compile.MBResizableArray[Int] = Test2.this.a;
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(1)](1, 5));
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(2)](2, 5));
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5));
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(4)](4, 5));
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(5)](5, 5));
-    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int(6)](6, 5));
+    private[this] val a: miniboxing.tests.compile.separate.MBResizableArray[Int] = new miniboxing.tests.compile.separate.MBResizableArray_J[Int](5, scala.this.Predef.implicitly[scala.reflect.Manifest[Int]](reflect.this.ManifestFactory.Int()));
+    <stable> <accessor> def a(): miniboxing.tests.compile.separate.MBResizableArray[Int] = Test2.this.a;
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](1, 5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](2, 5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](4, 5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](5, 5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.box2minibox_tt[Int](6, 5));
     Test2.this.a().reverse_J(5);
-    scala.this.Predef.assert(Test2.this.a().contains_J(5, MiniboxConversions.this.box2minibox_tt[Int(3)](3, 5)))
+    scala.this.Predef.assert(Test2.this.a().contains_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5)))
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

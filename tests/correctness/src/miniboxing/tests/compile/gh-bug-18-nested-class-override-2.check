@@ -1,0 +1,51 @@
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile {
+  abstract trait Dist2[@miniboxed A >: Nothing <: Any] extends Object {
+    def apply(a: A): A;
+    def iterateUntil(): miniboxing.tests.compile.Dist2[A];
+    def apply_J(A_TypeTag: Byte, a: Long): Long
+  };
+  abstract class Dist2_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+    def <init>(miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte): miniboxing.tests.compile.Dist2_J[Asp] = {
+      Dist2_J.super.<init>();
+      ()
+    };
+    def apply(a: Asp): Asp;
+    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def iterateUntil(): miniboxing.tests.compile.Dist2[Asp] = {
+      final class $anon extends miniboxing.tests.compile.Dist2_L[Asp] {
+        def <init>(): anonymous class $anon = {
+          $anon.super.<init>();
+          ()
+        };
+        protected def loop(a: Long): Long = a;
+        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.loop(MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)
+      };
+      new anonymous class $anon()
+    };
+    <paramaccessor> private[this] val miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte = _
+  };
+  abstract class Dist2_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+    def <init>(): miniboxing.tests.compile.Dist2_L[Asp] = {
+      Dist2_L.super.<init>();
+      ()
+    };
+    def apply(a: Asp): Asp;
+    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def iterateUntil(): miniboxing.tests.compile.Dist2[Asp] = {
+      final class $anon extends miniboxing.tests.compile.Dist2_L[Asp] {
+        def <init>(): anonymous class $anon = {
+          $anon.super.<init>();
+          ()
+        };
+        protected def loop(a: Asp): Asp = a;
+        def apply(a: Asp): Asp = $anon.this.loop(a)
+      };
+      new anonymous class $anon()
+    }
+  }
+}
+
+[Now checking: minibox-spec]

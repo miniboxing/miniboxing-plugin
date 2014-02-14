@@ -5,9 +5,9 @@ Specializing class OptMeee...
     def nfoo3(y: Y): Y
     def nfoo4(xs: List[X]): Array[X]
     def yfoo1(x: X,y: Y): X
-    def yfoo1_J(val X_TypeTag: Byte,x: Long,y: Y): Long
+    def yfoo1_J(val X_TypeTag: Byte,x: X @storage,y: Y): X @storage
     def yfoo2(y: Y): X
-    def yfoo2_J(val X_TypeTag: Byte,y: Y): Long
+    def yfoo2_J(val X_TypeTag: Byte,y: Y): X @storage
   }
 
   // specialized class:
@@ -15,10 +15,10 @@ Specializing class OptMeee...
     def <init>(val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte): miniboxing.tests.compile.OptMeee_J[Xsp,Ysp] // is a specialized implementation of constructor OptMeee
     def nfoo3(y: Ysp): Ysp                                                 // is a specialized implementation of method nfoo3
     def nfoo4(xs: List[Xsp]): Array[Xsp]                                   // is a specialized implementation of method nfoo4
-    def yfoo1(x: Xsp,y: Ysp): Xsp                                          // is a forwarder to method yfoo1_J
-    def yfoo1_J(val X_TypeTag: Byte,x: Long,y: Ysp): Long                  // is a specialized implementation of method yfoo1
-    def yfoo2(y: Ysp): Xsp                                                 // is a forwarder to method yfoo2_J
-    def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Long                          // is a specialized implementation of method yfoo2
+    def yfoo1(x: Xsp,y: Ysp): Xsp                                          // is a forwarder to the specialized member
+    def yfoo1_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage  // is a specialized implementation of method yfoo1
+    def yfoo2(y: Ysp): Xsp                                                 // is a forwarder to the specialized member
+    def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage                  // is a specialized implementation of method yfoo2
     private[this] val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte   // no info
   }
 
@@ -28,12 +28,14 @@ Specializing class OptMeee...
     def nfoo3(y: Ysp): Ysp                                                 // is a specialized implementation of method nfoo3
     def nfoo4(xs: List[Xsp]): Array[Xsp]                                   // is a specialized implementation of method nfoo4
     def yfoo1(x: Xsp,y: Ysp): Xsp                                          // is a specialized implementation of method yfoo1
-    def yfoo1_J(val X_TypeTag: Byte,x: Long,y: Ysp): Long                  // is a forwarder to method yfoo1
+    def yfoo1_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage  // is a forwarder to the specialized member
     def yfoo2(y: Ysp): Xsp                                                 // is a specialized implementation of method yfoo2
-    def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Long                          // is a forwarder to method yfoo2
+    def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage                  // is a forwarder to the specialized member
   }
 
 
 
 
-[Now checking: minibox]
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[Now checking: minibox-spec]

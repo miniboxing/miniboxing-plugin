@@ -38,7 +38,9 @@ Specializing class DDD...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait CCC[@miniboxed T >: Nothing <: Any] extends Object;
   abstract trait DDD[@miniboxed U >: Nothing <: Any] extends AnyRef;
@@ -70,4 +72,4 @@ package miniboxing.tests.compile.inheritance {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

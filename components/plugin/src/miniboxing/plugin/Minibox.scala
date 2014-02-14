@@ -1,40 +1,18 @@
 package miniboxing.plugin
 
-import scala.tools.nsc
 import scala.tools.nsc.Global
 import scala.tools.nsc.Phase
 import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
-import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
+import miniboxing.plugin.metadata._
+import miniboxing.plugin.transform.dupl._
+import miniboxing.plugin.transform.adapt._
+import miniboxing.plugin.transform.spec._
+import miniboxing.plugin.transform.hijack.MiniboxInfoHijack
 
-trait MiniboxComponent extends
-    PluginComponent
-    with MiniboxLogic
-    with MiniboxInfoTransformation
-    with MiniboxLogging
-    with MiniboxTreeTransformation
-    with MiniboxTreeSpecializer
-    with MiniboxPeepholeTransformation
-    with MiniboxSpecializationInfo
-    with MiniboxDefinitions {
-
-  def mboxPhase: StdPhase
-
-  def afterMinibox[T](op: => T): T =
-    global.afterPhase(mboxPhase)(op)
-
-  def beforeMinibox[T](op: => T): T =
-    global.beforePhase(mboxPhase)(op)
-
-  def flag_log: Boolean
-  def flag_debug: Boolean
-  def flag_stats: Boolean
-  def flag_spec_no_opt: Boolean
-  def flag_loader_friendly: Boolean
-}
-
+/** Specialization hijacking component `@specialized T -> @miniboxed T` */
 trait HijackComponent extends
     PluginComponent
     with MiniboxInfoHijack
@@ -43,27 +21,92 @@ trait HijackComponent extends
   def flag_hijack_spec: Boolean
 }
 
+/** Duplicator component `def t -> def t_L, def t_J` */
+trait MiniboxDuplComponent extends
+    PluginComponent
+    with MiniboxLogic
+    with MiniboxDuplInfoTransformation
+    with MiniboxLogging
+    with MiniboxDuplTreeTransformation
+    with MiniboxSpecializationInfo
+    with MiniboxDefinitions {
+
+  def mboxDuplPhase: StdPhase
+
+  def afterMiniboxDupl[T](op: => T): T = global.afterPhase(mboxDuplPhase)(op)
+  def beforeMiniboxDupl[T](op: => T): T = global.beforePhase(mboxDuplPhase)(op)
+
+  def flag_log: Boolean
+  def flag_debug: Boolean
+  def flag_stats: Boolean
+  def flag_spec_no_opt: Boolean
+  def flag_loader_friendly: Boolean
+}
+
+/** Introduces explicit adaptations from `T` to `@storage T` and back */
+trait MiniboxAdaptComponent extends
+    PluginComponent
+    with MiniboxAdaptTreeTransformer
+    with MiniboxAnnotationCheckers {
+
+  val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
+
+  def mboxAdaptPhase: StdPhase
+
+  def afterMiniboxAdapt[T](op: => T): T = global.afterPhase(mboxAdaptPhase)(op)
+  def beforeMiniboxAdapt[T](op: => T): T = global.beforePhase(mboxAdaptPhase)(op)
+}
+
+
+/** Specializer component `T @storage -> Long` */
+trait MiniboxSpecComponent extends
+    PluginComponent
+    with MiniboxPostInfoTransformer
+    with MiniboxPostTreeTransformer {
+
+  val minibox: MiniboxDuplComponent { val global: MiniboxSpecComponent.this.global.type }
+
+  def mboxSpecPhase: StdPhase
+
+  def afterMiniboxSpec[T](op: => T): T = global.afterPhase(mboxSpecPhase)(op)
+  def beforeMiniboxSpec[T](op: => T): T = global.beforePhase(mboxSpecPhase)(op)
+
+  def flag_log: Boolean
+  def flag_debug: Boolean
+  def flag_stats: Boolean
+}
+
 trait PreTyperComponent extends
   PluginComponent with
   TypingTransformers {
-  val miniboxing: MiniboxComponent { val global: PreTyperComponent.this.global.type }
+  val miniboxing: MiniboxDuplComponent { val global: PreTyperComponent.this.global.type }
 }
 
 trait PostTyperComponent extends
   PluginComponent with
   TypingTransformers {
 
-  import global._; import Flags._
-  val miniboxing: MiniboxComponent { val global: PostTyperComponent.this.global.type }
+  import global._
+  import global.Flag._
+  val miniboxing: MiniboxDuplComponent { val global: PostTyperComponent.this.global.type }
 }
 
+/** Main miniboxing class */
 class Minibox(val global: Global) extends Plugin {
   import global._
 
   val name = "minibox"
   val description = "specializes generic classes"
 
-  val components = List[PluginComponent](HijackPhase, MiniboxPhase, PreTyperPhase, PostTyperPhase)
+  val components = List[PluginComponent](HijackPhase,
+                                         MiniboxDuplPhase,
+                                         MiniboxAdaptPhase,
+                                         MiniboxSpecPhase,
+                                         PreTyperPhase,
+                                         PostTyperPhase)
+
+  // LDL adaptation
+  global.addAnnotationChecker(MiniboxAdaptPhase.StorageAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
@@ -99,36 +142,6 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
     s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n")
 
-  private object MiniboxPhase extends MiniboxComponent {
-
-    val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("refchecks")
-    override val runsRightAfter = Some("uncurry")
-    val phaseName = Minibox.this.name
-
-    def flag_log = Minibox.this.flag_log
-    def flag_debug = Minibox.this.flag_debug
-    def flag_stats = Minibox.this.flag_stats
-    def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
-    def flag_loader_friendly = Minibox.this.flag_loader_friendly
-
-    var mboxPhase : StdPhase = _
-    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mboxPhase = new Phase(prev)
-      mboxPhase
-    }
-
-    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-      override def transform(tree: Tree) = {
-        // execute the tree transformer after all symbols have been processed
-        val tree1 = afterMinibox(new MiniboxTreeTransformer(unit).transform(tree))
-        val tree2 = afterMinibox(new MiniboxPeepholeTransformer(unit).transform(tree1))
-        tree2.foreach(tree => assert(tree.tpe != null, tree))
-        tree2
-      }
-    }
-  }
-
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
@@ -143,8 +156,70 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
+  private object MiniboxDuplPhase extends MiniboxDuplComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List("refchecks")
+    override val runsRightAfter = Some("uncurry")
+    val phaseName = Minibox.this.name + "-dupl"
+
+    def flag_log = Minibox.this.flag_log
+    def flag_debug = Minibox.this.flag_debug
+    def flag_stats = Minibox.this.flag_stats
+    def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
+    def flag_loader_friendly = Minibox.this.flag_loader_friendly
+
+    var mboxDuplPhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxDuplPhase = new Phase(prev)
+      mboxDuplPhase
+    }
+
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = {
+        // execute the tree transformer after all symbols have been processed
+        val tree1 = afterMiniboxDupl(new MiniboxTreeTransformer(unit).transform(tree))
+        tree1.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
+        tree1
+      }
+    }
+  }
+
+  private object MiniboxAdaptPhase extends {
+    val minibox: MiniboxDuplPhase.type = MiniboxDuplPhase
+  } with MiniboxAdaptComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(MiniboxDuplPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxDuplPhase.phaseName)
+    val phaseName = Minibox.this.name + "-adapt"
+
+    var mboxAdaptPhase : StdPhase = _
+    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxAdaptPhase = new AdaptPhase(prev.asInstanceOf[minibox.Phase])
+      mboxAdaptPhase
+    }
+  }
+
+  private object MiniboxSpecPhase extends {
+    val minibox: MiniboxDuplPhase.type = MiniboxDuplPhase
+  } with MiniboxSpecComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(MiniboxAdaptPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxAdaptPhase.phaseName)
+    val phaseName = Minibox.this.name + "-spec"
+
+    def flag_log = Minibox.this.flag_log
+    def flag_debug = Minibox.this.flag_debug
+    def flag_stats = Minibox.this.flag_stats
+
+    var mboxSpecPhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxSpecPhase = new Phase(prev)
+      mboxSpecPhase
+    }
+  }
+
   private object PreTyperPhase extends {
-    val miniboxing: MiniboxPhase.type = MiniboxPhase
+    val miniboxing: MiniboxDuplPhase.type = MiniboxDuplPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List()
@@ -154,7 +229,8 @@ class Minibox(val global: Global) extends Plugin {
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PreTyperPhase.phaseName
       def apply(unit: CompilationUnit) {
-        import global._; import Flags._
+        import global._
+        import global.Flag._
         for (sym <- miniboxing.specializedBase)
           if (miniboxing.originalTraitFlag(sym))
             sym.resetFlag(ABSTRACT)
@@ -165,7 +241,7 @@ class Minibox(val global: Global) extends Plugin {
   }
 
   private object PostTyperPhase extends {
-    val miniboxing: MiniboxPhase.type = MiniboxPhase
+    val miniboxing: MiniboxDuplPhase.type = MiniboxDuplPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
@@ -175,7 +251,8 @@ class Minibox(val global: Global) extends Plugin {
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PostTyperPhase.phaseName
       def apply(unit: CompilationUnit) {
-        import global._; import Flags._
+        import global._
+        import global.Flag._
         for (sym <- miniboxing.specializedBase)
           sym.setFlag(ABSTRACT | TRAIT)
       }
