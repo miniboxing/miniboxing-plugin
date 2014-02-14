@@ -37,7 +37,7 @@ class TestSuite {
         sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")
     }
 
-  @Test def testCompileOutput = {
+  @Test def testCompileOutput() = {
     var failed = false
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
@@ -62,7 +62,7 @@ class TestSuite {
 
       if (sdiff.getDeltas().size() != 0) {
         if (UPDATE_CHECKFILE) {
-          System.err.println("[ UP ] " + check_file + "\n")
+          System.err.println("[ UP ] " + "\n" + check_file + "\n")
           Some(new PrintWriter(check_file)).foreach{p => p.write(output_lines.mkString("\n")); p.close}
         } else
           System.err.println("[FAIL]")

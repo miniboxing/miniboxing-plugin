@@ -64,7 +64,7 @@ class HashMap[A, B] private[collection] (contents: HashTable.Contents[A, Default
 }
 
 class FunctionOnEntry[A, B, C](f : ((A, B)) => C) extends Function1[DefaultEntry[A, B], C]{
-  override def apply(e: DefaultEntry[A, B]) : C = f(e.key, e.value)
+  override def apply(e: DefaultEntry[A, B]) : C = f((e.key, e.value))
 }
 
 object HashMap {

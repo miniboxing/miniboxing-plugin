@@ -483,7 +483,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 log(baseTpe.typeArgs)
                 log(pspec2)
                 log(overloads.get(alias))
-                log()
+                log("")
               }
             }
 

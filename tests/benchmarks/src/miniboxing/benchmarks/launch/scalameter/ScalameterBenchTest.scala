@@ -58,7 +58,7 @@ trait ScalameterBenchTest extends PerformanceTest
         if (!testTrafs.contains(testTraf)) testTrafs ::= testTraf
         if (!testTags.contains(testTag))   testTags  ::= testTag
         val testEntry = testValues.getOrElseUpdate(testTag, HashMap()).getOrElseUpdate(testTraf, HashMap())
-        testEntry += testSize -> (measurement.value, measurement.errors.sdeviation)
+        testEntry += testSize -> ((measurement.value, measurement.errors.sdeviation))
 
         // println(s""""${testTag}" "${testTraf}", "${testSize}": ${measurement.time} +/- ${measurement.errors.sdeviation}""")
       }
@@ -77,9 +77,9 @@ trait ScalameterBenchTest extends PerformanceTest
   def test[T](transformation: String, tag: String, setup: Int => Unit, benchmark: => Unit, teardown: => Unit, extraJVMFlags: List[String] = Nil) = {
     performance of transformation in {
       measure method tag in {
-        using(sizes) config (exec.independentSamples -> sampleCount, 
-                             exec.jvmcmd -> javaCommand, 
-                             Key.preJDK7 -> javaPreJDK7, 
+        using(sizes) config (exec.independentSamples -> sampleCount,
+                             exec.jvmcmd -> javaCommand,
+                             Key.preJDK7 -> javaPreJDK7,
                              exec.jvmflags -> extraJVMFlags.mkString(" ")) setUp {
           size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {

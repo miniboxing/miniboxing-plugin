@@ -81,7 +81,7 @@ package miniboxing.tests.compile.nested
 //    scala.reflect.internal.Types$class.firstTry$1(Types.scala:6066)
 //    scala.reflect.internal.Types$class.isSubType2(Types.scala:6224)
 //    scala.reflect.internal.Types$class.isSubType(Types.scala:5831)
-// 
+//
 // annotationsConform: Tsp @storage vs Tsp: false
 //
 // To fix the problem, we take just set the tree's type to the correct value,
@@ -89,11 +89,11 @@ package miniboxing.tests.compile.nested
 // seemingly incorrect code :(
 
 class CCCCC[@miniboxed T](c: T) {
-  def test = {
+  def test() = {
     class DDDDD[U](d: U) {
       val x1: T = c
       val x2: U = d
-      def foo = {
+      def foo() = {
         val x3: T = c
         val x4: U = d
         println(x1 == x2)

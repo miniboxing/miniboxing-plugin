@@ -28,12 +28,12 @@ object LongDispatcher extends Dispatcher {
 trait TargetDispatcher[T] {
   def t: T
   def t_J: Long
-  def print: Unit
+  def print(): Unit
 }
 
 class TargetDispatcher_class_J[T$sp](val t_J: Long, dispatcher: Dispatcher) extends TargetDispatcher[T$sp] {
   def t = ???
-  def print: Unit = {
+  def print(): Unit = {
     System.out.println("print(" + t_J + ", " + dispatcher + ") by " + this.getClass.getName())
   }
 }
