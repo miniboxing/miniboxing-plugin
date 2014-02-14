@@ -1,0 +1,16 @@
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.spire4.var2 {
+  abstract trait Dist[@miniboxed A >: Nothing <: Any] extends Object { self: miniboxing.tests.compile.spire4.var2.Dist[A] =>
+    def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: A, cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A];
+    def sample_J[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A]
+  };
+  abstract trait Dist_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.spire4.var2.Dist[Asp] {
+    def miniboxing|tests|compile|spire4|var2|Dist_J|A_TypeTag(): Byte;
+    def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_J.this.sample_J[CC](Dist_J.this.miniboxing|tests|compile|spire4|var2|Dist_J|A_TypeTag(), n, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist_J.this.miniboxing|tests|compile|spire4|var2|Dist_J|A_TypeTag()), cbf);
+    def sample_J[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = cbf.apply().result()
+  };
+  abstract trait Dist_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.spire4.var2.Dist[Asp] {
+    def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = cbf.apply().result();
+    def sample_J[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_L.this.sample[CC](n, MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag), cbf)
+  }
+}
