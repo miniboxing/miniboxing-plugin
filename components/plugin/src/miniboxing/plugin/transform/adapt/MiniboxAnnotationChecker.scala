@@ -51,6 +51,9 @@ package adapt
                                                    M~~???7M
                                                    M~=??I7M
                                                    .NMDOMM~
+
+  Frog clipart credits: www.frog-life-cycle.com
+  ASCII transformation: www.glassgiant.com/ascii/
 */
 trait MiniboxAnnotationCheckers {
   this: MiniboxAdaptComponent =>
