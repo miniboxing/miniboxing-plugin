@@ -1,10 +1,9 @@
 package miniboxing.plugin
+package transform
+package spec
 
-import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
-import scala.collection.mutable.Set
 import scala.tools.nsc.typechecker._
-import scala.collection.mutable.{ Map => MMap }
 
 trait MiniboxPostTreeTransformer extends TypingTransformers {
   self: MiniboxSpecComponent =>
@@ -12,7 +11,6 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   import global._
   import definitions._
   import minibox._
-  import Flags._
   import typer.{ typed, atOwner }
 
   override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {

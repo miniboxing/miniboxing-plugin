@@ -1,14 +1,10 @@
 package miniboxing.plugin
+package transform
+package adapt
 
 import scala.tools.nsc._
 import scala.tools.nsc.typechecker._
-import scala.tools.nsc.symtab.Flags
 import scala.tools.nsc.transform.TypingTransformers
-import scala.collection.{ mutable, immutable }
-import scala.collection.mutable.Set
-import scala.collection.mutable.{ Map => MMap }
-import util.returning
-import scala.collection.mutable.ListBuffer
 import scala.util.DynamicVariable
 
 trait MiniboxAdaptTreeTransformer extends TypingTransformers {

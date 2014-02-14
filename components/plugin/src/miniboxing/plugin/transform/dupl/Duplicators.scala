@@ -4,12 +4,13 @@
  */
 
 package miniboxing.plugin
+package transform
+package dupl
 
 import scala.tools.nsc._
 import scala.tools.nsc.typechecker._
 import scala.tools.nsc.symtab.Flags
-import scala.collection.{ mutable, immutable }
-import scala.util.DynamicVariable
+import scala.collection.mutable
 
 /** Duplicate trees and re-type check them, taking care to replace
  *  and create fresh symbols for new local definitions.

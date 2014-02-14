@@ -1,17 +1,15 @@
 package miniboxing.plugin
+package transform
+package dupl
 
-import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.InfoTransform
+import scala.reflect.internal.Flags._
 import scala.collection.mutable.HashMap
-import scala.collection.mutable.Set
-import scala.tools.nsc.typechecker.Analyzer
-import scala.collection.immutable.ListMap
 
 trait MiniboxDuplInfoTransformation extends InfoTransform {
   self: MiniboxDuplComponent =>
 
   import global._
-  import Flags._
   import definitions._
 
   // shamelessly stolen from specialization

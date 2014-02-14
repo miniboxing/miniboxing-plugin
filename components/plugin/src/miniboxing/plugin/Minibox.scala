@@ -6,9 +6,11 @@ import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
-import miniboxing.plugin.metadata.MiniboxLogic
-import miniboxing.plugin.metadata.MiniboxSpecializationInfo
-import miniboxing.plugin.metadata.MiniboxDefinitions
+import miniboxing.plugin.metadata._
+import miniboxing.plugin.transform.dupl._
+import miniboxing.plugin.transform.adapt._
+import miniboxing.plugin.transform.spec._
+import miniboxing.plugin.transform.hijack.MiniboxInfoHijack
 
 /** Specialization hijacking component `@specialized T -> @miniboxed T` */
 trait HijackComponent extends
@@ -26,7 +28,6 @@ trait MiniboxDuplComponent extends
     with MiniboxDuplInfoTransformation
     with MiniboxLogging
     with MiniboxDuplTreeTransformation
-    with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
     with MiniboxDefinitions {
 
@@ -177,9 +178,8 @@ class Minibox(val global: Global) extends Plugin {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMiniboxDupl(new MiniboxTreeTransformer(unit).transform(tree))
-        val tree2 = afterMiniboxDupl(new MiniboxPeepholeTransformer(unit).transform(tree1))
-        tree2.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
-        tree2
+        tree1.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
+        tree1
       }
     }
   }

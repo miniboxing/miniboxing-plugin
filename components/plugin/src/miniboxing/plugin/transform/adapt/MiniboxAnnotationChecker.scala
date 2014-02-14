@@ -1,6 +1,6 @@
 package miniboxing.plugin
-
-import scala.tools.nsc.plugins.PluginComponent
+package transform
+package adapt
 
 /*
                                            .. ,:~~:,.

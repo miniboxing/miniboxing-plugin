@@ -1,6 +1,9 @@
 package miniboxing.plugin
+package transform
+package spec
 
 import scala.tools.nsc.transform.InfoTransform
+import miniboxing.plugin.MiniboxSpecComponent
 
 trait MiniboxPostInfoTransformer extends InfoTransform {
   this: MiniboxSpecComponent =>

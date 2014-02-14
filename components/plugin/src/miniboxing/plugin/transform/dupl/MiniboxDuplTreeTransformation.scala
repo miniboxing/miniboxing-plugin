@@ -1,18 +1,18 @@
 package miniboxing.plugin
+package transform
+package dupl
 
-import scala.reflect.internal.Flags
 import scala.tools.nsc.transform.TypingTransformers
-import scala.collection.mutable.Set
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.typechecker._
+import scala.reflect.internal.Flags._
 
 trait MiniboxDuplTreeTransformation extends TypingTransformers {
   self: MiniboxDuplComponent =>
 
   import global._
   import global.definitions._
-  import Flags._
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
 
@@ -81,7 +81,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val global: MiniboxDuplTreeTransformation.this.global.type = MiniboxDuplTreeTransformation.this.global
       val miniboxing: MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type } =
         MiniboxDuplTreeTransformation.this.asInstanceOf[MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type }]
-    } with miniboxing.plugin.Duplicators {
+    } with miniboxing.plugin.transform.dupl.Duplicators {
       private val (castfrom, castto) = casts.unzip
       private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
 
