@@ -14,21 +14,21 @@ Specializing class Complex...
     override def productPrefix(): String
     override def toString(): String
     val t1(): T
-    val t1_J(val T_TypeTag: Byte): Long
+    val t1_J(val T_TypeTag: Byte): T @storage
     val t2(): T
-    val t2_J(val T_TypeTag: Byte): Long
+    val t2_J(val T_TypeTag: Byte): T @storage
   }
 
   // specialized class:
   case class Complex_J[Tsp] extends Product with Serializable with Complex[Tsp] {
-    def <init>(val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte,t1: Long,t2: Long): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
+    def <init>(val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
     private[this] val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte   // no info
-    private[this] val t1: Long                                             // is a specialized implementation of value t1
-    private[this] val t2: Long                                             // is a specialized implementation of value t2
-    val t1(): Tsp                                                          // is a forwarder to value t1_J
-    val t1_J(val T_TypeTag: Byte): Long                                    // is a setter or getter for value t1
-    val t2(): Tsp                                                          // is a forwarder to value t2_J
-    val t2_J(val T_TypeTag: Byte): Long                                    // is a setter or getter for value t2
+    private[this] val t1: Tsp @storage                                     // is a specialized implementation of value t1
+    private[this] val t2: Tsp @storage                                     // is a specialized implementation of value t2
+    val t1(): Tsp                                                          // is a forwarder to the specialized member
+    val t1_J(val T_TypeTag: Byte): Tsp @storage                            // is a setter or getter for value t1
+    val t2(): Tsp                                                          // is a forwarder to the specialized member
+    val t2_J(val T_TypeTag: Byte): Tsp @storage                            // is a setter or getter for value t2
   }
 
   // specialized class:
@@ -37,14 +37,16 @@ Specializing class Complex...
     private[this] val t1: Tsp                                              // is a specialized implementation of value t1
     private[this] val t2: Tsp                                              // is a specialized implementation of value t2
     val t1(): Tsp                                                          // is a setter or getter for value t1
-    val t1_J(val T_TypeTag: Byte): Long                                    // is a forwarder to value t1
+    val t1_J(val T_TypeTag: Byte): Tsp @storage                            // is a forwarder to the specialized member
     val t2(): Tsp                                                          // is a setter or getter for value t2
-    val t2_J(val T_TypeTag: Byte): Long                                    // is a forwarder to value t2
+    val t2_J(val T_TypeTag: Byte): Tsp @storage                            // is a forwarder to the specialized member
   }
 
 
 
 
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Complex[@miniboxed T >: Nothing <: Any] extends Object with Product with Serializable {
@@ -128,4 +130,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]
