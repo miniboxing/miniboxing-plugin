@@ -162,7 +162,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       bytecodeClass.info // TODO: we have 5054 here, but even this doesn't work
       val spec = origin.owner.newClass(specName, origin.pos, origin.flags)
 
-      spec.sourceFile = origin.sourceFile
+      spec.associatedFile = origin.associatedFile
       currentRun.symSource(spec) = origin.sourceFile
       baseClass(spec) = origin
 

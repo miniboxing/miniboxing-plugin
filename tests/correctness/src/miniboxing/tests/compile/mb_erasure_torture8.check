@@ -1,5 +1,5 @@
 newSource1.scala:9: warning: a pure expression does nothing in statement position; you may be omitting necessary parentheses
-    c
+    c // expression in statement position meant to test transformation
     ^
 [Now checking: minibox-dupl]
 [Not checkable: minibox-adapt]

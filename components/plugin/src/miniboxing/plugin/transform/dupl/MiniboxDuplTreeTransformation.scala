@@ -248,7 +248,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             case SpecializedImplementationOf(target) =>
               // we have an rhs, specialize it
               def reportTypeError(body: =>Tree) = reportError(body)(_ => ddef)
-              val tree1 = specializeDefDefBody(ddef, target)
+              val tree1: Tree = specializeDefDefBody(ddef, target)
               debuglog("implementation: " + tree1)
               super.transform(tree1)
 
@@ -690,7 +690,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       duplicateBody(meth, source, castmap)
     }
 
-    private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty) = {
+    private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty): Tree = {
 
       val symbol = tree.symbol
       val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyTypeEnv)

@@ -29,7 +29,9 @@ object MiniboxingBuild extends Build {
     resolvers in ThisBuild ++= Seq(
       "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
       "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
-    )
+    ),
+
+    scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked") //also: -Xlint:unchecked
   )
 
   val publishCredFile = "miniboxing.maven.credentials-file"

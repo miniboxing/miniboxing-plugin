@@ -55,8 +55,8 @@ class TestSuite {
       val output = new CompileTest(code, flags).compilationOutput()
       import scala.collection.JavaConversions._
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
-      val output_lines = asJavaList(output.split("\n").toList.map(stripTrailingWS))
-      val expect_lines = asJavaList(expect.split("\n").toList.map(stripTrailingWS))
+      val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS))
+      val expect_lines = seqAsJavaList(expect.split("\n").toList.map(stripTrailingWS))
       val sdiff = DiffUtils.diff(expect_lines, output_lines)
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
