@@ -1,7 +1,8 @@
 package miniboxing.plugin
+package metadata
 
-import scala.tools.nsc.Global
-import scala.collection.immutable.ListMap
+import scala.Option.option2Iterable
+import scala.collection.immutable
 
 trait MiniboxLogic {
   self: MiniboxDuplComponent =>

@@ -1,4 +1,5 @@
 package miniboxing.plugin
+package metadata
 
 import scala.collection.mutable
 

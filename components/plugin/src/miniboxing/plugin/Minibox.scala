@@ -6,6 +6,9 @@ import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
+import miniboxing.plugin.metadata.MiniboxLogic
+import miniboxing.plugin.metadata.MiniboxSpecializationInfo
+import miniboxing.plugin.metadata.MiniboxDefinitions
 
 /** Specialization hijacking component `@specialized T -> @miniboxed T` */
 trait HijackComponent extends
@@ -23,7 +26,6 @@ trait MiniboxDuplComponent extends
     with MiniboxDuplInfoTransformation
     with MiniboxLogging
     with MiniboxDuplTreeTransformation
-    with MiniboxTreeSpecializer
     with MiniboxPeepholeTransformation
     with MiniboxSpecializationInfo
     with MiniboxDefinitions {

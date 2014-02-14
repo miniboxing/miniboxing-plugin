@@ -1,14 +1,14 @@
 package miniboxing.plugin
+package metadata
 
 import scala.tools.nsc.plugins.PluginComponent
-import scala.reflect.internal.Flags
 import scala.collection.immutable.ListMap
+import miniboxing.runtime.MiniboxConstants._
 
 trait MiniboxDefinitions {
   this: PluginComponent =>
 
   import global._
-  import Flags._
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
