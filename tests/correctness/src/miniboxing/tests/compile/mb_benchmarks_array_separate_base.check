@@ -1,67 +1,66 @@
-[[syntax trees at end of                   minibox]] // newSource1.scala
-package miniboxing.tests.compile {
-  abstract trait MBResizableArray[@miniboxed T >: Nothing <: Any] extends AnyRef {
-    def /*MBResizableArray*/$init$(): Unit = {
-      ()
-    };
-    final <stable> <accessor> def initialSize: Int;
-    <accessor> def size: Int;
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.separate {
+  abstract trait MBResizableArray[@miniboxed T >: Nothing <: Any] extends Object {
+    final <stable> <accessor> def initialSize(): Int;
+    <accessor> def size(): Int;
     <accessor> def size_=(x$1: Int): Unit;
-    <accessor> def elemCount: Int;
+    <accessor> def elemCount(): Int;
     <accessor> def elemCount_=(x$1: Int): Unit;
-    <accessor> def array: Array[T];
+    <accessor> def array(): Array[T];
     <accessor> def array_=(x$1: Array[T]): Unit;
-    <accessor> def newarray: Array[T];
+    <accessor> def newarray(): Array[T];
     <accessor> def newarray_=(x$1: Array[T]): Unit;
     def extend(): Unit;
     def add(elem: T): Unit;
     def reverse(): Unit;
     def contains(elem: T): Boolean;
-    def length: Int;
+    def length(): Int;
     @inline final def setElement(p: Int, t: T): Unit;
     @inline final def getElement(p: Int): T;
     override def toString(): String;
-    def add_J(T_TypeTag: Byte)(elem: Long): Unit;
+    def add_J(T_TypeTag: Byte, elem: Long): Unit;
     <accessor> def array_J(T_TypeTag: Byte): Array[T];
-    <accessor> def array_J_=(T_TypeTag: Byte)(x$1: Array[T]): Unit;
-    def contains_J(T_TypeTag: Byte)(elem: Long): Boolean;
+    <accessor> def array_J_=(T_TypeTag: Byte, x$1: Array[T]): Unit;
+    def contains_J(T_TypeTag: Byte, elem: Long): Boolean;
     <accessor> def elemCount_J(T_TypeTag: Byte): Int;
-    <accessor> def elemCount_J_=(T_TypeTag: Byte)(x$1: Int): Unit;
-    def extend_J(T_TypeTag: Byte)(): Unit;
+    <accessor> def elemCount_J_=(T_TypeTag: Byte, x$1: Int): Unit;
+    def extend_J(T_TypeTag: Byte): Unit;
     def length_J(T_TypeTag: Byte): Int;
     <accessor> def newarray_J(T_TypeTag: Byte): Array[T];
-    <accessor> def newarray_J_=(T_TypeTag: Byte)(x$1: Array[T]): Unit;
-    def reverse_J(T_TypeTag: Byte)(): Unit;
+    <accessor> def newarray_J_=(T_TypeTag: Byte, x$1: Array[T]): Unit;
+    def reverse_J(T_TypeTag: Byte): Unit;
     <accessor> def size_J(T_TypeTag: Byte): Int;
-    <accessor> def size_J_=(T_TypeTag: Byte)(x$1: Int): Unit;
-    @inline final def getElement_J(T_TypeTag: Byte)(p: Int): Long;
-    @inline final def setElement_J(T_TypeTag: Byte)(p: Int, t: Long): Unit;
+    <accessor> def size_J_=(T_TypeTag: Byte, x$1: Int): Unit;
+    @inline final def getElement_J(T_TypeTag: Byte, p: Int): Long;
+    @inline final def setElement_J(T_TypeTag: Byte, p: Int, t: Long): Unit;
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int;
-    override def toString_J(T_TypeTag: Byte)(): String
+    override def toString_J(T_TypeTag: Byte): String
   };
-  class MBResizableArray_J[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.MBResizableArray[Tsp] {
-    def <init>(T_TypeTag: Byte)(mf: Manifest[Tsp]): miniboxing.tests.compile.MBResizableArray_J[Tsp] = {
+  class MBResizableArray_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
+    def <init>(miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag: Byte, mf: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.separate.MBResizableArray_J[Tsp] = {
       MBResizableArray_J.super.<init>();
       ()
     };
-    def add(elem: Tsp): Unit = MBResizableArray_J.this.add_J(MBResizableArray_J.this.T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Tsp](elem, MBResizableArray_J.this.T_TypeTag));
-    def add_J(T_TypeTag: Byte)(elem: Long): Unit = {
-      MBResizableArray_J.this.extend_J(T_TypeTag)();
+    def add(elem: Tsp): Unit = MBResizableArray_J.this.add_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](elem, MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag));
+    def add_J(T_TypeTag: Byte, elem: Long): Unit = {
+      MBResizableArray_J.this.extend_J(T_TypeTag);
       MiniboxArray.this.mbarray_update_minibox(MBResizableArray_J.this.array_J(T_TypeTag), MBResizableArray_J.this.elemCount_J(T_TypeTag), elem, T_TypeTag);
-      MBResizableArray_J.this.elemCount_J_=(T_TypeTag)(MBResizableArray_J.this.elemCount_J(T_TypeTag).+(1))
+      MBResizableArray_J.this.elemCount_J_=(T_TypeTag, MBResizableArray_J.this.elemCount_J(T_TypeTag).+(1))
     };
-    <accessor> def array: Array[Tsp] = MBResizableArray_J.this.array_J(MBResizableArray_J.this.T_TypeTag);
-    <accessor> def array_=(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.array_J_=(MBResizableArray_J.this.T_TypeTag)(x$1);
+    <accessor> def array(): Array[Tsp] = MBResizableArray_J.this.array_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    <accessor> def array_=(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.array_J_=(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, x$1);
     <accessor> def array_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_J.this.array;
-    <accessor> def array_J_=(T_TypeTag: Byte)(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.array = x$1;
-    def contains(elem: Tsp): Boolean = MBResizableArray_J.this.contains_J(MBResizableArray_J.this.T_TypeTag)(MiniboxConversions.this.box2minibox_tt[Tsp](elem, MBResizableArray_J.this.T_TypeTag));
-    def contains_J(T_TypeTag: Byte)(elem: Long): Boolean = {
+    <accessor> def array_J_=(T_TypeTag: Byte, x$1: Array[Tsp]): Unit = MBResizableArray_J.this.array = x$1;
+    def contains(elem: Tsp): Boolean = MBResizableArray_J.this.contains_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](elem, MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag));
+    def contains_J(T_TypeTag: Byte, elem: Long): Boolean = {
       var pos: Int = 0;
       while$3(){
         if (pos.<(MBResizableArray_J.this.elemCount_J(T_TypeTag)))
           {
             {
-              if (MiniboxDispatch.this.mboxed_eqeq_notag(MBResizableArray_J.this.getElement_J(T_TypeTag)(pos), elem))
+              if (MiniboxDispatch.this.mboxed_eqeq_notag(MBResizableArray_J.this.getElement_J(T_TypeTag, pos), elem))
                 return true
               else
                 ();
@@ -74,20 +73,20 @@ package miniboxing.tests.compile {
       };
       return false
     };
-    <accessor> def elemCount: Int = MBResizableArray_J.this.elemCount_J(MBResizableArray_J.this.T_TypeTag);
-    <accessor> def elemCount_=(x$1: Int): Unit = MBResizableArray_J.this.elemCount_J_=(MBResizableArray_J.this.T_TypeTag)(x$1);
+    <accessor> def elemCount(): Int = MBResizableArray_J.this.elemCount_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    <accessor> def elemCount_=(x$1: Int): Unit = MBResizableArray_J.this.elemCount_J_=(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, x$1);
     <accessor> def elemCount_J(T_TypeTag: Byte): Int = MBResizableArray_J.this.elemCount;
-    <accessor> def elemCount_J_=(T_TypeTag: Byte)(x$1: Int): Unit = MBResizableArray_J.this.elemCount = x$1;
-    def extend(): Unit = MBResizableArray_J.this.extend_J(MBResizableArray_J.this.T_TypeTag)();
-    def extend_J(T_TypeTag: Byte)(): Unit = if (MBResizableArray_J.this.elemCount_J(T_TypeTag).==(MBResizableArray_J.this.size_J(T_TypeTag)))
+    <accessor> def elemCount_J_=(T_TypeTag: Byte, x$1: Int): Unit = MBResizableArray_J.this.elemCount = x$1;
+    def extend(): Unit = MBResizableArray_J.this.extend_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    def extend_J(T_TypeTag: Byte): Unit = if (MBResizableArray_J.this.elemCount_J(T_TypeTag).==(MBResizableArray_J.this.size_J(T_TypeTag)))
       {
         var pos: Int = 0;
-        MBResizableArray_J.this.newarray_J_=(T_TypeTag)(MiniboxArray.this.mbarray_new(2.*(MBResizableArray_J.this.size_J(T_TypeTag)), T_TypeTag));
+        MBResizableArray_J.this.newarray_J_=(T_TypeTag, MiniboxArray.this.mbarray_new[Tsp](2.*(MBResizableArray_J.this.size_J(T_TypeTag)), T_TypeTag));
         while$1(){
           if (pos.<(MBResizableArray_J.this.size_J(T_TypeTag)))
             {
               {
-                MiniboxArray.this.mbarray_update_minibox(MBResizableArray_J.this.newarray_J(T_TypeTag), pos, MiniboxArray.this.mbarray_apply_minibox(MBResizableArray_J.this.array_J(T_TypeTag), pos, T_TypeTag), T_TypeTag);
+                MBResizableArray_J.this.newarray_J(T_TypeTag).update(pos, MBResizableArray_J.this.array_J(T_TypeTag).apply(pos));
                 pos = pos.+(1)
               };
               while$1()
@@ -95,28 +94,28 @@ package miniboxing.tests.compile {
           else
             ()
         };
-        MBResizableArray_J.this.array_J_=(T_TypeTag)(MBResizableArray_J.this.newarray_J(T_TypeTag));
-        MBResizableArray_J.this.size_J_=(T_TypeTag)(MBResizableArray_J.this.size_J(T_TypeTag).*(2))
+        MBResizableArray_J.this.array_J_=(T_TypeTag, MBResizableArray_J.this.newarray_J(T_TypeTag));
+        MBResizableArray_J.this.size_J_=(T_TypeTag, MBResizableArray_J.this.size_J(T_TypeTag).*(2))
       }
     else
       ();
-    def length: Int = MBResizableArray_J.this.length_J(MBResizableArray_J.this.T_TypeTag);
+    def length(): Int = MBResizableArray_J.this.length_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
     def length_J(T_TypeTag: Byte): Int = MBResizableArray_J.this.elemCount_J(T_TypeTag);
-    <accessor> def newarray: Array[Tsp] = MBResizableArray_J.this.newarray_J(MBResizableArray_J.this.T_TypeTag);
-    <accessor> def newarray_=(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.newarray_J_=(MBResizableArray_J.this.T_TypeTag)(x$1);
+    <accessor> def newarray(): Array[Tsp] = MBResizableArray_J.this.newarray_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    <accessor> def newarray_=(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.newarray_J_=(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, x$1);
     <accessor> def newarray_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_J.this.newarray;
-    <accessor> def newarray_J_=(T_TypeTag: Byte)(x$1: Array[Tsp]): Unit = MBResizableArray_J.this.newarray = x$1;
-    def reverse(): Unit = MBResizableArray_J.this.reverse_J(MBResizableArray_J.this.T_TypeTag)();
-    def reverse_J(T_TypeTag: Byte)(): Unit = {
+    <accessor> def newarray_J_=(T_TypeTag: Byte, x$1: Array[Tsp]): Unit = MBResizableArray_J.this.newarray = x$1;
+    def reverse(): Unit = MBResizableArray_J.this.reverse_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    def reverse_J(T_TypeTag: Byte): Unit = {
       var pos: Int = 0;
       while$2(){
         if (pos.*(2).<(MBResizableArray_J.this.elemCount_J(T_TypeTag)))
           {
             {
-              val tmp1: Long = MBResizableArray_J.this.getElement_J(T_TypeTag)(pos);
-              val tmp2: Long = MBResizableArray_J.this.getElement_J(T_TypeTag)(MBResizableArray_J.this.elemCount_J(T_TypeTag).-(pos).-(1));
-              MBResizableArray_J.this.setElement_J(T_TypeTag)(pos, tmp2);
-              MBResizableArray_J.this.setElement_J(T_TypeTag)(MBResizableArray_J.this.elemCount_J(T_TypeTag).-(pos).-(1), tmp1);
+              val tmp1: Long = MBResizableArray_J.this.getElement_J(T_TypeTag, pos);
+              val tmp2: Long = MBResizableArray_J.this.getElement_J(T_TypeTag, MBResizableArray_J.this.elemCount_J(T_TypeTag).-(pos).-(1));
+              MBResizableArray_J.this.setElement_J(T_TypeTag, pos, tmp2);
+              MBResizableArray_J.this.setElement_J(T_TypeTag, MBResizableArray_J.this.elemCount_J(T_TypeTag).-(pos).-(1), tmp1);
               pos = pos.+(1)
             };
             while$2()
@@ -125,26 +124,26 @@ package miniboxing.tests.compile {
           ()
       }
     };
-    <accessor> def size: Int = MBResizableArray_J.this.size_J(MBResizableArray_J.this.T_TypeTag);
-    <accessor> def size_=(x$1: Int): Unit = MBResizableArray_J.this.size_J_=(MBResizableArray_J.this.T_TypeTag)(x$1);
+    <accessor> def size(): Int = MBResizableArray_J.this.size_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    <accessor> def size_=(x$1: Int): Unit = MBResizableArray_J.this.size_J_=(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, x$1);
     <accessor> def size_J(T_TypeTag: Byte): Int = MBResizableArray_J.this.size;
-    <accessor> def size_J_=(T_TypeTag: Byte)(x$1: Int): Unit = MBResizableArray_J.this.size = x$1;
-    @inline final def getElement(p: Int): Tsp = MiniboxConversions.this.minibox2box[Tsp](MBResizableArray_J.this.getElement_J(MBResizableArray_J.this.T_TypeTag)(p), MBResizableArray_J.this.T_TypeTag);
-    @inline final def getElement_J(T_TypeTag: Byte)(p: Int): Long = MiniboxArray.this.mbarray_apply_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, T_TypeTag);
-    @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_J.this.setElement_J(MBResizableArray_J.this.T_TypeTag)(p, MiniboxConversions.this.box2minibox_tt[Tsp](t, MBResizableArray_J.this.T_TypeTag));
-    @inline final def setElement_J(T_TypeTag: Byte)(p: Int, t: Long): Unit = MiniboxArray.this.mbarray_update_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, t, T_TypeTag);
+    <accessor> def size_J_=(T_TypeTag: Byte, x$1: Int): Unit = MBResizableArray_J.this.size = x$1;
+    @inline final def getElement(p: Int): Tsp = MiniboxConversions.this.minibox2box[Tsp](MBResizableArray_J.this.getElement_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, p), MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    @inline final def getElement_J(T_TypeTag: Byte, p: Int): Long = MiniboxArray.this.mbarray_apply_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, T_TypeTag);
+    @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_J.this.setElement_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, p, MiniboxConversions.this.box2minibox_tt[Tsp](t, MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag));
+    @inline final def setElement_J(T_TypeTag: Byte, p: Int, t: Long): Unit = MiniboxArray.this.mbarray_update_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, t, T_TypeTag);
     final private[this] val initialSize: Int(4) = 4;
-    final <stable> <accessor> def initialSize: Int = 4;
+    final <stable> <accessor> def initialSize(): Int = 4;
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int = 4;
-    override def toString(): String = MBResizableArray_J.this.toString_J(MBResizableArray_J.this.T_TypeTag)();
-    override def toString_J(T_TypeTag: Byte)(): String = {
+    override def toString(): String = MBResizableArray_J.this.toString_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
+    override def toString_J(T_TypeTag: Byte): String = {
       var pos: Int = 0;
       var ret: String = "";
       while$4(){
         if (pos.<(MBResizableArray_J.this.elemCount_J(T_TypeTag)))
           {
             {
-              ret = ret.+(MiniboxDispatch.this.mboxed_toString(MBResizableArray_J.this.getElement_J(T_TypeTag)(pos), T_TypeTag).+(", "));
+              ret = ret.+(MiniboxDispatch.this.mboxed_toString(MBResizableArray_J.this.getElement_J(T_TypeTag, pos), T_TypeTag).+(", "));
               pos = pos.+(1)
             };
             while$4()
@@ -154,32 +153,32 @@ package miniboxing.tests.compile {
       };
       ret
     };
-    <paramaccessor> private[this] val T_TypeTag: Byte = _;
-    <paramaccessor> private[this] val mf: Manifest[Tsp] = _;
-    private[this] var array: Array[Tsp] = MiniboxArray.this.mbarray_new(4, MBResizableArray_J.this.T_TypeTag);
+    <paramaccessor> private[this] val mf: scala.reflect.Manifest[Tsp] = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag: Byte = _;
+    private[this] var array: Array[Tsp] = MiniboxArray.this.mbarray_new[Tsp](4, MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
     private[this] var elemCount: Int = 0;
     private[this] var newarray: Array[Tsp] = _;
     private[this] var size: Int = 4
   };
-  class MBResizableArray_L[Tsp >: Nothing <: Any] extends AnyRef with miniboxing.tests.compile.MBResizableArray[Tsp] {
-    def <init>()(mf: Manifest[Tsp]): miniboxing.tests.compile.MBResizableArray_L[Tsp] = {
+  class MBResizableArray_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
+    def <init>(mf: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.separate.MBResizableArray_L[Tsp] = {
       MBResizableArray_L.super.<init>();
       ()
     };
     def add(elem: Tsp): Unit = {
       MBResizableArray_L.this.extend();
-      MBResizableArray_L.this.array.update(MBResizableArray_L.this.elemCount, elem);
-      MBResizableArray_L.this.elemCount_=(MBResizableArray_L.this.elemCount.+(1))
+      MBResizableArray_L.this.array().update(MBResizableArray_L.this.elemCount(), elem);
+      MBResizableArray_L.this.elemCount_=(MBResizableArray_L.this.elemCount().+(1))
     };
-    def add_J(T_TypeTag: Byte)(elem: Long): Unit = MBResizableArray_L.this.add(MiniboxConversions.this.minibox2box[Tsp](elem, T_TypeTag));
-    <accessor> def array: Array[Tsp] = MBResizableArray_L.this.array;
+    def add_J(T_TypeTag: Byte, elem: Long): Unit = MBResizableArray_L.this.add(MiniboxConversions.this.minibox2box[Tsp](elem, T_TypeTag));
+    <accessor> def array(): Array[Tsp] = MBResizableArray_L.this.array;
     <accessor> def array_=(x$1: Array[Tsp]): Unit = MBResizableArray_L.this.array = x$1;
-    <accessor> def array_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_L.this.array;
-    <accessor> def array_J_=(T_TypeTag: Byte)(x$1: Array[Tsp]): Unit = MBResizableArray_L.this.array_=(x$1);
+    <accessor> def array_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_L.this.array();
+    <accessor> def array_J_=(T_TypeTag: Byte, x$1: Array[Tsp]): Unit = MBResizableArray_L.this.array_=(x$1);
     def contains(elem: Tsp): Boolean = {
       var pos: Int = 0;
       while$3(){
-        if (pos.<(MBResizableArray_L.this.elemCount))
+        if (pos.<(MBResizableArray_L.this.elemCount()))
           {
             {
               if (MBResizableArray_L.this.getElement(pos).==(elem))
@@ -195,20 +194,20 @@ package miniboxing.tests.compile {
       };
       return false
     };
-    def contains_J(T_TypeTag: Byte)(elem: Long): Boolean = MBResizableArray_L.this.contains(MiniboxConversions.this.minibox2box[Tsp](elem, T_TypeTag));
-    <accessor> def elemCount: Int = MBResizableArray_L.this.elemCount;
+    def contains_J(T_TypeTag: Byte, elem: Long): Boolean = MBResizableArray_L.this.contains(MiniboxConversions.this.minibox2box[Tsp](elem, T_TypeTag));
+    <accessor> def elemCount(): Int = MBResizableArray_L.this.elemCount;
     <accessor> def elemCount_=(x$1: Int): Unit = MBResizableArray_L.this.elemCount = x$1;
-    <accessor> def elemCount_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.elemCount;
-    <accessor> def elemCount_J_=(T_TypeTag: Byte)(x$1: Int): Unit = MBResizableArray_L.this.elemCount_=(x$1);
-    def extend(): Unit = if (MBResizableArray_L.this.elemCount.==(MBResizableArray_L.this.size))
+    <accessor> def elemCount_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.elemCount();
+    <accessor> def elemCount_J_=(T_TypeTag: Byte, x$1: Int): Unit = MBResizableArray_L.this.elemCount_=(x$1);
+    def extend(): Unit = if (MBResizableArray_L.this.elemCount().==(MBResizableArray_L.this.size()))
       {
         var pos: Int = 0;
-        MBResizableArray_L.this.newarray_=(MBResizableArray_L.this.mf.newArray(2.*(MBResizableArray_L.this.size)));
+        MBResizableArray_L.this.newarray_=(MBResizableArray_L.this.mf.newArray(2.*(MBResizableArray_L.this.size())));
         while$1(){
-          if (pos.<(MBResizableArray_L.this.size))
+          if (pos.<(MBResizableArray_L.this.size()))
             {
               {
-                MBResizableArray_L.this.newarray.update(pos, MBResizableArray_L.this.array.apply(pos));
+                MBResizableArray_L.this.newarray().update(pos, MBResizableArray_L.this.array().apply(pos));
                 pos = pos.+(1)
               };
               while$1()
@@ -216,28 +215,28 @@ package miniboxing.tests.compile {
           else
             ()
         };
-        MBResizableArray_L.this.array_=(MBResizableArray_L.this.newarray);
-        MBResizableArray_L.this.size_=(MBResizableArray_L.this.size.*(2))
+        MBResizableArray_L.this.array_=(MBResizableArray_L.this.newarray());
+        MBResizableArray_L.this.size_=(MBResizableArray_L.this.size().*(2))
       }
     else
       ();
-    def extend_J(T_TypeTag: Byte)(): Unit = MBResizableArray_L.this.extend();
-    def length: Int = MBResizableArray_L.this.elemCount;
-    def length_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.length;
-    <accessor> def newarray: Array[Tsp] = MBResizableArray_L.this.newarray;
+    def extend_J(T_TypeTag: Byte): Unit = MBResizableArray_L.this.extend();
+    def length(): Int = MBResizableArray_L.this.elemCount();
+    def length_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.length();
+    <accessor> def newarray(): Array[Tsp] = MBResizableArray_L.this.newarray;
     <accessor> def newarray_=(x$1: Array[Tsp]): Unit = MBResizableArray_L.this.newarray = x$1;
-    <accessor> def newarray_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_L.this.newarray;
-    <accessor> def newarray_J_=(T_TypeTag: Byte)(x$1: Array[Tsp]): Unit = MBResizableArray_L.this.newarray_=(x$1);
+    <accessor> def newarray_J(T_TypeTag: Byte): Array[Tsp] = MBResizableArray_L.this.newarray();
+    <accessor> def newarray_J_=(T_TypeTag: Byte, x$1: Array[Tsp]): Unit = MBResizableArray_L.this.newarray_=(x$1);
     def reverse(): Unit = {
       var pos: Int = 0;
       while$2(){
-        if (pos.*(2).<(MBResizableArray_L.this.elemCount))
+        if (pos.*(2).<(MBResizableArray_L.this.elemCount()))
           {
             {
               val tmp1: Tsp = MBResizableArray_L.this.getElement(pos);
-              val tmp2: Tsp = MBResizableArray_L.this.getElement(MBResizableArray_L.this.elemCount.-(pos).-(1));
+              val tmp2: Tsp = MBResizableArray_L.this.getElement(MBResizableArray_L.this.elemCount().-(pos).-(1));
               MBResizableArray_L.this.setElement(pos, tmp2);
-              MBResizableArray_L.this.setElement(MBResizableArray_L.this.elemCount.-(pos).-(1), tmp1);
+              MBResizableArray_L.this.setElement(MBResizableArray_L.this.elemCount().-(pos).-(1), tmp1);
               pos = pos.+(1)
             };
             while$2()
@@ -246,23 +245,23 @@ package miniboxing.tests.compile {
           ()
       }
     };
-    def reverse_J(T_TypeTag: Byte)(): Unit = MBResizableArray_L.this.reverse();
-    <accessor> def size: Int = MBResizableArray_L.this.size;
+    def reverse_J(T_TypeTag: Byte): Unit = MBResizableArray_L.this.reverse();
+    <accessor> def size(): Int = MBResizableArray_L.this.size;
     <accessor> def size_=(x$1: Int): Unit = MBResizableArray_L.this.size = x$1;
-    <accessor> def size_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.size;
-    <accessor> def size_J_=(T_TypeTag: Byte)(x$1: Int): Unit = MBResizableArray_L.this.size_=(x$1);
-    @inline final def getElement(p: Int): Tsp = MBResizableArray_L.this.array.apply(p);
-    @inline final def getElement_J(T_TypeTag: Byte)(p: Int): Long = MiniboxConversions.this.box2minibox_tt[Tsp](MBResizableArray_L.this.getElement(p), T_TypeTag);
-    @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_L.this.array.update(p, t);
-    @inline final def setElement_J(T_TypeTag: Byte)(p: Int, t: Long): Unit = MBResizableArray_L.this.setElement(p, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag));
+    <accessor> def size_J(T_TypeTag: Byte): Int = MBResizableArray_L.this.size();
+    <accessor> def size_J_=(T_TypeTag: Byte, x$1: Int): Unit = MBResizableArray_L.this.size_=(x$1);
+    @inline final def getElement(p: Int): Tsp = MBResizableArray_L.this.array().apply(p);
+    @inline final def getElement_J(T_TypeTag: Byte, p: Int): Long = MiniboxConversions.this.box2minibox_tt[Tsp](MBResizableArray_L.this.getElement(p), T_TypeTag);
+    @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_L.this.array().update(p, t);
+    @inline final def setElement_J(T_TypeTag: Byte, p: Int, t: Long): Unit = MBResizableArray_L.this.setElement(p, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag));
     final private[this] val initialSize: Int(4) = 4;
-    final <stable> <accessor> def initialSize: Int = 4;
+    final <stable> <accessor> def initialSize(): Int = 4;
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int = 4;
     override def toString(): String = {
       var pos: Int = 0;
       var ret: String = "";
       while$4(){
-        if (pos.<(MBResizableArray_L.this.elemCount))
+        if (pos.<(MBResizableArray_L.this.elemCount()))
           {
             {
               ret = ret.+(MBResizableArray_L.this.getElement(pos).toString().+(", "));
@@ -275,8 +274,8 @@ package miniboxing.tests.compile {
       };
       ret
     };
-    override def toString_J(T_TypeTag: Byte)(): String = MBResizableArray_L.this.toString();
-    <paramaccessor> private[this] val mf: Manifest[Tsp] = _;
+    override def toString_J(T_TypeTag: Byte): String = MBResizableArray_L.this.toString();
+    <paramaccessor> private[this] val mf: scala.reflect.Manifest[Tsp] = _;
     private[this] var array: Array[Tsp] = MBResizableArray_L.this.mf.newArray(4);
     private[this] var elemCount: Int = 0;
     private[this] var newarray: Array[Tsp] = _;
@@ -284,4 +283,4 @@ package miniboxing.tests.compile {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

@@ -1,0 +1,46 @@
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.correctness.erasure.torture7 {
+  abstract trait A[@miniboxed T >: Nothing <: Int] extends Object {
+    def foo(c: T, cond: Boolean): T;
+    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Long
+  };
+  class A_J[Tsp >: Nothing <: Int] extends Object with miniboxing.tests.correctness.erasure.torture7.A[Tsp] {
+    def <init>(miniboxing|tests|correctness|erasure|torture7|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture7.A_J[Tsp] = {
+      A_J.super.<init>();
+      ()
+    };
+    def foo(c: Tsp, cond: Boolean): Tsp = MiniboxConversions.this.minibox2box[Tsp](A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture7|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture7|A_J|T_TypeTag), cond), A_J.this.miniboxing|tests|correctness|erasure|torture7|A_J|T_TypeTag);
+    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Long = {
+      scala.this.Predef.println("hello");
+      if (cond)
+        {
+          scala.this.Predef.println("world");
+          c
+        }
+      else
+        MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
+    };
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture7|A_J|T_TypeTag: Byte = _
+  };
+  class A_L[Tsp >: Nothing <: Int] extends Object with miniboxing.tests.correctness.erasure.torture7.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture7.A_L[Tsp] = {
+      A_L.super.<init>();
+      ()
+    };
+    def foo(c: Tsp, cond: Boolean): Tsp = {
+      scala.this.Predef.println("hello");
+      if (cond)
+        {
+          scala.this.Predef.println("world");
+          c
+        }
+      else
+        scala.this.Predef.???()
+    };
+    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Long = MiniboxConversions.this.box2minibox_tt[Tsp](A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag), cond), T_TypeTag)
+  }
+}
+
+[Now checking: minibox-spec]

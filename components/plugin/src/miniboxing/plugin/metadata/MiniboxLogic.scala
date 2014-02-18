@@ -1,9 +1,11 @@
 package miniboxing.plugin
+package metadata
 
-import scala.tools.nsc.Global
+import scala.Option.option2Iterable
+import scala.collection.immutable
 
 trait MiniboxLogic {
-  self: MiniboxComponent =>
+  self: MiniboxDuplComponent =>
 
   import global._
   import definitions._
@@ -27,6 +29,9 @@ trait MiniboxLogic {
   case object Miniboxed extends SpecInfo
   case object Boxed extends SpecInfo
   type PartialSpec = immutable.Map[Symbol, SpecInfo]
+  implicit class RichPartialSpec(pspec: PartialSpec) {
+    def allAnyRef: PartialSpec = pspec.keys.map(tp => (tp, Boxed)).toMap
+  }
 
   /**
    * For a set of type parameters, get all the possible partial specializations.
@@ -84,7 +89,7 @@ trait MiniboxLogic {
 
   def needsSpecialization(clazz: Symbol, member: Symbol) = flag_spec_no_opt || {
     val tparams = clazz.typeParams.filter(isSpecialized(clazz, _))
-    val res = member.info.params.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
+    val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
     tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
     res
   }
@@ -99,15 +104,11 @@ trait MiniboxLogic {
     clazz.typeParams.exists(isSpecialized(clazz, _))
 
   def isSpecialized(clazz: Symbol, tparam: Symbol): Boolean = {
-    beforeMinibox(tparam.info) // make sure the annotation hijacker updated it
+    beforeMiniboxDupl(tparam.info) // make sure the annotation hijacker updated it
     tparam hasAnnotation MinispecClass
   }
 
   final val MINIBOXED = 1L << 46 // we define our own flag
-
-  /** TODO: Document this */
-  case class MiniboxingTypeEnv(shallowEnv: TypeEnv, deepEnv: TypeEnv)
-  object EmptyMbTypeEnv extends MiniboxingTypeEnv(EmptyTypeEnv, EmptyTypeEnv)
 
   object PartialSpec {
 

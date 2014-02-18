@@ -3,26 +3,26 @@ Specializing trait Dist...
   // interface:
   abstract trait Dist[A] extends Object {
     def sample[CC[A] <: Iterable[A]](n: Int,implicit a: A,implicit cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A]
-    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Long,implicit cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A]
+    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: A @storage,implicit cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A]
   }
 
   // specialized class:
   abstract trait Dist_J[Asp] extends Dist[Asp] {
     def miniboxing|tests|compile|Dist_J|A_TypeTag(): Byte                  // is a type tag
-    def sample[CC[A] <: Iterable[A]](n: Int,implicit a: Asp,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a forwarder to method sample_J
-    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Long,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a specialized implementation of method sample
+    def sample[CC[A] <: Iterable[A]](n: Int,implicit a: Asp,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a forwarder to the specialized member
+    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Asp @storage,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a specialized implementation of method sample
   }
 
   // specialized class:
   abstract trait Dist_L[Asp] extends Dist[Asp] {
     def sample[CC[A] <: Iterable[A]](n: Int,implicit a: Asp,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a specialized implementation of method sample
-    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Long,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a forwarder to method sample
+    def sample_J[CC[A] <: Iterable[A]](val A_TypeTag: Byte,n: Int,implicit a: Asp @storage,implicit cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] // is a forwarder to the specialized member
   }
 
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Dist[@miniboxed A >: Nothing <: Any] extends Object { self: miniboxing.tests.compile.Dist[A] =>
     def sample[CC[A >: Nothing <: Any] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: A, cbf: scala.collection.generic.CanBuildFrom[CC[A],A,CC[A]]): CC[A];

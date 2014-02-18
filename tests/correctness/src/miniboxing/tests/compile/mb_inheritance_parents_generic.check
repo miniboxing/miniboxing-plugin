@@ -18,7 +18,9 @@ Specializing class DDDD...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   class CCCC[T >: Nothing <: Any] extends Object {
     def <init>(): miniboxing.tests.compile.inheritance.CCCC[T] = {
@@ -42,4 +44,4 @@ package miniboxing.tests.compile.inheritance {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

@@ -3,20 +3,20 @@ Specializing trait CC...
   // interface:
   abstract trait CC[T] extends Object {
     def foo(t: T): T
-    def foo_J(val T_TypeTag: Byte,t: Long): Long
+    def foo_J(val T_TypeTag: Byte,t: T @storage): T @storage
   }
 
   // specialized class:
   abstract trait CC_J[Tsp] extends CC[Tsp] {
-    def foo(t: Tsp): Tsp                                                   // is a forwarder to method foo_J
-    def foo_J(val T_TypeTag: Byte,t: Long): Long                           // is a specialized implementation of method foo
+    def foo(t: Tsp): Tsp                                                   // is a forwarder to the specialized member
+    def foo_J(val T_TypeTag: Byte,t: Tsp @storage): Tsp @storage           // is a specialized implementation of method foo
     def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte // is a type tag
   }
 
   // specialized class:
   abstract trait CC_L[Tsp] extends CC[Tsp] {
     def foo(t: Tsp): Tsp                                                   // is a specialized implementation of method foo
-    def foo_J(val T_TypeTag: Byte,t: Long): Long                           // is a forwarder to method foo
+    def foo_J(val T_TypeTag: Byte,t: Tsp @storage): Tsp @storage           // is a forwarder to the specialized member
   }
 
 
@@ -62,7 +62,9 @@ Specializing class EE...
 
 
 
-[[syntax trees at end of                   minibox]] // newSource1.scala
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance.traits {
   abstract trait CC[@miniboxed T >: Nothing <: Any] extends Object {
     def foo(t: T): T;
@@ -108,4 +110,4 @@ package miniboxing.tests.compile.inheritance.traits {
   }
 }
 
-[Now checking: minibox]
+[Now checking: minibox-spec]

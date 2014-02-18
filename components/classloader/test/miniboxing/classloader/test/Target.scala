@@ -10,35 +10,35 @@ import scala.collection.mutable.WeakHashMap
 
 trait TargetTrait[T] {
   def TargetTrait_T_TypeTag: Byte
-  def printTrait: Unit
+  def printTrait(): Unit
 }
 
 // Make sure we specialize trait implementations
 trait TargetTrait_class_J[T] extends TargetTrait[T] {
-  def printTrait: Unit = System.out.println("printTrait: " + (new Exception()).getStackTrace()(0).getClassName())
+  def printTrait(): Unit = System.out.println("printTrait: " + (new Exception()).getStackTrace()(0).getClassName())
 }
 
 trait TargetSuper[T] {
-  def printSuper: Unit
+  def printSuper(): Unit
 }
 
 // Make sure we specialize superclasses
 class TargetSuper_class_J[T](T_TypeTag: Byte) extends TargetSuper[T] {
-  def printSuper: Unit = System.out.println("printSuper: " + getClass().getSuperclass().getName())
+  def printSuper(): Unit = System.out.println("printSuper: " + getClass().getSuperclass().getName())
 }
 
 trait Target[T] extends AnyRef with TargetSuper[T] with TargetTrait[T]{
   def t: T
   def t_J: Long
-  def print: Unit
-  def printInnerClass: Unit
+  def print(): Unit
+  def printInnerClass(): Unit
 }
 
 // Make sure we specialize classes
 class Target_class_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends TargetSuper_class_J[T$sp](T_TypeTag) with TargetTrait_class_J[T$sp] with Target[T$sp] {
   def TargetTrait_T_TypeTag: Byte = T_TypeTag
   def t = ???
-  def print: Unit = {
+  def print(): Unit = {
     System.out.println("print(" + t_J + ", " + T_TypeTag + ") by " + this.getClass.getName())
     val x = T_TypeTag match {
       case 1 => 1
@@ -50,7 +50,7 @@ class Target_class_J[T$sp](val t_J: Long, T_TypeTag: Byte) extends TargetSuper_c
     }
     ()
   }
-  def printInnerClass: Unit = {
+  def printInnerClass(): Unit = {
     class `$anon` extends Function0[String]{
       def apply(): String = (new Exception()).getStackTrace()(0).getClassName()
     }
