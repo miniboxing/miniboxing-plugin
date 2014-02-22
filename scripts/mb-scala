@@ -20,9 +20,9 @@ then
 fi
 
 SCALA_VERSION=2.10
-MINIBOXING_VERSION=0.2
-PLUGIN_JAR=$MINIBOXING_PATH/components/plugin/target/scala-$SCALA_VERSION/miniboxing-plugin_$SCALA_VERSION-$MINIBOXING_VERSION-SNAPSHOT.jar
-RUNTIME_JAR=$MINIBOXING_PATH/components/runtime/target/scala-$SCALA_VERSION/miniboxing-runtime_$SCALA_VERSION-$MINIBOXING_VERSION-SNAPSHOT.jar
+MINIBOXING_VERSION=0.2-SNAPSHOT
+PLUGIN_JAR=$MINIBOXING_PATH/components/plugin/target/scala-$SCALA_VERSION/miniboxing-plugin_$SCALA_VERSION-$MINIBOXING_VERSION.jar
+RUNTIME_JAR=$MINIBOXING_PATH/components/runtime/target/scala-$SCALA_VERSION/miniboxing-runtime_$SCALA_VERSION-$MINIBOXING_VERSION.jar
 
 me=`basename $0`
 if [ "$me" == "mb-scalac" ]; then
