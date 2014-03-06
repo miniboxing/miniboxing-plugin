@@ -14,24 +14,26 @@ object MiniboxingBuild extends Build {
   }
 
   val defaults = Defaults.defaultSettings ++ assemblySettings ++ Seq(
-    scalaSource in Compile <<= baseDirectory(_ / "src"),
-    javaSource in Compile <<= baseDirectory(_ / "src"),
-    scalaSource in Test <<= baseDirectory(_ / "test"),
-    javaSource in Test <<= baseDirectory(_ / "test"),
-    resourceDirectory in Compile <<= baseDirectory(_ / "resources"),
+    scalaSource in Compile := baseDirectory.value / "src",
+    javaSource in Compile := baseDirectory.value / "src",
+    scalaSource in Test := baseDirectory.value / "test",
+    javaSource in Test := baseDirectory.value / "test",
+    resourceDirectory in Compile := baseDirectory.value / "resources",
     compileOrder := CompileOrder.JavaThenScala,
 
-    unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_)),
-    unmanagedSourceDirectories in Test <<= (scalaSource in Test)(Seq(_)),
+    unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
+    unmanagedSourceDirectories in Test := Seq((scalaSource in Test).value),
     //http://stackoverflow.com/questions/10472840/how-to-attach-sources-to-sbt-managed-dependencies-in-scala-ide#answer-11683728
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
     resolvers in ThisBuild ++= Seq(
-      "Sonatype Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots",
-      "Sonatype Releases" at "http://oss.sonatype.org/content/repositories/releases"
+      Resolver.sonatypeRepo("releases"),
+      Resolver.sonatypeRepo("snapshots")
     ),
 
-    scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-Xlint")
+    scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-Xlint"),
+
+    publishArtifact in packageDoc := false
   )
 
   val publishCredFile = "miniboxing.maven.credentials-file"
@@ -50,9 +52,9 @@ object MiniboxingBuild extends Build {
       Seq(
         // sonatype
         publishMavenStyle := true,
-        publishTo <<= version { (v: String) =>
+        publishTo := {
           val nexus = "https://oss.sonatype.org/"
-          if (v.trim.endsWith("SNAPSHOT"))
+          if (version.value.trim.endsWith("SNAPSHOT"))
             Some("snapshots" at nexus + "content/repositories/snapshots")
           else
             Some("releases"  at nexus + "service/local/staging/deploy/maven2")
