@@ -18,15 +18,11 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
     override def checkable = false
     def apply(unit: CompilationUnit): Unit = {
 
-      object TreeAdapter extends {
-        val global: MiniboxAdaptTreeTransformer.this.global.type = MiniboxAdaptTreeTransformer.this.global
-      } with TreeAdapters
-
       // do this before adapting the tree, so we crash'n'burn
       // if any instantiation wasn't done properly.
       adaptClassFieldsAndCtors()
 
-      val tree = afterMiniboxAdapt(TreeAdapter.adapt(unit))
+      val tree = afterMiniboxAdapt(new TreeAdapters().adapt(unit))
       tree.foreach(node => assert(node.tpe != null, node))
     }
 
@@ -54,24 +50,9 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
     }
   }
 
-  abstract class TreeAdapters extends Analyzer {
-//    val global: Global
-//    val minibox: MiniboxAdaptTreeTransformer { val global: TreeAdapters.this.global.type }
-//
-//    import global._
-//    import minibox._
-    import global._
-
+  class TreeAdapters extends Analyzer {
     var indent = 0
-
-    private def wrap[T](msg: => Any)(body: => Unit) {
-      try body
-      catch { case x: Throwable =>
-        Console.println("Caught " + x)
-        Console.println(msg)
-        x.printStackTrace
-      }
-    }
+    lazy val global: self.global.type = self.global
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
@@ -80,22 +61,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       unit.body
     }
 
-    var normalTyper = false
-
-    def withNormalTyper[T](context: Context)(f: Typer => T): T = {
-      val normalTyper0 = normalTyper
-      normalTyper = true
-      val res = f(newTyper(context))
-      normalTyper = normalTyper0
-      res
-    }
-
     override def newTyper(context: Context): Typer =
-      if (normalTyper) {
-        super.newTyper(context)
-      } else {
-        new TreeAdapter(context)
-      }
+      new TreeAdapter(context)
 
     def adaptdbg(ind: Int, msg: => String): Unit = {
 //      println("  " * ind + msg)
@@ -108,120 +75,47 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       def supertyped(tree: Tree, mode: Int, pt: Type): Tree =
         super.typed(tree, mode, pt)
 
-      def hasStorageAnnotation(tpe: Type) =
-        tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+      implicit class RichType(tpe: Type) {
+        def isValue: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+      }
 
-      val catchApply = new DynamicVariable(true)
+      implicit class RichTree(tree: Tree) {
+        def isValue: Boolean = tree.tpe.isValue
+      }
+
+      override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
+        val oldTpe = tree.tpe
+        val newTpe = pt
+        if (tree.isTerm && (oldTpe.isValue ^ newTpe.isValue)) {
+          val conversion = if (oldTpe.isValue) marker_minibox2box else marker_box2minibox
+          val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
+          val tree2 = super.typed(tree1, mode, pt)
+          assert(tree2.tpe != ErrorType, tree2)
+          tree2
+        } else {
+          super.adapt(tree, mode, pt, original)
+        }
+      }
 
       override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
         val ind = indent
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false))
-
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
-
-          case Select(mbox, mth) if mbox.tpe != null && hasStorageAnnotation(mbox.tpe) =>
-            val box = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(mbox.tpe.dealiasWiden.typeSymbol.tpeHK), List(mbox))
-            val sel = Select(box, mth)
-            super.typed(sel, mode, pt)
-
-          // IMPORTANT NOTE: This case follows from the problem of overloading methods
-          // if method m(t: T) is not overloaded, the argument is type-checked with pt=T
-          // if method m(t: T) is overloaded, the argument is type-checked with pt=WildcardType and then the correct
-          //                                  method overload is chosen. But we don't want that -- the overload is okay,
-          //                                  but we need to adapt method arguments correctly. So we override the Apply
-          //                                  type-checking procedure to eliminate overload resolution
-          case Apply(fun, args) if fun.symbol != marker_minibox2box && tree.tpe != null && tree.tpe != ErrorType && catchApply.value =>
-            val nargs =
-              for ((arg, desiredTpe) <- (args zip fun.tpe.paramTypes)) yield
-                typed(arg, mode, desiredTpe)
-            val nfun =
-              super.typedOperator(fun)
-
-            // type the updated application:
-            val app = super.typed(Apply(nfun, nargs))
-            // adapt return type:
-            val app2 = catchApply.withValue(false)(typed(app, mode, pt))
-            app2
-
           // IMPORTANT NOTE: ErrorType should be allowed to bubble up, since there will certainly be
-          // a silent_.typed ready to catch the error and perform the correct rewriting upstream.
-          case _ if tree.tpe != null && tree.tpe != ErrorType =>
-            //adaptdbg(ind, "TREE: " + tree + " pt = " + pt)
-            // **TODO: Isn't def adapt a better place to hook into the typer?**
+          // a silent(_.typed(...)) ready to catch the error and perform the correct rewriting upstream.
+          case _ if tree.tpe == null || tree.tpe == ErrorType =>
+            super.typed(tree, mode, pt)
+          case Select(qual, mth) if qual.isValue =>
+            val boxed = Apply(gen.mkAttributedRef(marker_minibox2box), List(qual))
+            super.typed(Select(boxed, mth) setSymbol tree.symbol, mode, pt)
+          case _ =>
             val oldTree = tree.duplicate
             val oldTpe = tree.tpe
             tree.tpe = null
-            val res: Tree = silent(_.typed(tree, mode, pt)) match {
-              case SilentTypeError(err) =>
-                val newTpe = pt
-                val hAnnot1 = hasStorageAnnotation(oldTpe)
-                val hAnnot2 = hasStorageAnnotation(newTpe)
-                adaptdbg(ind, "adapting:")
-                adaptdbg(ind, s"$tree ::: ${oldTpe.dealiasWiden} vs ${pt.dealiasWiden} ($hAnnot1 vs $hAnnot2)")
-
-                if (hAnnot1 && !hAnnot2) {
-                  val tree1 = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree))
-                  adaptdbg(ind, "patching by inserting marker_minibox2box: " + tree1)
-                  val tree2 = super.typed(tree1, mode, pt)
-                  assert(tree2.tpe != ErrorType, tree2)
-                  tree2
-
-                } else if (!hAnnot1 && hAnnot2) {
-                  assert(pt.typeSymbol.tpeHK != null, pt)
-                  val tree1 = gen.mkMethodCall(marker_box2minibox.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree))
-//                  adaptdbg(ind, "patching by inserting marker_box2minibox: " + tree1)
-//                  adaptdbg(ind, "old type: " + oldTpe)
-//                  adaptdbg(ind, "old tree: " + oldTree)
-                  val tree2 = super.typed(tree1, mode, pt)
-                  assert(tree2.tpe != ErrorType, tree2)
-                  tree2
-
-                } else if ((hAnnot1 == hAnnot2) && (hAnnot1 == true)) {
-                  // there's no need for adapting, but singleton types and annotations don't mix
-                  // (check out mb_nested_class_fifth.scala for an example that crashes without
-                  // this workaround)
-                  tree.tpe = null
-                  val tree0 = withNormalTyper(context) { _.typed(tree, mode, WildcardType) }
-                  tree0.tpe = newTpe // just force the type and accept the -Ycheck complaints
-                  tree0
-                } else {
-                  println()
-                  adaptdbg(ind, "Don't know how to adapt tree:")
-                  adaptdbg(ind, oldTree + " : " + oldTree.tpe)
-                  adaptdbg(ind, s"to $pt")
-                  adaptdbg(ind, "tree after typing: " + tree)
-                  println()
-                  adaptdbg(ind, "Error:")
-                  adaptdbg(ind, err.toString)
-                  adaptdbg(ind, "Types:")
-                  adaptdbg(ind, s"  found:    $oldTpe (with underlying type ${oldTpe.dealiasWiden})")
-                  adaptdbg(ind, s"  required: $newTpe (with underlying type ${newTpe.dealiasWiden})")
-                  println("Can't adapt tree. Bailing out.")
-                  sys.exit(1)
-                }
-//                if (hAnnot1 && !hAnnot2) {
-//                  //println(marker_minibox2box.tpe)
-//                  val ntree = gen.mkMethodCall(marker_minibox2box.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree))
-//                  withNormalTyper(context) { _.typed(ntree, mode, pt) }
-//                } else if (!hAnnot1 && hAnnot2) {
-//                  //println(marker_box2minibox.tpe)
-//                  val ntree = super.typed(gen.mkMethodCall(marker_box2minibox.asInstanceOf[Symbol], List(oldTree.tpe.typeSymbol.tpeHK), List(oldTree)), mode, pt)
-//                  withNormalTyper(context) { _.typed(ntree, mode, pt) }
-              case SilentResultValue(res: Tree) =>
-                assert(res.tpe != null)
-                res
-            }
-            res
-          case _ =>
-            adaptdbg(ind, "[null tree]: " + tree)
-            adaptdbg(ind, "[null type]: " + pt)
-            // (new Exception()).printStackTrace()
-            val tree2 = super.typed(tree, mode, pt)
-            assert(tree2.tpe != null)
-            tree2
+            super.typed(tree, mode, pt)
         }
         adaptdbg(ind, " ==> " + res + ": " + res.tpe)
         if (res.tpe == ErrorType)
