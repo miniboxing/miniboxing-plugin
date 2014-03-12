@@ -65,7 +65,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       new TreeAdapter(context)
 
     def adaptdbg(ind: Int, msg: => String): Unit = {
-//      println("  " * ind + msg)
+      //println("  " * ind + msg)
     }
 
     class TreeAdapter(context0: Context) extends Typer(context0) {
@@ -86,7 +86,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
-        if (tree.isTerm && (oldTpe.isValue ^ newTpe.isValue)) {
+        if (tree.isTerm && (oldTpe.isValue ^ newTpe.isValue) && (!pt.isWildcard)) {
           val conversion = if (oldTpe.isValue) marker_minibox2box else marker_box2minibox
           val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
           val tree2 = super.typed(tree1, mode, pt)

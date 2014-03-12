@@ -73,8 +73,9 @@ trait MiniboxAnnotationCheckers {
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
       if (global.phase.id > mboxAdaptPhase.id) {
         val res = tpe1.dealiasWiden.hasAnnotation(StorageClass) == tpe2.dealiasWiden.hasAnnotation(StorageClass)
+        val res2 = tpe1.isWildcard || tpe2.isWildcard
         // println("after: " + tpe1 + " <: " + tpe2 + " ==> " + res + " (phase = " + global.phase.name + " " + global.phase.id + "  " + mboxAdaptPhase.id + ")")
-        res
+        res || res2
       } else {
         // println("before: " + tpe1 + " <: " + tpe2 + " ==> true" + " (phase = " + global.phase.name + "  " + global.phase.id + "  " + mboxAdaptPhase.id +  ")")
         true
