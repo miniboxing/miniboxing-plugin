@@ -86,12 +86,21 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
-        if (tree.isTerm && (oldTpe.isValue ^ newTpe.isValue) && (!pt.isWildcard)) {
-          val conversion = if (oldTpe.isValue) marker_minibox2box else marker_box2minibox
-          val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
-          val tree2 = super.typed(tree1, mode, pt)
-          assert(tree2.tpe != ErrorType, tree2)
-          tree2
+        if (tree.isTerm) {
+          if ((oldTpe.isValue ^ newTpe.isValue) && (!pt.isWildcard)) {
+            val conversion = if (oldTpe.isValue) marker_minibox2box else marker_box2minibox
+            val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
+            val tree2 = super.typed(tree1, mode, pt)
+            assert(tree2.tpe != ErrorType, tree2)
+            // super.adapt is automatically executed when calling super.typed
+            tree2
+          } else if (oldTpe.isValue && (oldTpe.isValue == newTpe.isValue) && !(oldTpe <:< newTpe)) {
+            // workaround the isSubType issue with singleton types
+            // and annotated types (see mb_erasure_torture10.scala)
+            tree.tpe = newTpe
+            tree
+          } else
+            super.adapt(tree, mode, pt, original)
         } else {
           super.adapt(tree, mode, pt, original)
         }
