@@ -14,7 +14,7 @@ Specialization generates **1000 classes**. Just change `@specialized` to `@minib
 
 **Long answer:** Aside from reducing the bytecode size, the miniboxing technique improves several other aspects of specialization:
  * miniboxing-specialized classes don't inherit generic fields (see [SI-3585](https://issues.scala-lang.org/browse/SI-3585));
- * miniboxing-specialized classes can inherit from their miniboxing-specialized parents (see [this restriction](https://github.com/scala/scala/blob/master/src/compiler/scala/tools/nsc/transform/SpecializeTypes.scala#L572)).
+ * miniboxing-specialized classes can inherit from their miniboxing-specialized parents (see [SI-8405](https://issues.scala-lang.org/browse/SI-8405) and [this restriction](https://github.com/scala/scala/blob/master/src/compiler/scala/tools/nsc/transform/SpecializeTypes.scala#L572)).
 
 To see the benchmarks we performed, have a look at the [OOPSLA 2013 paper](https://github.com/miniboxing/miniboxing-plugin/blob/wip/docs/2013-07-oopsla-preprint.pdf) we just prepared. They include performance evaluations, bytecode size comparisons and many more. Also, the [docs](https://github.com/miniboxing/miniboxing-plugin/tree/wip/docs) directory contains a series of papers and presentations which explain many aspects of the miniboxing transformation.
 
