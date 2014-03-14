@@ -1,0 +1,34 @@
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.erasure11 {
+  abstract trait CCCCC[@miniboxed T >: Nothing <: Any] extends Object {
+    def test(c: T): String;
+    def test_J(T_TypeTag: Byte, c: Long): String
+  };
+  class CCCCC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.erasure11.CCCCC[Tsp] {
+    def <init>(miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag: Byte): miniboxing.tests.compile.erasure11.CCCCC_J[Tsp] = {
+      CCCCC_J.super.<init>();
+      ()
+    };
+    def test(c: Tsp): String = CCCCC_J.this.test_J(CCCCC_J.this.miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, CCCCC_J.this.miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag));
+    def test_J(T_TypeTag: Byte, c: Long): String = if (MiniboxDispatch.this.mboxed_hashCode(c, T_TypeTag).==(0))
+  MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag)
+else
+  scala.this.Predef.???().toString();
+    <paramaccessor> private[this] val miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag: Byte = _
+  };
+  class CCCCC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.erasure11.CCCCC[Tsp] {
+    def <init>(): miniboxing.tests.compile.erasure11.CCCCC_L[Tsp] = {
+      CCCCC_L.super.<init>();
+      ()
+    };
+    def test(c: Tsp): String = if (c.hashCode().==(0))
+  c
+else
+  scala.this.Predef.???().toString();
+    def test_J(T_TypeTag: Byte, c: Long): String = CCCCC_L.this.test(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+  }
+}
+
+[Now checking: minibox-spec]

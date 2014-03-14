@@ -76,25 +76,25 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         super.typed(tree, mode, pt)
 
       implicit class RichType(tpe: Type) {
-        def isValue: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+        def isStorage: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
       }
 
       implicit class RichTree(tree: Tree) {
-        def isValue: Boolean = tree.tpe.isValue
+        def isStorage: Boolean = tree.tpe.isStorage
       }
 
       override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
         if (tree.isTerm) {
-          if ((oldTpe.isValue ^ newTpe.isValue) && (!pt.isWildcard)) {
-            val conversion = if (oldTpe.isValue) marker_minibox2box else marker_box2minibox
+          if ((oldTpe.isStorage ^ newTpe.isStorage) && (!pt.isWildcard)) {
+            val conversion = if (oldTpe.isStorage) marker_minibox2box else marker_box2minibox
             val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
             val tree2 = super.typed(tree1, mode, pt)
             assert(tree2.tpe != ErrorType, tree2)
             // super.adapt is automatically executed when calling super.typed
             tree2
-          } else if (oldTpe.isValue && (oldTpe.isValue == newTpe.isValue) && !(oldTpe <:< newTpe)) {
+          } else if (oldTpe.isStorage && (oldTpe.isStorage == newTpe.isStorage) && !(oldTpe <:< newTpe)) {
             // workaround the isSubType issue with singleton types
             // and annotated types (see mb_erasure_torture10.scala)
             tree.tpe = newTpe
@@ -115,9 +115,17 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             super.typed(tree, mode, pt)
           case _ if tree.tpe == null =>
             super.typed(tree, mode, pt)
-          case Select(qual, mth) if qual.isValue =>
-            val boxed = Apply(gen.mkAttributedRef(marker_minibox2box), List(qual))
-            super.typed(Select(boxed, mth) setSymbol tree.symbol, mode, pt)
+          case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
+            val qual2 = super.typed(qual.setType(null), mode, WildcardType)
+            if (qual2.isStorage) {
+              val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
+              val tpe3 = tpe2.removeAnnotation(StorageClass)
+              val qual3 = super.typed(qual.setType(null), mode, tpe3)
+              super.typed(Select(qual3, meth) setSymbol tree.symbol, mode, pt)
+            } else {
+              tree.tpe = null
+              super.typed(tree, mode, pt)
+            }
           case _ =>
             tree.tpe = null
             super.typed(tree, mode, pt)
