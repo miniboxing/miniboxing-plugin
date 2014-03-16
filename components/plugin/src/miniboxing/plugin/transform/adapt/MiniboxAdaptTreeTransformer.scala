@@ -116,7 +116,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
           case _ if tree.tpe == null =>
             super.typed(tree, mode, pt)
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
-            val qual2 = super.typed(qual.setType(null), mode, WildcardType)
+            val qual2 = super.typed(qual.setType(null), mode | QUALmode, WildcardType)
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(StorageClass)
