@@ -1,0 +1,3 @@
+newSource1.scala:6: error: not found: type miniboxed
+class X[@miniboxed X] {
+         ^

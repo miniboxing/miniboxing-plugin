@@ -1,0 +1,3 @@
+newSource1.scala:4: error: not found: type miniboxed
+class BUG1[@miniboxed T]() {}
+            ^

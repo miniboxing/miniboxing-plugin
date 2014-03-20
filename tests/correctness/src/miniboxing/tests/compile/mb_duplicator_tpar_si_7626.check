@@ -1,3 +1,6 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+newSource1.scala:5: error: not found: type miniboxed
+class CCCCC[@miniboxed T](c: T) {
+             ^
+newSource1.scala:15: error: not found: type miniboxed
+class C[@miniboxed T](c: T) {
+         ^

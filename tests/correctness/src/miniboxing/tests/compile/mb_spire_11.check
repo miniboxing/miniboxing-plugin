@@ -1,3 +1,9 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+newSource1.scala:2: error: object plugin is not a member of package miniboxing
+import miniboxing.plugin.minispec
+                  ^
+newSource1.scala:6: error: not found: type minispec
+trait Field2[@minispec A] {
+              ^
+newSource1.scala:12: error: not found: type minispec
+trait ArrayInnerProductSpace2[@minispec A] {
+                               ^
