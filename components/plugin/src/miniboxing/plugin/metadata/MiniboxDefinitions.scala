@@ -56,7 +56,35 @@ trait MiniboxDefinitions {
   // type tag conversions
   lazy val minibox2box        = definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
   lazy val box2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
-
+  
+  lazy val minibox2int        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToInt"))
+  lazy val int2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("IntToMinibox"))
+  
+  lazy val minibox2unit        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToUnit"))
+  lazy val unit2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("UnitToMinibox"))
+  
+  lazy val minibox2boolean        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToBoolean"))
+  lazy val boolean2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("BooleanToMinibox"))
+  
+  lazy val minibox2byte        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToByte"))
+  lazy val byte2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("ByteToMinibox"))
+  
+  lazy val minibox2char     = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToChar"))
+  lazy val char2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("CharToMinibox"))
+  
+  lazy val minibox2short        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToShort"))
+  lazy val short2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("ShortToMinibox"))
+  
+  lazy val minibox2long        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToLong"))
+  lazy val long2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("LongToMinibox"))
+  
+  lazy val minibox2float        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToFloat"))
+  lazy val float2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("FloatToMinibox"))
+  
+  lazy val minibox2double        = definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToDouble"))
+  lazy val double2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("DoubleToMinibox"))
+  
+ 
   // artificially created marker methods
   lazy val marker_minibox2box =
     newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
