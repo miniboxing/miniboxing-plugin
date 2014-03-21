@@ -169,52 +169,38 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
           
 		  case BoxToMinibox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
-            val tree1 =    
-            if (targ ==UnitClass.tpe)
-            	gen.mkMethodCall(int2minibox, List(transform(tree))) // notice the fewer arguments
-            	else if (targ ==BooleanClass.tpe)
-            		gen.mkMethodCall(boolean2minibox, List(transform(tree)))
-            		else if (targ ==ByteClass.tpe)
-            			gen.mkMethodCall(byte2minibox, List(transform(tree)))
-            			else if (targ ==CharClass.tpe)
-            				gen.mkMethodCall(char2minibox, List(transform(tree)))
-            				else if (targ ==ShortClass.tpe)
-            					gen.mkMethodCall(short2minibox, List(transform(tree)))
-            					else  if (targ ==IntClass.tpe)
-            						gen.mkMethodCall(int2minibox, List(transform(tree)))
-            						else if (targ ==LongClass.tpe)
-            							gen.mkMethodCall(long2minibox, List(transform(tree)))
-            							else if (targ ==FloatClass.tpe)
-            								gen.mkMethodCall(float2minibox, List(transform(tree)))
-            								else if (targ ==DoubleClass.tpe)
-            									gen.mkMethodCall(double2minibox, List(transform(tree)))
-            									else
-            										gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol)))
+            val typeMap = collection.immutable.HashMap( UnitClass.tpe -> unit2minibox, 
+            					        BooleanClass.tpe -> boolean2minibox, 
+                                                        ByteClass.tpe -> byte2minibox, 
+            					        CharClass.tpe-> char2minibox, 
+                				        ShortClass.tpe -> short2minibox, 
+            						IntClass.tpe ->  int2minibox, 
+            						LongClass.tpe -> long2minibox, 
+            						FloatClass.tpe -> float2minibox, 
+            						DoubleClass.tpe -> double2minibox)
+            val tree1 =
+              if(typeMap.contains(targ))
+            	  gen.mkMethodCall(typeMap(targ), List(transform(tree)))
+                else
+                gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol)))
             										localTyper.typed(tree1)
-
+         
 		  case MiniboxToBox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
+            val typeMap = collection.immutable.HashMap( UnitClass.tpe -> minibox2unit, 
+            						BooleanClass.tpe -> minibox2boolean, 
+            						ByteClass.tpe -> minibox2byte, 
+            					        CharClass.tpe-> minibox2char, 
+            						ShortClass.tpe -> minibox2short, 
+            						IntClass.tpe ->  minibox2int, 
+            						LongClass.tpe -> minibox2long, 
+            						FloatClass.tpe -> minibox2float, 
+            						DoubleClass.tpe -> minibox2double)
             val tree1 =
-            if (targ ==UnitClass.tpe)
-            	gen.mkMethodCall(minibox2unit, List(transform(tree))) // notice the fewer arguments
-            	else if (targ ==BooleanClass.tpe)
-            		gen.mkMethodCall(minibox2boolean, List(transform(tree)))
-            		else if (targ ==ByteClass.tpe)
-            			gen.mkMethodCall(minibox2byte, List(transform(tree)))
-            			else if (targ ==CharClass.tpe)
-            				gen.mkMethodCall(minibox2char, List(transform(tree)))
-            				else if (targ ==ShortClass.tpe)
-            					gen.mkMethodCall(minibox2short, List(transform(tree)))
-            					else  if (targ ==IntClass.tpe)
-            						gen.mkMethodCall(minibox2int, List(transform(tree)))
-            						else if (targ ==LongClass.tpe)
-            							gen.mkMethodCall(minibox2long, List(transform(tree)))
-            							else if (targ ==FloatClass.tpe)
-            								gen.mkMethodCall(minibox2float, List(transform(tree)))
-            								else if (targ ==DoubleClass.tpe)
-            									gen.mkMethodCall(minibox2double, List(transform(tree)))
-            									else
-            										gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol)))
+               if(typeMap.contains(targ))
+                 gen.mkMethodCall(typeMap(targ), List(transform(tree)))
+               else
+            	 gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol)))
             										localTyper.typed(tree1)
 
           case _ =>
