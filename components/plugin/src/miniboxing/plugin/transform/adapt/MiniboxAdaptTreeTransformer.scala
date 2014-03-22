@@ -6,12 +6,23 @@ import scala.tools.nsc._
 import scala.tools.nsc.typechecker._
 import scala.tools.nsc.transform.TypingTransformers
 import scala.util.DynamicVariable
+import scala.collection.immutable.ListMap
 
 trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   self: MiniboxAdaptComponent =>
 
   import minibox._
   import global._
+
+  implicit class RichType(tpe: Type) {
+    def isStorage: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
+    def withStorage: Type = tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
+    def withoutStorage: Type = tpe.filterAnnotations(_.atp =:= StorageClass.tpe)
+  }
+
+  implicit class RichTree(tree: Tree) {
+    def isStorage: Boolean = tree.tpe.isStorage
+  }
 
   class AdaptPhase(prev: Phase) extends StdPhase(prev) {
     override def name = MiniboxAdaptTreeTransformer.this.phaseName
@@ -75,14 +86,6 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       def supertyped(tree: Tree, mode: Int, pt: Type): Tree =
         super.typed(tree, mode, pt)
 
-      implicit class RichType(tpe: Type) {
-        def isStorage: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-      }
-
-      implicit class RichTree(tree: Tree) {
-        def isStorage: Boolean = tree.tpe.isStorage
-      }
-
       override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
@@ -116,11 +119,12 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
           case _ if tree.tpe == null =>
             super.typed(tree, mode, pt)
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
-            val qual2 = super.typed(qual.setType(null), mode | QUALmode, WildcardType)
+            val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType)
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(StorageClass)
-              val qual3 = super.typed(qual.setType(null), mode, tpe3)
+              //val qual3 = super.typedQualifier(qual.setType(null), mode, tpe3)
+              val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_minibox2box), List(tpe3), List(qual2))
               super.typed(Select(qual3, meth) setSymbol tree.symbol, mode, pt)
             } else {
               tree.tpe = null

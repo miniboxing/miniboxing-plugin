@@ -1,0 +1,21 @@
+[Now checking: minibox-dupl]
+[Not checkable: minibox-adapt]
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.erasure12 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.erasure12.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def foo[@miniboxed T >: Nothing <: Any](a: T, b: T): String = if (a.==(b))
+  a
+else
+  b.toString();
+    def foo_n_J[T >: Nothing <: Any](T_TypeTag: Byte, a: Long, b: Long): String = MiniboxDispatch.this.mboxed_toString(if (MiniboxDispatch.this.mboxed_eqeq_notag(a, b))
+      a
+    else
+      b, T_TypeTag)
+  }
+}
+
+[Now checking: minibox-spec]

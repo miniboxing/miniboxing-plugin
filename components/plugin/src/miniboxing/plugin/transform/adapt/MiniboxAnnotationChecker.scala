@@ -80,5 +80,28 @@ trait MiniboxAnnotationCheckers {
         // println("before: " + tpe1 + " <: " + tpe2 + " ==> true" + " (phase = " + global.phase.name + "  " + global.phase.id + "  " + mboxAdaptPhase.id +  ")")
         true
       }
+
+    /** Refine the computed least upper bound of a list of types.
+     *  All this should do is add annotations. */
+    override def annotationsLub(tp: Type, ts: List[Type]): Type = {
+      val res =
+        if (ts.forall(_.isStorage)) // note: forall!
+          if (tp.isStorage)
+            tp
+          else
+            tp.withStorage
+        else
+          if (tp.isStorage)
+            tp.withoutStorage
+          else
+            tp
+//      println(s"lub($ts, $tp) = $res")
+      res
+    }
+
+    /** Refine the computed greatest lower bound of a list of types.
+     *  All this should do is add annotations. */
+    override def annotationsGlb(tp: Type, ts: List[Type]): Type =
+      annotationsLub(tp, ts)
   }
 }
