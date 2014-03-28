@@ -39,6 +39,8 @@ class TestSuite {
 
   @Test def testCompileOutput() = {
     var failed = false
+    var totalTests = 0
+    var failedTests = 0
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
     // use carefully:
@@ -46,6 +48,8 @@ class TestSuite {
 
     for (source <- files(List("src", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
+
+      totalTests += 1
 
       // source code:
       val code = File(source).slurp
@@ -74,9 +78,15 @@ class TestSuite {
             //System.err.println("\nExpected output:\n" + expect)
             System.err.println("\n\n")
           failed = true
+          failedTests += 1
       } else
         System.err.println("[ OK ]")
     }
+
+    if (failedTests != 0)
+      System.err.println(s"\n  $totalTests tests ran, $failedTests failed :(\n")
+    else
+      System.err.println(s"\n  $totalTests tests ran, all good :)\n")
 
     assert(!UPDATE_CHECKFILE && !failed, "Some tests failed. (or UPDATE_CHECKFILE is on)")
   }
