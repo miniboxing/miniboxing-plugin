@@ -1,4 +1,9 @@
-newSource1.scala:9: error: The method overrideMe in class Base72 overrides method overrideMe in class Base71 therefore needs to have the follwing type parameters marked with @miniboxed: type B.
+newSource1.scala:5: error: not found: type miniboxed
+  def overrideMe[@miniboxed A, @miniboxed B](a: A, b: B): A = a
+                  ^
+newSource1.scala:5: error: not found: type miniboxed
+  def overrideMe[@miniboxed A, @miniboxed B](a: A, b: B): A = a
+                                ^
+newSource1.scala:9: error: not found: type miniboxed
   override def overrideMe[@miniboxed A, B](a: A, b: B): A = ???
-               ^
-[Now checking: minibox-dupl]
+                           ^

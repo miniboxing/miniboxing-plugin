@@ -1,3 +1,6 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+newSource1.scala:4: error: not found: type miniboxed
+  def foo[@miniboxed T](t: T): T = ???
+           ^
+newSource1.scala:5: error: not found: type miniboxed
+  def bar[@miniboxed T](t: T): T = foo(t)
+           ^

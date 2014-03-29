@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="miniboxing-tests" project="miniboxing-tests" tests="1" started="1" failures="0" errors="1" ignored="0">
+  <testsuite name="miniboxing.infrastructure.TestSuite" time="30.617">
+    <testcase name="testCompileOutput" classname="miniboxing.infrastructure.TestSuite" time="30.617">
+      <error>scala.reflect.internal.MissingRequirementError: object miniboxing.runtime.MiniboxConversions in compiler mirror not found.&#13;
+	at scala.reflect.internal.MissingRequirementError$.signal(MissingRequirementError.scala:16)&#13;
+	at scala.reflect.internal.MissingRequirementError$.notFound(MissingRequirementError.scala:17)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getModuleOrClass(Mirrors.scala:48)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getModuleOrClass(Mirrors.scala:40)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getModuleOrClass(Mirrors.scala:61)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getModuleByName(Mirrors.scala:134)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getModule(Mirrors.scala:131)&#13;
+	at scala.reflect.internal.Mirrors$RootsBase.getRequiredModule(Mirrors.scala:137)&#13;
+	at miniboxing.plugin.metadata.MiniboxDefinitions$class.ConversionsObjectSymbol(MiniboxDefinitions.scala:55)&#13;
+	at miniboxing.plugin.Minibox$MiniboxDuplPhase$.ConversionsObjectSymbol$lzycompute(Minibox.scala:159)&#13;
+	at miniboxing.plugin.Minibox$MiniboxDuplPhase$.ConversionsObjectSymbol(Minibox.scala:159)&#13;
+	at miniboxing.plugin.metadata.MiniboxDefinitions$class.marker_box2minibox(MiniboxDefinitions.scala:93)&#13;
+	at miniboxing.plugin.Minibox$MiniboxDuplPhase$.marker_box2minibox$lzycompute(Minibox.scala:159)&#13;
+	at miniboxing.plugin.Minibox$MiniboxDuplPhase$.marker_box2minibox(Minibox.scala:159)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$BoxToMinibox$.unapply(MiniboxSpecTreeTransformer.scala:62)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$MiniboxTreeTransformer.transform(MiniboxSpecTreeTransformer.scala:81)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$$anon$1$$anonfun$transform$1.apply(MiniboxSpecTreeTransformer.scala:19)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$$anon$1$$anonfun$transform$1.apply(MiniboxSpecTreeTransformer.scala:19)&#13;
+	at scala.reflect.internal.SymbolTable.atPhase(SymbolTable.scala:207)&#13;
+	at scala.reflect.internal.SymbolTable.afterPhase(SymbolTable.scala:216)&#13;
+	at miniboxing.plugin.MiniboxSpecComponent$class.afterMiniboxSpec(Minibox.scala:71)&#13;
+	at miniboxing.plugin.Minibox$MiniboxSpecPhase$.afterMiniboxSpec(Minibox.scala:202)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$$anon$1.transform(MiniboxSpecTreeTransformer.scala:19)&#13;
+	at miniboxing.plugin.transform.spec.MiniboxPostTreeTransformer$$anon$1.transform(MiniboxSpecTreeTransformer.scala:16)&#13;
+	at scala.tools.nsc.ast.Trees$Transformer.transformUnit(Trees.scala:227)&#13;
+	at scala.tools.nsc.transform.Transform$Phase.apply(Transform.scala:30)&#13;
+	at scala.tools.nsc.Global$GlobalPhase.applyPhase(Global.scala:464)&#13;
+	at scala.tools.nsc.Global$GlobalPhase$$anonfun$run$1.apply(Global.scala:431)&#13;
+	at scala.tools.nsc.Global$GlobalPhase$$anonfun$run$1.apply(Global.scala:431)&#13;
+	at scala.collection.Iterator$class.foreach(Iterator.scala:727)&#13;
+	at scala.collection.AbstractIterator.foreach(Iterator.scala:1157)&#13;
+	at scala.tools.nsc.Global$GlobalPhase.run(Global.scala:431)&#13;
+	at scala.tools.nsc.Global$Run.compileUnitsInternal(Global.scala:1583)&#13;
+	at scala.tools.nsc.Global$Run.compileUnits(Global.scala:1557)&#13;
+	at scala.tools.nsc.Global$Run.compileSources(Global.scala:1553)&#13;
+	at scala.tools.partest.DirectTest$$anonfun$compileString$1.apply(DirectTest.scala:62)&#13;
+	at scala.tools.partest.DirectTest$$anonfun$compileString$1.apply(DirectTest.scala:62)&#13;
+	at scala.tools.partest.DirectTest.withRun(DirectTest.scala:88)&#13;
+	at scala.tools.partest.DirectTest.compileString(DirectTest.scala:62)&#13;
+	at scala.tools.partest.DirectTest.compile(DirectTest.scala:92)&#13;
+	at miniboxing.infrastructure.CompileTest.compilationOutput(CompileTest.scala:31)&#13;
+	at miniboxing.infrastructure.TestSuite$$anonfun$testCompileOutput$1.apply(TestSuite.scala:55)&#13;
+	at miniboxing.infrastructure.TestSuite$$anonfun$testCompileOutput$1.apply(TestSuite.scala:47)&#13;
+	at scala.collection.IndexedSeqOptimized$class.foreach(IndexedSeqOptimized.scala:33)&#13;
+	at scala.collection.mutable.ArrayOps$ofRef.foreach(ArrayOps.scala:108)&#13;
+	at miniboxing.infrastructure.TestSuite.testCompileOutput(TestSuite.scala:47)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#13;
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)&#13;
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)&#13;
+	at java.lang.reflect.Method.invoke(Unknown Source)&#13;
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:45)&#13;
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:15)&#13;
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:42)&#13;
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:20)&#13;
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:263)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:68)&#13;
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:47)&#13;
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:231)&#13;
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:60)&#13;
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:229)&#13;
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:50)&#13;
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:222)&#13;
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:300)&#13;
+	at org.eclipse.jdt.internal.junit4.runner.JUnit4TestReference.run(JUnit4TestReference.java:50)&#13;
+	at org.eclipse.jdt.internal.junit.runner.TestExecution.run(TestExecution.java:38)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:467)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.runTests(RemoteTestRunner.java:683)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)&#13;
+	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)&#13;
+&#13;
+</error>
+    </testcase>
+  </testsuite>
+</testrun>

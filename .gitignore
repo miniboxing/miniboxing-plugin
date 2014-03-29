@@ -1,6 +1,7 @@
 *.class
 *.log
 *.swp
+*.metadata
 
 # sbt specific
 dist/*

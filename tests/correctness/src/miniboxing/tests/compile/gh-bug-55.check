@@ -1,0 +1,12 @@
+newSource1.scala:5: error: not found: type miniboxed
+    def foo[@miniboxed T](t: T): T =
+             ^
+newSource1.scala:7: error: not found: type miniboxed
+    def bar[@miniboxed T](t: T): T = foo(t)
+             ^
+newSource1.scala:8: error: not found: type miniboxed
+    def baz[@miniboxed T](t: T): T = bar(t)
+             ^
+newSource1.scala:22: error: not found: type miniboxed
+    class Z[@miniboxed T](t: T) {
+             ^

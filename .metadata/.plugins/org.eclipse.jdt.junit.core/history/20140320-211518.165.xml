@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="miniboxing-tests" project="miniboxing-tests" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="miniboxing.infrastructure.TestSuite" incomplete="true">
+    <testcase name="testCompileOutput" classname="miniboxing.infrastructure.TestSuite" incomplete="true"/>
+  </testsuite>
+</testrun>

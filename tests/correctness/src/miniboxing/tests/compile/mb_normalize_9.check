@@ -1,4 +1,15 @@
-newSource1.scala:9: error: The method overrideMe in class Norm2 overrides method overrideMe in class Norm1 therefore needs to have the follwing type parameters marked with @miniboxed: type B.
+newSource1.scala:5: error: not found: type miniboxed
+  def overrideMe[@miniboxed A, @miniboxed B, @miniboxed C](a: A, b: B, c: C): A = a
+                  ^
+newSource1.scala:5: error: not found: type miniboxed
+  def overrideMe[@miniboxed A, @miniboxed B, @miniboxed C](a: A, b: B, c: C): A = a
+                                ^
+newSource1.scala:5: error: not found: type miniboxed
+  def overrideMe[@miniboxed A, @miniboxed B, @miniboxed C](a: A, b: B, c: C): A = a
+                                              ^
+newSource1.scala:9: error: not found: type miniboxed
   override def overrideMe[@miniboxed A, B, @miniboxed C](a: A, b: B, c: C): A = ???
-               ^
-[Now checking: minibox-dupl]
+                           ^
+newSource1.scala:9: error: not found: type miniboxed
+  override def overrideMe[@miniboxed A, B, @miniboxed C](a: A, b: B, c: C): A = ???
+                                            ^

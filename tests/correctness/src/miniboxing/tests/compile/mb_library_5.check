@@ -1,3 +1,6 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+newSource1.scala:4: error: not found: type miniboxed
+trait Iterator[@miniboxed +A] {
+                ^
+newSource1.scala:29: error: not found: type miniboxed
+abstract class AbstractIterator[@miniboxed +A] extends Iterator[A]
+                                 ^

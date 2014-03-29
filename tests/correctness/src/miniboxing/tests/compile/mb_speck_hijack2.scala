@@ -4,3 +4,4 @@ package miniboxing.tests.compile
 class HijackMe2[@specialized(Int) T] {
   def hijackMeToo[@specialized(Int) U](t: T, u: U) = ???
 }
+
