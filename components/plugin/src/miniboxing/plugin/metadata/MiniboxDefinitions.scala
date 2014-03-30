@@ -67,26 +67,26 @@ trait MiniboxDefinitions {
 
   // direct conversions
   lazy val x2minibox = Map(
-      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("UnitToMinibox")),
-      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("BooleanToMinibox")),
-      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("ByteToMinibox")),
-      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("CharToMinibox")),
-      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("ShortToMinibox")),
-      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("IntToMinibox")),
-      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("LongToMinibox")),
-      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("DoubleToMinibox")),
-      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("FloatToMinibox"))
+      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unitMinibox")),
+      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("boolean2minibox")),
+      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("byte2minibox")),
+      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
+      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("short2minibox")),
+      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("int2minibox")),
+      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox")),
+      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("double2minibox")),
+      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("float2minibox"))
     )
   lazy val minibox2x = Map(
-      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToUnit")),
-      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToBoolean")),
-      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToByte")),
-      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToChar")),
-      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToShort")),
-      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToInt")),
-      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToLong")),
-      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToDouble")),
-      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("MiniboxToFloat"))
+      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
+      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2boolean")),
+      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2byte")),
+      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
+      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2short")),
+      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2int")),
+      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long")),
+      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2double")),
+      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2float"))
     )
 
   lazy val standardTypeTagTrees = Map(

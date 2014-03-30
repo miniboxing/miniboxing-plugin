@@ -20,28 +20,28 @@ object MiniboxConversions {
    * the natural representation provided that we know the type
    * statically
    */
-  @inline final def MiniboxToUnit(l: Long): Unit = ()
-  @inline final def MiniboxToBoolean(l: Long): Boolean = (l != 0)
-  @inline final def MiniboxToByte(l: Long): Byte = l.toByte
-  @inline final def MiniboxToChar(l: Long): Char = l.toChar
-  @inline final def MiniboxToShort(l: Long): Short = l.toShort
-  @inline final def MiniboxToInt(l: Long): Int = l.toInt
-  @inline final def MiniboxToLong(l: Long): Long = l.toLong
-  @inline final def MiniboxToFloat(l: Long): Float =
+  @inline final def minibox2unit(l: Long): Unit = ()
+  @inline final def minibox2boolean(l: Long): Boolean = (l != 0)
+  @inline final def minibox2byte(l: Long): Byte = l.toByte
+  @inline final def minibox2char(l: Long): Char = l.toChar
+  @inline final def minibox2short(l: Long): Short = l.toShort
+  @inline final def minibox2int(l: Long): Int = l.toInt
+  @inline final def minibox2long(l: Long): Long = l.toLong
+  @inline final def minibox2float(l: Long): Float =
     java.lang.Float.intBitsToFloat(l.toInt)
-  @inline final def MiniboxToDouble(l: Long): Double =
+  @inline final def minibox2double(l: Long): Double =
     java.lang.Double.longBitsToDouble(l)
 
-  @inline final def UnitToMinibox(u: Unit): Long = 0
-  @inline final def BooleanToMinibox(b: Boolean): Long = if (b) 1 else 0
-  @inline final def ByteToMinibox(b: Byte): Long = b.toLong
-  @inline final def CharToMinibox(c: Char): Long = c.toLong
-  @inline final def ShortToMinibox(s: Short): Long = s.toLong
-  @inline final def IntToMinibox(i: Int): Long = i.toLong
-  @inline final def LongToMinibox(l: Long): Long = l
-  @inline final def DoubleToMinibox(d: Double): Long =
+  @inline final def unit2minibox(u: Unit): Long = 0
+  @inline final def boolean2minibox(b: Boolean): Long = if (b) 1 else 0
+  @inline final def byte2minibox(b: Byte): Long = b.toLong
+  @inline final def char2minibox(c: Char): Long = c.toLong
+  @inline final def short2minibox(s: Short): Long = s.toLong
+  @inline final def int2minibox(i: Int): Long = i.toLong
+  @inline final def long2minibox(l: Long): Long = l
+  @inline final def double2minibox(d: Double): Long =
     java.lang.Double.doubleToRawLongBits(d)
-  @inline final def FloatToMinibox(f: Float): Long =
+  @inline final def float2minibox(f: Float): Long =
     java.lang.Float.floatToRawIntBits(f).toLong
 
 

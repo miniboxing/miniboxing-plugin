@@ -12,7 +12,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var l: MBList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = MBListFactory.newMBList_J[Int](IntToMinibox(i), l, INT)
+        l = MBListFactory.newMBList_J[Int](int2minibox(i), l, INT)
         i += 1
       }
       l
@@ -36,7 +36,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var l: MBList[Double] = null
       var i = 0
       while (i < testSize) {
-        l = MBListFactory.newMBList_J[Double](IntToMinibox(i), l, DOUBLE)
+        l = MBListFactory.newMBList_J[Double](int2minibox(i), l, DOUBLE)
         i += 1
       }
       l
@@ -50,7 +50,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ l.contains_J(IntToMinibox(i), DOUBLE)
+        b = b ^ l.contains_J(int2minibox(i), DOUBLE)
         i += 10000
       }
       b
@@ -60,7 +60,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var l: MBList[Long] = null
       var i = 0
       while (i < testSize) {
-        l = MBListFactory.newMBList_J[Long](IntToMinibox(i), l, LONG)
+        l = MBListFactory.newMBList_J[Long](int2minibox(i), l, LONG)
         i += 1
       }
       l
@@ -74,7 +74,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ l.contains_J(IntToMinibox(i), LONG)
+        b = b ^ l.contains_J(int2minibox(i), LONG)
         i += 10000
       }
       b
@@ -86,7 +86,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       val a: MBResizableArray[Int] = MBResizableArrayFactory.newMBResizableArray_J[Int](INT)
       var i = 0
       while (i < testSize) {
-        a.add_J(IntToMinibox(i), INT)
+        a.add_J(int2minibox(i), INT)
         i += 1
       }
       a
@@ -101,7 +101,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(IntToMinibox(i), INT) // TODO: Does this cost much?
+        b = b ^ a.contains_J(int2minibox(i), INT) // TODO: Does this cost much?
         i += 10000
       }
       b
@@ -111,7 +111,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       val a: MBResizableArray[Long] = MBResizableArrayFactory.newMBResizableArray_J[Long](LONG)
       var i = 0
       while (i < testSize) {
-        a.add_J(LongToMinibox(i), LONG)
+        a.add_J(long2minibox(i), LONG)
         i += 1
       }
       a
@@ -126,7 +126,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(LongToMinibox(i), LONG) // TODO: Does this cost much?
+        b = b ^ a.contains_J(long2minibox(i), LONG) // TODO: Does this cost much?
         i += 10000
       }
       b
@@ -136,7 +136,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       val a: MBResizableArray[Double] = MBResizableArrayFactory.newMBResizableArray_J[Double](DOUBLE)
       var i = 0
       while (i < testSize) {
-        a.add_J(DoubleToMinibox(i), DOUBLE)
+        a.add_J(double2minibox(i), DOUBLE)
         i += 1
       }
       a
@@ -151,7 +151,7 @@ trait HardcodedMiniboxingSimpleCL extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(DoubleToMinibox(i), DOUBLE) // TODO: Does this cost much?
+        b = b ^ a.contains_J(double2minibox(i), DOUBLE) // TODO: Does this cost much?
         i += 10000
       }
       b

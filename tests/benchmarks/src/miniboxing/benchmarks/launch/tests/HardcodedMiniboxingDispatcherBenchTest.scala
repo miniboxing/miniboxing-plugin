@@ -13,7 +13,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Int] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_class_J[Int](IntToMinibox(i), l, Dispatchers.IntDispatcher)
+        l = new DispList_class_J[Int](int2minibox(i), l, Dispatchers.IntDispatcher)
         i += 1
       }
       l
@@ -37,7 +37,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Long] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_class_J[Long](IntToMinibox(i), l, Dispatchers.LongDispatcher)
+        l = new DispList_class_J[Long](int2minibox(i), l, Dispatchers.LongDispatcher)
         i += 1
       }
       l
@@ -61,7 +61,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var l: DispList[Double] = null
       var i = 0
       while (i < testSize) {
-        l = new DispList_class_J[Double](IntToMinibox(i), l, Dispatchers.DoubleDispatcher)
+        l = new DispList_class_J[Double](int2minibox(i), l, Dispatchers.DoubleDispatcher)
         i += 1
       }
       l
@@ -88,7 +88,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       val a: DispResizableArray[Int] = new DispResizableArray_class_J[Int](Dispatchers.IntDispatcher)
       var i = 0
       while (i < testSize) {
-        a.add_J(IntToMinibox(i), Dispatchers.IntDispatcher)
+        a.add_J(int2minibox(i), Dispatchers.IntDispatcher)
         i += 1
       }
       a
@@ -103,7 +103,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(IntToMinibox(i), Dispatchers.IntDispatcher) // TODO: Does this cost much?
+        b = b ^ a.contains_J(int2minibox(i), Dispatchers.IntDispatcher) // TODO: Does this cost much?
         i += 10000
       }
       b
@@ -113,7 +113,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       val a: DispResizableArray[Long] = new DispResizableArray_class_J[Long](Dispatchers.LongDispatcher)
       var i = 0
       while (i < testSize) {
-        a.add_J(IntToMinibox(i), Dispatchers.LongDispatcher)
+        a.add_J(int2minibox(i), Dispatchers.LongDispatcher)
         i += 1
       }
       a
@@ -128,7 +128,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(LongToMinibox(i), Dispatchers.LongDispatcher) // TODO: Does this cost much?
+        b = b ^ a.contains_J(long2minibox(i), Dispatchers.LongDispatcher) // TODO: Does this cost much?
         i += 10000
       }
       b
@@ -138,7 +138,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       val a: DispResizableArray[Double] = new DispResizableArray_class_J[Double](Dispatchers.DoubleDispatcher)
       var i = 0
       while (i < testSize) {
-        a.add_J(IntToMinibox(i), Dispatchers.DoubleDispatcher)
+        a.add_J(int2minibox(i), Dispatchers.DoubleDispatcher)
         i += 1
       }
       a
@@ -153,7 +153,7 @@ trait HardcodedMiniboxingDispatcherBenchTest extends BaseTest {
       var i = 0
       var b = true
       while (i < testSize) {
-        b = b ^ a.contains_J(DoubleToMinibox(i), Dispatchers.DoubleDispatcher) // TODO: Does this cost much?
+        b = b ^ a.contains_J(double2minibox(i), Dispatchers.DoubleDispatcher) // TODO: Does this cost much?
         i += 10000
       }
       b

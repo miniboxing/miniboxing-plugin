@@ -18,11 +18,11 @@ object Main {
     val a : ArrayWrap_J = new ArrayWrap_J(MiniboxConstants.INT)
     a.newArray_J(100)
     for (i <- 1 to 100)
-      a.setElement_J(i-1, IntToMinibox(i))
+      a.setElement_J(i-1, int2minibox(i))
 
     var s = 0
     for (i <- 1 to 100)
-      s += MiniboxToInt(a.getElement_J(i-1))
+      s += minibox2int(a.getElement_J(i-1))
     println(s)
   }
   def main(args: Array[String]) {
