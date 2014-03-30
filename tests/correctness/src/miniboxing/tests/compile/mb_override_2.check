@@ -118,7 +118,7 @@ package miniboxing.tests.compile {
       LongIsBase21Base22andBase23.super.<init>();
       ()
     };
-    override def overrideMe(t: Long, s: Long): Long = MiniboxConversions.this.minibox2box[Long](LongIsBase21Base22andBase23.this.overrideMe_JJ(6, 6, MiniboxConversions.this.box2minibox_tt[Long](t, 6), MiniboxConversions.this.box2minibox_tt[Long](s, 6)), 6);
+    override def overrideMe(t: Long, s: Long): Long = MiniboxConversions.this.minibox2long(LongIsBase21Base22andBase23.this.overrideMe_JJ(6, 6, MiniboxConversions.this.long2minibox(t), MiniboxConversions.this.long2minibox(s)));
     def miniboxing|tests|compile|Base21_J|T_TypeTag(): Byte = 6;
     def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte = 6;
     def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte = 6;

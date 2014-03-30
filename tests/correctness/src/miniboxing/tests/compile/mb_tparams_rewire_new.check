@@ -48,7 +48,7 @@ package miniboxing.tests.compile.tparams {
       ()
     };
     def test[T >: Nothing <: Any](t: T): String = {
-      new miniboxing.tests.compile.tparams.TN_J[Int,String](5, MiniboxConversions.this.box2minibox_tt[Int](1, 5));
+      new miniboxing.tests.compile.tparams.TN_J[Int,String](5, MiniboxConversions.this.int2minibox(1));
       new miniboxing.tests.compile.tparams.TN_L[String,String]("xxx");
       new miniboxing.tests.compile.tparams.TN_L[T,String](t);
       new String("yyy")

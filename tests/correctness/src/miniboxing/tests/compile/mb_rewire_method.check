@@ -18,7 +18,7 @@ package miniboxing.tests.compile {
       ()
     };
     def test[T >: Nothing <: Any](): T = {
-      new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.box2minibox_tt[Int](3, 5));
+      new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.int2minibox(3));
       new miniboxing.tests.compile.TR_L[String]().foo("xxx");
       new miniboxing.tests.compile.TR_L[T]().foo(scala.this.Predef.???())
     }

@@ -168,12 +168,25 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
           case BoxToMinibox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
-            localTyper.typed(gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol))))
+            val tree1 =
+              x2minibox.get(targ.typeSymbol) match {
+                case Some(optConv) =>
+                  gen.mkMethodCall(optConv, List(transform(tree))) // notice the fewer arguments
+                case None =>
+                  gen.mkMethodCall(box2minibox, List(targ), List(transform(tree), tags(targ.typeSymbol)))
+              }
+            localTyper.typed(tree1)
 
           case MiniboxToBox(tree, targ) =>
             val tags = minibox.typeTagTrees(currentOwner)
-            localTyper.typed(gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol))))
-
+            val tree1 =
+              minibox2x.get(targ.typeSymbol) match {
+                case Some(optConv) =>
+                  gen.mkMethodCall(optConv, List(transform(tree))) // notice the fewer arguments
+                case None =>
+                  gen.mkMethodCall(minibox2box, List(targ), List(transform(tree), tags(targ.typeSymbol)))
+              }
+            localTyper.typed(tree1)
           case _ =>
             super.transform(tree0)
         }

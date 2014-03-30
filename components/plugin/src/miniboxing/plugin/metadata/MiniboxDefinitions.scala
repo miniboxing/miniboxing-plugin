@@ -66,27 +66,27 @@ trait MiniboxDefinitions {
       tpar => (Some(List(tpar.head.tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil)))
 
   // direct conversions
-  lazy val x2minibox = Map(
-      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unitMinibox")),
-      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("boolean2minibox")),
-      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("byte2minibox")),
-      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
-      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("short2minibox")),
-      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("int2minibox")),
-      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox")),
-      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("double2minibox")),
-      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("float2minibox"))
+  lazy val x2minibox = Map[Symbol, Symbol](
+      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unit2minibox")),
+      BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("boolean2minibox")),
+      ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("byte2minibox")),
+      CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
+      ShortClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("short2minibox")),
+      IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("int2minibox")),
+      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox")),
+      DoubleClass ->  definitions.getMember(ConversionsObjectSymbol, newTermName("double2minibox")),
+      FloatClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("float2minibox"))
     )
-  lazy val minibox2x = Map(
-      UNIT ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
-      BOOLEAN -> definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2boolean")),
-      BYTE ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2byte")),
-      CHAR ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
-      SHORT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2short")),
-      INT ->     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2int")),
-      LONG ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long")),
-      DOUBLE ->  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2double")),
-      FLOAT ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2float"))
+  lazy val minibox2x = Map[Symbol, Symbol](
+      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
+      BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2boolean")),
+      ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2byte")),
+      CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
+      ShortClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2short")),
+      IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2int")),
+      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long")),
+      DoubleClass ->  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2double")),
+      FloatClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2float"))
     )
 
   lazy val standardTypeTagTrees = Map(

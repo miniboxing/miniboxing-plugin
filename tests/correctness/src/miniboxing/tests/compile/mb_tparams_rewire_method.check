@@ -78,7 +78,7 @@ package miniboxing.tests.compile {
       ()
     };
     def test[T >: Nothing <: Any, A >: Nothing <: Any](a: A): T = {
-      new miniboxing.tests.compile.TR3_J[Int,String](5).foo_J[A, A](5, MiniboxConversions.this.box2minibox_tt[Int](3, 5), a, a);
+      new miniboxing.tests.compile.TR3_J[Int,String](5).foo_J[A, A](5, MiniboxConversions.this.int2minibox(3), a, a);
       new miniboxing.tests.compile.TR3_L[String,Int]().foo[A, Int]("xxx", a, 4);
       new miniboxing.tests.compile.TR3_L[T,Long]().foo[Int, Any](scala.this.Predef.???(), 2, 3)
     }
