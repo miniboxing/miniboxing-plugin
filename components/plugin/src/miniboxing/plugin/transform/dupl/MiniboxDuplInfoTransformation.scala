@@ -169,12 +169,13 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val pmap = ParamMap(origin.typeParams, spec)
       typeParamMap(spec) = pmap.map(_.swap).toMap
 
-      val envOuter: TypeEnv = pspec.map {
+      val tparamUpdate: TypeEnv = pmap.map {case (s1, s2) => (s1, s2.tpeHK)}
+      val envOuter: TypeEnv = tparamUpdate ++ pspec.map {
         case (p, Boxed)     => (p, pmap(p).tpeHK)
         case (p, Miniboxed) => (p, storageType(pmap(p)))
       }
 
-      val envInner: TypeEnv = pspec.flatMap {
+      val envInner: TypeEnv = tparamUpdate ++ pspec.flatMap {
         case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
         case _ => None
       }
