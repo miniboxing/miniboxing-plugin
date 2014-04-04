@@ -40,7 +40,7 @@ package miniboxing.tests.compile.tparams {
     <stable> <accessor> <paramaccessor> def t(): T;
     def foo(): miniboxing.tests.compile.tparams.TN[T,String];
     def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String];
-    <stable> <accessor> <paramaccessor> def t_J(T_TypeTag: Byte): Long
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
   object TestNewRewire extends Object {
     def <init>(): miniboxing.tests.compile.tparams.TestNewRewire.type = {
@@ -64,7 +64,7 @@ package miniboxing.tests.compile.tparams {
     <paramaccessor> private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](TN_J.this.t_J(TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag), TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag);
-    <stable> <accessor> <paramaccessor> def t_J(T_TypeTag: Byte): Long = TN_J.this.t
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = TN_J.this.t
   };
   class TN_L[Tsp >: Nothing <: Any, Xsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.tparams.TN[Tsp,Xsp] {
     def <init>(t: Tsp): miniboxing.tests.compile.tparams.TN_L[Tsp,Xsp] = {
@@ -75,7 +75,7 @@ package miniboxing.tests.compile.tparams {
     def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] = TN_L.this.foo();
     <paramaccessor> private[this] val t: Tsp = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = TN_L.this.t;
-    <stable> <accessor> <paramaccessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TN_L.this.t(), T_TypeTag)
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TN_L.this.t(), T_TypeTag)
   }
 }
 
