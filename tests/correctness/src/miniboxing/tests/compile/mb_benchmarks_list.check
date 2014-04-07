@@ -97,8 +97,8 @@ package miniboxing.benchmarks.minibox {
     final private[this] def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[T], or: Int): Int;
     override def hashCode_J(T_TypeTag: Byte): Int;
     override def toString_J(T_TypeTag: Byte): String;
-    <stable> <accessor> <paramaccessor> def head_J(T_TypeTag: Byte): Long;
-    <stable> <accessor> <paramaccessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[T]
+    <stable> <accessor> def head_J(T_TypeTag: Byte): Long;
+    <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[T]
   };
   class MBList_J[Tsp >: Nothing <: Any] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
     def <init>(miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte, head: Long, tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_J[Tsp] = {
@@ -141,9 +141,9 @@ package miniboxing.benchmarks.minibox {
     <paramaccessor> private[this] val miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val tail: miniboxing.benchmarks.minibox.MBList[Tsp] = _;
     <stable> <accessor> <paramaccessor> def head(): Tsp = MiniboxConversions.this.minibox2box[Tsp](MBList_J.this.head_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag), MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag);
-    <stable> <accessor> <paramaccessor> def head_J(T_TypeTag: Byte): Long = MBList_J.this.head;
+    <stable> <accessor> def head_J(T_TypeTag: Byte): Long = MBList_J.this.head;
     <stable> <accessor> <paramaccessor> def tail(): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_J.this.tail_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag);
-    <stable> <accessor> <paramaccessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_J.this.tail
+    <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_J.this.tail
   };
   class MBList_L[Tsp >: Nothing <: Any] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
     def <init>(head: Tsp, tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_L[Tsp] = {
@@ -185,9 +185,9 @@ package miniboxing.benchmarks.minibox {
     <paramaccessor> private[this] val head: Tsp = _;
     <paramaccessor> private[this] val tail: miniboxing.benchmarks.minibox.MBList[Tsp] = _;
     <stable> <accessor> <paramaccessor> def head(): Tsp = MBList_L.this.head;
-    <stable> <accessor> <paramaccessor> def head_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](MBList_L.this.head(), T_TypeTag);
+    <stable> <accessor> def head_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](MBList_L.this.head(), T_TypeTag);
     <stable> <accessor> <paramaccessor> def tail(): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_L.this.tail;
-    <stable> <accessor> <paramaccessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_L.this.tail()
+    <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_L.this.tail()
   }
 }
 

@@ -77,8 +77,8 @@ package miniboxing.tests.compile {
     <accessor> <paramaccessor> def u_=(x$1: U): Unit;
     def test(): U;
     def test_J(U_TypeTag: Byte): Long;
-    <accessor> <paramaccessor> def u_J(U_TypeTag: Byte): Long;
-    <accessor> <paramaccessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit
+    <accessor> def u_J(U_TypeTag: Byte): Long;
+    <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit
   };
   class UhOh_J[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
     def <init>(miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh_J[Xsp,Ysp] = {
@@ -109,8 +109,8 @@ package miniboxing.tests.compile {
     };
     <accessor> <paramaccessor> def u(): Usp = MiniboxConversions.this.minibox2box[Usp](OhUh_J.this.u_J(OhUh_J.this.miniboxing|tests|compile|OhUh_J|U_TypeTag), OhUh_J.this.miniboxing|tests|compile|OhUh_J|U_TypeTag);
     <accessor> <paramaccessor> def u_=(x$1: Usp): Unit = OhUh_J.this.u_J_=(OhUh_J.this.miniboxing|tests|compile|OhUh_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](x$1, OhUh_J.this.miniboxing|tests|compile|OhUh_J|U_TypeTag));
-    <accessor> <paramaccessor> def u_J(U_TypeTag: Byte): Long = OhUh_J.this.u;
-    <accessor> <paramaccessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit = OhUh_J.this.u = x$1;
+    <accessor> def u_J(U_TypeTag: Byte): Long = OhUh_J.this.u;
+    <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit = OhUh_J.this.u = x$1;
     <paramaccessor> private[this] val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte = _;
     <paramaccessor> private[this] var u: Long = _
   };
@@ -126,8 +126,8 @@ package miniboxing.tests.compile {
     def test_J(U_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](OhUh_L.this.test(), U_TypeTag);
     <accessor> <paramaccessor> def u(): Usp = OhUh_L.this.u;
     <accessor> <paramaccessor> def u_=(x$1: Usp): Unit = OhUh_L.this.u = x$1;
-    <accessor> <paramaccessor> def u_J(U_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](OhUh_L.this.u(), U_TypeTag);
-    <accessor> <paramaccessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit = OhUh_L.this.u_=(MiniboxConversions.this.minibox2box[Usp](x$1, U_TypeTag));
+    <accessor> def u_J(U_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Usp](OhUh_L.this.u(), U_TypeTag);
+    <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit = OhUh_L.this.u_=(MiniboxConversions.this.minibox2box[Usp](x$1, U_TypeTag));
     <paramaccessor> private[this] var u: Usp = _
   }
 }

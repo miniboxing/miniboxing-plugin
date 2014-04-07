@@ -175,7 +175,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         case (p, Miniboxed) => (p, storageType(pmap(p)))
       }
 
-      val envInner: TypeEnv = tparamUpdate ++ pspec.flatMap {
+      val envInner: TypeEnv = pspec.flatMap {
         case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
         case _ => None
       }
@@ -429,6 +429,12 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
             newMbr = member.cloneSymbol(origin)
 
+            // https://github.com/miniboxing/miniboxing-plugin/issues/82
+            // specialized parameter accessors are not accessors anymore
+            // as they violate the premise that they do not take parameters
+            if (newMbr.isParamAccessor)
+              newMbr.resetFlag(PARAMACCESSOR) // we don't want this to be a PARAMACCESSOR
+
             newMbr setFlag MINIBOXED
             newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
             newMbr modifyInfo (info => {
@@ -592,8 +598,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           }
         })
       }
-    scope1
-  }
+      scope1
+    }
 
     // expand methods with specialized members
     def normalizeMembers(clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
