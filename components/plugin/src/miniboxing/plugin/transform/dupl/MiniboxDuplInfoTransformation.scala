@@ -322,45 +322,44 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         if (mbr.isConstructor || (mbr.isTerm && !mbr.isMethod)) {
           memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
         } else {
-          if (mbr.isDeferred)
-            memberSpecializationInfo(newMbr) = Interface()
-          else {
-            // Check whether the method is the one that will carry the
-            // implementation. If yes, find the original method from the original
-            // class from which to copy the implementation. If no, find the method
-            // that will have an implementation and forward to it.
-            if (overloads(mbr).isDefinedAt(pspec)) {
-              if (overloads(mbr)(pspec) == mbr) {
-                if (mbr.hasAccessorFlag) {
-                  memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
-                    case Some(ForwardTo(target)) =>
-                      FieldAccessor(newMembers(target.accessed))
-                    case _ =>
-                      global.error("Unaccounted case: " + memberSpecializationInfo.get(mbr)); ???
-                  }
-                } else {
-                  memberSpecializationInfo.get(mbr) match {
-                    case Some(ForwardTo(target)) =>
-                      // TODO TOPIC/ERASURE: Check if this is okay.
-                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(target)
-                    case Some(x) =>
-                      global.error("Unaccounted case: " + x)
-                    case None =>
-                      memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
-                  }
+          // Check whether the method is the one that will carry the
+          // implementation. If yes, find the original method from the original
+          // class from which to copy the implementation. If no, find the method
+          // that will have an implementation and forward to it.
+          if (overloads(mbr).isDefinedAt(pspec)) {
+            if (overloads(mbr)(pspec) == mbr) {
+              if (mbr.hasAccessorFlag) {
+                memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
+                  case Some(ForwardTo(target)) =>
+                    FieldAccessor(newMembers(target.accessed))
+                  case _ =>
+                    global.error("Unaccounted case: " + memberSpecializationInfo.get(mbr)); ???
                 }
               } else {
-                // here, we're forwarding to the all-AnyRef member, knowing that the
-                // redirection algorithm will direct to the appropriate member later
-                val target = newMembers(overloads(mbr)(pspec.allAnyRef))
-                // val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttag, ttype) => (ttag, pmap.getOrElse(ttype, ttype)) } ++ globalTypeTags(spec)
-                // val targTagMap = localTypeTags.getOrElse(target, Map.empty)
-                newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
-                memberSpecializationInfo(newMbr) = genForwardingInfo(target)
+                memberSpecializationInfo.get(mbr) match {
+                  case Some(ForwardTo(target)) =>
+                    memberSpecializationInfo(newMbr) =
+                      if (!mbr.isDeferred)
+                        SpecializedImplementationOf(target)
+                      else
+                        Interface()
+                  case Some(x) =>
+                    global.error("Unaccounted case: " + x)
+                  case None =>
+                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
+                }
               }
             } else {
-              memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
+              // here, we're forwarding to the all-AnyRef member, knowing that the
+              // redirection algorithm will direct to the appropriate member later
+              val target = newMembers(overloads(mbr)(pspec.allAnyRef))
+              // val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttag, ttype) => (ttag, pmap.getOrElse(ttype, ttype)) } ++ globalTypeTags(spec)
+              // val targTagMap = localTypeTags.getOrElse(target, Map.empty)
+              newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
+              memberSpecializationInfo(newMbr) = genForwardingInfo(target)
             }
+          } else {
+            memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
           }
         }
       }

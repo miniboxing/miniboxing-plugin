@@ -78,26 +78,26 @@ package miniboxing.tests.compile {
     implicit def f(): miniboxing.tests.compile.Fractional[Asp]
   };
   abstract trait Ord_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[Asp] {
-    def lt(o1: Asp, o2: Asp): Boolean;
+    def lt(o1: Asp, o2: Asp): Boolean = Ord_J.this.lt_J(Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag(), MiniboxConversions.this.box2minibox_tt[Asp](o1, Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag()), MiniboxConversions.this.box2minibox_tt[Asp](o2, Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag()));
     def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean;
     def miniboxing|tests|compile|Ord_J|A_TypeTag(): Byte
   };
   abstract trait Ord_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord[Asp] {
     def lt(o1: Asp, o2: Asp): Boolean;
-    def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean
+    def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean = Ord_L.this.lt(MiniboxConversions.this.minibox2box[Asp](o1, A_TypeTag), MiniboxConversions.this.minibox2box[Asp](o2, A_TypeTag))
   };
   abstract trait Fractional_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord_J[Asp] with miniboxing.tests.compile.Fractional[Asp] {
     def miniboxing|tests|compile|Fractional_J|A_TypeTag(): Byte;
-    def one(): Asp;
+    def one(): Asp = MiniboxConversions.this.minibox2box[Asp](Fractional_J.this.one_J(Fractional_J.this.miniboxing|tests|compile|Fractional_J|A_TypeTag()), Fractional_J.this.miniboxing|tests|compile|Fractional_J|A_TypeTag());
     def one_J(A_TypeTag: Byte): Long;
-    def zero(): Asp;
+    def zero(): Asp = MiniboxConversions.this.minibox2box[Asp](Fractional_J.this.zero_J(Fractional_J.this.miniboxing|tests|compile|Fractional_J|A_TypeTag()), Fractional_J.this.miniboxing|tests|compile|Fractional_J|A_TypeTag());
     def zero_J(A_TypeTag: Byte): Long
   };
   abstract trait Fractional_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Ord_L[Asp] with miniboxing.tests.compile.Fractional[Asp] {
     def one(): Asp;
-    def one_J(A_TypeTag: Byte): Long;
+    def one_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](Fractional_L.this.one(), A_TypeTag);
     def zero(): Asp;
-    def zero_J(A_TypeTag: Byte): Long
+    def zero_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](Fractional_L.this.zero(), A_TypeTag)
   };
   abstract trait CplxIsEuclideanRing_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.CplxIsRing_J[Asp] with miniboxing.tests.compile.CplxIsEuclideanRing[Asp] {
     def gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = {
