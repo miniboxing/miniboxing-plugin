@@ -165,6 +165,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       spec.associatedFile = origin.associatedFile
       currentRun.symSource(spec) = origin.sourceFile
       baseClass(spec) = origin
+      spec.resetFlag(INTERFACE)
 
       val pmap = ParamMap(origin.typeParams, spec)
       typeParamMap(spec) = pmap.map(_.swap).toMap
@@ -353,9 +354,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               // here, we're forwarding to the all-AnyRef member, knowing that the
               // redirection algorithm will direct to the appropriate member later
               val target = newMembers(overloads(mbr)(pspec.allAnyRef))
-              // val wrapTagMap = localTypeTags.getOrElse(newMbr, Map.empty).map{ case (ttag, ttype) => (ttag, pmap.getOrElse(ttype, ttype)) } ++ globalTypeTags(spec)
-              // val targTagMap = localTypeTags.getOrElse(target, Map.empty)
-              newMbr.removeAnnotation(TailrecClass) // can't be a tailcall if you're fwding
+              // a forwarder will never be a tailcall itself, although it may
+              // forward to a tailcall method:
+              newMbr.removeAnnotation(TailrecClass)
+              // since the member will be a forwarder, it can't be DEFERRED (See #85):
+              newMbr.resetFlag(DEFERRED)
               memberSpecializationInfo(newMbr) = genForwardingInfo(target)
             }
           } else {

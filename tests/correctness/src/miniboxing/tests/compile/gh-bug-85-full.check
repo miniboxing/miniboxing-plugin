@@ -1,0 +1,617 @@
+Specializing trait F1...
+
+  // interface:
+  abstract trait F1[A, B] extends Object {
+    def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
+    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
+    def apply(a: A): B
+    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: A @storage): B @storage
+    def apply_JL(val A_TypeTag: Byte,a: A @storage): B
+    def apply_LJ(val B_TypeTag: Byte,a: A): B @storage
+    def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
+    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
+  }
+
+  // specialized class:
+  abstract trait F1_JJ[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
+    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage): Bsp @storage // is an interface method
+    def apply_JL(val A_TypeTag: Byte,a: Asp @storage): Bsp                 // is a forwarder to the specialized member
+    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage                 // is a forwarder to the specialized member
+    def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(): Byte        // is a type tag
+    def miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(): Byte        // is a type tag
+  }
+
+  // specialized class:
+  abstract trait F1_LJ[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
+    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage): Bsp @storage // is a forwarder to the specialized member
+    def apply_JL(val A_TypeTag: Byte,a: Asp @storage): Bsp                 // is a forwarder to the specialized member
+    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage                 // is an interface method
+    def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(): Byte        // is a type tag
+  }
+
+  // specialized class:
+  abstract trait F1_JL[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
+    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage): Bsp @storage // is a forwarder to the specialized member
+    def apply_JL(val A_TypeTag: Byte,a: Asp @storage): Bsp                 // is an interface method
+    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage                 // is a forwarder to the specialized member
+    def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(): Byte        // is a type tag
+  }
+
+  // specialized class:
+  abstract trait F1_LL[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply(a: Asp): Bsp                                                 // is an interface method
+    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage): Bsp @storage // is a forwarder to the specialized member
+    def apply_JL(val A_TypeTag: Byte,a: Asp @storage): Bsp                 // is a forwarder to the specialized member
+    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage                 // is a forwarder to the specialized member
+    def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
+  }
+
+
+
+
+[[syntax trees at end of                   cleanup]] // newSource1.scala
+package miniboxing.tests.compile.bug85.full {
+  abstract trait F1 extends Object { self: miniboxing.tests.compile.bug85.full.F1 =>
+    def apply(a: Object): Object;
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long;
+    def apply_JL(A_TypeTag: Byte, a: Long): Object;
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long;
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1
+  };
+  object Main extends Object {
+    def main(args: Array[String]): Unit = {
+      val f1: miniboxing.tests.compile.bug85.full.F1 = {
+        new anonymous class anon$1()
+      };
+      val f2: miniboxing.tests.compile.bug85.full.F1 = {
+        new anonymous class anon$2()
+      };
+      val f3: miniboxing.tests.compile.bug85.full.F1 = f1.andThen(f2);
+      scala.this.Predef.println(f3.apply_JL(5, MiniboxConversions.this.int2minibox(10)))
+    };
+    def <init>(): miniboxing.tests.compile.bug85.full.Main.type = {
+      Main.super.<init>();
+      ()
+    }
+  };
+  abstract trait F1_JJ extends Object with miniboxing.tests.compile.bug85.full.F1 {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def apply(a: Object): Object;
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long;
+    def apply_JL(A_TypeTag: Byte, a: Long): Object;
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long;
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(): Byte;
+    def miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(): Byte
+  };
+  abstract trait F1_JL extends Object with miniboxing.tests.compile.bug85.full.F1 {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def apply(a: Object): Object;
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long;
+    def apply_JL(A_TypeTag: Byte, a: Long): Object;
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long;
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(): Byte
+  };
+  abstract trait F1_LJ extends Object with miniboxing.tests.compile.bug85.full.F1 {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def apply(a: Object): Object;
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long;
+    def apply_JL(A_TypeTag: Byte, a: Long): Object;
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long;
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(): Byte
+  };
+  abstract trait F1_LL extends Object with miniboxing.tests.compile.bug85.full.F1 {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def apply(a: Object): Object;
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long;
+    def apply_JL(A_TypeTag: Byte, a: Long): Object;
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long;
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1;
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1
+  };
+  abstract trait F1$class extends  { self: miniboxing.tests.compile.bug85.full.F1 =>
+    def /*F1$class*/$init$($this: miniboxing.tests.compile.bug85.full.F1): Unit = {
+      ()
+    }
+  };
+  abstract trait F1_JJ$class extends  {
+    def andThen($this: miniboxing.tests.compile.bug85.full.F1_JJ, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$3($this, f);
+    def andThen_n_J($this: miniboxing.tests.compile.bug85.full.F1_JJ, C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$4($this, C_TypeTag, f);
+    def apply($this: miniboxing.tests.compile.bug85.full.F1_JJ, a: Object): Object = MiniboxConversions.this.minibox2box($this.apply_JJ($this.miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(), $this.miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(), MiniboxConversions.this.box2minibox_tt(a, $this.miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag())), $this.miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag());
+    def apply_JL($this: miniboxing.tests.compile.bug85.full.F1_JJ, A_TypeTag: Byte, a: Long): Object = MiniboxConversions.this.minibox2box($this.apply_JJ(A_TypeTag, $this.miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(), a), $this.miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag());
+    def apply_LJ($this: miniboxing.tests.compile.bug85.full.F1_JJ, B_TypeTag: Byte, a: Object): Long = $this.apply_JJ($this.miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(), B_TypeTag, MiniboxConversions.this.box2minibox_tt(a, $this.miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag()));
+    def compose($this: miniboxing.tests.compile.bug85.full.F1_JJ, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$5($this, f);
+    def compose_n_J($this: miniboxing.tests.compile.bug85.full.F1_JJ, Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$6($this, Z_TypeTag, f);
+    def /*F1_JJ$class*/$init$($this: miniboxing.tests.compile.bug85.full.F1_JJ): Unit = {
+      ()
+    }
+  };
+  abstract trait F1_JL$class extends  {
+    def andThen($this: miniboxing.tests.compile.bug85.full.F1_JL, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$7($this, f);
+    def andThen_n_J($this: miniboxing.tests.compile.bug85.full.F1_JL, C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$8($this, C_TypeTag, f);
+    def apply($this: miniboxing.tests.compile.bug85.full.F1_JL, a: Object): Object = $this.apply_JL($this.miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(), MiniboxConversions.this.box2minibox_tt(a, $this.miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag()));
+    def apply_JJ($this: miniboxing.tests.compile.bug85.full.F1_JL, A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt($this.apply_JL(A_TypeTag, a), B_TypeTag);
+    def apply_LJ($this: miniboxing.tests.compile.bug85.full.F1_JL, B_TypeTag: Byte, a: Object): Long = MiniboxConversions.this.box2minibox_tt($this.apply_JL($this.miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(), MiniboxConversions.this.box2minibox_tt(a, $this.miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag())), B_TypeTag);
+    def compose($this: miniboxing.tests.compile.bug85.full.F1_JL, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$9($this, f);
+    def compose_n_J($this: miniboxing.tests.compile.bug85.full.F1_JL, Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$10($this, Z_TypeTag, f);
+    def /*F1_JL$class*/$init$($this: miniboxing.tests.compile.bug85.full.F1_JL): Unit = {
+      ()
+    }
+  };
+  abstract trait F1_LJ$class extends  {
+    def andThen($this: miniboxing.tests.compile.bug85.full.F1_LJ, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$11($this, f);
+    def andThen_n_J($this: miniboxing.tests.compile.bug85.full.F1_LJ, C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$12($this, C_TypeTag, f);
+    def apply($this: miniboxing.tests.compile.bug85.full.F1_LJ, a: Object): Object = MiniboxConversions.this.minibox2box($this.apply_LJ($this.miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(), a), $this.miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag());
+    def apply_JJ($this: miniboxing.tests.compile.bug85.full.F1_LJ, A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = $this.apply_LJ(B_TypeTag, MiniboxConversions.this.minibox2box(a, A_TypeTag));
+    def apply_JL($this: miniboxing.tests.compile.bug85.full.F1_LJ, A_TypeTag: Byte, a: Long): Object = MiniboxConversions.this.minibox2box($this.apply_LJ($this.miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(), MiniboxConversions.this.minibox2box(a, A_TypeTag)), $this.miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag());
+    def compose($this: miniboxing.tests.compile.bug85.full.F1_LJ, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$13($this, f);
+    def compose_n_J($this: miniboxing.tests.compile.bug85.full.F1_LJ, Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$14($this, Z_TypeTag, f);
+    def /*F1_LJ$class*/$init$($this: miniboxing.tests.compile.bug85.full.F1_LJ): Unit = {
+      ()
+    }
+  };
+  abstract trait F1_LL$class extends  {
+    def andThen($this: miniboxing.tests.compile.bug85.full.F1_LL, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$15($this, f);
+    def andThen_n_J($this: miniboxing.tests.compile.bug85.full.F1_LL, C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$16($this, C_TypeTag, f);
+    def apply_JJ($this: miniboxing.tests.compile.bug85.full.F1_LL, A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt($this.apply(MiniboxConversions.this.minibox2box(a, A_TypeTag)), B_TypeTag);
+    def apply_JL($this: miniboxing.tests.compile.bug85.full.F1_LL, A_TypeTag: Byte, a: Long): Object = $this.apply(MiniboxConversions.this.minibox2box(a, A_TypeTag));
+    def apply_LJ($this: miniboxing.tests.compile.bug85.full.F1_LL, B_TypeTag: Byte, a: Object): Long = MiniboxConversions.this.box2minibox_tt($this.apply(a), B_TypeTag);
+    def compose($this: miniboxing.tests.compile.bug85.full.F1_LL, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$17($this, f);
+    def compose_n_J($this: miniboxing.tests.compile.bug85.full.F1_LL, Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = new anonymous class anon$18($this, Z_TypeTag, f);
+    def /*F1_LL$class*/$init$($this: miniboxing.tests.compile.bug85.full.F1_LL): Unit = {
+      ()
+    }
+  };
+  final class Main$$anon$1 extends Object with miniboxing.tests.compile.bug85.full.F1_JJ {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JJ$class.andThen(Main$$anon$1.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JJ$class.compose(Main$$anon$1.this, f);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_JJ$class.apply_LJ(Main$$anon$1.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_JJ$class.apply_JL(Main$$anon$1.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JJ$class.andThen_n_J(Main$$anon$1.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JJ$class.compose_n_J(Main$$anon$1.this, Z_TypeTag, f);
+    def apply(x: Int): Double = MiniboxConversions.this.minibox2double(Main$$anon$1.this.apply_JJ(5, 8, MiniboxConversions.this.int2minibox(x)));
+    def miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(): Byte = 8;
+    override def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.double2minibox(MiniboxConversions.this.minibox2int(a).+(1).toDouble());
+    <bridge> def apply(a: Object): Object = scala.Double.box(Main$$anon$1.this.apply(scala.Int.unbox(a)));
+    def <init>(): anonymous class anon$1 = {
+      Main$$anon$1.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(Main$$anon$1.this);
+      miniboxing.tests.compile.bug85.full.F1_JJ$class./*F1_JJ$class*/$init$(Main$$anon$1.this);
+      ()
+    }
+  };
+  final class Main$$anon$2 extends Object with miniboxing.tests.compile.bug85.full.F1_JL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JL$class.andThen(Main$$anon$2.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JL$class.compose(Main$$anon$2.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_JL$class.apply_JJ(Main$$anon$2.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_JL$class.apply_LJ(Main$$anon$2.this, B_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JL$class.andThen_n_J(Main$$anon$2.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_JL$class.compose_n_J(Main$$anon$2.this, Z_TypeTag, f);
+    def apply(n: Double): String = Main$$anon$2.this.apply_JL(8, MiniboxConversions.this.double2minibox(n));
+    def miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(): Byte = 8;
+    override def apply_JL(A_TypeTag: Byte, a: Long): String = scala.Double.box(MiniboxConversions.this.minibox2double(a)./(2)).toString();
+    override <bridge> def apply_JL(A_TypeTag: Byte, a: Long): Object = Main$$anon$2.this.apply_JL(A_TypeTag, a);
+    <bridge> def apply(a: Object): Object = Main$$anon$2.this.apply(scala.Double.unbox(a));
+    def <init>(): anonymous class anon$2 = {
+      Main$$anon$2.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(Main$$anon$2.this);
+      miniboxing.tests.compile.bug85.full.F1_JL$class./*F1_JL$class*/$init$(Main$$anon$2.this);
+      ()
+    }
+  };
+  final class F1_JJ$$anon$3 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JJ$$anon$3.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JJ$$anon$3.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JJ$$anon$3.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JJ$$anon$3.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JJ$$anon$3.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JJ$$anon$3.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JJ$$anon$3.this, Z_TypeTag, f);
+    def apply(a: Object): Object = F1_JJ$$anon$3.this.f$1.apply(F1_JJ$$anon$3.this.$outer.apply(a));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JJ = _;
+    <synthetic> <paramaccessor> private[this] val f$1: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JJ, f$1: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$3 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JJ$$anon$3.this.$outer = $outer;
+      F1_JJ$$anon$3.this.f$1 = f$1;
+      F1_JJ$$anon$3.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JJ$$anon$3.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JJ$$anon$3.this);
+      ()
+    }
+  };
+  final class F1_JJ$$anon$4 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JJ$$anon$4.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JJ$$anon$4.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JJ$$anon$4.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JJ$$anon$4.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JJ$$anon$4.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JJ$$anon$4.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JJ$$anon$4.this, Z_TypeTag, f);
+    def apply(a: Object): Object = MiniboxConversions.this.minibox2box(F1_JJ$$anon$4.this.f$3.apply_LJ(F1_JJ$$anon$4.this.C_TypeTag$1, F1_JJ$$anon$4.this.$outer.apply(a)), F1_JJ$$anon$4.this.C_TypeTag$1);
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JJ = _;
+    <synthetic> <paramaccessor> private[this] val C_TypeTag$1: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$3: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JJ, C_TypeTag$1: Byte, f$3: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$4 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JJ$$anon$4.this.$outer = $outer;
+      F1_JJ$$anon$4.this.C_TypeTag$1 = C_TypeTag$1;
+      F1_JJ$$anon$4.this.f$3 = f$3;
+      F1_JJ$$anon$4.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JJ$$anon$4.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JJ$$anon$4.this);
+      ()
+    }
+  };
+  final class F1_JJ$$anon$5 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JJ$$anon$5.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JJ$$anon$5.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JJ$$anon$5.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JJ$$anon$5.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JJ$$anon$5.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JJ$$anon$5.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JJ$$anon$5.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_JJ$$anon$5.this.$outer.apply(F1_JJ$$anon$5.this.f$2.apply(z));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JJ = _;
+    <synthetic> <paramaccessor> private[this] val f$2: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JJ, f$2: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$5 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JJ$$anon$5.this.$outer = $outer;
+      F1_JJ$$anon$5.this.f$2 = f$2;
+      F1_JJ$$anon$5.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JJ$$anon$5.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JJ$$anon$5.this);
+      ()
+    }
+  };
+  final class F1_JJ$$anon$6 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JJ$$anon$6.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JJ$$anon$6.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JJ$$anon$6.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JJ$$anon$6.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JJ$$anon$6.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JJ$$anon$6.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JJ$$anon$6.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_JJ$$anon$6.this.$outer.apply(F1_JJ$$anon$6.this.f$4.apply_JL(F1_JJ$$anon$6.this.Z_TypeTag$1, MiniboxConversions.this.box2minibox_tt(z, F1_JJ$$anon$6.this.Z_TypeTag$1)));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JJ = _;
+    <synthetic> <paramaccessor> private[this] val Z_TypeTag$1: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$4: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JJ, Z_TypeTag$1: Byte, f$4: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$6 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JJ$$anon$6.this.$outer = $outer;
+      F1_JJ$$anon$6.this.Z_TypeTag$1 = Z_TypeTag$1;
+      F1_JJ$$anon$6.this.f$4 = f$4;
+      F1_JJ$$anon$6.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JJ$$anon$6.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JJ$$anon$6.this);
+      ()
+    }
+  };
+  final class F1_JL$$anon$7 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JL$$anon$7.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JL$$anon$7.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JL$$anon$7.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JL$$anon$7.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JL$$anon$7.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JL$$anon$7.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JL$$anon$7.this, Z_TypeTag, f);
+    def apply(a: Object): Object = F1_JL$$anon$7.this.f$5.apply(F1_JL$$anon$7.this.$outer.apply(a));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JL = _;
+    <synthetic> <paramaccessor> private[this] val f$5: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JL, f$5: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$7 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JL$$anon$7.this.$outer = $outer;
+      F1_JL$$anon$7.this.f$5 = f$5;
+      F1_JL$$anon$7.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JL$$anon$7.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JL$$anon$7.this);
+      ()
+    }
+  };
+  final class F1_JL$$anon$8 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JL$$anon$8.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JL$$anon$8.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JL$$anon$8.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JL$$anon$8.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JL$$anon$8.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JL$$anon$8.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JL$$anon$8.this, Z_TypeTag, f);
+    def apply(a: Object): Object = MiniboxConversions.this.minibox2box(F1_JL$$anon$8.this.f$7.apply_LJ(F1_JL$$anon$8.this.C_TypeTag$2, F1_JL$$anon$8.this.$outer.apply(a)), F1_JL$$anon$8.this.C_TypeTag$2);
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JL = _;
+    <synthetic> <paramaccessor> private[this] val C_TypeTag$2: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$7: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JL, C_TypeTag$2: Byte, f$7: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$8 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JL$$anon$8.this.$outer = $outer;
+      F1_JL$$anon$8.this.C_TypeTag$2 = C_TypeTag$2;
+      F1_JL$$anon$8.this.f$7 = f$7;
+      F1_JL$$anon$8.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JL$$anon$8.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JL$$anon$8.this);
+      ()
+    }
+  };
+  final class F1_JL$$anon$9 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JL$$anon$9.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JL$$anon$9.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JL$$anon$9.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JL$$anon$9.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JL$$anon$9.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JL$$anon$9.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JL$$anon$9.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_JL$$anon$9.this.$outer.apply(F1_JL$$anon$9.this.f$6.apply(z));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JL = _;
+    <synthetic> <paramaccessor> private[this] val f$6: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JL, f$6: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$9 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JL$$anon$9.this.$outer = $outer;
+      F1_JL$$anon$9.this.f$6 = f$6;
+      F1_JL$$anon$9.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JL$$anon$9.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JL$$anon$9.this);
+      ()
+    }
+  };
+  final class F1_JL$$anon$10 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_JL$$anon$10.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_JL$$anon$10.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_JL$$anon$10.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_JL$$anon$10.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_JL$$anon$10.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_JL$$anon$10.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_JL$$anon$10.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_JL$$anon$10.this.$outer.apply(F1_JL$$anon$10.this.f$8.apply_JL(F1_JL$$anon$10.this.Z_TypeTag$2, MiniboxConversions.this.box2minibox_tt(z, F1_JL$$anon$10.this.Z_TypeTag$2)));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_JL = _;
+    <synthetic> <paramaccessor> private[this] val Z_TypeTag$2: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$8: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_JL, Z_TypeTag$2: Byte, f$8: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$10 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_JL$$anon$10.this.$outer = $outer;
+      F1_JL$$anon$10.this.Z_TypeTag$2 = Z_TypeTag$2;
+      F1_JL$$anon$10.this.f$8 = f$8;
+      F1_JL$$anon$10.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_JL$$anon$10.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_JL$$anon$10.this);
+      ()
+    }
+  };
+  final class F1_LJ$$anon$11 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LJ$$anon$11.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LJ$$anon$11.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LJ$$anon$11.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LJ$$anon$11.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LJ$$anon$11.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LJ$$anon$11.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LJ$$anon$11.this, Z_TypeTag, f);
+    def apply(a: Object): Object = F1_LJ$$anon$11.this.f$9.apply(F1_LJ$$anon$11.this.$outer.apply(a));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LJ = _;
+    <synthetic> <paramaccessor> private[this] val f$9: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LJ, f$9: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$11 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LJ$$anon$11.this.$outer = $outer;
+      F1_LJ$$anon$11.this.f$9 = f$9;
+      F1_LJ$$anon$11.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LJ$$anon$11.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LJ$$anon$11.this);
+      ()
+    }
+  };
+  final class F1_LJ$$anon$12 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LJ$$anon$12.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LJ$$anon$12.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LJ$$anon$12.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LJ$$anon$12.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LJ$$anon$12.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LJ$$anon$12.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LJ$$anon$12.this, Z_TypeTag, f);
+    def apply(a: Object): Object = MiniboxConversions.this.minibox2box(F1_LJ$$anon$12.this.f$11.apply_LJ(F1_LJ$$anon$12.this.C_TypeTag$3, F1_LJ$$anon$12.this.$outer.apply(a)), F1_LJ$$anon$12.this.C_TypeTag$3);
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LJ = _;
+    <synthetic> <paramaccessor> private[this] val C_TypeTag$3: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$11: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LJ, C_TypeTag$3: Byte, f$11: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$12 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LJ$$anon$12.this.$outer = $outer;
+      F1_LJ$$anon$12.this.C_TypeTag$3 = C_TypeTag$3;
+      F1_LJ$$anon$12.this.f$11 = f$11;
+      F1_LJ$$anon$12.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LJ$$anon$12.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LJ$$anon$12.this);
+      ()
+    }
+  };
+  final class F1_LJ$$anon$13 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LJ$$anon$13.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LJ$$anon$13.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LJ$$anon$13.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LJ$$anon$13.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LJ$$anon$13.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LJ$$anon$13.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LJ$$anon$13.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_LJ$$anon$13.this.$outer.apply(F1_LJ$$anon$13.this.f$10.apply(z));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LJ = _;
+    <synthetic> <paramaccessor> private[this] val f$10: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LJ, f$10: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$13 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LJ$$anon$13.this.$outer = $outer;
+      F1_LJ$$anon$13.this.f$10 = f$10;
+      F1_LJ$$anon$13.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LJ$$anon$13.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LJ$$anon$13.this);
+      ()
+    }
+  };
+  final class F1_LJ$$anon$14 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LJ$$anon$14.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LJ$$anon$14.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LJ$$anon$14.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LJ$$anon$14.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LJ$$anon$14.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LJ$$anon$14.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LJ$$anon$14.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_LJ$$anon$14.this.$outer.apply(F1_LJ$$anon$14.this.f$12.apply_JL(F1_LJ$$anon$14.this.Z_TypeTag$3, MiniboxConversions.this.box2minibox_tt(z, F1_LJ$$anon$14.this.Z_TypeTag$3)));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LJ = _;
+    <synthetic> <paramaccessor> private[this] val Z_TypeTag$3: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$12: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LJ, Z_TypeTag$3: Byte, f$12: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$14 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LJ$$anon$14.this.$outer = $outer;
+      F1_LJ$$anon$14.this.Z_TypeTag$3 = Z_TypeTag$3;
+      F1_LJ$$anon$14.this.f$12 = f$12;
+      F1_LJ$$anon$14.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LJ$$anon$14.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LJ$$anon$14.this);
+      ()
+    }
+  };
+  final class F1_LL$$anon$15 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LL$$anon$15.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LL$$anon$15.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LL$$anon$15.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LL$$anon$15.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LL$$anon$15.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LL$$anon$15.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LL$$anon$15.this, Z_TypeTag, f);
+    def apply(a: Object): Object = F1_LL$$anon$15.this.f$13.apply(F1_LL$$anon$15.this.$outer.apply(a));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LL = _;
+    <synthetic> <paramaccessor> private[this] val f$13: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LL, f$13: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$15 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LL$$anon$15.this.$outer = $outer;
+      F1_LL$$anon$15.this.f$13 = f$13;
+      F1_LL$$anon$15.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LL$$anon$15.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LL$$anon$15.this);
+      ()
+    }
+  };
+  final class F1_LL$$anon$16 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LL$$anon$16.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LL$$anon$16.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LL$$anon$16.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LL$$anon$16.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LL$$anon$16.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LL$$anon$16.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LL$$anon$16.this, Z_TypeTag, f);
+    def apply(a: Object): Object = MiniboxConversions.this.minibox2box(F1_LL$$anon$16.this.f$15.apply_LJ(F1_LL$$anon$16.this.C_TypeTag$4, F1_LL$$anon$16.this.$outer.apply(a)), F1_LL$$anon$16.this.C_TypeTag$4);
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LL = _;
+    <synthetic> <paramaccessor> private[this] val C_TypeTag$4: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$15: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LL, C_TypeTag$4: Byte, f$15: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$16 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LL$$anon$16.this.$outer = $outer;
+      F1_LL$$anon$16.this.C_TypeTag$4 = C_TypeTag$4;
+      F1_LL$$anon$16.this.f$15 = f$15;
+      F1_LL$$anon$16.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LL$$anon$16.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LL$$anon$16.this);
+      ()
+    }
+  };
+  final class F1_LL$$anon$17 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LL$$anon$17.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LL$$anon$17.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LL$$anon$17.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LL$$anon$17.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LL$$anon$17.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LL$$anon$17.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LL$$anon$17.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_LL$$anon$17.this.$outer.apply(F1_LL$$anon$17.this.f$14.apply(z));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LL = _;
+    <synthetic> <paramaccessor> private[this] val f$14: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LL, f$14: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$17 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LL$$anon$17.this.$outer = $outer;
+      F1_LL$$anon$17.this.f$14 = f$14;
+      F1_LL$$anon$17.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LL$$anon$17.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LL$$anon$17.this);
+      ()
+    }
+  };
+  final class F1_LL$$anon$18 extends Object with miniboxing.tests.compile.bug85.full.F1_LL {
+    def andThen(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen(F1_LL$$anon$18.this, f);
+    def compose(f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose(F1_LL$$anon$18.this, f);
+    def apply_JJ(A_TypeTag: Byte, B_TypeTag: Byte, a: Long): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JJ(F1_LL$$anon$18.this, A_TypeTag, B_TypeTag, a);
+    def apply_LJ(B_TypeTag: Byte, a: Object): Long = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_LJ(F1_LL$$anon$18.this, B_TypeTag, a);
+    def apply_JL(A_TypeTag: Byte, a: Long): Object = miniboxing.tests.compile.bug85.full.F1_LL$class.apply_JL(F1_LL$$anon$18.this, A_TypeTag, a);
+    def andThen_n_J(C_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.andThen_n_J(F1_LL$$anon$18.this, C_TypeTag, f);
+    def compose_n_J(Z_TypeTag: Byte, f: miniboxing.tests.compile.bug85.full.F1): miniboxing.tests.compile.bug85.full.F1 = miniboxing.tests.compile.bug85.full.F1_LL$class.compose_n_J(F1_LL$$anon$18.this, Z_TypeTag, f);
+    def apply(z: Object): Object = F1_LL$$anon$18.this.$outer.apply(F1_LL$$anon$18.this.f$16.apply_JL(F1_LL$$anon$18.this.Z_TypeTag$4, MiniboxConversions.this.box2minibox_tt(z, F1_LL$$anon$18.this.Z_TypeTag$4)));
+    <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug85.full.F1_LL = _;
+    <synthetic> <paramaccessor> private[this] val Z_TypeTag$4: Byte = _;
+    <synthetic> <paramaccessor> private[this] val f$16: miniboxing.tests.compile.bug85.full.F1 = _;
+    def <init>($outer: miniboxing.tests.compile.bug85.full.F1_LL, Z_TypeTag$4: Byte, f$16: miniboxing.tests.compile.bug85.full.F1): anonymous class anon$18 = {
+      if ($outer.eq(null))
+        throw new NullPointerException()
+      else
+        F1_LL$$anon$18.this.$outer = $outer;
+      F1_LL$$anon$18.this.Z_TypeTag$4 = Z_TypeTag$4;
+      F1_LL$$anon$18.this.f$16 = f$16;
+      F1_LL$$anon$18.super.<init>();
+      miniboxing.tests.compile.bug85.full.F1$class./*F1$class*/$init$(F1_LL$$anon$18.this);
+      miniboxing.tests.compile.bug85.full.F1_LL$class./*F1_LL$class*/$init$(F1_LL$$anon$18.this);
+      ()
+    }
+  }
+}

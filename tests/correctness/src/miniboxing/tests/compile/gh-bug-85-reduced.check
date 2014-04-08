@@ -1,0 +1,52 @@
+Specializing trait MakeImplClass...
+
+  // interface:
+  abstract trait MakeImplClass[A] extends Object {
+    def foo(a: A): A
+    def foo_J(val A_TypeTag: Byte,a: A @storage): A @storage
+  }
+
+  // specialized class:
+  abstract trait MakeImplClass_J[Asp] extends MakeImplClass[Asp] {
+    def foo(a: Asp): Asp                                                   // is a forwarder to the specialized member
+    def foo_J(val A_TypeTag: Byte,a: Asp @storage): Asp @storage           // is an interface method
+    def miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(): Byte // is a type tag
+  }
+
+  // specialized class:
+  abstract trait MakeImplClass_L[Asp] extends MakeImplClass[Asp] {
+    def foo(a: Asp): Asp                                                   // is an interface method
+    def foo_J(val A_TypeTag: Byte,a: Asp @storage): Asp @storage           // is a forwarder to the specialized member
+  }
+
+
+
+
+[[syntax trees at end of                   cleanup]] // newSource1.scala
+package miniboxing.tests.compile.bug85.reduced {
+  abstract trait MakeImplClass extends Object {
+    def foo(a: Object): Object;
+    def foo_J(A_TypeTag: Byte, a: Long): Long
+  };
+  abstract trait MakeImplClass_J extends Object with miniboxing.tests.compile.bug85.reduced.MakeImplClass {
+    def foo(a: Object): Object;
+    def foo_J(A_TypeTag: Byte, a: Long): Long;
+    def miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(): Byte
+  };
+  abstract trait MakeImplClass_L extends Object with miniboxing.tests.compile.bug85.reduced.MakeImplClass {
+    def foo(a: Object): Object;
+    def foo_J(A_TypeTag: Byte, a: Long): Long
+  };
+  abstract trait MakeImplClass_J$class extends  {
+    def foo($this: miniboxing.tests.compile.bug85.reduced.MakeImplClass_J, a: Object): Object = MiniboxConversions.this.minibox2box($this.foo_J($this.miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(), MiniboxConversions.this.box2minibox_tt(a, $this.miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag())), $this.miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag());
+    def /*MakeImplClass_J$class*/$init$($this: miniboxing.tests.compile.bug85.reduced.MakeImplClass_J): Unit = {
+      ()
+    }
+  };
+  abstract trait MakeImplClass_L$class extends  {
+    def foo_J($this: miniboxing.tests.compile.bug85.reduced.MakeImplClass_L, A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt($this.foo(MiniboxConversions.this.minibox2box(a, A_TypeTag)), A_TypeTag);
+    def /*MakeImplClass_L$class*/$init$($this: miniboxing.tests.compile.bug85.reduced.MakeImplClass_L): Unit = {
+      ()
+    }
+  }
+}
