@@ -63,7 +63,7 @@ package miniboxing.tests.compile {
     def extend(): Unit = if (MBResizableArray_J.this.elemCount().==(MBResizableArray_J.this.size()))
       {
         var pos: Int = 0;
-        MBResizableArray_J.this.newarray_=(MiniboxArray.this.mbarray_new[Tsp](2.*(MBResizableArray_J.this.size()), MBResizableArray_J.this.miniboxing|tests|compile|MBResizableArray_J|T_TypeTag));
+        MBResizableArray_J.this.newarray_=(MiniboxArray.this.mbarray_new[Tsp](2.*(MBResizableArray_J.this.size()), MBResizableArray_J.this.miniboxing|tests|compile|MBResizableArray_J|T_TypeTag).asInstanceOf[Array[Tsp]]());
         while$1(){
           if (pos.<(MBResizableArray_J.this.size()))
             {
@@ -129,7 +129,7 @@ package miniboxing.tests.compile {
     };
     <paramaccessor> private[this] val mf: scala.reflect.Manifest[Tsp] = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|MBResizableArray_J|T_TypeTag: Byte = _;
-    private[this] var array: Array[Tsp] = MiniboxArray.this.mbarray_new[Tsp](4, MBResizableArray_J.this.miniboxing|tests|compile|MBResizableArray_J|T_TypeTag);
+    private[this] var array: Array[Tsp] = MiniboxArray.this.mbarray_new[Tsp](4, MBResizableArray_J.this.miniboxing|tests|compile|MBResizableArray_J|T_TypeTag).asInstanceOf[Array[Tsp]]();
     private[this] var elemCount: Int = 0;
     private[this] var newarray: Array[Tsp] = _;
     private[this] var size: Int = 4

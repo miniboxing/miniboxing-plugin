@@ -111,8 +111,14 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
               case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
                 val tag = tags(tpe.typeSymbol)
                 val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(transform(size), tag))
+                val ptSym = tree.tpe.dealiasWiden.typeSymbol
+                val tree2 =
+                  if (ptSym == ArrayClass)
+                    gen.mkAttributedCast(tree1, tree.tpe)
+                  else
+                    tree1
                 stats("rewrote array new: " + tree + " ==> " + tree1)
-                tree1
+                tree2
               case _ =>
                 super.transform(tree)
             }

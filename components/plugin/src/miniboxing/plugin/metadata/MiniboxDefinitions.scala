@@ -67,7 +67,8 @@ trait MiniboxDefinitions {
 
   // direct conversions
   lazy val x2minibox = Map[Symbol, Symbol](
-      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unit2minibox")),
+      // Unit is incompatible with the Java-based runtime
+      // UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unit2minibox")),
       BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("boolean2minibox")),
       ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("byte2minibox")),
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
@@ -78,7 +79,8 @@ trait MiniboxDefinitions {
       FloatClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("float2minibox"))
     )
   lazy val minibox2x = Map[Symbol, Symbol](
-      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
+      // Unit is incompatible with the Java-based runtime
+      // UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
       BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2boolean")),
       ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2byte")),
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
