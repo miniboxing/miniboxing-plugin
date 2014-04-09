@@ -1,0 +1,6 @@
+#!/bin/bash
+DIR=../tests/correctness/src/miniboxing/tests/compile/
+cp $1 $DIR
+vim $DIR/${1/\.scala/.flags}
+vim $DIR/${1/\.scala/.check}
+ls $DIR/${1/\.scala/\*}
