@@ -10,8 +10,8 @@ Specializing class CC...
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
     def <init>(val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte,c: Tsp @storage): miniboxing.tests.compile.nested.CC_J[Tsp] // is a specialized implementation of constructor CC
-    def test(): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp]          // is a forwarder to the specialized member
-    def test_J(val T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] // is a specialized implementation of method test
+    def test(): CC_J.this.DD[Tsp]                                          // is a forwarder to the specialized member
+    def test_J(val T_TypeTag: Byte): CC_J.this.DD[Tsp]                     // is a specialized implementation of method test
     private[this] val c: Tsp @storage                                      // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte // no info
   }
@@ -19,8 +19,8 @@ Specializing class CC...
   // specialized class:
   class CC_L[Tsp] extends CC[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.CC_L[Tsp]          // is a specialized implementation of constructor CC
-    def test(): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp]          // is a specialized implementation of method test
-    def test_J(val T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp] // is a forwarder to the specialized member
+    def test(): CC_L.this.DD[Tsp]                                          // is a specialized implementation of method test
+    def test_J(val T_TypeTag: Byte): CC_L.this.DD[Tsp]                     // is a forwarder to the specialized member
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
 
@@ -78,8 +78,8 @@ package miniboxing.tests.compile.nested {
       CC_J.super.<init>();
       ()
     };
-    def test(): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] = CC_J.this.test_J(CC_J.this.miniboxing|tests|compile|nested|CC_J|T_TypeTag);
-    def test_J(T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_J[Tsp]#DD[Tsp] = new CC_J.this.DD_J[Tsp](T_TypeTag, CC_J.this.c);
+    def test(): CC_J.this.DD[Tsp] = CC_J.this.test_J(CC_J.this.miniboxing|tests|compile|nested|CC_J|T_TypeTag);
+    def test_J(T_TypeTag: Byte): CC_J.this.DD[Tsp] = new CC_J.this.DD_J[Tsp](T_TypeTag, CC_J.this.c);
     <paramaccessor> private[this] val c: Long = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte = _
   };
@@ -88,8 +88,8 @@ package miniboxing.tests.compile.nested {
       CC_L.super.<init>();
       ()
     };
-    def test(): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp] = new CC_L.this.DD_L[Tsp](CC_L.this.c);
-    def test_J(T_TypeTag: Byte): miniboxing.tests.compile.nested.CC_L[Tsp]#DD[Tsp] = CC_L.this.test();
+    def test(): CC_L.this.DD[Tsp] = new CC_L.this.DD_L[Tsp](CC_L.this.c);
+    def test_J(T_TypeTag: Byte): CC_L.this.DD[Tsp] = CC_L.this.test();
     <paramaccessor> private[this] val c: Tsp = _
   }
 }

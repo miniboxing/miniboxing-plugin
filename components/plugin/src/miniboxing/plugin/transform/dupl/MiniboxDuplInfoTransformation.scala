@@ -252,8 +252,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         newMbr setFlag MINIBOXED
         newMbr modifyInfo { info =>
 
-          val info0 = info.asSeenFrom(spec.tpe, m.owner)
-          val info1 = info0.substThis(origin, spec)
+          val info0 = info.substThis(origin, spec)
+          val info1 = info0.asSeenFrom(spec.thisType, m.owner)
           val info2 =
             if (m.isTerm && !m.isMethod) {
               // this is where we specialize fields:
@@ -277,7 +277,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
-          val info0 = info.asSeenFrom(spec.tpe, ctor.owner)
+          val info0 = info.asSeenFrom(spec.thisType, ctor.owner)
           val info1 = info0.substThis(origin, spec) // Is this still necessary?
           val info2 = specializedTypeMapInner(info1)
           val tagParams = typeTagMap map (_._1.cloneSymbol(newCtor, 0))
@@ -440,7 +440,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             newMbr setFlag MINIBOXED
             newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
             newMbr modifyInfo (info => {
-              val info0 = specializedTypeMap(info.asSeenFrom(newMbr.owner.thisType, newMbr.owner))
+              val info0 = specializedTypeMap(info.asSeenFrom(newMbr.owner.thisType, member.owner))
               val localTags =
                 for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), tparam)
