@@ -561,7 +561,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           // points to the current clazz -- TODO: we could carry newMembers and get the correspondence
           if (localOverload.name != oSym.name) {
             val overrider = oSym.cloneSymbol(clazz)
-            overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.info, oSym.owner))
+            overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.thisType, oSym.owner))
             overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
 
             val paramUpdate = (oSym.info.params zip overrider.info.params).toMap

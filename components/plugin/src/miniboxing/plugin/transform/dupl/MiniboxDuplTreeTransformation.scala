@@ -184,9 +184,24 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // members
           val specMembers = createMethodTrees(tree.symbol.enclClass) map (localTyper.typed)
           val bodyDefs =
-            if (specializedBase(tree.symbol.enclClass))
-              body.filter(defdef => decls.contains(defdef.symbol))
-            else
+            if (specializedBase(tree.symbol.enclClass)) {
+              var announce = true
+              body.map({
+                case dt: DefTree if decls.contains(dt.symbol) =>
+                  Some(dt)
+                case vd: ValDef if vd.symbol.isValue && !vd.symbol.isMethod =>
+                  None
+                case dd: DefDef if dd.symbol.isConstructor =>
+                  None
+                case other =>
+                  if (announce) {
+                    unit.warning(other.pos, "Side-effecting constructor statement will not be specialized " +
+                        "in miniboxing annotated " + tree.symbol.enclClass + ". (internal tree: " + other + ")")
+                    announce = false
+                  }
+                  Some(other)
+              }).flatten
+            } else
               body
           val memberDefs = atOwner(currentOwner)(transformTrees(bodyDefs ::: specMembers ::: specClassesTped))
 
