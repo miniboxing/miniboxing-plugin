@@ -193,10 +193,13 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                   None
                 case dd: DefDef if dd.symbol.isConstructor =>
                   None
-                case other =>
+                case _: DefTree =>
+                  None
+                case other if !other.isInstanceOf[DefTree] =>
                   if (announce) {
                     unit.warning(other.pos, "Side-effecting constructor statement will not be specialized " +
-                        "in miniboxing annotated " + tree.symbol.enclClass + ". (internal tree: " + other + ")")
+                        "in miniboxing annotated class/trait " + tree.symbol.enclClass.name +
+                        ". (internal tree: " + other + ")")
                     announce = false
                   }
                   Some(other)
