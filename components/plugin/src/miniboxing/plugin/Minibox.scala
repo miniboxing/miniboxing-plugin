@@ -28,6 +28,7 @@ trait MiniboxDuplComponent extends
     with MiniboxDuplInfoTransformation
     with MiniboxLogging
     with MiniboxDuplTreeTransformation
+    with MiniboxDuplTreeSupport
     with MiniboxSpecializationInfo
     with MiniboxDefinitions {
 

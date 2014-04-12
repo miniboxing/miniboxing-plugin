@@ -59,6 +59,15 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     res
   }
 
+  def reportError[T](body: =>T)(handler: TypeError => T): T =
+    try body
+    catch {
+      case te: TypeError =>
+        reporter.error(te.pos, te.msg)
+        //(new Exception()).printStackTrace()
+        handler(te)
+    }
+
   /**
    * The tree transformer that adds the trees for the specialized classes inside
    * the current package.
@@ -66,15 +75,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
     import global._
-
-    def reportError[T](body: =>T)(handler: TypeError => T): T =
-      try body
-      catch {
-        case te: TypeError =>
-          reporter.error(te.pos, te.msg)
-          (new Exception()).printStackTrace()
-          handler(te)
-      }
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type]) extends {
@@ -679,17 +679,14 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         debug("  " + rhs)
       }
 
-      def getMethodBody(meth: Symbol) = body(meth)
-//        try{
-//          body(meth)
-//        } catch {
-//          case e: Throwable =>
-//            println()
-//            println(meth.defString)
-//            println(body.values)
-//            println("not found")
-//            (localTyper.typed(gen.mkMethodCall(Predef_???, Nil)), meth.paramss)
-//        }
+      def getMethodBody(meth: Symbol) =
+        try {
+          body.apply(meth)
+        } catch {
+          case e: Throwable =>
+            unit.error(meth.pos, "Internal miniboxing plugin error: Method body for " + meth + " not collected.")
+            (localTyper.typed(gen.mkMethodCall(Predef_???, Nil)), meth.paramss)
+        }
       def getFieldBody(fld: Symbol) = body(fld)._1
     }
 
@@ -708,17 +705,20 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       duplicateBody(meth, source, castmap)
     }
 
-    private def duplicateBody(tree: Tree, source: Symbol, castmap: TypeEnv = Map.empty): Tree = {
+    private def duplicateBody(tree0: Tree, source: Symbol, castmap: TypeEnv = Map.empty): Tree = {
 
-      val symbol = tree.symbol
+      val symbol = tree0.symbol
       val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyTypeEnv)
       val miniboxedTypeTags = typeTagTrees(symbol)
 
-      debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree}")
+      debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree0}")
 
 //      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
 //      println(miniboxedEnv)
 //      println(tree)
+
+      //val access_error = !(new AccessibiltyChecker(unit, symbol.owner)).apply(tree0)
+      val tree = tree0 //if (access_error)  else tree0
 
       val d = new Duplicator(castmap)
       debuglog("-->d DUPLICATING: " + tree)
@@ -734,14 +734,17 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           clazz.resetFlag(ABSTRACT | TRAIT)
 
       val mbSubst = MiniboxSubst(miniboxedEnv)
-      val tree2 = beforeMiniboxDupl(d.retyped(
-        localTyper.context1.asInstanceOf[d.Context],
-        tree,
-        source.enclClass,
-        symbol.enclClass,
-        mbSubst,
-        mbSubst.deepSubst
-      ))
+      val tree2 =
+        reportError(
+          beforeMiniboxDupl(d.retyped(
+            localTyper.context1.asInstanceOf[d.Context],
+            tree,
+            source.enclClass,
+            symbol.enclClass,
+            mbSubst,
+            mbSubst.deepSubst
+          ))
+        )(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))
 
 //      println(tree2)
 //      println("\n\n")

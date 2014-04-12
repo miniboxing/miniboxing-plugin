@@ -1,0 +1,12 @@
+newSource1.scala:6: error: method foo_impl3 in object C cannot be accessed in object miniboxing.tests.compile.bug89.C
+  def foo3(t: T) = C.foo_impl3
+                     ^
+newSource1.scala:7: error: method foo_impl4 in object C cannot be accessed in object miniboxing.tests.compile.bug89.C
+  def foo4(t: T) = C.foo_impl4
+                     ^
+newSource1.scala:8: error: method foo_impl5 in object C cannot be accessed in object miniboxing.tests.compile.bug89.C
+ Access to protected method foo_impl5 not permitted because
+ enclosing class C_J in package bug89 is not a subclass of
+ object C in package bug89 where target is defined
+  def foo5(t: T) = C.foo_impl5
+                     ^
