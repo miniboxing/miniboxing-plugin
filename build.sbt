@@ -1,7 +1,7 @@
 
 name := "miniboxing"
 
-scalaVersion in Global := "2.10.3"
+scalaVersion in Global := "2.10.4"
 
 version in Global := "0.2-SNAPSHOT"
 
