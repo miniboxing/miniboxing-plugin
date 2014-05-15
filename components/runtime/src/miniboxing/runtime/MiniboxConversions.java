@@ -144,7 +144,7 @@ public class MiniboxConversions {
       case MiniboxConstants.FLOAT:
         return Float.floatToIntBits((java.lang.Float)a);
       case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits((java.lang.Long)a);
+        return Double.doubleToLongBits((java.lang.Double)a);
       default:
         return (java.lang.Long)a;
     }
