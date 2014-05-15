@@ -385,9 +385,9 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // specialized overloads
       addSpecialOverrides(pspec, localPspec, spec, specScope, inPlace = true)
+      addDeferredTypeTagImpls(spec, specScope, inPlace = true)
 
       // deferred type tags:
-      addDeferredTypeTagImpls(spec, specScope, inPlace = true)
 
       // normalized members:
       normalizeMembers(spec, specScope, inPlace = true)
@@ -722,6 +722,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
+          impl.resetFlag(DEFERRED | ABSTRACT)
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope1 enter impl
         }
