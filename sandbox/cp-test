@@ -1,5 +1,12 @@
 #!/bin/bash
 DIR=../tests/correctness/src/miniboxing/tests/compile/
+
+if [ $# -lt 1 -o ! -f "$1" ]
+then
+  echo "$0 <test file>"
+  exit 1
+fi
+
 cp $1 $DIR
 vim $DIR/${1/\.scala/.flags}
 vim $DIR/${1/\.scala/.check}
