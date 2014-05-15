@@ -17,8 +17,16 @@ import java.net.URLClassLoader
 class CompileTest(val code: String, flags: String, launch: String) extends DirectTest {
 
   lazy val jfile = {
-    val root = new JFile(System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + scala.util.Random.nextLong())
-    root.mkdir()
+    var root: JFile = null
+    while (root == null) {
+      val rand = scala.util.Random.nextLong()
+      val rand_pos = if (rand < 0) -rand else rand
+      root = new JFile(System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + rand_pos)
+      if (root.exists() && root.isDirectory())
+        root = null
+    }
+    root.mkdirs()
+    root.deleteOnExit()
     root
   }
   override lazy val testPath = File(jfile)
