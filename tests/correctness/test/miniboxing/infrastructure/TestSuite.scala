@@ -55,8 +55,10 @@ class TestSuite {
       val code = File(source).slurp
       val flags = pluginFlag + " " + slurp(replaceExtension(source, "flags"))
       val check_file = replaceExtension(source, "check")
+      val launch_file = replaceExtension(source, "launch")
       val expect = slurp(check_file)
-      val output = new CompileTest(code, flags).compilationOutput()
+      val launch = slurp(launch_file)
+      val output = new CompileTest(code, flags, launch).compilationOutput()
       import scala.collection.JavaConversions._
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
       val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS))
