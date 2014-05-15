@@ -169,7 +169,7 @@ object LeastSquaresBenchmark extends App {
     def zero: Double = 0.0
   }
   
-  val size = 500
+  val size = 30000
  
   // generates random points from original function
   var listx: List[Double] = Nil
