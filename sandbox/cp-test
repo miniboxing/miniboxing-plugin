@@ -10,4 +10,5 @@ fi
 cp $1 $DIR
 vim $DIR/${1/\.scala/.flags}
 vim $DIR/${1/\.scala/.check}
+vim $DIR/${1/\.scala/.launch}
 ls $DIR/${1/\.scala/\*}
