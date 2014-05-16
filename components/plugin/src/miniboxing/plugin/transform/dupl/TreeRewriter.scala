@@ -17,25 +17,26 @@ trait TreeRewriters {
     implicit def treeToResult(tree: Tree): Result = Single(tree)
     implicit def treesToResult(trees: List[Tree]): Result = Multi(trees)
 
-    override def transform(tree: Tree): Tree =
-      rewrite(tree)
-//    {
-//      rewrite(tree) match {
-//        case Single(tree1) => tree1
-//        case Multi(trees) => typer.typed(Block(trees.map(super.transform _): _*))
-//      }
-//    }
+    override def transform(tree: Tree): Tree = {
+      rewrite(tree) match {
+        case Single(tree1) => tree1
+        case Multi(trees) => typer.typed(Block(trees.map(super.transform _): _*))
+      }
+    }
 
-//    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
-//      stats flatMap {
-//        case stat =>
-//          rewrite(stat) match {
-//            case Single(stat1) => List(stat1)
-//            case Multi(stats1) => stats1
-//          }
-//      }
-//    }
+    def super_transform(tree: Tree): Tree =
+      super.transform(tree)
 
-    def rewrite(tree: Tree): Tree
+    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
+      stats flatMap {
+        case stat =>
+          rewrite(stat) match {
+            case Single(stat1) => List(stat1)
+            case Multi(stats1) => stats1
+          }
+      }
+    }
+
+    def rewrite(tree: Tree): Result
   }
 }

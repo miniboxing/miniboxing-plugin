@@ -49,7 +49,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
    * The tree transformer that adds the trees for the specialized classes inside
    * the current package.
    */
-  class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+  class MiniboxTreeTransformer(unit: CompilationUnit) extends TreeRewriter(unit) {
 
     import global._
 
@@ -108,9 +108,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       case _ => NoType
     }
 
-    override def transform(tree: Tree): Tree = rewrite(tree)
-
-    def rewrite(tree: Tree): Tree = {
+    def rewrite(tree: Tree): Result = {
       curTree = tree
 
       // make sure specializations have been performed
@@ -219,7 +217,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               // we have an rhs, specialize it
               val tree1: Tree = addDefDefBody(ddef, target)
               debuglog("implementation: " + tree1)
-              super.transform(tree1)
+              super_transform(tree1)
 
             case _: Interface | _ : DeferredTypeTag =>
               tree
@@ -227,10 +225,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             case DeferredTypeTagImplementation(tparam) =>
               val tagTrees = typeTagTrees()
               val localTParam = tparam.tpe.asSeenFrom(currentClass.info.prefix, currentClass).typeSymbol
-              super.transform(localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam)))))
+              super_transform(localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam)))))
 
             case info =>
-              super.transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, List(vparams), tpt, localTyper.typed(Block(Ident(Predef_???))))))
+              super_transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, List(vparams), tpt, localTyper.typed(Block(Ident(Predef_???))))))
               sys.error("Unknown info type: " + info)
           }
           res
@@ -239,7 +237,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
               val newTree = addValDefBody(tree, original)
-              super.transform(localTyper.typedPos(tree.pos)(newTree))
+              super_transform(localTyper.typedPos(tree.pos)(newTree))
             case info =>
               sys.error("Unknown info type: " + info)
           }
@@ -250,7 +248,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           debug(" => overriding constructor in " + tree.symbol.ownerChain.reverse.map(_.nameString).mkString(".") + ":\n" + tree)
           val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
           debug(" <= " + result)
-          super.transform(result)
+          super_transform(result)
 
         // Error on accessing non-existing fields
         case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
@@ -441,7 +439,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           tree2
 
         case _ =>
-          super.transform(tree)
+          super_transform(tree)
       }
     }
 
