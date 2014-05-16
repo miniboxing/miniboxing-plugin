@@ -130,6 +130,20 @@ object MiniboxingBuild extends Build {
     testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
   )
 
+  val pluginCompilationDeps: Seq[Setting[_]] = Seq(
+    fork in Test := true,
+    scalacOptions in Compile <++= (Keys.`package` in (plugin, Compile)) map { (jar: File) =>
+      //System.setProperty("miniboxing.plugin.jar", jar.getAbsolutePath)
+      val addPlugin = "-Xplugin:" + jar.getAbsolutePath
+      // Thanks Jason for this cool idea (taken from https://github.com/retronym/boxer)
+      // add plugin timestamp to compiler options to trigger recompile of
+      // main after editing the plugin. (Otherwise a 'clean' is needed.)
+      val dummy = "-Jdummy=" + jar.lastModified
+      Seq(addPlugin, dummy)
+    }
+  )
+
+
   val testsDeps: Seq[Setting[_]] = junitDeps ++ Seq(
     getJarsTask,
     fork in Test := true,
@@ -154,5 +168,5 @@ object MiniboxingBuild extends Build {
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
-  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter) dependsOn (plugin, runtime)
+  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ runtimeDeps ++ scalaMeter ++ pluginCompilationDeps) dependsOn (plugin, runtime)
 }
