@@ -39,4 +39,11 @@ trait TreeRewriters {
 
     def rewrite(tree: Tree): Result
   }
+
+  def classDefTreeFromSym(classSym: Symbol): Tree = {
+    val parentsTree = classSym.info.parents map TypeTree
+    val templateSym = classSym.newLocalDummy(classSym.pos)
+    val templateTree = Template(parentsTree, emptyValDef, List())
+    ClassDef(classSym, templateTree.setSymbol(templateSym))
+  }
 }

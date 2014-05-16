@@ -122,20 +122,17 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case ClassDef(_, _, _, impl: Template) if isSpecializableClass(tree.symbol) =>
 
           // The base trait for the current class
-          val baseTraitSym = tree.symbol
+          val baseClassSym = tree.symbol
           val baseTrait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
 
           // The specialized classes for the current class
-          val specClassSymbols = specializedClasses(baseTraitSym).values.toList.sortBy(_.name.toString)
+          val specClassSymbols = specializedClasses(baseClassSym).values.toList.sortBy(_.name.toString)
           val specClasses: List[Tree] =
             for (specClassSym <- specClassSymbols) yield {
-              debuglog("Creating specialized class " + specClassSym.defString + " for " + baseTraitSym)
-              val parentsTree = specClassSym.info.parents map TypeTree
-              val templateSym = specClassSym.newLocalDummy(baseTraitSym.pos)
-              val templateTree = Template(parentsTree, emptyValDef, List())
-              val classTree = ClassDef(specClassSym, templateTree.setSymbol(templateSym)).setPos(tree.pos)
-              // type check and transform the class before returning it
-              transform(localTyper.typed(classTree))
+              debuglog("Creating specialized class " + specClassSym.defString + " for " + baseClassSym)
+              val classDef = atPos(baseClassSym.pos)(classDefTreeFromSym(specClassSym))
+              // type check and transform the class before returning the tree
+              transform(localTyper.typed(classDef))
             }
 
           baseTrait :: specClasses
