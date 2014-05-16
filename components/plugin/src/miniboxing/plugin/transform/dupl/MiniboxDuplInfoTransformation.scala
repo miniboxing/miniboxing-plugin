@@ -609,6 +609,10 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       val newMemberSets =
         for (member <- scope if !notSpecializable(clazz, member) && member.isMethod && member.info.typeParams.exists(isSpecialized(clazz, _))) yield {
+
+          // mark the member as the base
+          normbase(member) = member
+
           val tparams = member.typeParams.filter(isSpecialized(clazz, _))
           tparams foreach (_ setFlag MINIBOXED)
           val pspecs = specializations(tparams)

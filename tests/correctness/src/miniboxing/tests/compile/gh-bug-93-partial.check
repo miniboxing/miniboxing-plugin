@@ -1,0 +1,27 @@
+[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+package miniboxing.tests.compile.bug993.partial {
+  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+    def foo(): Int;
+    def bar(t: T): T;
+    def bar_J(T_TypeTag: Byte, t: T @storage): T @storage
+  };
+  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+    def <init>(miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C_J[Tsp] = {
+      C_J.super.<init>();
+      ()
+    };
+    def bar(t: Tsp): Tsp = C_J.this.bar_J(C_J.this.miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag, t);
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage): Tsp @storage = t;
+    def foo(): Int = 3;
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _
+  };
+  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+    def <init>(): miniboxing.tests.compile.bug993.partial.C_L[Tsp] = {
+      C_L.super.<init>();
+      ()
+    };
+    def bar(t: Tsp): Tsp = t;
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage): Tsp @storage = C_L.this.bar(t);
+    def foo(): Int = 3
+  }
+}
