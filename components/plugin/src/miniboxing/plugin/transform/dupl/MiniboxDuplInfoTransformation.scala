@@ -759,7 +759,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           origin.owner.info.decls.unlink(existing)
 
         // TODO: overrides in the specialized class
-        afterMiniboxDupl(origin.owner.info.decls enter spc)
+        if (origin.owner.info.decls != EmptyScope)
+          afterMiniboxDupl(origin.owner.info.decls enter spc)
 
         spc
       }
