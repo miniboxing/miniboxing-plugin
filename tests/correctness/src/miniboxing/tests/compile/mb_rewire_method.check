@@ -8,21 +8,6 @@ package miniboxing.tests.compile {
     def bar_J(T_TypeTag: Byte, t: miniboxing.tests.compile.TR[T]): Long;
     def foo_J(T_TypeTag: Byte, t: Long): Long
   };
-  abstract trait RT[@miniboxed U >: Nothing <: Any] extends Object {
-    def test(u: U): U;
-    def test_J(U_TypeTag: Byte, u: Long): Long
-  };
-  object Test extends Object {
-    def <init>(): miniboxing.tests.compile.Test.type = {
-      Test.super.<init>();
-      ()
-    };
-    def test[T >: Nothing <: Any](): T = {
-      new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.int2minibox(3));
-      new miniboxing.tests.compile.TR_L[String]().foo("xxx");
-      new miniboxing.tests.compile.TR_L[T]().foo(scala.this.Predef.???())
-    }
-  };
   class TR_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.TR[Tsp] {
     def <init>(miniboxing|tests|compile|TR_J|T_TypeTag: Byte): miniboxing.tests.compile.TR_J[Tsp] = {
       TR_J.super.<init>();
@@ -43,6 +28,10 @@ package miniboxing.tests.compile {
     def bar_J(T_TypeTag: Byte, t: miniboxing.tests.compile.TR[Tsp]): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.bar(t), T_TypeTag);
     def foo(t: Tsp): Tsp = TR_L.this.foo(t);
     def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+  };
+  abstract trait RT[@miniboxed U >: Nothing <: Any] extends Object {
+    def test(u: U): U;
+    def test_J(U_TypeTag: Byte, u: Long): Long
   };
   class RT_J[Usp >: Nothing <: Any] extends Object with miniboxing.tests.compile.RT[Usp] {
     def <init>(miniboxing|tests|compile|RT_J|U_TypeTag: Byte): miniboxing.tests.compile.RT_J[Usp] = {
@@ -66,6 +55,17 @@ package miniboxing.tests.compile {
       tr.foo(u)
     };
     def test_J(U_TypeTag: Byte, u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT_L.this.test(MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag)), U_TypeTag)
+  };
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def test[T >: Nothing <: Any](): T = {
+      new miniboxing.tests.compile.TR_J[Int](5).foo_J(5, MiniboxConversions.this.int2minibox(3));
+      new miniboxing.tests.compile.TR_L[String]().foo("xxx");
+      new miniboxing.tests.compile.TR_L[T]().foo(scala.this.Predef.???())
+    }
   }
 }
 

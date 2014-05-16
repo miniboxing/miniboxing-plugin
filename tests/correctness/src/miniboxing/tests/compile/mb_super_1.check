@@ -6,14 +6,6 @@ package miniboxing.tests.compile.sup1 {
     def foo(t: T): T;
     def foo_J(T_TypeTag: Byte, t: Long): Long
   };
-  class D extends miniboxing.tests.compile.sup1.C_J[Int] {
-    def <init>(): miniboxing.tests.compile.sup1.D = {
-      D.super.<init>(5);
-      ()
-    };
-    override def foo(i: Int): Int = MiniboxConversions.this.minibox2int(D.this.foo_J(5, MiniboxConversions.this.int2minibox(i)));
-    override def foo_J(T_TypeTag: Byte, t: Long): Long = D.super.foo_J(5, MiniboxConversions.this.int2minibox(3))
-  };
   class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
     def <init>(miniboxing|tests|compile|sup1|C_J|T_TypeTag: Byte): miniboxing.tests.compile.sup1.C_J[Tsp] = {
       C_J.super.<init>();
@@ -30,6 +22,14 @@ package miniboxing.tests.compile.sup1 {
     };
     def foo(t: Tsp): Tsp = scala.this.Predef.???();
     def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](C_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+  };
+  class D extends miniboxing.tests.compile.sup1.C_J[Int] {
+    def <init>(): miniboxing.tests.compile.sup1.D = {
+      D.super.<init>(5);
+      ()
+    };
+    override def foo(i: Int): Int = MiniboxConversions.this.minibox2int(D.this.foo_J(5, MiniboxConversions.this.int2minibox(i)));
+    override def foo_J(T_TypeTag: Byte, t: Long): Long = D.super.foo_J(5, MiniboxConversions.this.int2minibox(3))
   }
 }
 

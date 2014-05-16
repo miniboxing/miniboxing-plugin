@@ -36,12 +36,6 @@ Specializing class F1...
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait F1[@miniboxed T >: Nothing <: Any, @miniboxed R >: Nothing <: Any] extends Object;
-  class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Boolean] {
-    def <init>(): miniboxing.tests.compile.inheritance.Predicate[T] = {
-      Predicate.super.<init>(1);
-      ()
-    }
-  };
   class F1_JJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte, miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JJ[Tsp,Rsp] = {
       F1_JJ.super.<init>();
@@ -67,6 +61,12 @@ package miniboxing.tests.compile.inheritance {
   class F1_LL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(): miniboxing.tests.compile.inheritance.F1_LL[Tsp,Rsp] = {
       F1_LL.super.<init>();
+      ()
+    }
+  };
+  class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Boolean] {
+    def <init>(): miniboxing.tests.compile.inheritance.Predicate[T] = {
+      Predicate.super.<init>(1);
       ()
     }
   }

@@ -90,19 +90,6 @@ package miniboxing.tests.compile {
     <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long;
     <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long
   };
-  <synthetic> object Complex extends Object with Serializable {
-    def <init>(): miniboxing.tests.compile.Complex.type = {
-      Complex.super.<init>();
-      ()
-    };
-    final override <synthetic> def toString(): String = "Complex";
-    case <synthetic> def apply[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    case <synthetic> def unapply[@miniboxed T >: Nothing <: Any](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
-      scala.this.None
-    else
-      new Some[(T, T)](new (T, T)(x$0.t1(), x$0.t2()));
-    <synthetic> private def readResolve(): Object = compile.this.Complex
-  };
   case class Complex_J[Tsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
     def <init>(miniboxing|tests|compile|Complex_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex_J[Tsp] = {
       Complex_J.super.<init>();
@@ -127,6 +114,19 @@ package miniboxing.tests.compile {
     <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.t1(), T_TypeTag);
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = Complex_L.this.t2;
     <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.t2(), T_TypeTag)
+  };
+  <synthetic> object Complex extends Object with Serializable {
+    def <init>(): miniboxing.tests.compile.Complex.type = {
+      Complex.super.<init>();
+      ()
+    };
+    final override <synthetic> def toString(): String = "Complex";
+    case <synthetic> def apply[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
+    case <synthetic> def unapply[@miniboxed T >: Nothing <: Any](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
+      scala.this.None
+    else
+      new Some[(T, T)](new (T, T)(x$0.t1(), x$0.t2()));
+    <synthetic> private def readResolve(): Object = compile.this.Complex
   }
 }
 

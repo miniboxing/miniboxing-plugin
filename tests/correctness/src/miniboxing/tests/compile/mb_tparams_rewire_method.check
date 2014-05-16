@@ -68,21 +68,6 @@ package miniboxing.tests.compile {
     def bar_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): Long;
     def foo_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X, y: Y): Long
   };
-  abstract trait RT3[@miniboxed U >: Nothing <: Any, G >: Nothing <: Any] extends Object {
-    def test(u: U): U;
-    def test_J(U_TypeTag: Byte, u: Long): Long
-  };
-  object Test3 extends Object {
-    def <init>(): miniboxing.tests.compile.Test3.type = {
-      Test3.super.<init>();
-      ()
-    };
-    def test[T >: Nothing <: Any, A >: Nothing <: Any](a: A): T = {
-      new miniboxing.tests.compile.TR3_J[Int,String](5).foo_J[A, A](5, MiniboxConversions.this.int2minibox(3), a, a);
-      new miniboxing.tests.compile.TR3_L[String,Int]().foo[A, Int]("xxx", a, 4);
-      new miniboxing.tests.compile.TR3_L[T,Long]().foo[Int, Any](scala.this.Predef.???(), 2, 3)
-    }
-  };
   class TR3_J[Tsp >: Nothing <: Any, Zsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.TR3[Tsp,Zsp] {
     def <init>(miniboxing|tests|compile|TR3_J|T_TypeTag: Byte): miniboxing.tests.compile.TR3_J[Tsp,Zsp] = {
       TR3_J.super.<init>();
@@ -103,6 +88,10 @@ package miniboxing.tests.compile {
     def bar_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3_L.this.bar[X, Y](t, x, y), T_TypeTag);
     def foo[X >: Nothing <: Any, Y >: Nothing <: Any](t: Tsp, x: X, y: Y): Tsp = TR3_L.this.foo[Y, X](t, y, x);
     def foo_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3_L.this.foo[X, Y](MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), x, y), T_TypeTag)
+  };
+  abstract trait RT3[@miniboxed U >: Nothing <: Any, G >: Nothing <: Any] extends Object {
+    def test(u: U): U;
+    def test_J(U_TypeTag: Byte, u: Long): Long
   };
   class RT3_J[Usp >: Nothing <: Any, Gsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.RT3[Usp,Gsp] {
     def <init>(miniboxing|tests|compile|RT3_J|U_TypeTag: Byte, g: Gsp): miniboxing.tests.compile.RT3_J[Usp,Gsp] = {
@@ -128,6 +117,17 @@ package miniboxing.tests.compile {
     };
     def test_J(U_TypeTag: Byte, u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT3_L.this.test(MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag)), U_TypeTag);
     <paramaccessor> private[this] val g: Gsp = _
+  };
+  object Test3 extends Object {
+    def <init>(): miniboxing.tests.compile.Test3.type = {
+      Test3.super.<init>();
+      ()
+    };
+    def test[T >: Nothing <: Any, A >: Nothing <: Any](a: A): T = {
+      new miniboxing.tests.compile.TR3_J[Int,String](5).foo_J[A, A](5, MiniboxConversions.this.int2minibox(3), a, a);
+      new miniboxing.tests.compile.TR3_L[String,Int]().foo[A, Int]("xxx", a, 4);
+      new miniboxing.tests.compile.TR3_L[T,Long]().foo[Int, Any](scala.this.Predef.???(), 2, 3)
+    }
   }
 }
 

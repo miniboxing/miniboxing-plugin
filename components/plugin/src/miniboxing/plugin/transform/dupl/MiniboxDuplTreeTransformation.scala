@@ -16,29 +16,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
 
-  /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_minibox_to_box(tree: Tree, tpe: Type, currentOwner: Symbol): Tree = {
-    val tpe1 = tree.tpe
-    val tags = typeTagTrees(currentOwner)
-    // sanity checks
-    assert(tpe1 == LongTpe, tree + " expecting .tpe to be Long, not " + tpe + ".")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
-
-    gen.mkMethodCall(minibox2box, List(tpe), List(tree, tags(tpe.typeSymbol)))
-  }
-
-  /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_box_to_minibox(tree: Tree, currentOwner: Symbol): Tree = {
-    val tpe = tree.tpe
-    val tags = typeTagTrees(currentOwner)
-    // sanity checks
-    // this is a wrong assumption, violated when overriding miniboxed type params by long:
-    // assert(tpe != LongTpe, tree + " expecting .tpe to be Tsp, not Long.")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
-
-    gen.mkMethodCall(box2minibox, List(tpe), List(tree, tags(tpe.typeSymbol)))
-  }
-
   var ttindent = 0
 
   // TODO: This should be:
@@ -72,7 +49,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
    * The tree transformer that adds the trees for the specialized classes inside
    * the current package.
    */
-  class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+  class MiniboxTreeTransformer(unit: CompilationUnit) extends TreeRewriter(unit) {
 
     import global._
 
@@ -87,17 +64,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
         override def castType(tree: Tree, pt: Type): Tree = {
-          // log(" expected type: " + pt)
-          // log(" tree type: " + tree.tpe)
-          // tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
-          // log(" tree type: " + tree.tpe)
-//          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
-//            val casttpe = CastMap(tree.tpe)
-//            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
-//            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
-//            else tree
-//          } else tree
-//          ntree.tpe = null
           tree.tpe = null
           tree
         }
@@ -142,9 +108,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       case _ => NoType
     }
 
-    override def transform(tree: Tree): Tree = rewrite(tree)
-
-    def rewrite(tree: Tree): Tree = {
+    def rewrite(tree: Tree): Result = {
       curTree = tree
 
       // make sure specializations have been performed
@@ -155,15 +119,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       tree match {
 
-        // We have created just the symbols for the specialized classes - now it's time to create their trees as well (initially empty).
-        case PackageDef(pid, classdefs) =>
-          atOwner(tree, tree.symbol) {
-            val specClassesTpls = createSpecializedClassesTrees(classdefs)
-            val specClassesTped = specClassesTpls map localTyper.typed
-            val templates = transformStats(classdefs ::: specClassesTped, tree.symbol.moduleClass)
-            val packageTree = treeCopy.PackageDef(tree, pid, templates)
-            localTyper.typedPos(tree.pos)(packageTree)
-          }
+        case ClassDef(_, _, _, impl: Template) if isSpecializableClass(tree.symbol) =>
+          val _trait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
+          val _spec = createSpecializedClassesTrees(List(_trait)) map localTyper.typed map transform
+          _trait :: _spec
 
         case Template(parents, self, body) =>
           MethodBodiesCollector(tree)
@@ -174,10 +133,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           //  Also collect the bodies of the methods that need to be copied and specialized.
           val sym = tree.symbol.enclClass
           val decls = afterMiniboxDupl(sym.info).decls.toList
-
-          // specialized classes inside this template
-          val specClassesTpls = createSpecializedClassesTrees(body)
-          val specClassesTped = specClassesTpls map localTyper.typed
 
           // members
           val specMembers = createMethodTrees(tree.symbol.enclClass) map (localTyper.typed)
@@ -204,7 +159,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               }).flatten
             } else
               body
-          val memberDefs = atOwner(currentOwner)(transformTrees(bodyDefs ::: specMembers ::: specClassesTped))
+          val memberDefs = atOwner(currentOwner)(transformStats(bodyDefs ::: specMembers, sym))
 
           // parents
           val parents1 = map2(sym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
@@ -239,21 +194,27 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             // forward to the target methods, making casts as prescribed
             case ForwardTo(target) =>
               val (ttagWrapperArgs, wrapperParams) = separateTypeTagArgsInTree(vparams)
-
+              debuglog("")
+              debuglog(s"Forwarding to $target for $tree")
               val rhs1 = gen.mkMethodCall(target, tparams.map(_.symbol.tpeHK), wrapperParams.map(param => Ident(param.symbol)))
-//              println()
-//              println("deriving defdef from " + tree)
-              val rhs2 = atOwner(ddef.symbol)(transform(localTyper.typed(rhs1)))
-              val defdef = localTyper.typed(deriveDefDef(tree)(_ => rhs2))
-//              println(defdef)
+              val rhs2 = localTyper.typed(rhs1)
+              val rhs3 = atOwner(tree.symbol)(transform(rhs2))
+              debuglog("forwarding result1: " + rhs1)
+              debuglog("forwarding result2: " + rhs2)
+              debuglog("forwarding result3: " + rhs3)
+              val defdef = localTyper.typed(deriveDefDef(tree)(_ => rhs3))
               defdef
 
             // copy the body of the `original` method
+            // we have an rhs, specialize it
             case SpecializedImplementationOf(target) =>
-              // we have an rhs, specialize it
+              debuglog("")
+              debuglog("Generating specialized implmentation for: " + tree)
               val tree1: Tree = addDefDefBody(ddef, target)
-              debuglog("implementation: " + tree1)
-              super.transform(tree1)
+              val tree2: Tree = deriveDefDef(tree1)(rhs => atOwner(tree1.symbol)(transform(rhs)))
+              debuglog("before rewiring: " + tree1)
+              debuglog("after rewriting: " + tree2)
+              localTyper.typed(tree2)
 
             case _: Interface | _ : DeferredTypeTag =>
               tree
@@ -261,10 +222,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             case DeferredTypeTagImplementation(tparam) =>
               val tagTrees = typeTagTrees()
               val localTParam = tparam.tpe.asSeenFrom(currentClass.info.prefix, currentClass).typeSymbol
-              super.transform(localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam)))))
+              localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(tagTrees(localTParam))))
 
             case info =>
-              super.transform(localTyper.typed(treeCopy.DefDef(tree, mods, name, tparams, List(vparams), tpt, localTyper.typed(Block(Ident(Predef_???))))))
               sys.error("Unknown info type: " + info)
           }
           res
@@ -273,7 +233,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           memberSpecializationInfo(tree.symbol) match {
             case SpecializedImplementationOf(original) =>
               val newTree = addValDefBody(tree, original)
-              super.transform(localTyper.typedPos(tree.pos)(newTree))
+              localTyper.typed(deriveValDef(newTree)(rhs => atOwner(newTree.symbol)(transform(rhs))))
             case info =>
               sys.error("Unknown info type: " + info)
           }
@@ -282,9 +242,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case DefDef(mods, name, tparams, vparamss, tpt, body) if (tree.symbol.isConstructor &&
           tree.symbol.paramss.head.size != vparamss.head.size) =>
           debug(" => overriding constructor in " + tree.symbol.ownerChain.reverse.map(_.nameString).mkString(".") + ":\n" + tree)
-          val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => body))
+          val result = localTyper.typedPos(tree.pos)(DefDef(tree.symbol, _ => atOwner(tree.symbol)(transform(body))))
           debug(" <= " + result)
-          super.transform(result)
+          result
 
         // Error on accessing non-existing fields
         case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
@@ -475,7 +435,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           tree2
 
         case _ =>
-          super.transform(tree)
+          Descend
       }
     }
 
@@ -712,7 +672,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             mbSubst,
             mbSubst.deepSubst
           ))
-        )(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))
+        )(_ => localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))))
 
 //      println(tree2)
 //      println("\n\n")

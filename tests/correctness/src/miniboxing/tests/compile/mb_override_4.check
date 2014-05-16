@@ -94,12 +94,6 @@ package miniboxing.tests.compile {
     override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
     override def overrideMe_J(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long
   };
-  abstract trait Base43[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends AnyRef {
-    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
-    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
-    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
-  };
   class Base42_J[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends miniboxing.tests.compile.Base41[Tsp,Ssp] with miniboxing.tests.compile.Base42[Tsp,Ssp] {
     def <init>(miniboxing|tests|compile|Base42_J|T_TypeTag: Byte): miniboxing.tests.compile.Base42_J[Tsp,Ssp] = {
       Base42_J.super.<init>();
@@ -116,6 +110,12 @@ package miniboxing.tests.compile {
     };
     override def overrideMe(t1: Tsp, t2: Tsp, t3: Tsp, s: Ssp): Tsp = t2;
     override def overrideMe_J(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base42_L.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T_TypeTag), s), T_TypeTag)
+  };
+  abstract trait Base43[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends AnyRef {
+    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
+    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
+    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
   };
   class Base43_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends miniboxing.tests.compile.Base42_J[Tsp,Ssp] with miniboxing.tests.compile.Base43[Tsp,Ssp] {
     def <init>(miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte, miniboxing|tests|compile|Base43_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base43_JJ[Tsp,Ssp] = {
