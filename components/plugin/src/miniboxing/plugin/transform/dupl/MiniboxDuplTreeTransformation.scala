@@ -120,9 +120,25 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       tree match {
 
         case ClassDef(_, _, _, impl: Template) if isSpecializableClass(tree.symbol) =>
-          val _trait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
-          val _spec = createSpecializedClassesTrees(List(_trait)) map localTyper.typed map transform
-          _trait :: _spec
+
+          // The base trait for the current class
+          val baseTraitSym = tree.symbol
+          val baseTrait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
+
+          // The specialized classes for the current class
+          val specClassSymbols = specializedClasses(baseTraitSym).values.toList.sortBy(_.name.toString)
+          val specClasses: List[Tree] =
+            for (specClassSym <- specClassSymbols) yield {
+              debuglog("Creating specialized class " + specClassSym.defString + " for " + baseTraitSym)
+              val parentsTree = specClassSym.info.parents map TypeTree
+              val templateSym = specClassSym.newLocalDummy(baseTraitSym.pos)
+              val templateTree = Template(parentsTree, emptyValDef, List())
+              val classTree = ClassDef(specClassSym, templateTree.setSymbol(templateSym)).setPos(tree.pos)
+              // type check and transform the class before returning it
+              transform(localTyper.typed(classTree))
+            }
+
+          baseTrait :: specClasses
 
         case Template(parents, self, body) =>
           MethodBodiesCollector(tree)
@@ -568,35 +584,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         }
       }
       mbrs.toList
-    }
-
-    /**
-     * Create implementation trees for specialized classes
-     */
-    private def createSpecializedClassesTrees(classdefs: List[Tree]): List[Tree] = {
-      val buf = new ListBuffer[Tree]
-      for (tree <- classdefs)
-        tree match {
-          case ClassDef(_, _, _, impl) =>
-            afterMiniboxDupl(tree.symbol.info)
-            val classSymbol = tree.symbol
-
-            if (isSpecializableClass(classSymbol)) {
-              var sClasses: List[Symbol] = Nil
-
-              sClasses ++= specializedClasses(classSymbol).values.toList.sortBy(_.name.toString)
-
-              for (sClass <- sClasses) {
-                debug("creating class - " + sClass.name + ": " + sClass.parentSymbols)
-                val parents = sClass.info.parents map TypeTree
-                buf +=
-                  ClassDef(sClass, atPos(impl.pos)(Template(parents, emptyValDef, List()))
-                    .setSymbol(sClass.newLocalDummy(classSymbol.pos))) setPos tree.pos
-              }
-            }
-          case _ =>
-        }
-      buf.toList
     }
 
     // We collect the bodies of the target methods in order to have them available
