@@ -88,7 +88,7 @@ trait MiniboxLogic {
     }
 
   def needsSpecialization(clazz: Symbol, member: Symbol) = flag_spec_no_opt || {
-    val tparams = clazz.typeParams.filter(isSpecialized(clazz, _))
+    val tparams = clazz.typeParams.filter(_.isMiniboxAnnotated)
     val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
     tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
     res
@@ -101,11 +101,18 @@ trait MiniboxLogic {
   def isSpecializableClass(clazz: Symbol) =
     clazz.isClass &&
     !clazz.typeParams.isEmpty &&
-    clazz.typeParams.exists(isSpecialized(clazz, _))
+    clazz.typeParams.exists(_.isMiniboxAnnotated)
 
-  def isSpecialized(clazz: Symbol, tparam: Symbol): Boolean = {
-    beforeMiniboxDupl(tparam.info) // make sure the annotation hijacker updated it
-    tparam hasAnnotation MinispecClass
+  // Thanks to @xeno-by :)
+  implicit class RichSym(sym: Symbol) {
+    def getMiniboxedTypeParameters: List[Symbol] =
+      sym.typeParams.filter((s: Symbol) => s.isMiniboxAnnotated)
+    def hasMiniboxedTypeParameters: Boolean =
+      sym.typeParams.exists((s: Symbol) => s.isMiniboxAnnotated)
+    def isMiniboxAnnotated: Boolean = {
+      beforeMiniboxDupl(sym.info) // make sure the annotation hijacker updated it
+      sym hasAnnotation MinispecClass
+    }
   }
 
   final val MINIBOXED = 1L << 46 // we define our own flag
@@ -114,7 +121,7 @@ trait MiniboxLogic {
 
     def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
 
-    def allAnyRefPSpec(clazz: Symbol): PartialSpec = clazz.typeParams.filter(isSpecialized(clazz, _)).map(t => (t, Boxed)).toMap
+    def allAnyRefPSpec(clazz: Symbol): PartialSpec = clazz.typeParams.filter(_.isMiniboxAnnotated).map(t => (t, Boxed)).toMap
 
     // used if the current class is not miniboxed
     def fromType(tpe: TypeRef): PartialSpec = fromTypeInContext(tpe, Map.empty)

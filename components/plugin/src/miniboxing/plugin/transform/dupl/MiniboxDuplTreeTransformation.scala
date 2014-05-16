@@ -251,6 +251,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                 localTyper.typed(deriveDefDef(tree)(rhs => transform(rhs)))
             }
 
+          // force the normalized members
+          afterMiniboxDupl(sym.info)
+
           if (normbase.isDefinedAt(sym) && (normbase(sym) == sym)) {
 //            println(normbase)
             // collect method body, it will be necessary
@@ -512,7 +515,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        println(normalizations.get(target))
 //        println(!notSpecializable(target.owner, target))
 //        println(target.typeParams.exists(isSpecialized(target.owner, _)))
-        if (!notSpecializable(target.owner, target) && target.typeParams.exists(isSpecialized(target.owner, _))) {
+        if (!notSpecializable(target.owner, target) && target.typeParams.exists(_.isMiniboxAnnotated)) {
           assert(normalizations.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
           assert(normalizations(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizations(target))
 //          println(target.defString + " ==> " + normalizations(target)(pspec))
