@@ -23,12 +23,6 @@ Specializing class CC...
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait CC[@miniboxed T >: Nothing <: Any] extends Object;
-  class DC[U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CC_L[U] {
-    def <init>(): miniboxing.tests.compile.inheritance.DC[U] = {
-      DC.super.<init>();
-      ()
-    }
-  };
   class CC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
     def <init>(miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
       CC_J.super.<init>();
@@ -39,6 +33,12 @@ package miniboxing.tests.compile.inheritance {
   class CC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {
       CC_L.super.<init>();
+      ()
+    }
+  };
+  class DC[U >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.CC_L[U] {
+    def <init>(): miniboxing.tests.compile.inheritance.DC[U] = {
+      DC.super.<init>();
       ()
     }
   }

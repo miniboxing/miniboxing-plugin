@@ -55,8 +55,6 @@ Specializing class DD...
 package miniboxing.tests.compile.nested {
   abstract trait CC[@miniboxed T >: Nothing <: Any] extends Object {
     abstract trait DD[@miniboxed U >: Nothing <: Any] extends Object;
-    def test(): CC.this.DD[T];
-    def test_J(T_TypeTag: Byte): CC.this.DD[T];
     class DD_J[Usp >: Nothing <: Any] extends Object with CC.this.DD[Usp] {
       def <init>(miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte, d: Long): CC.this.DD_J[Usp] = {
         DD_J.super.<init>();
@@ -71,7 +69,9 @@ package miniboxing.tests.compile.nested {
         ()
       };
       <paramaccessor> private[this] val d: Usp = _
-    }
+    };
+    def test(): CC.this.DD[T];
+    def test_J(T_TypeTag: Byte): CC.this.DD[T]
   };
   class CC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.CC[Tsp] {
     def <init>(miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte, c: Long): miniboxing.tests.compile.nested.CC_J[Tsp] = {

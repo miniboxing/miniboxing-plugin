@@ -4,22 +4,6 @@ package miniboxing.test.compile.bugs63 {
     <stable> <accessor> <paramaccessor> def t(): T;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
-  object Test extends Object {
-    def <init>(): miniboxing.test.compile.bugs63.Test.type = {
-      Test.super.<init>();
-      ()
-    };
-    scala.this.Predef.println(MiniboxConversions.this.minibox2box[Unit](new miniboxing.test.compile.bugs63.C_J[Unit](0, MiniboxConversions.this.box2minibox_tt[Unit]((), 0)).t_J(0), 0));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2boolean(new miniboxing.test.compile.bugs63.C_J[Boolean](1, MiniboxConversions.this.boolean2minibox(false)).t_J(1)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2byte(new miniboxing.test.compile.bugs63.C_J[Byte](2, MiniboxConversions.this.byte2minibox(3)).t_J(2)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2char(new miniboxing.test.compile.bugs63.C_J[Char](4, MiniboxConversions.this.char2minibox('c')).t_J(4)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2short(new miniboxing.test.compile.bugs63.C_J[Short](3, MiniboxConversions.this.short2minibox(3)).t_J(3)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2int(new miniboxing.test.compile.bugs63.C_J[Int](5, MiniboxConversions.this.int2minibox(3)).t_J(5)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2long(new miniboxing.test.compile.bugs63.C_J[Long](6, MiniboxConversions.this.long2minibox(3L)).t_J(6)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2float(new miniboxing.test.compile.bugs63.C_J[Float](7, MiniboxConversions.this.float2minibox(3.0)).t_J(7)));
-    scala.this.Predef.println(MiniboxConversions.this.minibox2double(new miniboxing.test.compile.bugs63.C_J[Double](8, MiniboxConversions.this.double2minibox(3.0)).t_J(8)));
-    scala.this.Predef.println(new miniboxing.test.compile.bugs63.C_L[Nothing](scala.this.Predef.???()).t())
-  };
   class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
     def <init>(miniboxing|test|compile|bugs63|C_J|T_TypeTag: Byte, t: Long): miniboxing.test.compile.bugs63.C_J[Tsp] = {
       C_J.super.<init>();
@@ -38,5 +22,21 @@ package miniboxing.test.compile.bugs63 {
     <paramaccessor> private[this] val t: Tsp = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = C_L.this.t;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](C_L.this.t(), T_TypeTag)
+  };
+  object Test extends Object {
+    def <init>(): miniboxing.test.compile.bugs63.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    scala.this.Predef.println(MiniboxConversions.this.minibox2box[Unit](new miniboxing.test.compile.bugs63.C_J[Unit](0, MiniboxConversions.this.box2minibox_tt[Unit]((), 0)).t_J(0), 0));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2boolean(new miniboxing.test.compile.bugs63.C_J[Boolean](1, MiniboxConversions.this.boolean2minibox(false)).t_J(1)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2byte(new miniboxing.test.compile.bugs63.C_J[Byte](2, MiniboxConversions.this.byte2minibox(3)).t_J(2)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2char(new miniboxing.test.compile.bugs63.C_J[Char](4, MiniboxConversions.this.char2minibox('c')).t_J(4)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2short(new miniboxing.test.compile.bugs63.C_J[Short](3, MiniboxConversions.this.short2minibox(3)).t_J(3)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2int(new miniboxing.test.compile.bugs63.C_J[Int](5, MiniboxConversions.this.int2minibox(3)).t_J(5)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2long(new miniboxing.test.compile.bugs63.C_J[Long](6, MiniboxConversions.this.long2minibox(3L)).t_J(6)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2float(new miniboxing.test.compile.bugs63.C_J[Float](7, MiniboxConversions.this.float2minibox(3.0)).t_J(7)));
+    scala.this.Predef.println(MiniboxConversions.this.minibox2double(new miniboxing.test.compile.bugs63.C_J[Double](8, MiniboxConversions.this.double2minibox(3.0)).t_J(8)));
+    scala.this.Predef.println(new miniboxing.test.compile.bugs63.C_L[Nothing](scala.this.Predef.???()).t())
   }
 }

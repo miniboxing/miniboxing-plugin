@@ -58,10 +58,6 @@ package miniboxing.tests.compile {
     def max(x: A, y: A): A;
     def max_J(A_TypeTag: Byte, x: Long, y: Long): Long
   };
-  abstract trait ArrayOps[@miniboxed A >: Nothing <: Any] extends Object {
-    def qmax(implicit ev: miniboxing.tests.compile.Order2[A]): A;
-    def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[A]): Long
-  };
   abstract trait Order2_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Order2[Asp] {
     def max(x: Asp, y: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Order2_J.this.max_J(Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag(), MiniboxConversions.this.box2minibox_tt[Asp](x, Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag()), MiniboxConversions.this.box2minibox_tt[Asp](y, Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag())), Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag());
     def max_J(A_TypeTag: Byte, x: Long, y: Long): Long;
@@ -70,6 +66,10 @@ package miniboxing.tests.compile {
   abstract trait Order2_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Order2[Asp] {
     def max(x: Asp, y: Asp): Asp;
     def max_J(A_TypeTag: Byte, x: Long, y: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](Order2_L.this.max(MiniboxConversions.this.minibox2box[Asp](x, A_TypeTag), MiniboxConversions.this.minibox2box[Asp](y, A_TypeTag)), A_TypeTag)
+  };
+  abstract trait ArrayOps[@miniboxed A >: Nothing <: Any] extends Object {
+    def qmax(implicit ev: miniboxing.tests.compile.Order2[A]): A;
+    def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[A]): Long
   };
   final class ArrayOps_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArrayOps[Asp] {
     def <init>(miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte, arr: Array[Asp]): miniboxing.tests.compile.ArrayOps_J[Asp] = {

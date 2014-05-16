@@ -171,25 +171,6 @@ package miniboxing.tests.correctness {
     <stable> <caseaccessor> <accessor> def v_JL(U_TypeTag: Byte): V;
     <stable> <caseaccessor> <accessor> def v_LJ(V_TypeTag: Byte): Long
   };
-  <synthetic> object SpCls4Tuple2 extends Object with Serializable {
-    def <init>(): miniboxing.tests.correctness.SpCls4Tuple2.type = {
-      SpCls4Tuple2.super.<init>();
-      ()
-    };
-    final override <synthetic> def toString(): String = "SpCls4Tuple2";
-    case <synthetic> def apply[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any](u: U, v: V): miniboxing.tests.correctness.SpCls4Tuple2[U,V] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[U,V](u, v);
-    case <synthetic> def unapply[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any](x$0: miniboxing.tests.correctness.SpCls4Tuple2[U,V]): Option[(U, V)] = if (x$0.==(null))
-      scala.this.None
-    else
-      new Some[(U, V)](new (U, V)(x$0.u(), x$0.v()));
-    <synthetic> private def readResolve(): Object = correctness.this.SpCls4Tuple2
-  };
-  abstract trait SpCls4[@miniboxed S >: Nothing <: Any] extends Object {
-    def normalizeMe1[@miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
-    def normalizeMe1_J[@miniboxed T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
-    def normalizeMe1_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, S_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
-    def normalizeMe1_n_J[T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
-  };
   case class SpCls4Tuple2_JJ[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.correctness.SpCls4Tuple2[Usp,Vsp] {
     def <init>(miniboxing|tests|correctness|SpCls4Tuple2_JJ|U_TypeTag: Byte, miniboxing|tests|correctness|SpCls4Tuple2_JJ|V_TypeTag: Byte, u: Long, v: Long): miniboxing.tests.correctness.SpCls4Tuple2_JJ[Usp,Vsp] = {
       SpCls4Tuple2_JJ.super.<init>();
@@ -257,6 +238,25 @@ package miniboxing.tests.correctness {
     <stable> <caseaccessor> <accessor> def v_JJ(U_TypeTag: Byte, V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_LL.this.v(), V_TypeTag);
     <stable> <caseaccessor> <accessor> def v_JL(U_TypeTag: Byte): Vsp = SpCls4Tuple2_LL.this.v();
     <stable> <caseaccessor> <accessor> def v_LJ(V_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Vsp](SpCls4Tuple2_LL.this.v(), V_TypeTag)
+  };
+  <synthetic> object SpCls4Tuple2 extends Object with Serializable {
+    def <init>(): miniboxing.tests.correctness.SpCls4Tuple2.type = {
+      SpCls4Tuple2.super.<init>();
+      ()
+    };
+    final override <synthetic> def toString(): String = "SpCls4Tuple2";
+    case <synthetic> def apply[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any](u: U, v: V): miniboxing.tests.correctness.SpCls4Tuple2[U,V] = new miniboxing.tests.correctness.SpCls4Tuple2_LL[U,V](u, v);
+    case <synthetic> def unapply[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any](x$0: miniboxing.tests.correctness.SpCls4Tuple2[U,V]): Option[(U, V)] = if (x$0.==(null))
+      scala.this.None
+    else
+      new Some[(U, V)](new (U, V)(x$0.u(), x$0.v()));
+    <synthetic> private def readResolve(): Object = correctness.this.SpCls4Tuple2
+  };
+  abstract trait SpCls4[@miniboxed S >: Nothing <: Any] extends Object {
+    def normalizeMe1[@miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_J[@miniboxed T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, S_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[S,T];
+    def normalizeMe1_n_J[T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
   };
   class SpCls4_J[Ssp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls4[Ssp] {
     def <init>(miniboxing|tests|correctness|SpCls4_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls4_J[Ssp] = {

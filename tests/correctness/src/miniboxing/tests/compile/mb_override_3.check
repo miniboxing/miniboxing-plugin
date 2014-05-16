@@ -155,18 +155,6 @@ package miniboxing.tests.compile {
     def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
     def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
   };
-  abstract trait Base32[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base31[T,S] {
-    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
-    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
-    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
-  };
-  abstract trait Base33[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base32[T,S] {
-    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
-    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
-    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
-  };
   abstract trait Base31_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base31[Tsp,Ssp] {
     def miniboxing|tests|compile|Base31_JJ|S_TypeTag(): Byte;
     def miniboxing|tests|compile|Base31_JJ|T_TypeTag(): Byte;
@@ -195,6 +183,12 @@ package miniboxing.tests.compile {
     def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base31_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T_TypeTag), s), T_TypeTag);
     def overrideMe_LJ(S_TypeTag: Byte, t1: Tsp, t2: Tsp, t3: Tsp, s: Long): Tsp = Base31_LL.this.overrideMe(t1, t2, t3, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
   };
+  abstract trait Base32[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base31[T,S] {
+    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
+    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
+    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
+  };
   abstract trait Base32_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base31_JJ[Tsp,Ssp] with miniboxing.tests.compile.Base32[Tsp,Ssp] {
     def miniboxing|tests|compile|Base32_JJ|S_TypeTag(): Byte;
     def miniboxing|tests|compile|Base32_JJ|T_TypeTag(): Byte;
@@ -222,6 +216,12 @@ package miniboxing.tests.compile {
     override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base32_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T_TypeTag), MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag)), T_TypeTag);
     override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base32_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T_TypeTag), s), T_TypeTag);
     override def overrideMe_LJ(S_TypeTag: Byte, t1: Tsp, t2: Tsp, t3: Tsp, s: Long): Tsp = Base32_LL.this.overrideMe(t1, t2, t3, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
+  };
+  abstract trait Base33[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base32[T,S] {
+    override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Long): Long;
+    override def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long;
+    override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
   };
   abstract trait Base33_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base32_JJ[Tsp,Ssp] with miniboxing.tests.compile.Base33[Tsp,Ssp] {
     def miniboxing|tests|compile|Base33_JJ|S_TypeTag(): Byte;

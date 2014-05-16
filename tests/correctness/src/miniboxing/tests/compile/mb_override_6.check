@@ -13,12 +13,6 @@ package miniboxing.tests.compile {
     def overrideMe_LJ_n_J[C >: Nothing <: Any](C_TypeTag: Byte, S_TypeTag: Byte, t1: T, t2: T, s: Long, c: Long): T;
     def overrideMe_n_J[C >: Nothing <: Any](C_TypeTag: Byte, t1: T, t2: T, s: S, c: Long): T
   };
-  abstract trait Base62[@miniboxed T >: Nothing <: Any, S >: Nothing <: Any] extends AnyRef {
-    override def overrideMe[@miniboxed C >: Nothing <: Any](t1: T, t2: T, s: S, c: C): T;
-    override def overrideMe_J[@miniboxed C >: Nothing <: Any](T_TypeTag: Byte, t1: Long, t2: Long, s: S, c: C): Long;
-    override def overrideMe_J_n_J[C >: Nothing <: Any](C_TypeTag: Byte, T_TypeTag: Byte, t1: Long, t2: Long, s: S, c: Long): Long;
-    override def overrideMe_n_J[C >: Nothing <: Any](C_TypeTag: Byte, t1: T, t2: T, s: S, c: Long): T
-  };
   class Base61_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base61[Tsp,Ssp] {
     def <init>(miniboxing|tests|compile|Base61_JJ|T_TypeTag: Byte, miniboxing|tests|compile|Base61_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base61_JJ[Tsp,Ssp] = {
       Base61_JJ.super.<init>();
@@ -78,6 +72,12 @@ package miniboxing.tests.compile {
     def overrideMe_LJ[@miniboxed C >: Nothing <: Any](S_TypeTag: Byte, t1: Tsp, t2: Tsp, s: Long, c: C): Tsp = Base61_LL.this.overrideMe[C](t1, t2, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag), c);
     def overrideMe_LJ_n_J[C >: Nothing <: Any](C_TypeTag: Byte, S_TypeTag: Byte, t1: Tsp, t2: Tsp, s: Long, c: Long): Tsp = Base61_LL.this.overrideMe_n_J[C](C_TypeTag, t1, t2, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag), c);
     def overrideMe_n_J[C >: Nothing <: Any](C_TypeTag: Byte, t1: Tsp, t2: Tsp, s: Ssp, c: Long): Tsp = t1
+  };
+  abstract trait Base62[@miniboxed T >: Nothing <: Any, S >: Nothing <: Any] extends AnyRef {
+    override def overrideMe[@miniboxed C >: Nothing <: Any](t1: T, t2: T, s: S, c: C): T;
+    override def overrideMe_J[@miniboxed C >: Nothing <: Any](T_TypeTag: Byte, t1: Long, t2: Long, s: S, c: C): Long;
+    override def overrideMe_J_n_J[C >: Nothing <: Any](C_TypeTag: Byte, T_TypeTag: Byte, t1: Long, t2: Long, s: S, c: Long): Long;
+    override def overrideMe_n_J[C >: Nothing <: Any](C_TypeTag: Byte, t1: T, t2: T, s: S, c: Long): T
   };
   class Base62_J[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends miniboxing.tests.compile.Base61_JL[Tsp,Ssp] with miniboxing.tests.compile.Base62[Tsp,Ssp] {
     def <init>(miniboxing|tests|compile|Base62_J|T_TypeTag: Byte): miniboxing.tests.compile.Base62_J[Tsp,Ssp] = {

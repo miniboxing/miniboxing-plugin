@@ -61,29 +61,6 @@ package miniboxing.tests.compile {
     def overrideMe_JL(T_TypeTag: Byte, t: Long, s: S): Long;
     def overrideMe_LJ(S_TypeTag: Byte, t: T, s: Long): T
   };
-  class Override11[T >: Nothing <: Any, S >: Nothing <: Any] extends miniboxing.tests.compile.Base1_LL[T,S] {
-    def <init>(): miniboxing.tests.compile.Override11[T,S] = {
-      Override11.super.<init>();
-      ()
-    };
-    override def overrideMe(t: T, s: S): T = scala.this.Predef.???()
-  };
-  class Override12[T >: Nothing <: Any] extends miniboxing.tests.compile.Base1_LJ[T,Int] {
-    def <init>(): miniboxing.tests.compile.Override12[T] = {
-      Override12.super.<init>(5);
-      ()
-    };
-    override def overrideMe(t: T, s: Int): T = Override12.this.overrideMe_LJ(5, t, MiniboxConversions.this.int2minibox(s));
-    override def overrideMe_LJ(S_TypeTag: Byte, t: T, s: Long): T = scala.this.Predef.???()
-  };
-  class Override13 extends miniboxing.tests.compile.Base1_JJ[Int,Int] {
-    def <init>(): miniboxing.tests.compile.Override13 = {
-      Override13.super.<init>(5, 5);
-      ()
-    };
-    override def overrideMe(t: Int, s: Int): Int = MiniboxConversions.this.minibox2int(Override13.this.overrideMe_JJ(5, 5, MiniboxConversions.this.int2minibox(t), MiniboxConversions.this.int2minibox(s)));
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
-  };
   class Base1_JJ[Tsp >: Nothing <: Any, Ssp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Base1[Tsp,Ssp] {
     def <init>(miniboxing|tests|compile|Base1_JJ|T_TypeTag: Byte, miniboxing|tests|compile|Base1_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base1_JJ[Tsp,Ssp] = {
       Base1_JJ.super.<init>();
@@ -127,6 +104,29 @@ package miniboxing.tests.compile {
     def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base1_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag)), T_TypeTag);
     def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base1_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), s), T_TypeTag);
     def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = Base1_LL.this.overrideMe(t, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
+  };
+  class Override11[T >: Nothing <: Any, S >: Nothing <: Any] extends miniboxing.tests.compile.Base1_LL[T,S] {
+    def <init>(): miniboxing.tests.compile.Override11[T,S] = {
+      Override11.super.<init>();
+      ()
+    };
+    override def overrideMe(t: T, s: S): T = scala.this.Predef.???()
+  };
+  class Override12[T >: Nothing <: Any] extends miniboxing.tests.compile.Base1_LJ[T,Int] {
+    def <init>(): miniboxing.tests.compile.Override12[T] = {
+      Override12.super.<init>(5);
+      ()
+    };
+    override def overrideMe(t: T, s: Int): T = Override12.this.overrideMe_LJ(5, t, MiniboxConversions.this.int2minibox(s));
+    override def overrideMe_LJ(S_TypeTag: Byte, t: T, s: Long): T = scala.this.Predef.???()
+  };
+  class Override13 extends miniboxing.tests.compile.Base1_JJ[Int,Int] {
+    def <init>(): miniboxing.tests.compile.Override13 = {
+      Override13.super.<init>(5, 5);
+      ()
+    };
+    override def overrideMe(t: Int, s: Int): Int = MiniboxConversions.this.minibox2int(Override13.this.overrideMe_JJ(5, 5, MiniboxConversions.this.int2minibox(t), MiniboxConversions.this.int2minibox(s)));
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
   }
 }
 

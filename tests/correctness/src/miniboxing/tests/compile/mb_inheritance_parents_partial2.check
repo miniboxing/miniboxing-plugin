@@ -56,7 +56,6 @@ Specializing class PPredicate...
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait FF1[@miniboxed T >: Nothing <: Any, @miniboxed R >: Nothing <: Any] extends Object;
-  abstract trait PPredicate[@miniboxed T >: Nothing <: Any] extends AnyRef;
   class FF1_JJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.FF1[Tsp,Rsp] {
     def <init>(miniboxing|tests|compile|inheritance|FF1_JJ|T_TypeTag: Byte, miniboxing|tests|compile|inheritance|FF1_JJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Rsp] = {
       FF1_JJ.super.<init>();
@@ -85,6 +84,7 @@ package miniboxing.tests.compile.inheritance {
       ()
     }
   };
+  abstract trait PPredicate[@miniboxed T >: Nothing <: Any] extends AnyRef;
   class PPredicate_J[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
     def <init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] = {
       PPredicate_J.super.<init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag, 1);

@@ -72,14 +72,6 @@ package miniboxing.tests.compile {
     def foo(x: X, y: Y): X;
     def foo_J(X_TypeTag: Byte, x: Long, y: Y): Long
   };
-  abstract trait OhUh[@miniboxed U >: Nothing <: Any] extends Object {
-    <accessor> <paramaccessor> def u(): U;
-    <accessor> <paramaccessor> def u_=(x$1: U): Unit;
-    def test(): U;
-    def test_J(U_TypeTag: Byte): Long;
-    <accessor> def u_J(U_TypeTag: Byte): Long;
-    <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit
-  };
   class UhOh_J[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
     def <init>(miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh_J[Xsp,Ysp] = {
       UhOh_J.super.<init>();
@@ -96,6 +88,14 @@ package miniboxing.tests.compile {
     };
     def foo(x: Xsp, y: Ysp): Xsp = UhOh_L.this.foo(x, y);
     def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = MiniboxConversions.this.box2minibox_tt[Xsp](UhOh_L.this.foo(MiniboxConversions.this.minibox2box[Xsp](x, X_TypeTag), y), X_TypeTag)
+  };
+  abstract trait OhUh[@miniboxed U >: Nothing <: Any] extends Object {
+    <accessor> <paramaccessor> def u(): U;
+    <accessor> <paramaccessor> def u_=(x$1: U): Unit;
+    def test(): U;
+    def test_J(U_TypeTag: Byte): Long;
+    <accessor> def u_J(U_TypeTag: Byte): Long;
+    <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit
   };
   class OhUh_J[Usp >: Nothing <: Any] extends Object with miniboxing.tests.compile.OhUh[Usp] {
     def <init>(miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte, u: Long): miniboxing.tests.compile.OhUh_J[Usp] = {

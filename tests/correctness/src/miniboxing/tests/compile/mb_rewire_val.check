@@ -6,10 +6,6 @@ package miniboxing.tests.compile {
     def test(t: T): T;
     def test_J(T_TypeTag: Byte, t: Long): Long
   };
-  abstract trait LocalRewire[@miniboxed T >: Nothing <: Any] extends Object {
-    def test(t: T): T;
-    def test_J(T_TypeTag: Byte, t: Long): Long
-  };
   class ArgumentRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
     def <init>(miniboxing|tests|compile|ArgumentRewire_J|T_TypeTag: Byte): miniboxing.tests.compile.ArgumentRewire_J[Tsp] = {
       ArgumentRewire_J.super.<init>();
@@ -34,6 +30,10 @@ package miniboxing.tests.compile {
       scala.this.Predef.identity[Tsp](t)
     };
     def test_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](ArgumentRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+  };
+  abstract trait LocalRewire[@miniboxed T >: Nothing <: Any] extends Object {
+    def test(t: T): T;
+    def test_J(T_TypeTag: Byte, t: Long): Long
   };
   class LocalRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
     def <init>(miniboxing|tests|compile|LocalRewire_J|T_TypeTag: Byte): miniboxing.tests.compile.LocalRewire_J[Tsp] = {

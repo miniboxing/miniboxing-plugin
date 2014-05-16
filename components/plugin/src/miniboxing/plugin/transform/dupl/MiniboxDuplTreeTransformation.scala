@@ -119,15 +119,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       tree match {
 
-        // We have created just the symbols for the specialized classes - now it's time to create their trees as well (initially empty).
-        case PackageDef(pid, classdefs) =>
-          atOwner(tree, tree.symbol) {
-            val specClassesTpls = createSpecializedClassesTrees(classdefs)
-            val specClassesTped = specClassesTpls map localTyper.typed
-            val templates = transformStats(classdefs ::: specClassesTped, tree.symbol.moduleClass)
-            val packageTree = treeCopy.PackageDef(tree, pid, templates)
-            localTyper.typedPos(tree.pos)(packageTree)
-          }
+        case ClassDef(_, _, _, impl: Template) if isSpecializableClass(tree.symbol) =>
+          val _trait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
+          val _spec = createSpecializedClassesTrees(List(_trait)) map localTyper.typed map transform
+          _trait :: _spec
 
         case Template(parents, self, body) =>
           MethodBodiesCollector(tree)
@@ -138,10 +133,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           //  Also collect the bodies of the methods that need to be copied and specialized.
           val sym = tree.symbol.enclClass
           val decls = afterMiniboxDupl(sym.info).decls.toList
-
-          // specialized classes inside this template
-          val specClassesTpls = createSpecializedClassesTrees(body)
-          val specClassesTped = specClassesTpls map localTyper.typed
 
           // members
           val specMembers = createMethodTrees(tree.symbol.enclClass) map (localTyper.typed)
@@ -168,7 +159,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               }).flatten
             } else
               body
-          val memberDefs = atOwner(currentOwner)(transformTrees(bodyDefs ::: specMembers ::: specClassesTped))
+          val memberDefs = atOwner(currentOwner)(transformStats(bodyDefs ::: specMembers, sym))
 
           // parents
           val parents1 = map2(sym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)

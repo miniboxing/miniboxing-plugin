@@ -44,40 +44,6 @@ Specializing class Sp5Tuple2...
 [[syntax trees at end of              minibox-spec]] // newSource1.scala
 package miniboxing.tests.correctness {
   abstract trait Sp5Tuple2[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any] extends Object;
-  object Sp5Test extends Object {
-    def <init>(): miniboxing.tests.correctness.Sp5Test.type = {
-      Sp5Test.super.<init>();
-      ()
-    };
-    def normalize[@miniboxed S >: Nothing <: Any, @miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LL[S,T](s, t);
-        bar()
-      };
-      foo()
-    };
-    def normalize_n_JJ[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JJ[S,T](S_TypeTag, T_TypeTag, s, t);
-        bar()
-      };
-      foo()
-    };
-    def normalize_n_JL[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JL[S,T](S_TypeTag, s, t);
-        bar()
-      };
-      foo()
-    };
-    def normalize_n_LJ[S >: Nothing <: Any, T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
-        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LJ[S,T](T_TypeTag, s, t);
-        bar()
-      };
-      foo()
-    }
-  };
   class Sp5Tuple2_JJ[Usp >: Nothing <: Any, Vsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.Sp5Tuple2[Usp,Vsp] {
     def <init>(miniboxing|tests|correctness|Sp5Tuple2_JJ|U_TypeTag: Byte, miniboxing|tests|correctness|Sp5Tuple2_JJ|V_TypeTag: Byte, u: Long, v: Long): miniboxing.tests.correctness.Sp5Tuple2_JJ[Usp,Vsp] = {
       Sp5Tuple2_JJ.super.<init>();
@@ -113,6 +79,40 @@ package miniboxing.tests.correctness {
     };
     <paramaccessor> private[this] val u: Usp = _;
     <paramaccessor> private[this] val v: Vsp = _
+  };
+  object Sp5Test extends Object {
+    def <init>(): miniboxing.tests.correctness.Sp5Test.type = {
+      Sp5Test.super.<init>();
+      ()
+    };
+    def normalize[@miniboxed S >: Nothing <: Any, @miniboxed T >: Nothing <: Any](s: S, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LL[S,T](s, t);
+        bar()
+      };
+      foo()
+    };
+    def normalize_n_JJ[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, T_TypeTag: Byte, s: Long, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JJ[S,T](S_TypeTag, T_TypeTag, s, t);
+        bar()
+      };
+      foo()
+    };
+    def normalize_n_JL[S >: Nothing <: Any, T >: Nothing <: Any](S_TypeTag: Byte, s: Long, t: T): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_JL[S,T](S_TypeTag, s, t);
+        bar()
+      };
+      foo()
+    };
+    def normalize_n_LJ[S >: Nothing <: Any, T >: Nothing <: Any](T_TypeTag: Byte, s: S, t: Long): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+      def foo(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = {
+        def bar(): miniboxing.tests.correctness.Sp5Tuple2[S,T] = new miniboxing.tests.correctness.Sp5Tuple2_LJ[S,T](T_TypeTag, s, t);
+        bar()
+      };
+      foo()
+    }
   }
 }
 
