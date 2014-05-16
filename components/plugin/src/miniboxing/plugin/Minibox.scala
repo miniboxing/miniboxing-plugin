@@ -30,7 +30,8 @@ trait MiniboxDuplComponent extends
     with MiniboxDuplTreeTransformation
     with MiniboxDuplTreeSupport
     with MiniboxSpecializationInfo
-    with MiniboxDefinitions {
+    with MiniboxDefinitions
+    with TreeRewriters {
 
   def mboxDuplPhase: StdPhase
 

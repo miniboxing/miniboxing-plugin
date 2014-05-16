@@ -8,10 +8,13 @@ trait MiniboxLogging {
 
   val global: Global
 
-  def log(msg: => Any) = if (flag_log) println(msg.toString)
+  import global._
+
+  def global_log(msg: => String) = if (settings.log.value.contains(phaseName)) global.log(msg)
+  def log(msg: => Any) = if (flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
   def mblog(msg: => Any) = log(msg)
-  def debug(msg: => Any) = if (flag_debug) println(msg.toString)
-  def stats(msg: => Any) = if (flag_stats) println(msg.toString)
+  def debug(msg: => Any) = if (flag_debug) global_log(msg.toString)
+  def stats(msg: => Any) = if (flag_stats) global_log(msg.toString)
 
   def printTree(label: Any, tree: global.Tree) = {
 //    val showTrees = global.settings.Xshowtrees.value

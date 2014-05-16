@@ -109,8 +109,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     def typeTagTrees(member: Symbol = currentOwner) =
       MiniboxDuplTreeTransformation.this.typeTagTrees(member)
 
-    override def transform(tree: Tree): Tree = miniboxTransform(tree)
-
     def miniboxQualifier(pos: Position, tpe: Type): Type = {
       val oldClass = tpe.typeSymbol
       val newClass =
@@ -144,9 +142,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       case _ => NoType
     }
 
-    def miniboxTransform(tree: Tree): Tree = {
+    override def transform(tree: Tree): Tree = rewrite(tree)
 
+    def rewrite(tree: Tree): Tree = {
       curTree = tree
+
       // make sure specializations have been performed
       tree match {
         case t: SymTree if t.symbol != null => afterMiniboxDupl(t.symbol.info)
@@ -154,10 +154,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
 
       tree match {
-        /*
-         *  We have created just the symbols for the specialized classes - now
-         *  it's time to create their trees as well (initially empty).
-         */
+
+        // We have created just the symbols for the specialized classes - now it's time to create their trees as well (initially empty).
         case PackageDef(pid, classdefs) =>
           atOwner(tree, tree.symbol) {
             val specClassesTpls = createSpecializedClassesTrees(classdefs)
@@ -217,23 +215,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
           tree1
 
-        // TODO: What I need
-        // - rewire selects
-        // - rewire typeapplys
-        // - rewire applys
-        // - constructors?
-        // - super calls?
-
-        /*
-         * The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
-         */
+        // The trait constructor -- which we leave empty as this is just a simple interface, nothing special about it
         case ddef @ DefDef(mods, name, tparams, vparams :: Nil, tpt, _) if specializedBase(ddef.symbol.enclClass) && ddef.symbol.name != nme.MIXIN_CONSTRUCTOR && !notSpecializable(ddef.symbol.enclClass, ddef.symbol) =>
           localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
 
-        /*
-         * A definition with empty body - add a body as prescribed by the
-         * `methodSpecializationInfo` data structure.
-         */
+        // A definition with empty body - add a body as prescribed by the `methodSpecializationInfo` data structure.
         case ddef @ DefDef(mods, name, tparams, vparams :: Nil, tpt, _) if hasInfo(ddef) =>
           val res = memberSpecializationInfo.apply(tree.symbol) match {
             // Implement the getter or setter functionality
@@ -653,10 +639,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       buf.toList
     }
 
-    /*
-     * We collect the bodies of the target methods in order to have them available
-     * for copying inside the methods that are specialized implementations of them.
-     */
+    // We collect the bodies of the target methods in order to have them available
+    // for copying inside the methods that are specialized implementations of them.
     private object MethodBodiesCollector extends Traverser {
       private val body = HashMap[Symbol, (Tree, List[List[Symbol]])]()
 
