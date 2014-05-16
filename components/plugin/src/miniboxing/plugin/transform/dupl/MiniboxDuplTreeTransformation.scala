@@ -16,29 +16,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
   import typer.{ typed, atOwner }
   import memberSpecializationInfo._
 
-  /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_minibox_to_box(tree: Tree, tpe: Type, currentOwner: Symbol): Tree = {
-    val tpe1 = tree.tpe
-    val tags = typeTagTrees(currentOwner)
-    // sanity checks
-    assert(tpe1 == LongTpe, tree + " expecting .tpe to be Long, not " + tpe + ".")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
-
-    gen.mkMethodCall(minibox2box, List(tpe), List(tree, tags(tpe.typeSymbol)))
-  }
-
-  /** Generate the code to convert a miniboxed value to its boxed representation */
-  def convert_box_to_minibox(tree: Tree, currentOwner: Symbol): Tree = {
-    val tpe = tree.tpe
-    val tags = typeTagTrees(currentOwner)
-    // sanity checks
-    // this is a wrong assumption, violated when overriding miniboxed type params by long:
-    // assert(tpe != LongTpe, tree + " expecting .tpe to be Tsp, not Long.")
-    assert(tags.isDefinedAt(tpe.typeSymbol), tpe + " (" + showRaw(tpe) + ") does not correspond to a tag: " + tags + " in " + currentOwner)
-
-    gen.mkMethodCall(box2minibox, List(tpe), List(tree, tags(tpe.typeSymbol)))
-  }
-
   var ttindent = 0
 
   // TODO: This should be:
@@ -87,17 +64,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
         override def castType(tree: Tree, pt: Type): Tree = {
-          // log(" expected type: " + pt)
-          // log(" tree type: " + tree.tpe)
-          // tree.tpe = if (tree.tpe != null) fixType(tree.tpe) else null
-          // log(" tree type: " + tree.tpe)
-//          val ntree = if (tree.tpe != null && !(tree.tpe <:< pt)) {
-//            val casttpe = CastMap(tree.tpe)
-//            if (casttpe <:< pt) gen.mkCast(tree, casttpe)
-//            else if (casttpe <:< CastMap(pt)) gen.mkCast(tree, pt)
-//            else tree
-//          } else tree
-//          ntree.tpe = null
           tree.tpe = null
           tree
         }
