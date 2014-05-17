@@ -12,6 +12,8 @@ trait MiniboxDefinitions {
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
+  final val MINIBOXED = 1L << 46 // we define our own flag
+
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
   /**
    * This class should only appear in the tree during the `minibox` phase

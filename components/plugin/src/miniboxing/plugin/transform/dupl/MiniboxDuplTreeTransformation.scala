@@ -618,8 +618,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       override def traverse(tree: Tree) = tree match {
         case DefDef(_, _, _, vparamss, _, rhs) if (templateMembers(tree.symbol)) =>
           collect(tree.symbol, rhs, vparamss.map(_.map(_.symbol)))
-        case DefDef(_, _, _, Nil, _, rhs) if (templateMembers(tree.symbol)) =>
-          collect(tree.symbol, rhs, Nil)
         case ValDef(mods, name, tpt, rhs) if templateMembers(tree.symbol) =>
           collect(tree.symbol, rhs, Nil)
         case _ =>

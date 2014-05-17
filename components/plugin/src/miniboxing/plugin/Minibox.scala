@@ -24,13 +24,15 @@ trait HijackComponent extends
 /** Duplicator component `def t -> def t_L, def t_J` */
 trait MiniboxDuplComponent extends
     PluginComponent
-    with MiniboxLogic
-    with MiniboxDuplInfoTransformation
     with MiniboxLogging
+    with MiniboxDefinitions
+    with MiniboxNameUtils
+    with MiniboxMetadata
+    with MiniboxMetadataUtils
+    with MiniboxMethodInfo
+    with MiniboxDuplInfoTransformation
     with MiniboxDuplTreeTransformation
     with MiniboxDuplTreeSupport
-    with MiniboxSpecializationInfo
-    with MiniboxDefinitions
     with TreeRewriters {
 
   def mboxDuplPhase: StdPhase

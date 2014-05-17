@@ -465,7 +465,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             } else {
               // here, we're forwarding to the all-AnyRef member, knowing that the
               // redirection algorithm will direct to the appropriate member later
-              val target = newMembers(overloads(mbr)(pspec.allAnyRef))
+              val target = newMembers(overloads(mbr)(pspec.isAllBoxed))
               // a forwarder will never be a tailcall itself, although it may
               // forward to a tailcall method:
               newMbr.removeAnnotation(TailrecClass)
@@ -703,7 +703,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
               case _ =>
-                templateMembers += sym
                 memberSpecializationInfo(sym) = genForwardingInfo(sym, overrider = true)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
             }
