@@ -7,8 +7,24 @@ then
   exit 1
 fi
 
-cp $1 $DIR
-vim $DIR/${1/\.scala/.flags}
-vim $DIR/${1/\.scala/.check}
-vim $DIR/${1/\.scala/.launch}
-ls $DIR/${1/\.scala/\*}
+FILE=$1
+shift
+
+# file
+cp $FILE $DIR
+
+# command-line args
+if [ $# -eq 0 ]
+then
+  vim $DIR/${FILE/\.scala/.flags}
+else
+  echo $@ > $DIR/${FILE/\.scala/.flags}
+fi
+
+# checked output
+vim $DIR/${FILE/\.scala/.check}
+sed -i "s/$FILE/newSource1.scala/" $DIR/${FILE/\.scala/.check}
+
+# launch configuration
+vim $DIR/${FILE/\.scala/.launch}
+ls $DIR/${FILE/\.scala/\*}
