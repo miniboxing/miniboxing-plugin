@@ -1,4 +1,3 @@
-
 [[syntax trees at end of              minibox-dupl]] // newSource1.scala
 package miniboxing.tests.compile.bug69.full {
   object Test extends Object {
