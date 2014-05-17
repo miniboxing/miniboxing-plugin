@@ -22,6 +22,8 @@ abstract class Duplicators extends Analyzer {
   import global._
   import definitions.{ AnyRefClass, AnyValClass }
 
+  case class AnnotationAttachment(annots: List[AnnotationInfo])
+
   def retyped(context: Context, tree: Tree): Tree = {
     resetClassOwners
     (newBodyDuplicator(context)).typed(tree)
@@ -269,6 +271,10 @@ abstract class Duplicators extends Analyzer {
             tree.symbol = NoSymbol
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
+            if (!tdef.symbol.annotations.isEmpty) {
+              val newAtt = tdef.attachments.update[AnnotationAttachment](AnnotationAttachment(tdef.symbol.annotations))
+               tdef.setAttachments(newAtt)
+            }
             tdef.symbol = NoSymbol
             invalidateAll(tparams)
 
@@ -280,6 +286,17 @@ abstract class Duplicators extends Analyzer {
             tree.symbol = NoSymbol
         }
       }
+    }
+
+    override def typedTypeDef(td: TypeDef): TypeDef = {
+      val res = super.typedTypeDef(td)
+      td.attachments.get[AnnotationAttachment] match {
+        case Some(AnnotationAttachment(annots)) if res.hasSymbol =>
+          for (annot <- annots)
+            res.symbol.deSkolemize.addAnnotation(annot)
+        case _ =>
+      }
+      res
     }
 
     private def invalidateAll(stats: List[Tree], owner: Symbol = NoSymbol) {
