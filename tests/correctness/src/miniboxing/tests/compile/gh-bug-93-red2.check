@@ -1,0 +1,35 @@
+[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+package miniboxing.tests.compile.bug69.red2 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug69.red2.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def foo[@miniboxed T >: Nothing <: Any](t: T): T = {
+      def bar[@miniboxed U >: Nothing <: Any](u: U): U = {
+        def baz[@miniboxed V >: Nothing <: Any](v: V): V = v;
+        def baz_n_J[V >: Nothing <: Any](V_TypeTag: Byte, v: V @storage): V @storage = v;
+        baz[U](u)
+      };
+      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage): U @storage = {
+        def baz[@miniboxed V >: Nothing <: Any](v: V): V = v;
+        def baz_n_J[V >: Nothing <: Any](V_TypeTag: Byte, v: V @storage): V @storage = v;
+        baz[U](u)
+      };
+      bar[T](t)
+    };
+    def foo_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = {
+      def bar[@miniboxed U >: Nothing <: Any](u: U): U = {
+        def baz[@miniboxed V >: Nothing <: Any](v: V): V = v;
+        def baz_n_J[V >: Nothing <: Any](V_TypeTag: Byte, v: V @storage): V @storage = v;
+        baz[U](u)
+      };
+      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage): U @storage = {
+        def baz[@miniboxed V >: Nothing <: Any](v: V): V = v;
+        def baz_n_J[V >: Nothing <: Any](V_TypeTag: Byte, v: V @storage): V @storage = v;
+        baz[U](u)
+      };
+      bar[T](t)
+    }
+  }
+}
