@@ -254,7 +254,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // force the normalized members
           afterMiniboxDupl(sym.info)
 
-          if (normbase.isDefinedAt(sym) && (normbase(sym) == sym)) {
+          if (normalizationStemMember.isDefinedAt(sym) && (normalizationStemMember(sym) == sym)) {
 //            println(normbase)
             // collect method body, it will be necessary
             // for the normalized members
@@ -482,7 +482,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
 
-      if (normbase.isDefinedAt(target)) {
+      if (normalizationStemMember.isDefinedAt(target)) {
         val tparams = afterMiniboxDupl(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + inMethod + " of " + inClass + ": " + targs.length)
         val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
@@ -596,7 +596,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       // keep the order for constructors:
       val decls        = sClass.info.decls.toList.filter(s => s.hasFlag(MINIBOXED))
       val constructors = decls.filter(_.isConstructor)
-      val methods      = decls.filterNot(_.isConstructor).filter(s => normbase.getOrElse(s, s) == s).sortBy(_.defString)
+      val methods      = decls.filterNot(_.isConstructor).filter(s => normalizationStemMember.getOrElse(s, s) == s).sortBy(_.defString)
 
       // create bodies
       for (m <- constructors ::: methods) {
@@ -703,10 +703,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val symbol = tree.symbol
       debuglog("specializing body of " + symbol.defString)
       val (tparams, tags, vparams, tpt) = tree match {
-        case DefDef(_, _, tparams, tvparams :: Nil, tpt, _) if base.getOrElse(symbol, NoSymbol) != symbol =>
+        case DefDef(_, _, tparams, tvparams :: Nil, tpt, _) if specializationStemMember.getOrElse(symbol, NoSymbol) != symbol =>
           val (ttags, vparams) = separateTypeTagArgsInTree(tvparams)
           (tparams, ttags, vparams, tpt)
-        case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if base.getOrElse(symbol, NoSymbol) == symbol =>
+        case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if specializationStemMember.getOrElse(symbol, NoSymbol) == symbol =>
           (tparams, Nil, vparams, tpt)
       }
       val env = typeEnv.getOrElse(symbol, EmptyTypeEnv)

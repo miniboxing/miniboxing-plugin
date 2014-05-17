@@ -160,7 +160,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       return List()
 
     // mark the member as the base
-    normbase(member) = member
+    normalizationStemMember(member) = member
 
     val tparams = member.getMiniboxedTypeParameters
     tparams foreach (_ setFlag MINIBOXED)
@@ -207,7 +207,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       normalizationsOfMember(pspec) = newMbr
       normalizations(newMbr) = normalizationsOfMember
-      normbase(newMbr) = member
+      normalizationStemMember(newMbr) = member
 
       (pspec, newMbr)
     })
@@ -347,10 +347,10 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         (for (mbr <- decls.toList if (!notSpecializable(origin, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
           val newMbr = mbr.cloneSymbol(spec)
           if (mbr.isMethod) {
-            if (base(mbr) == mbr)
-              base(newMbr) = newMbr
+            if (specializationStemMember(mbr) == mbr)
+              specializationStemMember(newMbr) = newMbr
             else
-              base(newMbr) = mbr
+              specializationStemMember(newMbr) = mbr
           }
           val update = (mbr.info.params zip newMbr.info.params).toMap
           localTypeTags(newMbr) = localTypeTags.getOrElse(mbr, Map.empty).map({ case (tag, tparam) => (update(tag), tparam)})
@@ -614,7 +614,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
           overloadsOfMember(spec) = newMbr
           overloads(newMbr) = overloadsOfMember
-          base(newMbr) = member
+          specializationStemMember(newMbr) = member
         }
 
         for (spec <- specs; newMbr <- overloadsOfMember get spec)

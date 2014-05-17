@@ -10,12 +10,9 @@ trait MiniboxMetadata {
   import definitions._
   import scala.collection.immutable
 
-  /**
-   * A `TypeEnv` maps each type parameter of the original class to the
-   * actual type used in the specialized version to which this environment
-   * correspond. This type may be either `Long` or a fresh type parameter
-   *  `Tsp`.
-   */
+  /** A `TypeEnv` maps each type parameter of the original class to the
+   *  actual type used in the specialized version to which this environment
+   *  correspond. This type may or may not be marked with @storage. */
   type TypeEnv = immutable.Map[Symbol, Type]
   val EmptyTypeEnv: TypeEnv = Map.empty
 
@@ -115,11 +112,10 @@ trait MiniboxMetadata {
    *  can be used as redirects and optimized terms */
   val normalizations = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
-  // TODO: Remove
   /** Which of the members are base (do not take any type tags)
    *  TODO: Transform into a set */
-  val base = new mutable.HashMap[Symbol, Symbol]
-  val normbase = new mutable.HashMap[Symbol, Symbol]
+  val specializationStemMember = new mutable.HashMap[Symbol, Symbol]
+  val normalizationStemMember = new mutable.HashMap[Symbol, Symbol]
 
   // TODO: Remove
   /** Map from original type parameters to new type parameters */
