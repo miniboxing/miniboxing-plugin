@@ -276,7 +276,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       spec.associatedFile = origin.associatedFile
       currentRun.symSource(spec) = origin.sourceFile
-      baseClass(spec) = origin
+      specializedStemClass(spec) = origin
       spec.resetFlag(INTERFACE)
 
       val pmap = ParamMap(origin.typeParams, spec)
@@ -297,7 +297,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // the tree transformer.
       specializedClasses(origin) += pspec -> spec
       typeEnv(spec) = envOuter
-      partialSpec(spec) = pspec
+      classSpecialization(spec) = pspec
 
       // declarations inside the specialized class - to be filled in later
       val specScope = newScope
@@ -511,7 +511,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       origin setFlag(MINIBOXED)
 
-      baseClass(origin) = origin
+      specializedStemClass(origin) = origin
       typeParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
       inheritedDeferredTypeTags(origin) = HashMap()
       primaryDeferredTypeTags(origin) = HashMap()
@@ -630,7 +630,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     def addSpecialOverrides(globalPSpec: PartialSpec, pspec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
 
       val scope1 = if (inPlace) scope else scope.cloneScope
-      val base = baseClass.getOrElse(clazz, NoSymbol)
+      val base = specializedStemClass.getOrElse(clazz, NoSymbol)
 
       def specializedOverriddenMembers(sym: Symbol): Symbol = {
         for (baseOSym <- sym.allOverriddenSymbols) {
@@ -754,7 +754,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val scope1 = newScopeWith(widen(specs): _*)
 
       // mark this symbol as the base of a miniboxed hierarchy
-      specializedBase += origin
+      specializedStem += origin
 
       // step2: create subclasses
       val classes = specs map {
@@ -775,7 +775,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       }
 
       // for traits resulting from classes inheriting each other we need to insert an artificial AnyRef parent
-      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && (specializedBase(originTpe.parents.head.typeSymbol)))
+      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && (specializedStem(originTpe.parents.head.typeSymbol)))
       val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
       val parents1 = artificialAnyRef ::: originTpe.parents
 

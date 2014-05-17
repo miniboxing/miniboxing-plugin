@@ -10,6 +10,31 @@ trait MiniboxMetadata {
   import definitions._
   import scala.collection.immutable
 
+  /**
+   * before transformation:
+   *                                     +------------------------------------+
+   *                                     | class C[@miniboxed T] {            |
+   *                                     |   def foo(t: T): T = t             |
+   *                                     | }                                  |
+   *                                     +------------------------------------+
+   * after transformation:
+   *                                     +------------------------------------+
+   *           specializedStem --------> | trait C[@miniboxed T]              | ---------+  +------ PartialSpec
+   * originalTraitFlag = false --------> |   def foo(t: T): T                 |          |  |          /\
+   *                           +-------> |   def foo_J(...): T @storage       |          |  |          /
+   *      specializedStemClass |         | }                                  |   specializedClasses  /
+   *                           |         +------------------------------------+            |         /
+   *                           |             /                            \                |        /
+   *                           |            /                              \               V       /
+   *              +------------------------------------+        +------------------------------------+
+   *              | trait C_L[Tsp] extends C[Tsp] {    |        | trait C_J[Tsp](...) extends C[Tsp]{|
+   *              |   def foo(t: Tsp): Tsp = t         |        |   def foo(t: Tsp): Tsp = ...       |
+   *              |   def foo_J(...): Tsp @storage =...|        |   def foo_J(...): Tsp @storage = t |
+   *              | }                                  |        | }                                  |
+   *              +------------------------------------+        +------------------------------------+
+   *
+   */
+
   /** A `TypeEnv` maps each type parameter of the original class to the
    *  actual type used in the specialized version to which this environment
    *  correspond. This type may or may not be marked with @storage. */
@@ -31,12 +56,6 @@ trait MiniboxMetadata {
    *  parent's type parameters.
    */
   type PartialSpec = immutable.Map[Symbol, SpecInfo]
-
-  /**
-   * The set of members that provide the template to copy and specialize
-   * by the specialized overloads
-   */
-  val templateMembers = mutable.Set[Symbol]()
 
   /**
    * Every time we create a specialized class (or the interface) we clone
@@ -64,28 +83,54 @@ trait MiniboxMetadata {
   val originalTraitFlag = mutable.Set.empty[Symbol]
 
   /** This set contains the classes and traits that were transformed to top traits. */
-  val specializedBase = mutable.Set.empty[Symbol]
+  val specializedStem = mutable.Set.empty[Symbol]
 
-  /**
-   * `specializedClass(C)(T1->Long, T2->AnyRef)` gives the info of the specialized
-   * version of `C` w.r.t. that environment.
-   */
+  /** Indicates the specialized variant corresponding to a type parameter specialization. */
   val specializedClasses =
     new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]] withDefaultValue (mutable.HashMap())
 
   /** The inverse of specializedClass: for each specialized class it
    *  indicates the base abstract class all specialized classes extend from */
-  val baseClass = new mutable.HashMap[Symbol, Symbol]
+  val specializedStemClass = new mutable.HashMap[Symbol, Symbol]
+
+  /** Partial specialization corresponding to a class. */
+  val classSpecialization = new mutable.HashMap[Symbol, PartialSpec]
+
+  // TODO: Stopped here
 
   /** Type environment of a class: stores the binding from the parent's type parameters to the
    *  specialized variant's type parameters. */
   val typeEnv = new mutable.HashMap[Symbol, TypeEnv]
 
-  /** Partial specialization corresponding to a class. */
-  val partialSpec = new mutable.HashMap[Symbol, PartialSpec]
+  // TODO: Remove
+  /** Map from original type parameters to new type parameters */
+  val typeParamMap = new mutable.HashMap[Symbol, ParamMap]
+
+
+  // Normalization (local scope):
 
   /** Partial specialization corresponding to a method's normalization. */
   val normalSpec = new mutable.HashMap[Symbol, PartialSpec]
+
+  /** For each method this keeps a mapping of further normalized methods that
+   *  can be used as redirects and optimized terms */
+  val normalizations = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+
+  val normalizationStemMember = new mutable.HashMap[Symbol, Symbol]
+
+  // Members (local scope, inside a class/trait):
+
+  /** For each method of the original class and each partial specialization
+   *  we keep track of the overload specialized for that representation. */
+  val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+
+  /** Which of the members are base (do not take any type tags)
+   *  TODO: Transform into a set */
+  val specializationStemMember = new mutable.HashMap[Symbol, Symbol]
+
+
+
+  // Type tags (local scope, inside a class/trait):
 
   /** Records for each of the specialized classes the tag field to type parameter
    *  correspondence. These are local type tags, used in all members. */
@@ -104,24 +149,15 @@ trait MiniboxMetadata {
    *  to the same type parameter, since the methods have different names in different inherited traits.  */
   val primaryDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
-  /** For each method of the original class and each partial specialization
-   *  we keep track of the overload specialized for that representation. */
-  val overloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
-  /** For each method this keeps a mapping of further normalized methods that
-   *  can be used as redirects and optimized terms */
-  val normalizations = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
-  /** Which of the members are base (do not take any type tags)
-   *  TODO: Transform into a set */
-  val specializationStemMember = new mutable.HashMap[Symbol, Symbol]
-  val normalizationStemMember = new mutable.HashMap[Symbol, Symbol]
-
-  // TODO: Remove
-  /** Map from original type parameters to new type parameters */
-  val typeParamMap = new mutable.HashMap[Symbol, ParamMap]
+  // Very specific things:
 
   /** A list of dummy constructors necessary to satisfy the duplicator */
   val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
+
+  /** The set of members that provide the template to copy and specialize by the specialized overloads */
+  val templateMembers = mutable.Set[Symbol]()
+
 }
 

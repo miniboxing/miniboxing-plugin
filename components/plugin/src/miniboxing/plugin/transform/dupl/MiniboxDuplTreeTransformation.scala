@@ -123,15 +123,15 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case ClassDef(_, _, _, impl: Template) if isSpecializableClass(tree.symbol) =>
 
           // The base trait for the current class
-          val baseClassSym = tree.symbol
+          val specializedStemClassSym = tree.symbol
           val baseTrait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
 
           // The specialized classes for the current class
-          val specClassSymbols = specializedClasses(baseClassSym).values.toList.sortBy(_.name.toString)
+          val specClassSymbols = specializedClasses(specializedStemClassSym).values.toList.sortBy(_.name.toString)
           val specClasses: List[Tree] =
             for (specClassSym <- specClassSymbols) yield {
-              debuglog("Creating specialized class " + specClassSym.defString + " for " + baseClassSym)
-              val classDef = atPos(baseClassSym.pos)(classDefTreeFromSym(specClassSym))
+              debuglog("Creating specialized class " + specClassSym.defString + " for " + specializedStemClassSym)
+              val classDef = atPos(specializedStemClassSym.pos)(classDefTreeFromSym(specClassSym))
               // type check and transform the class before returning the tree
               transform(localTyper.typed(classDef))
             }
@@ -151,7 +151,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // members
           val specMembers = createMethodTrees(tree.symbol.enclClass) map (localTyper.typed)
           val bodyDefs =
-            if (specializedBase(tree.symbol.enclClass)) {
+            if (specializedStem(tree.symbol.enclClass)) {
               var announce = true
               body.map({
                 case dt: DefTree if decls.contains(dt.symbol) =>
@@ -192,7 +192,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val res: Tree =
             memberSpecializationInfo.get(sym) match {
               // trait methods => abstract :)
-              case _ if specializedBase(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && !notSpecializable(sym.enclClass, sym) =>
+              case _ if specializedStem(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && !notSpecializable(sym.enclClass, sym) =>
                 localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
 
               // Implement the getter or setter functionality
@@ -283,7 +283,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           }
 
         // Error on accessing non-existing fields
-        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); specializedBase(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
+        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); specializedStem(ths.symbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
           unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
           localTyper.typed(gen.mkAttributedRef(Predef_???))
 
@@ -326,7 +326,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // note: constructors are updated in the next step, as their class overloads are recorded
           val newMbrSym =
             if ((oldQualSym != newQualSym) &&
-                (baseClass.getOrElse(newQualSym, NoSymbol) == oldQualSym) &&
+                (specializedStemClass.getOrElse(newQualSym, NoSymbol) == oldQualSym) &&
                 (oldMbrSym.name != nme.CONSTRUCTOR)) {
               val updSym = newQualSym.tpe.member(oldMbrSym.name).filter(_.allOverriddenSymbols contains oldMbrSym)
               assert(!updSym.isOverloaded && updSym != NoSymbol)
@@ -476,7 +476,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
-      val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
+      val pSpecFromBaseClass = classSpecialization.getOrElse(inClass, Map.empty)
       val mapTpar = typeEnv.getOrElse(inClass, Map.empty)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
@@ -528,7 +528,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
-      val pSpecFromBaseClass = partialSpec.getOrElse(inClass, Map.empty)
+      val pSpecFromBaseClass = classSpecialization.getOrElse(inClass, Map.empty)
       val mapTpar = typeEnv.getOrElse(inClass, EmptyTypeEnv)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
@@ -537,10 +537,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //      println(showRaw(qualTpe) + " in " + inClass + " and " + inMethod)
 
       qualTpe match {
-        case ThisType(cls) if baseClass.isDefinedAt(inClass) && inClass == cls =>
+        case ThisType(cls) if specializedStemClass.isDefinedAt(inClass) && inClass == cls =>
           // we're in the interface
           None
-        case ThisType(cls) if baseClass.isDefinedAt(inClass) && baseClass(inClass) == cls =>
+        case ThisType(cls) if specializedStemClass.isDefinedAt(inClass) && specializedStemClass(inClass) == cls =>
           Some(pSpecFromBaseClass)
 //      since we don't specialize nested classes, this case will never occur:
 //        case t: ThisType =>
@@ -551,7 +551,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           extractSpec(rest, inMethod, inClass)
         case TypeRef(pre, clazz, args) =>
           import miniboxing.runtime.MiniboxConstants._
-          val tparams = afterMiniboxDupl(baseClass.getOrElse(clazz, clazz).info).typeParams
+          val tparams = afterMiniboxDupl(specializedStemClass.getOrElse(clazz, clazz).info).typeParams
           val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
             pair match {
               // case (2.3)
@@ -664,7 +664,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       // but we need this in the backend, else we're generating invalid
       // flags for the entire class - for better or worse we adapt just
       // before calling the duplicator, and get back for specialization
-      for (clazz <- specializedBase)
+      for (clazz <- specializedStem)
         if (originalTraitFlag(clazz))
           clazz.resetFlag(ABSTRACT)
         else
@@ -687,7 +687,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //      println("\n\n")
 
       // get back flags
-      for (clazz <- specializedBase)
+      for (clazz <- specializedStem)
         clazz.setFlag(ABSTRACT | TRAIT)
 
       tree2
