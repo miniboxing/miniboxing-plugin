@@ -660,7 +660,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val tree = tree0 //if (access_error)  else tree0
 
       val d = new Duplicator(castmap)
-      debuglog("-->d DUPLICATING: " + tree)
+//      println("-->d DUPLICATING: " + tree)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid

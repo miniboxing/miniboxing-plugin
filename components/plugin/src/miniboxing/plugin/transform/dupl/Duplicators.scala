@@ -102,6 +102,7 @@ abstract class Duplicators extends Analyzer {
 
         case TypeRef(pre, sym, args) =>
           val newsym = updateSym(sym)
+          if (newsym == NoSymbol) throw NoSymbolUpdateException
           if (newsym ne sym) {
             debuglog("fixing " + sym + " -> " + newsym)
             typeRef(mapOver(pre), newsym, mapOverArgs(args, newsym.typeParams))
@@ -138,10 +139,20 @@ abstract class Duplicators extends Analyzer {
       res
     }
 
+
+    case object NoSymbolUpdateException extends Exception
+
     /** Fix the given type by replacing invalid symbols with the new ones. */
     def fixType(tpe: Type, deep: Boolean = false): Type = {
       val tpe1 = if (deep) envDeepSubst(tpe) else envSubstitution(tpe)
-      val tpe2: Type = (new FixInvalidSyms)(tpe1)
+      val tpe2: Type =
+        try {
+          (new FixInvalidSyms)(tpe1)
+        } catch {
+          case NoSymbolUpdateException =>
+            global.reporter.warning(oldClassOwner.pos, "[miniboxing-plugin] Recovered from a specialization error. Please report this as a bug!")
+            tpe1
+        }
       // known problem: asSeenFrom on an abstract type produced by creating new syms
       // from symbols bound in existential types crashes the AsSeenFromMap
       //  error: T#24681 in trait Complex#7190 cannot be instantiated from miniboxing#27.tests#7186.compile#7188.Complex_J#23156[Tsp#23157]
@@ -217,15 +228,19 @@ abstract class Duplicators extends Analyzer {
           tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
         else tpe2
       } catch { case e: Throwable => tpe2}
+      // println(s"fixTpe: $tpe ==> $tpe1 (${showRaw(tpe1)}) ==> $tpe2 ==> $tpe3 (deep=$deep)")
       tpe3
     }
 
     /** Return the new symbol corresponding to `sym`. */
-    private def updateSym(sym: Symbol): Symbol =
-      if (invalidSyms.isDefinedAt(sym))
+    private def updateSym(sym: Symbol): Symbol = {
+      val res = if (invalidSyms.isDefinedAt(sym))
         invalidSyms(sym).symbol
       else
         sym
+      // println(s"update sym $sym => $res")
+      res
+    }
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog("attempting to invalidate " + tree.symbol)
@@ -254,7 +269,11 @@ abstract class Duplicators extends Analyzer {
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
 
           case vdef @ ValDef(mods, name, tpt, rhs) =>
-            tpt.tpe = fixType(vdef.symbol.info, deep = forceDeep)
+            tpt.tpe =
+              if (forceDeep)
+                envDeepSubst(tpt.tpe)
+              else
+                envSubstitution(tpt.tpe)
             vdef.symbol = NoSymbol
 
           case DefDef(_, name, tparams, vparamss, tpt, rhs) =>
@@ -262,11 +281,11 @@ abstract class Duplicators extends Analyzer {
             debuglog("invalidate defdef: " + tree.symbol + "  " + tree.symbol.allOverriddenSymbols + "   " + tree.symbol.owner)
             if (tree.symbol.allOverriddenSymbols.isEmpty) {
               invalidateAll(tparams ::: vparamss.flatten)
-              tpt.tpe = fixType(tpt.tpe)
+              tpt.tpe = envSubstitution(tpt.tpe)
             } else {
               invalidateAll(tparams)
               withDeepSubst(invalidateAll(vparamss.flatten))
-              tpt.tpe = fixType(tpt.tpe, true)
+              tpt.tpe = envDeepSubst(tpt.tpe)
             }
             tree.symbol = NoSymbol
 
