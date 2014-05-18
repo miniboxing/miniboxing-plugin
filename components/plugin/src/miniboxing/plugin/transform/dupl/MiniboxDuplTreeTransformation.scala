@@ -192,7 +192,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val res: Tree =
             memberSpecializationInfo.get(sym) match {
               // trait methods => abstract :)
-              case _ if metadata.isClassStem(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && !heuristics.specializableMethodInClass(sym.enclClass, sym) =>
+              case _ if metadata.isClassStem(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && heuristics.specializableMethodInClass(sym.enclClass, sym) =>
                 localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
 
               // Implement the getter or setter functionality

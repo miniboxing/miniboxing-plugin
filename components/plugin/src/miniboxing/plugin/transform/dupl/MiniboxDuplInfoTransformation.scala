@@ -69,10 +69,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           // update local type tags (inherited from class) to the new parameters
           val updateParams = (member.info.params zip info1.params).toMap
           val oldLocalTypeTags = metadata.localTypeTags.getOrElse(member, Map())
-          println()
-          println(newMbr.name + "   " + member.defString)
-          println(updateParams)
-          println(oldLocalTypeTags)
           val updLocalTypeTags = oldLocalTypeTags.map({ case (tag, tpe) => (updateParams(tag), tpe)})
           metadata.localTypeTags(newMbr) = HashMap() ++ updLocalTypeTags
 
