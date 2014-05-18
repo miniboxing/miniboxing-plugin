@@ -99,6 +99,8 @@ trait MiniboxMetadata {
     def isMemberStem(clazz: Symbol) =
       getMemberStem(clazz) == clazz
 
+    /* TODO: private[this] */ val variantMemberStem = new mutable.HashMap[Symbol, Symbol]
+
     // Normalization (local scope):
 
     /** Partial normalization corresponding to a normalized method */

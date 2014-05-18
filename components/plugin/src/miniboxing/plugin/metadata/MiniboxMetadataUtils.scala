@@ -24,7 +24,7 @@ trait MiniboxMetadataUtils {
   }
 
   implicit class RichPartialSpec(pspec: PartialSpec) {
-    def isAllBoxed: PartialSpec = pspec.keys.map(tp => (tp, Boxed)).toMap
+    def toAllBoxed: PartialSpec = pspec.keys.map(tp => (tp, Boxed)).toMap
   }
 
   object variants {
