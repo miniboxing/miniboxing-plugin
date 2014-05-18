@@ -10,6 +10,7 @@ trait MiniboxMetadataUtils {
   import global._
   import definitions._
   import scala.collection.immutable
+  import scala.collection.mutable.HashMap
 
   def createNewTParams(oldParams: List[Symbol], newOwner: Symbol): Map[Symbol, Symbol] = {
     def newName(p: Symbol): Name = p.name.append("sp")
@@ -129,14 +130,15 @@ trait MiniboxMetadataUtils {
       def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref)
 
       override def apply(tp: Type): Type = tp match {
-        case tref@TypeRef(pre, sym, args) if args.nonEmpty =>
+        case tref@TypeRef(pre, sym, args) if args.nonEmpty && classOverloads.isDefinedAt(sym)=>
           val pre1 = this(pre)
           afterMiniboxDupl(sym.info)
           classOverloads(sym).get(extractPSpec(tref)) match {
             case Some(sym1) =>
               val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap
-              inheritedDeferredTypeTags(current) ++= primaryDeferredTypeTags(sym1).mapValues(s => localTParamMap.getOrElse(s, s)) ++
-                                                     inheritedDeferredTypeTags(sym1).mapValues(s => localTParamMap.getOrElse(s, s))
+              inheritedDeferredTypeTags.getOrElseUpdate(current, HashMap()) ++=
+                primaryDeferredTypeTags.getOrElse(sym1, HashMap()).mapValues(s => localTParamMap.getOrElse(s, s)) ++
+                inheritedDeferredTypeTags.getOrElse(sym1, HashMap()).mapValues(s => localTParamMap.getOrElse(s, s))
               typeRef(pre1, sym1, args)
             case None       => typeRef(pre1, sym, args)
           }

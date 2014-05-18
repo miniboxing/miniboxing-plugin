@@ -339,7 +339,7 @@ abstract class Duplicators extends Analyzer {
     def castType(tree: Tree, pt: Type): Tree = tree
 
     def dupldbg(ind: Int, msg: => String): Unit = {
-      println("  " * ind + msg)
+      // println("  " * ind + msg)
     }
 
     var rewireThis = new scala.util.DynamicVariable(true)

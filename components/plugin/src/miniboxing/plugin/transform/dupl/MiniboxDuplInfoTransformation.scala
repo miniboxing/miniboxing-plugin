@@ -33,10 +33,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
   /** Expand methods with specialized type parameters */
   private def normalizeMember(member: Symbol): List[Symbol] = {
 
-    if (!member.isMethod || !member.hasMiniboxedTypeParameters)
-      return List()
-
-    if (!heuristics.specializableMethodInClass(member.owner, member))
+    if (!member.isMethod || !heuristics.specializableMethodInClass(member.owner, member) || !member.hasMiniboxedTypeParameters)
       return List()
 
     // mark the member as the base
@@ -63,7 +60,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             member.typeParams.zip(info0.typeParams).toMap
           val normalizedSignatureEnv =       // <new tparam> ==> @storage <new tparam>
             pspec flatMap {
-              case (p, Boxed)     => None // stays the same
+              case (p, Boxed)     => None
               case (p, Miniboxed) => Some((deepEnv(p), storageType(deepEnv(p))))
             }
           val normalizedTypeMap = typeMappers.MiniboxSubst(normalizedSignatureEnv)
@@ -72,6 +69,10 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           // update local type tags (inherited from class) to the new parameters
           val updateParams = (member.info.params zip info1.params).toMap
           val oldLocalTypeTags = metadata.localTypeTags.getOrElse(member, Map())
+          println()
+          println(newMbr.name + "   " + member.defString)
+          println(updateParams)
+          println(oldLocalTypeTags)
           val updLocalTypeTags = oldLocalTypeTags.map({ case (tag, tpe) => (updateParams(tag), tpe)})
           metadata.localTypeTags(newMbr) = HashMap() ++ updLocalTypeTags
 
@@ -267,6 +268,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               val localTags =
                 for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
                   yield (variantMethod.newValue(shortTypeTagName(tparam), variantMethod.pos).setInfo(ByteClass.tpe), tparam)
+
               metadata.localTypeTags(variantMethod) = HashMap() ++ localTags
               val tagParams = localTags.map(_._1)
 
@@ -355,7 +357,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // step3: Update the metadata
       metadata.setClassStem(variantClass, stemClass)
-      metadata.classOverloads(stemClass) += spec -> variantClass
+      metadata.classOverloads.getOrElseUpdate(stemClass, HashMap()) += spec -> variantClass
       metadata.classSpecialization(variantClass) = spec
 
       // step4: Create the necessary transformers
@@ -390,7 +392,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val tag =
             if (stemClass.isTrait) {
               val deferredTag = variantClass.newMethodSymbol(typeTagName(variantClass, tparam), variantClass.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
-              metadata.primaryDeferredTypeTags(variantClass) += deferredTag -> pmapOldToNew(tparam)
+              metadata.primaryDeferredTypeTags.getOrElseUpdate(variantClass, HashMap()) += deferredTag -> pmapOldToNew(tparam)
               memberSpecializationInfo(deferredTag) = DeferredTypeTag(tparam)
               deferredTag
             }
@@ -404,11 +406,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         })
 
       // Record the new mapping for type tags to the fields carrying them
-      metadata.globalTypeTags(variantClass) = HashMap() ++ typeTagMap
+      metadata.globalTypeTags.getOrElseUpdate(variantClass, HashMap()) ++= typeTagMap
 
       // step6: Copy the members of the stemClass to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
-        (for (mbr <- widenedScope.toList if (!heuristics.specializableMethodInClass(stemClass, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
+        (for (mbr <- widenedScope.toList if heuristics.specializableMethodInClass(stemClass, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor)) yield {
           val newMbr = mbr.cloneSymbol(variantClass) setFlag MINIBOXED
           val update = (mbr.info.params zip newMbr.info.params).toMap
           metadata.localTypeTags(newMbr) = metadata.localTypeTags.getOrElse(mbr, HashMap()).map({ case (tag, tparam) => (update(tag), pmapOldToNew(tparam))})
@@ -457,7 +459,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val info1 = info0.substThis(stemClass, variantClass) // Is this still necessary?
           val info2 = specializedTypeMapInner(info1)
           val tagParams = typeTagMap map (_._1.cloneSymbol(newCtor, 0))
-          metadata.localTypeTags(newCtor) = HashMap() ++ tagParams.zip(typeTagMap.map(_._2))
+          metadata.localTypeTags.getOrElseUpdate(newCtor, HashMap()) ++= tagParams.zip(typeTagMap.map(_._2))
           def transformArgs(tpe: Type): Type = tpe match {
             case MethodType(params, ret) =>
               MethodType(tpe.params, transformArgs(ret))
@@ -467,14 +469,14 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               tpe
           }
           // add the new constructor as an overload for the stemClassal constructor
-          metadata.memberOverloads(ctor) = metadata.memberOverloads(ctor) ++ Map(spec -> newCtor)
+          metadata.memberOverloads.getOrElseUpdate(ctor, HashMap()) ++= Map(spec -> newCtor)
           val info3 = transformArgs(info2)
 
           // dummy constructor
           if (!tagParams.isEmpty) {
             val dummyCtor = ctor.cloneSymbol(variantClass).setPos(ctor.pos)
             dummyCtor.setInfo(info3.cloneInfo(dummyCtor))
-            metadata.memberOverloads(dummyCtor) = metadata.memberOverloads(dummyCtor) ++ Map(spec -> newCtor)
+            metadata.memberOverloads.getOrElseUpdate(dummyCtor, HashMap()) += spec -> newCtor
             metadata.dummyConstructors += dummyCtor
             variantClassScope enter dummyCtor
 //            println("dummy constructor: " + dummyCtor.defString)
@@ -668,7 +670,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     def addDeferredTypeTagImpls(stemClass: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val scope1 = if (inPlace) scope else scope.cloneScope
       if (!stemClass.isTrait) {
-        val deferredTags = metadata.primaryDeferredTypeTags(stemClass) ++ metadata.inheritedDeferredTypeTags(stemClass)
+        val deferredTags = metadata.primaryDeferredTypeTags.getOrElseUpdate(stemClass, HashMap()) ++ metadata.inheritedDeferredTypeTags.getOrElse(stemClass, HashMap())
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(stemClass).setFlag(MINIBOXED)
@@ -676,7 +678,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope1 enter impl
         }
-        metadata.inheritedDeferredTypeTags(stemClass).clear()
+        metadata.inheritedDeferredTypeTags.remove(stemClass)
       }
       scope1
     }

@@ -136,7 +136,7 @@ trait MiniboxMetadata {
     }
 
     def getClassStem(variant: Symbol) = {
-      assert(variant.isClass, s"Not a class: ${variant.defString}")
+//      assert(variant.isClass || variant.isModule || variant.isPackage || variant.isPackageObject, s"Not a class/module/package/package object: ${variant.defString}")
       classStem.getOrElse(variant, NoSymbol)
     }
 
@@ -156,29 +156,29 @@ trait MiniboxMetadata {
     }
 
     def getMemberStem(variant: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
       classStem.getOrElse(variant, NoSymbol)
     }
 
-    def isMemberStem(clazz: Symbol) =
-      getMemberStem(clazz) == clazz
+    def isMemberStem(variant: Symbol) =
+      getMemberStem(variant) == variant
 
 
 
     // Normalizations:
     def setNormalStem(variant: Symbol, stem: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
-      assert(stem.isMethod, s"Not a method: ${stem.defString}")
+      assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
+      assert(stem.isMethod || (stem.isTerm && !stem.isMethod), s"Not a method/field: ${stem.defString}")
       normalStem += variant -> stem
     }
 
     def getNormalStem(variant: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
       normalStem.getOrElse(variant, NoSymbol)
     }
 
-    def isNormalStem(clazz: Symbol) =
-      getNormalStem(clazz) == clazz
+    def isNormalStem(variant: Symbol) =
+      getNormalStem(variant) == variant
 
   }
 }
