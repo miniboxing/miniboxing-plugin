@@ -21,32 +21,33 @@ trait MiniboxMetadata {
   case object Miniboxed extends SpecInfo
   case object Boxed     extends SpecInfo
 
-  object metadata {
+  trait metadata {
 
     /* Class specialization:
      *
      * (before transformation)
-     *                                     +------------------------------------+
-     *                                     | class C[@miniboxed T] {            |
-     *                                     |   def foo(t: T): T = t             |
-     *                                     | }                                  |
-     *                                     +------------------------------------+
+     *                                +------------------------------------+
+     *                                | class C[@miniboxed T] {            |
+     *                                |   def foo(t: T): T = t             |
+     *                                | }                                  |
+     *                                +------------------------------------+
      *
      * (after transformation)
-     *                                     +------------------------------------+ <== this is called *the stem*
-     *           specializedStem --------> | trait C[@miniboxed T]              |
-     * originalTraitFlag = false --------> |   def foo(t: T): T                 | ---------+  +------ PartialSpec
-     *                           +-------> |   def foo_J(...): T @storage       |          |  |         /\
-     *      specializedStemClass |         | }                                  |          |  |         /
-     *                           |         +------------------------------------+   specializedClasses /
-     *                           |             /                            \                |        /
-     *                           |            /                              \               V       /
-     *              +------------------------------------+        +------------------------------------+
-     *              | trait C_L[Tsp] extends C[Tsp] {    |        | trait C_J[Tsp](...) extends C[Tsp]{|  <== these are
-     *              |   def foo(t: Tsp): Tsp = t         |        |   def foo(t: Tsp): Tsp = ...       |      called
-     *              |   def foo_J(...): Tsp @storage =...|        |   def foo_J(...): Tsp @storage = t |      *specialized
-     *              | }                                  |        | }                                  |      variants*
-     *              +------------------------------------+        +------------------------------------+
+     *                                +------------------------------------+ <== this is called *the stem*
+     *                                | trait C[@miniboxed T]              |
+ classStemTraitFlag = false --------> |   def foo(t: T): T                 | ---------+   +------ PartialSpec
+     *                      +-------> |   def foo_J(...): T @storage       |          |   |        /\
+     *            classStem |         | }                                  |          |   |        /
+     *                      |         +------------------------------------+     classOverloads   /
+     *                      |             /                            \                |        / classSpecialization
+     *                      |            /                              \               V       /
+     *         +------------------------------------+        +------------------------------------+
+     *         | trait C_L[Tsp] extends C[Tsp] {    |        | trait C_J[Tsp](...) extends C[Tsp]{|  <== these are
+     *         |   def foo(t: Tsp): Tsp = t         |        |   def foo(t: Tsp): Tsp = ...       |      called
+     *         |   def foo_J(...): Tsp @storage =...|        |   def foo_J(...): Tsp @storage = t |      *specialized
+     *         | }                                  |        | }                                  |      variants*
+     *         +------------------------------------+        +------------------------------------+
+     *
      * Additionally:
      *  for C_L/C_J: T --> Tsp mapping in
      */
@@ -59,21 +60,9 @@ trait MiniboxMetadata {
 
     val classSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
-    val classStem = new mutable.HashMap[Symbol, Symbol]
+    protected val classStem = new mutable.HashMap[Symbol, Symbol]
 
-    def setClassStem(variant: Symbol, stem: Symbol) = {
-      assert(variant.isClass, s"Not a class: ${variant.defString}")
-      assert(stem.isClass, s"Not a class: ${stem.defString}")
-      classStem += variant -> stem
-    }
 
-    def getClassStem(variant: Symbol) = {
-      assert(variant.isClass, s"Not a class: ${variant.defString}")
-      classStem.getOrElse(variant, NoSymbol)
-    }
-
-    def isClassStem(clazz: Symbol) =
-      getClassStem(clazz) == clazz
 
     // Members (local scope, inside a class/trait):
 
@@ -81,23 +70,11 @@ trait MiniboxMetadata {
 
     val memberSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
-    val memberStem = new mutable.HashMap[Symbol, Symbol]
-
-    def setMemberStem(variant: Symbol, stem: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
-      assert(stem.isMethod, s"Not a method: ${stem.defString}")
-      memberStem += variant -> stem
-    }
-
-    def getMemberStem(variant: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
-      classStem.getOrElse(variant, NoSymbol)
-    }
-
-    def isMemberStem(clazz: Symbol) =
-      getMemberStem(clazz) == clazz
+    protected val memberStem = new mutable.HashMap[Symbol, Symbol]
 
     val variantMemberStem = new mutable.HashMap[Symbol, Symbol]
+
+
 
     // Normalization (local scope):
 
@@ -108,21 +85,8 @@ trait MiniboxMetadata {
     val normalOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
     /** For each method contains the stem method */
-    val normalStem = new mutable.HashMap[Symbol, Symbol]
+    protected val normalStem = new mutable.HashMap[Symbol, Symbol]
 
-    def setNormalStem(variant: Symbol, stem: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
-      assert(stem.isMethod, s"Not a method: ${stem.defString}")
-      normalStem += variant -> stem
-    }
-
-    def getNormalStem(variant: Symbol) = {
-      assert(variant.isMethod, s"Not a method: ${variant.defString}")
-      normalStem.getOrElse(variant, NoSymbol)
-    }
-
-    def isNormalStem(clazz: Symbol) =
-      getNormalStem(clazz) == clazz
 
 
     // Type tags (local scope, inside a class/trait):
@@ -156,6 +120,66 @@ trait MiniboxMetadata {
 
     /** The set of members that provide the template to copy and specialize by the specialized overloads */
     val templateMembers = mutable.Set[Symbol]()
+  }
+
+
+  /** Contains the metadata and accessors */
+  object metadata extends metadata {
+
+    // Accessors:
+
+    // Classes:
+    def setClassStem(variant: Symbol, stem: Symbol) = {
+      assert(variant.isClass, s"Not a class: ${variant.defString}")
+      assert(stem.isClass, s"Not a class: ${stem.defString}")
+      classStem += variant -> stem
+    }
+
+    def getClassStem(variant: Symbol) = {
+      assert(variant.isClass, s"Not a class: ${variant.defString}")
+      classStem.getOrElse(variant, NoSymbol)
+    }
+
+    def isClassStem(clazz: Symbol) =
+      getClassStem(clazz) == clazz
+
+    def allStemClasses: Set[Symbol] =
+      classStem.values.toSet
+
+
+
+    // Members:
+    def setMemberStem(variant: Symbol, stem: Symbol) = {
+      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      assert(stem.isMethod, s"Not a method: ${stem.defString}")
+      memberStem += variant -> stem
+    }
+
+    def getMemberStem(variant: Symbol) = {
+      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      classStem.getOrElse(variant, NoSymbol)
+    }
+
+    def isMemberStem(clazz: Symbol) =
+      getMemberStem(clazz) == clazz
+
+
+
+    // Normalizations:
+    def setNormalStem(variant: Symbol, stem: Symbol) = {
+      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      assert(stem.isMethod, s"Not a method: ${stem.defString}")
+      normalStem += variant -> stem
+    }
+
+    def getNormalStem(variant: Symbol) = {
+      assert(variant.isMethod, s"Not a method: ${variant.defString}")
+      normalStem.getOrElse(variant, NoSymbol)
+    }
+
+    def isNormalStem(clazz: Symbol) =
+      getNormalStem(clazz) == clazz
+
   }
 }
 

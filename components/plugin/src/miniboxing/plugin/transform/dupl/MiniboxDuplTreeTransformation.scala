@@ -316,7 +316,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // note: constructors are updated in the next step, as their class overloads are recorded
           val newMbrSym =
             if ((oldQualSym != newQualSym) &&
-                (metadata.classStem.getOrElse(newQualSym, NoSymbol) == oldQualSym) &&
+                (metadata.getClassStem(newQualSym) == oldQualSym) &&
                 (oldMbrSym.name != nme.CONSTRUCTOR)) {
               val updSym = newQualSym.tpe.member(oldMbrSym.name).filter(_.allOverriddenSymbols contains oldMbrSym)
               assert(!updSym.isOverloaded && updSym != NoSymbol)
@@ -427,7 +427,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(metadata.normalSpecialization.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
 
-      if (metadata.normalStem.isDefinedAt(target)) {
+      if (metadata.getNormalStem(target) != NoSymbol) {
         val tparams = afterMiniboxDupl(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + inMethod + " of " + inClass + ": " + targs.length)
         val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
@@ -490,7 +490,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           extractSpec(rest, inMethod, inClass)
         case TypeRef(pre, clazz, args) =>
           import miniboxing.runtime.MiniboxConstants._
-          val tparams = afterMiniboxDupl(metadata.classStem.getOrElse(clazz, clazz).info).typeParams
+          val tparams = afterMiniboxDupl(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
           val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
             pair match {
               // case (2.3)
@@ -612,7 +612,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       // but we need this in the backend, else we're generating invalid
       // flags for the entire class - for better or worse we adapt just
       // before calling the duplicator, and get back for specialization
-      for (clazz <- metadata.classStem.values)
+      for (clazz <- metadata.allStemClasses)
         if (metadata.classStemTraitFlag(clazz))
           clazz.resetFlag(ABSTRACT)
         else
@@ -635,7 +635,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //      println("\n\n")
 
       // get back flags
-      for (clazz <- metadata.classStem.values)
+      for (clazz <- metadata.allStemClasses)
         clazz.setFlag(ABSTRACT | TRAIT)
 
       tree2

@@ -47,7 +47,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       import global.definitions._
 
       // can be applied as many times as necessary
-      for (clazz <- metadata.classStem.values) {
+      for (clazz <- metadata.allStemClasses) {
         val decls = clazz.info.decls
         for (mbr <- decls) {
           if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
