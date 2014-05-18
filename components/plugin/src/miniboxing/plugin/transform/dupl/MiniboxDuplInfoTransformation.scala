@@ -567,13 +567,14 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       variantClass
     }
 
-    // create overrides for specialized variants of the method
-    def addSpecialOverrides(globalPSpec: PartialSpec, pvariantClass: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+    /** Create overrides for specialized variants of the method */
+    def addSpecialOverrides(globalPSpec: PartialSpec, localPSpec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
 
       val scope1 = if (inPlace) scope else scope.cloneScope
-      val base = specializedStemClass.getOrElse(clazz, NoSymbol)
+      val base = metadata.getClassStem(clazz)
 
-      def specializedOverriddenMembers(sym: Symbol): Symbol = {
+      // 1. Get the overridden members
+      def specializedOverriddenMembers(sym: Symbol): List[Symbol] = {
         for (baseOSym <- sym.allOverriddenSymbols) {
 
           // Check we're not incorrectly overriding normalized members:
@@ -588,28 +589,35 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + baseOSym + " in " + baseOSym.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
           }
 
-          if (isSpecializableClass(baseOSym.owner) && base != baseOSym.owner) {
+          // Check for specialized classes, that makes things more complex
+          if (heuristics.isSpecializableClass(baseOSym.owner) && (base != baseOSym.owner)) {
             // here we get the base class, not the specialized class
             // therefore, the 1st step is to identify the specialized class
             val baseParent = baseOSym.owner
             val baseParentTpe = clazz.info.baseType(baseParent)
-            val variantClass = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pvariantClass)
-            if (!PartialSpec.isAllAnyRef(variantClass) && specializedMembers.isDefinedAt(baseOSym)) {
-              specializedMembers(baseOSym).get(variantClass) match {
+
+            // TODO: Take external owners into account!
+            val baseSpec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], localPSpec)
+
+            if (!PartialSpec.isAllAnyRef(baseSpec) && metadata.memberOverloads.isDefinedAt(baseOSym)) {
+              metadata.memberOverloads(baseOSym).get(baseSpec) match {
                 case Some(mainSym) =>
-                  return mainSym
+                  // TODO: Return all overridden symbols
+                  // and make sure there are no name/signature clashes
+                  return List(mainSym)
                 case _ =>
               }
             }
           }
         }
-        NoSymbol
+        Nil
       }
 
+    // 2. Use this information to coordinate
     if (clazz.isClass) // class or trait
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
-        specializedOverriddenMembers(sym).toOption.foreach(oSym => {
-          val localOverload = specializedMembers.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
+        specializedOverriddenMembers(sym).foreach(oSym => {
+          val localOverload = metadata.memberOverloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
           // only generate the override if we don't have an overload which matches the current symbol:
           // matching the symbol is a pain in the arse, since oSym points to the interface while localOverload
           // points to the current clazz -- TODO: we could carry newMembers and get the correspondence
@@ -622,7 +630,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val baseClazz = oSym.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
+            val typeTags = metadata.localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
             // when using nested class variantClassialization:
@@ -633,7 +641,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             // which method should carry the body in class X_J? foo or foo_JJ?
             //  * `foo`    gets t: Int unboxed and u: Y boxed
             //  * `foo_JJ` gets both t and u as miniboxed, which is still suboptimal, but better
-            localTypeTags(overrider) = typeTags
+            metadata.localTypeTags(overrider) = HashMap() ++ typeTags
 
             memberSpecializationInfo.get(sym) match {
               // if sym is a forwarder to a more specialized member, let the overrider forward to
@@ -647,7 +655,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
                 memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = false)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
             }
-            specializedMembers.getOrElseUpdate(sym, collection.mutable.HashMap()) += (pvariantClass -> overrider)
+            metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (localPSpec -> overrider)
 
             scope1 enter overrider
           }
@@ -660,7 +668,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     def addDeferredTypeTagImpls(stemClass: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val scope1 = if (inPlace) scope else scope.cloneScope
       if (!stemClass.isTrait) {
-        val deferredTags = primaryDeferredTypeTags(stemClass) ++ inheritedDeferredTypeTags(stemClass)
+        val deferredTags = metadata.primaryDeferredTypeTags(stemClass) ++ metadata.inheritedDeferredTypeTags(stemClass)
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
           val impl = method.cloneSymbol(stemClass).setFlag(MINIBOXED)
@@ -668,7 +676,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope1 enter impl
         }
-        inheritedDeferredTypeTags(stemClass).clear()
+        metadata.inheritedDeferredTypeTags(stemClass).clear()
       }
       scope1
     }
