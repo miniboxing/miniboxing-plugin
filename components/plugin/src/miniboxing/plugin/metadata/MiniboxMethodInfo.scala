@@ -63,7 +63,7 @@ trait MiniboxMethodInfo {
    * forwards to it. So, `method` will be `apply`.
    */
   case class SpecializedImplementationOf(member: Symbol) extends MethodInfo {
-    templateMembers += member
+    metadata.templateMembers += member
     override def toString = "is a specialized implementation of " + member
   }
 

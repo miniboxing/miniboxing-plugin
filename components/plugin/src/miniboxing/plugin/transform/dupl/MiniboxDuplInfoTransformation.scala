@@ -18,9 +18,9 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     try {
       tpe.resultType match {
         case cinfo @ ClassInfoType(parents, decls, origin) if heuristics.specializableClass(tpe) =>
-          specialize(origin, cinfo)
+          specializeClass(origin, cinfo)
         case _ if heuristics.normalizableMethodInMethod(sym) =>
-          normalizeMembers(sym); tpe
+          normalizeMember(sym); tpe
         case _ =>
           tpe
       }
@@ -31,7 +31,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     }
 
   /** Expand methods with specialized type parameters */
-  def normalizeMembers(member: Symbol): List[Symbol] = {
+  private def normalizeMember(member: Symbol): List[Symbol] = {
 
     if (!member.isMethod || !member.hasMiniboxedTypeParameters)
       return List()
@@ -73,13 +73,13 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           val updateParams = (member.info.params zip info1.params).toMap
           val oldLocalTypeTags = metadata.localTypeTags.getOrElse(member, Map())
           val updLocalTypeTags = oldLocalTypeTags.map({ case (tag, tpe) => (updateParams(tag), tpe)})
-          metadata.localTypeTags(newMbr) = updLocalTypeTags
+          metadata.localTypeTags(newMbr) = HashMap() ++ updLocalTypeTags
 
           // create type tags for the method's own miniboxed parameters
           val localTags =
             for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
               yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), deepEnv(tparam))
-          metadata.normalTypeTags(newMbr) = localTags.toMap
+          metadata.normalTypeTags(newMbr) = HashMap() ++ localTags
 
           // update signature for created type tags
           val tagParams = localTags.map(_._1)
@@ -124,100 +124,309 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     newMembers.map(_._2).filterNot(_ == member)
   }
 
-
   /** Expand classes with specialized type parameters */
-  def specialize(origin: Symbol, originTpe: ClassInfoType): Type = {
+  private def specializeClass(stemClass: Symbol, stemClassTpe: ClassInfoType): Type = {
 
-    def specialize1(pspec: PartialSpec, decls: Scope): Symbol = {
+    import specializationProcedures._
 
-      val specParamValues = typeParamValues(origin, pspec)
-      val baseName = if (flag_loader_friendly) newTermName(origin.name.toString + "_class") else origin.name
-      val specName = specializedName(baseName, specParamValues).toTypeName
-      val bytecodeClass = origin.owner.info.decl(specName)
+    // force info on parents to get all specialized metadata
+    afterMiniboxDupl(stemClassTpe.parents.map(_.typeSymbol.info))
+    val specs =
+      if (heuristics.isSpecializableClass(stemClass))
+        variants.allSpecializations(stemClass.info.typeParams)
+      else
+        Nil
+
+    // set all type parameters to miniboxed
+    // TODO: Do we use this anywhere?
+    for (tpar <- stemClass.info.typeParams if tpar.isMiniboxAnnotated)
+      tpar.setFlag(MINIBOXED)
+
+    val tpe =
+      if (specs.nonEmpty) {
+        log("Specializing " + stemClass + "...\n")
+
+        // step1: widen the class or trait to contain specialized overloads
+        val scope1 = newScopeWith(widen(stemClass, specs): _*)
+
+        // step2: create variants
+        val variantClasses =
+          specs map { spec =>
+            val variantClass  = specialize1(stemClass, spec, scope1)
+
+            val existing = stemClass.owner.info.decl(variantClass.name)
+
+            // a symbol for the specialized class already exists if there's a classfile for it.
+            // keeping both crashes the compiler on test/files/pos/variantClass-Function1.scala
+            if (existing != NoSymbol)
+              stemClass.owner.info.decls.unlink(existing)
+
+            // TODO: overrides in the specialized class
+            if (stemClass.owner.info.decls != EmptyScope)
+              afterMiniboxDupl(stemClass.owner.info.decls enter variantClass)
+
+            variantClass
+        }
+
+        // step3: adapt the stem to be an interface
+        val scope2 = removeFieldsFromStem(stemClass, scope1)
+
+        // step4: normalize methods with @miniboxed type parameters
+        val scope3 = addNormalizedMembers(stemClass, scope2)
+
+        // step5: update the stem's parents to form its new type
+        val parents1 = computeNewStemParentClasses
+        val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
+
+        reportClasses(stemClass, scope3, variantClasses)
+
+        tpe1
+
+      } else { // no specializations for this class/trait/object
+
+        // step1: add specialized overrides
+        val scope0 = stemClassTpe.decls.cloneScope
+        val scope1 = addSpecialOverrides(Map.empty, Map.empty, stemClass, scope0)
+
+        // step2: add deferred type tags
+        val scope2 = addDeferredTypeTagImpls(stemClass, scope1)
+
+        // step3: normalize methods with @miniboxed type parameters
+        val scope3 = addNormalizedMembers(stemClass, scope2)
+
+        // step4:
+        val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass)
+        val parents1 = stemClassTpe.parents map specializeTypeMap
+        val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
+
+        tpe1
+      }
+
+    // make all structural refinement members private (members may be added by special overrides and normalization)
+    for (mbr <- tpe.decls if mbr.isStructuralRefinementMember)
+        mbr.setFlag(PROTECTED)
+
+    tpe
+  }
+
+  /** Additional procedures necessary for specialization */
+  private object specializationProcedures {
+
+    /** Widen current scope to include specialized overloads for each method */
+    def widen(stemClass: Symbol, specs: List[PartialSpec]): List[Symbol] = {
+
+      metadata.setClassStem(stemClass, stemClass)
+
+      // members to specialize:
+      val members = stemClass.info.decls.toList
+      val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
+      val getters = members.filter(_.isGetter)
+      val setters = members.filter(_.isSetter)
+      val fields = members.filter(m => m.isTerm && !m.isMethod)
+
+      var newMembers = List[Symbol]()
+
+      // we make specialized specializedMembers for every member of the stemClassal class
+      for (stemMethod <- methods ::: getters ::: setters if heuristics.specializableMethodInClass(stemClass, stemMethod)) {
+
+        val specializedOverloads = new HashMap[PartialSpec, Symbol]
+        val specs_filtered =
+          if (heuristics.hasSpecializedArgumentsOrReturn(stemClass, stemMethod))
+            specs
+          else
+            specs.filter(PartialSpec.isAllAnyRef(_)) // only the generic specialization
+
+        for (spec <- specs_filtered) {
+
+          // if this is the generic version, we keep this member
+          // else we create a new overload for it
+          var variantMethod = stemMethod
+
+          if (!PartialSpec.isAllAnyRef(spec)) {
+            val env: Map[Symbol, Type] = spec map {
+              case (p, v) => (p, if (v == Boxed) p.tpe else storageType(p))
+            }
+            val specializedTypeMap = typeMappers.MiniboxSubst(env)
+
+            variantMethod = stemMethod.cloneSymbol(stemClass)
+
+            // https://github.com/miniboxing/miniboxing-plugin/issues/82
+            // specialized parameter accessors are not accessors anymore
+            // as they violate the premise that they do not take parameters
+            //  ==> we clear the PARAMACCESSOR flag from these members
+            if (variantMethod.isParamAccessor)
+              variantMethod.resetFlag(PARAMACCESSOR)
+
+            variantMethod setFlag MINIBOXED
+            variantMethod setName (specializedName(stemMethod.name, variants.typeParamValues(stemClass, spec)))
+            variantMethod modifyInfo (info => {
+              // TODO: Not sure this is necessary for widening:
+              val info0 = specializedTypeMap(info.asSeenFrom(variantMethod.owner.thisType, stemMethod.owner))
+
+              // step1: Create type tags
+              val localTags =
+                for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
+                  yield (variantMethod.newValue(shortTypeTagName(tparam), variantMethod.pos).setInfo(ByteClass.tpe), tparam)
+              metadata.localTypeTags(variantMethod) = HashMap() ++ localTags
+              val tagParams = localTags.map(_._1)
+
+              // step2: Add type tags to method signature
+              val info1 =
+                info0 match {
+                  case MethodType(args, ret) =>
+                    MethodType(tagParams ::: args, ret)
+                  case PolyType(targs, MethodType(args, ret)) =>
+                    val ntargs = targs.map(_.cloneSymbol(variantMethod))
+                    val MethodType(nargs, nret) = MethodType(args, ret).substSym(targs, ntargs)
+                    PolyType(ntargs, MethodType(tagParams ::: nargs, nret))
+                  case _ => ???
+                }
+
+              // TODO: We need to clear some override flags,
+              // but that's not critical for the classes to work (#41)
+              // since we're past the refchecks phase :D
+
+              info1
+            })
+
+            // step3: rewire to the correct referenced symbol, else mixin crashes
+            val alias = variantMethod.alias
+            if (alias != NoSymbol) {
+              // Find the correct alias in a rewired class
+              val baseTpe = stemClass.info.baseType(alias.owner)
+              val spec2 = ((baseTpe.typeSymbol.typeParams zip baseTpe.typeArgs) flatMap {
+                case (param, tpe) if param.hasFlag(MINIBOXED) =>
+                  if (ScalaValueClasses.contains(tpe.typeSymbol))
+                    Some((param, Miniboxed))
+                  // TODO: Take outside specializations into account!
+                  else if (spec.get(tpe.typeSymbol) == Some(Miniboxed))
+                    Some((param, Miniboxed))
+                  else
+                    Some((param, Boxed))
+                case _ =>
+                  None
+              }).toMap
+              if (metadata.memberOverloads.isDefinedAt(alias) &&
+                  metadata.memberOverloads(alias).isDefinedAt(spec2)) {
+                variantMethod.asInstanceOf[TermSymbol].referenced = metadata.memberOverloads(alias)(spec2)
+              } else
+                global.error(s"""|Could not rewire paramaccessor => will crash in mixin.
+                                 |base: ${variantMethod.defString}
+                                 |from: ${alias.defString}
+                                 |baseTpe: $baseTpe
+                                 |typeParams: ${baseTpe.typeSymbol.typeParams}
+                                 |typeArgs: ${baseTpe.typeArgs}
+                                 |spec2: $spec2
+                                 |memberOverloads for alias: ${metadata.memberOverloads.get(alias)}""".stripMargin)
+            }
+
+            newMembers ::= variantMethod
+          }
+
+          specializedOverloads(spec) = variantMethod
+          metadata.memberOverloads(variantMethod) = specializedOverloads
+          metadata.setMemberStem(variantMethod, stemMethod)
+        }
+
+        for (variantClass <- specs; variantMethod <- specializedOverloads get variantClass)
+          // TODO: This should be Interface(), but I'll keep it as it is to avoid breackage later on
+          memberSpecializationInfo(variantMethod) = ForwardTo(stemMethod)(overrider = false)
+      }
+
+      stemClass.info.decls.toList ++ newMembers
+    }
+
+    /** xxx */
+    def specialize1(stemClass: Symbol, pvariantClass: PartialSpec, widenedScope: Scope): Symbol = {
+
+      val variantClassParamValues = typeParamValues(stemClass, pvariantClass)
+      val baseName = if (flag_loader_friendly) newTermName(stemClass.name.toString + "_class") else stemClass.name
+      val variantClassName = specializedName(baseName, variantClassParamValues).toTypeName
+      val bytecodeClass = stemClass.owner.info.decl(variantClassName)
       bytecodeClass.info // TODO: we have 5054 here, but even this doesn't work
-      val spec = origin.owner.newClass(specName, origin.pos, origin.flags)
+      val variantClass = stemClass.owner.newClass(variantClassName, stemClass.pos, stemClass.flags)
 
-      spec.associatedFile = origin.associatedFile
-      currentRun.symSource(spec) = origin.sourceFile
-      specializedStemClass(spec) = origin
-      spec.resetFlag(INTERFACE)
+      variantClass.associatedFile = stemClass.associatedFile
+      currentRun.symSource(variantClass) = stemClass.sourceFile
+      specializedStemClass(variantClass) = stemClass
+      variantClass.resetFlag(INTERFACE)
 
-      val pmap = ParamMap(origin.typeParams, spec)
-      variantParamMap(spec) = pmap.map(_.swap).toMap
+      val pmap = ParamMap(stemClass.typeParams, variantClass)
+      variantParamMap(variantClass) = pmap.map(_.swap).toMap
 
       val tparamUpdate: TypeEnv = pmap.map {case (s1, s2) => (s1, s2.tpeHK)}
-      val envOuter: TypeEnv = pspec.map {
+      val envOuter: TypeEnv = pvariantClass.map {
         case (p, Boxed)     => (p, pmap(p).tpeHK)
         case (p, Miniboxed) => (p, storageType(pmap(p)))
       }
 
-      val envInner: TypeEnv = pspec.flatMap {
+      val envInner: TypeEnv = pvariantClass.flatMap {
         case (p, Miniboxed) => Some((pmap(p), storageType(pmap(p))))
         case _ => None
       }
 
       // Insert the newly created symbol in our various maps that are used by
       // the tree transformer.
-      specializedClasses(origin) += pspec -> spec
-      variantTypeEnv(spec) = envOuter
-      classSpecialization(spec) = pspec
+      specializedClasses(stemClass) += pvariantClass -> variantClass
+      variantTypeEnv(variantClass) = envOuter
+      classSpecialization(variantClass) = pvariantClass
 
       // declarations inside the specialized class - to be filled in later
-      val specScope = newScope
-      inheritedDeferredTypeTags(spec) = HashMap()
-      primaryDeferredTypeTags(spec) = HashMap()
+      val variantClassScope = newScope
+      inheritedDeferredTypeTags(variantClass) = HashMap()
+      primaryDeferredTypeTags(variantClass) = HashMap()
 
       // create the type of the new class
-      val localPspec: PartialSpec = pspec.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
-      val specializeParents = specializeParentsTypeMapForSpec(spec, origin, localPspec)
+      val localPvariantClass: PartialSpec = pvariantClass.map({ case (t, sp) => (pmap(t), sp)}) // Tsp -> Boxed/Miniboxed
+      val specializeParents = specializeParentsTypeMapForSpec(variantClass, stemClass, localPvariantClass)
       val specializedTypeMapOuter = MiniboxSubst(pmap.map({ case (tpSym, ntpSym) => (tpSym, ntpSym.tpeHK)}))
       val specializedTypeMapInner = MiniboxSubst(envInner)
       val specializedInfoType: Type = {
-        val sParents = (origin.info.parents ::: List(origin.tpe)) map {
+        val sParents = (stemClass.info.parents ::: List(stemClass.tpe)) map {
           t => specializedTypeMapOuter(t)
         } map specializeParents
 
-        val newTParams: List[Symbol] = origin.typeParams.map(pmap)
-        GenPolyType(newTParams, ClassInfoType(sParents, specScope, spec))
+        val newTParams: List[Symbol] = stemClass.typeParams.map(pmap)
+        GenPolyType(newTParams, ClassInfoType(sParents, variantClassScope, variantClass))
       }
-      afterMiniboxDupl(spec setInfo specializedInfoType)
+      afterMiniboxDupl(variantClass setInfo specializedInfoType)
 
       // Add type tag fields for each parameter. Will be copied in specialized subclasses.
       val typeTagMap: List[(Symbol, Symbol)] =
-        (for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed) yield {
+        (for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && pvariantClass(tparam) == Miniboxed) yield {
           val sym =
-            if (origin.isTrait)
-              spec.newMethodSymbol(typeTagName(spec, tparam), spec.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
+            if (stemClass.isTrait)
+              variantClass.newMethodSymbol(typeTagName(variantClass, tparam), variantClass.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
             else
-              spec.newValue(typeTagName(spec, tparam), spec.pos, PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
+              variantClass.newValue(typeTagName(variantClass, tparam), variantClass.pos, PARAMACCESSOR | PrivateLocal).setInfo(ByteTpe)
 
           sym setFlag MINIBOXED
-          if (origin.isTrait) {
-            primaryDeferredTypeTags(spec) += sym -> pmap(tparam)
+          if (stemClass.isTrait) {
+            primaryDeferredTypeTags(variantClass) += sym -> pmap(tparam)
             memberSpecializationInfo(sym) = DeferredTypeTag(tparam)
           }
 
-          specScope enter sym
+          variantClassScope enter sym
           (sym, pmap(tparam))
         })
 
       // Record the new mapping for type tags to the fields carrying them
-      globalTypeTags(spec) = typeTagMap.toMap
+      globalTypeTags(variantClass) = typeTagMap.toMap
 
-      // Copy the members of the original class to the specialized class.
+      // Copy the members of the stemClassal class to the specialized class.
       val newMembers: Map[Symbol, Symbol] =
         // we only duplicate methods and fields
-        (for (mbr <- decls.toList if (!notSpecializable(origin, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
-          val newMbr = mbr.cloneSymbol(spec)
+        (for (mbr <- widenedScope.toList if (!notSpecializable(stemClass, mbr) && !(mbr.isModule || mbr.isType || mbr.isConstructor))) yield {
+          val newMbr = mbr.cloneSymbol(variantClass)
           if (mbr.isMethod) {
-            if (specializationStemMember(mbr) == mbr)
-              specializationStemMember(newMbr) = newMbr
+            if (variantClassializationStemMember(mbr) == mbr)
+              variantClassializationStemMember(newMbr) = newMbr
             else
-              specializationStemMember(newMbr) = mbr
+              variantClassializationStemMember(newMbr) = mbr
           }
           val update = (mbr.info.params zip newMbr.info.params).toMap
           localTypeTags(newMbr) = localTypeTags.getOrElse(mbr, Map.empty).map({ case (tag, tparam) => (update(tag), tparam)})
-          globalTypeTags(newMbr) = globalTypeTags(spec)
+          globalTypeTags(newMbr) = globalTypeTags(variantClass)
           (mbr, newMbr)
         }).toMap
 
@@ -227,8 +436,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         newMbr setFlag MINIBOXED
         newMbr modifyInfo { info =>
 
-          val info0 = info.substThis(origin, spec)
-          val info1 = info0.asSeenFrom(spec.thisType, m.owner)
+          val info0 = info.substThis(stemClass, variantClass)
+          val info1 = info0.asSeenFrom(variantClass.thisType, m.owner)
           val info2 =
             if (m.isTerm && !m.isMethod) {
               // this is where we specialize fields:
@@ -240,20 +449,20 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         }
 
         // TODO: Is this okay?
-        variantTypeEnv(newMbr) = variantTypeEnv(spec)
+        variantTypeEnv(newMbr) = variantTypeEnv(variantClass)
         localTypeTags(newMbr) = newMbr.info.params.zip(localTypeTags.getOrElse(m, Map.empty).map(p => pmap(p._2))).toMap
-        debug(spec + " entering: " + newMbr)
-        specScope enter newMbr
+        debug(variantClass + " entering: " + newMbr)
+        variantClassScope enter newMbr
       }
 
       // adding the type tags as constructor arguments
-      for (ctor <- decls.filter(sym => sym.name == nme.CONSTRUCTOR)) {
-        val newCtor = ctor.cloneSymbol(spec).setPos(ctor.pos)
+      for (ctor <- widenedScope.filter(sym => sym.name == nme.CONSTRUCTOR)) {
+        val newCtor = ctor.cloneSymbol(variantClass).setPos(ctor.pos)
 
         newCtor setFlag MINIBOXED
         newCtor modifyInfo { info =>
-          val info0 = info.asSeenFrom(spec.thisType, ctor.owner)
-          val info1 = info0.substThis(origin, spec) // Is this still necessary?
+          val info0 = info.asSeenFrom(variantClass.thisType, ctor.owner)
+          val info1 = info0.substThis(stemClass, variantClass) // Is this still necessary?
           val info2 = specializedTypeMapInner(info1)
           val tagParams = typeTagMap map (_._1.cloneSymbol(newCtor, 0))
           localTypeTags(newCtor) = tagParams.zip(typeTagMap.map(_._2)).toMap
@@ -261,27 +470,27 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             case MethodType(params, ret) =>
               MethodType(tpe.params, transformArgs(ret))
             case TypeRef(_, _, _) =>
-              spec.tpe
+              variantClass.tpe
             case _ =>
               tpe
           }
-          // add the new constructor as an overload for the original constructor
+          // add the new constructor as an overload for the stemClassal constructor
           specializedMembers.get(ctor) match {
-            case Some(map) => map += pspec -> newCtor
-            case None => specializedMembers(ctor) = HashMap(pspec -> newCtor)
+            case Some(map) => map += pvariantClass -> newCtor
+            case None => specializedMembers(ctor) = HashMap(pvariantClass -> newCtor)
           }
           val info3 = transformArgs(info2)
 
           // dummy constructor
           if (!tagParams.isEmpty) {
-            val dummyCtor = ctor.cloneSymbol(spec).setPos(ctor.pos)
+            val dummyCtor = ctor.cloneSymbol(variantClass).setPos(ctor.pos)
             dummyCtor.setInfo(info3.cloneInfo(dummyCtor))
             specializedMembers.get(dummyCtor) match {
-              case Some(map) => map += pspec -> newCtor
-              case None => specializedMembers(dummyCtor) = HashMap(pspec -> newCtor)
+              case Some(map) => map += pvariantClass -> newCtor
+              case None => specializedMembers(dummyCtor) = HashMap(pvariantClass -> newCtor)
             }
             dummyConstructors += dummyCtor
-            specScope enter dummyCtor
+            variantClassScope enter dummyCtor
 //            println("dummy constructor: " + dummyCtor.defString)
           }
 
@@ -290,7 +499,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         memberSpecializationInfo(newCtor) = SpecializedImplementationOf(ctor)
 
 
-        specScope enter newCtor
+        variantClassScope enter newCtor
       }
 
       // Record how the body of these members should be generated
@@ -299,11 +508,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
         } else {
           // Check whether the method is the one that will carry the
-          // implementation. If yes, find the original method from the original
+          // implementation. If yes, find the stemClassal method from the stemClassal
           // class from which to copy the implementation. If no, find the method
           // that will have an implementation and forward to it.
-          if (specializedMembers(mbr).isDefinedAt(pspec)) {
-            if (specializedMembers(mbr)(pspec) == mbr) {
+          if (specializedMembers(mbr).isDefinedAt(pvariantClass)) {
+            if (specializedMembers(mbr)(pvariantClass) == mbr) {
               if (mbr.hasAccessorFlag) {
                 memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
                   case Some(ForwardTo(target)) =>
@@ -328,13 +537,13 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             } else {
               // here, we're forwarding to the all-AnyRef member, knowing that the
               // redirection algorithm will direct to the appropriate member later
-              val target = newMembers(specializedMembers(mbr)(pspec.isAllBoxed))
+              val target = newMembers(specializedMembers(mbr)(pvariantClass.isAllBoxed))
               // a forwarder will never be a tailcall itself, although it may
               // forward to a tailcall method:
               newMbr.removeAnnotation(TailrecClass)
               // since the member will be a forwarder, it can't be DEFERRED (See #85):
               newMbr.resetFlag(DEFERRED)
-              memberSpecializationInfo(newMbr) = genForwardingInfo(target)
+              memberSpecializationInfo(newMbr) = ForwardTo(target)(overrider = false)
             }
           } else {
             memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
@@ -344,8 +553,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // populate the specializedMembers data structure for the new members also
       for ((m, newMbr) <- newMembers if (m.isMethod && !m.isConstructor)) {
-        if (specializedMembers(m).isDefinedAt(pspec)) {
-          val newMbrMeantForSpec = newMembers(specializedMembers(m)(pspec))
+        if (specializedMembers(m).isDefinedAt(pvariantClass)) {
+          val newMbrMeantForSpec = newMembers(specializedMembers(m)(pvariantClass))
           if (!(specializedMembers isDefinedAt newMbrMeantForSpec)) {
             specializedMembers(newMbrMeantForSpec) = new HashMap[PartialSpec, Symbol]
             for ((s, m) <- specializedMembers(m)) {
@@ -359,138 +568,19 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       }
 
       // specialized specializedMembers
-      addSpecialOverrides(pspec, localPspec, spec, specScope, inPlace = true)
+      addSpecialOverrides(pvariantClass, localPvariantClass, variantClass, variantClassScope, inPlace = true)
 
       // deferred type tags:
-      addDeferredTypeTagImpls(spec, specScope, inPlace = true)
+      addDeferredTypeTagImpls(variantClass, variantClassScope, inPlace = true)
 
       // normalized members:
-      addNormalizedMembers(spec, specScope, inPlace = true)
+      addNormalizedMembers(variantClass, variantClassScope, inPlace = true)
 
-      spec
-    }
-
-    def widen(specs: List[PartialSpec]): List[Symbol] = {
-
-      origin setFlag(MINIBOXED)
-
-      specializedStemClass(origin) = origin
-      variantParamMap(origin) = origin.info.typeParams.map((p: Symbol) => (p, p)).toMap
-      inheritedDeferredTypeTags(origin) = HashMap()
-      primaryDeferredTypeTags(origin) = HashMap()
-      specializedClasses(origin) = HashMap()
-
-      // we only specialize the members that are defined in the current class
-      val members = origin.info.members.filter(_.owner == origin).toList
-//      members foreach (_ info)
-
-      val methods = members.filter(s => s.isMethod && !(s.isConstructor || s.isGetter || s.isSetter))
-      val getters = members.filter(_.isGetter)
-      val setters = members.filter(_.isSetter)
-      val fields = members.filter(m => m.isTerm && !m.isMethod)
-
-      var newMembers = List[Symbol]()
-
-      // we make specialized specializedMembers for every member of the original class
-      for (member <- methods ::: getters ::: setters if !notSpecializable(origin, member)) {
-
-        val specializedMembersOfMember = new HashMap[PartialSpec, Symbol]
-        val specs_filtered =  if (needsSpecialization(origin, member)) specs else specs.filter(PartialSpec.isAllAnyRef(_))
-
-        for (spec <- specs_filtered) {
-          var newMbr = member
-          if (!PartialSpec.isAllAnyRef(spec)) {
-            val env: TypeEnv = spec map {
-              case (p, v) => (p, if (v == Boxed) p.tpe else storageType(p))
-            }
-            val specializedTypeMap = MiniboxSubst(env)
-
-            newMbr = member.cloneSymbol(origin)
-
-            // https://github.com/miniboxing/miniboxing-plugin/issues/82
-            // specialized parameter accessors are not accessors anymore
-            // as they violate the premise that they do not take parameters
-            if (newMbr.isParamAccessor)
-              newMbr.resetFlag(PARAMACCESSOR) // we don't want this to be a PARAMACCESSOR
-
-            newMbr setFlag MINIBOXED
-            newMbr setName (specializedName(member.name, typeParamValues(origin, spec)))
-            newMbr modifyInfo (info => {
-              val info0 = specializedTypeMap(info.asSeenFrom(newMbr.owner.thisType, member.owner))
-              val localTags =
-                for (tparam <- origin.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
-                  yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), tparam)
-              localTypeTags(newMbr) = localTags.toMap
-              val tagParams = localTags.map(_._1)
-              val info1 =
-                info0 match {
-                  case MethodType(args, ret) =>
-                    MethodType(tagParams ::: args, ret)
-                  case PolyType(targs, MethodType(args, ret)) =>
-                    val ntargs = targs.map(_.cloneSymbol(newMbr))
-                    val tpe = MethodType(tagParams ::: args, ret).substSym(targs, ntargs)
-                    assert((tagParams ::: args).length == tpe.params.length, tagParams + ", " + args + ", " + tpe.params)
-                    val update = ((tagParams ::: args) zip tpe.params).toMap
-                    localTypeTags(newMbr) = localTypeTags(newMbr).map({ case (tag, t) => (update(tag), t) })
-                    PolyType(ntargs, tpe)
-                  case _ => ???
-                }
-
-              // TODO: We need to clear some override flags, but that's not critical for the classes to work (#41)
-
-              info1
-            })
-
-            // rewire to the correct referenced symbol, else mixin crashes
-            val alias = newMbr.alias
-            if (alias != NoSymbol) {
-              // Rewire alias:
-              val baseTpe = origin.info.baseType(alias.owner)
-              val pspec2 = ((baseTpe.typeSymbol.typeParams zip baseTpe.typeArgs) flatMap {
-                case (param, tpe) if param.hasFlag(MINIBOXED) =>
-                  if (ScalaValueClasses.contains(tpe.typeSymbol))
-                    Some((param, Miniboxed))
-                  else if (spec.get(tpe.typeSymbol) == Some(Miniboxed))
-                    Some((param, Miniboxed))
-                  else
-                    Some((param, Boxed))
-                case _ =>
-                  None
-              }).toMap
-              if (specializedMembers.isDefinedAt(alias) && specializedMembers(alias).isDefinedAt(pspec2)) {
-                newMbr.asInstanceOf[TermSymbol].referenced = specializedMembers(alias)(pspec2)
-              } else {
-                log("Could not rewire!")
-                log("base: " + newMbr.defString)
-                log("from: " + alias.defString)
-                log(baseTpe)
-                log(baseTpe.typeSymbol.typeParams)
-                log(baseTpe.typeArgs)
-                log(pspec2)
-                log(specializedMembers.get(alias))
-                log("")
-              }
-            }
-
-            newMembers ::= newMbr
-          }
-
-          specializedMembersOfMember(spec) = newMbr
-          specializedMembers(newMbr) = specializedMembersOfMember
-          specializationStemMember(newMbr) = member
-        }
-
-        for (spec <- specs; newMbr <- specializedMembersOfMember get spec)
-          // TODO TOPIC/ERASURE: Check this is correct, it may be wrong
-          memberSpecializationInfo(newMbr) = genForwardingInfo(member)
-      }
-
-      // TODO: Do we want to keep overrides?
-      origin.info.decls.toList ++ newMembers
+      variantClass
     }
 
     // create overrides for specialized variants of the method
-    def addSpecialOverrides(globalPSpec: PartialSpec, pspec: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+    def addSpecialOverrides(globalPSpec: PartialSpec, pvariantClass: PartialSpec, clazz: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
 
       val scope1 = if (inPlace) scope else scope.cloneScope
       val base = specializedStemClass.getOrElse(clazz, NoSymbol)
@@ -515,9 +605,9 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             // therefore, the 1st step is to identify the specialized class
             val baseParent = baseOSym.owner
             val baseParentTpe = clazz.info.baseType(baseParent)
-            val spec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pspec)
-            if (!PartialSpec.isAllAnyRef(spec) && specializedMembers.isDefinedAt(baseOSym)) {
-              specializedMembers(baseOSym).get(spec) match {
+            val variantClass = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], pvariantClass)
+            if (!PartialSpec.isAllAnyRef(variantClass) && specializedMembers.isDefinedAt(baseOSym)) {
+              specializedMembers(baseOSym).get(variantClass) match {
                 case Some(mainSym) =>
                   return mainSym
                 case _ =>
@@ -547,7 +637,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val typeTags = localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
-            // when using nested class specialization:
+            // when using nested class variantClassialization:
             // ```
             //   abstract class C[T, U] { def foo(t: T, u: U): Any }
             //   class X[Y] { new C[Int, Y] { def foo(t: Int, u: Y) = ??? }
@@ -561,15 +651,15 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               // if sym is a forwarder to a more specialized member, let the overrider forward to
               // the the most specialized member, else we're losing optimality
               case Some(ForwardTo(moreSpec)) =>
-                memberSpecializationInfo(overrider) = genForwardingInfo(sym, overrider = true)
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = false)
 
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
               case _ =>
-                memberSpecializationInfo(sym) = genForwardingInfo(sym, overrider = true)
+                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = false)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
             }
-            specializedMembers.getOrElseUpdate(sym, collection.mutable.HashMap()) += (pspec -> overrider)
+            specializedMembers.getOrElseUpdate(sym, collection.mutable.HashMap()) += (pvariantClass -> overrider)
 
             scope1 enter overrider
           }
@@ -579,37 +669,32 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     }
 
     // add members derived from deferred type tags
-    def addDeferredTypeTagImpls(origin: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+    def addDeferredTypeTagImpls(stemClass: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val scope1 = if (inPlace) scope else scope.cloneScope
-      if (!origin.isTrait) {
-        val deferredTags = primaryDeferredTypeTags(origin) ++ inheritedDeferredTypeTags(origin)
+      if (!stemClass.isTrait) {
+        val deferredTags = primaryDeferredTypeTags(stemClass) ++ inheritedDeferredTypeTags(stemClass)
         // classes satisfy the deferred tags immediately, no need to keep them
         for ((method, tparam) <- deferredTags) {
-          val impl = method.cloneSymbol(origin).setFlag(MINIBOXED)
+          val impl = method.cloneSymbol(stemClass).setFlag(MINIBOXED)
           impl.resetFlag(DEFERRED | ABSTRACT)
           memberSpecializationInfo(impl) = DeferredTypeTagImplementation(tparam)
           scope1 enter impl
         }
-        inheritedDeferredTypeTags(origin).clear()
+        inheritedDeferredTypeTags(stemClass).clear()
       }
       scope1
     }
 
     // normalize methods
-    def addNormalizedMembers(origin: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
+    def addNormalizedMembers(stemClass: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {
       val newScope = if (inPlace) scope else scope.cloneScope
       for (mbr <- scope.cloneScope)
         normalizeMembers(mbr).foreach(newScope.enter _)
       newScope
     }
 
-    /*
-     * This removes fields and constructors from a class while leaving the
-     * setters and getters in place. The effect is that the class automatically
-     * becomes an interface
-     */
-    private def adaptClassFields(clazz: Symbol, decls1: Scope): Scope = {
-      val decls = decls1.cloneScope
+    def removeFieldsFromStem(stemClass: Symbol, stemClassDecls: Scope): Scope = {
+      val decls = stemClassDecls.cloneScope
       for (mbr <- decls) {
         if (mbr.isMethod) mbr.setFlag(DEFERRED)
         if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
@@ -619,102 +704,42 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       decls.foreach(_.removeAnnotation(TailrecClass))
       // This needs to be delayed until trees have been duplicated, else
       // instantiation will fail, since C becomes an abstract class
-      if (clazz.hasFlag(TRAIT))
-        originalTraitFlag += clazz
-      clazz.setFlag(TRAIT | ABSTRACT)
+      if (stemClass.hasFlag(TRAIT))
+        metadata.classStemTraitFlag += stemClass
+      stemClass.setFlag(TRAIT | ABSTRACT)
+
+      stemClass.setFlag(MINIBOXED)
+      stemClass.resetFlag(FINAL)
+      stemClass.resetFlag(CASE)
+
       decls
     }
 
-    // begin specialize
-
-    // force info on parents to get all specialized metadata
-    afterMiniboxDupl(originTpe.parents.map(_.typeSymbol.info))
-    val specs = if (isSpecializableClass(origin)) specializations(origin.info.typeParams) else Nil
-    specs.map(_.map(_._1.setFlag(MINIBOXED))) // TODO: Only needs to be done once per type parameter
-
-    val tpe = if (specs.nonEmpty) {
-      log("Specializing " + origin + "...\n")
-
-      // step1: widen the class or trait
-      val scope1 = newScopeWith(widen(specs): _*)
-
-      // mark this symbol as the base of a miniboxed hierarchy
-      specializedStem += origin
-      variantTypeEnv(origin) = (origin.typeParams zip origin.typeParams.map(_.tpeHK)).toMap
-
-      // step2: create subclasses
-      val classes = specs map {
-        env =>
-        val spc      = specialize1(env, scope1)
-        val existing = origin.owner.info.decl(spc.name)
-
-        // a symbol for the specialized class already exists if there's a classfile for it.
-        // keeping both crashes the compiler on test/files/pos/spec-Function1.scala
-        if (existing != NoSymbol)
-          origin.owner.info.decls.unlink(existing)
-
-        // TODO: overrides in the specialized class
-        if (origin.owner.info.decls != EmptyScope)
-          afterMiniboxDupl(origin.owner.info.decls enter spc)
-
-        spc
-      }
-
-      // for traits resulting from classes inheriting each other we need to insert an artificial AnyRef parent
-      val artificialAnyRefReq = !origin.isTrait && ((originTpe.parents.size >= 1) && (specializedStem(originTpe.parents.head.typeSymbol)))
+    def computeNewStemParentClasses: List[Type] = {
+      val artificialAnyRefReq = (
+           !stemClass.isTrait
+        && ((stemClassTpe.parents.size >= 1)
+        &&  metadata.isClassStem(stemClassTpe.parents.head.typeSymbol)))
       val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
-      val parents1 = artificialAnyRef ::: originTpe.parents
+      artificialAnyRef ::: stemClassTpe.parents
+    }
 
-      val scope2 = adaptClassFields(origin, scope1)
-      val scope3 = addNormalizedMembers(origin, scope2)
+    def reportClasses(stemClass: Symbol, scope3: Scope, classes: List[Symbol]) = {
+              log("  // interface:")
+        log("  " + stemClass.defString + " {")
+        for (decl <- scope3.toList.sortBy(_.defString))
+          log(f"    ${decl.defString}%-70s")
 
-      log("  // interface:")
-      log("  " + origin.defString + " {")
-      for (decl <- scope3.toList.sortBy(_.defString))
-        log(f"    ${decl.defString}%-70s")
-
-      log("  }\n")
-
-      classes foreach { cls =>
-        log("  // specialized class:")
-        log("  " + cls.defString + " {")
-        for (decl <- cls.info.decls.toList.sortBy(_.defString) if !dummyConstructors(decl))
-          log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
         log("  }\n")
-      }
-      log("\n\n")
-      origin.resetFlag(FINAL)
-      origin.resetFlag(CASE)
 
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope3, origin))
-    } else {
-      inheritedDeferredTypeTags(origin) = HashMap()
-      primaryDeferredTypeTags(origin) = HashMap()
-      val scope1 = originTpe.decls.cloneScope
-      val specializeTypeMap = specializeParentsTypeMapForGeneric(origin)
-      val parents1 = originTpe.parents map specializeTypeMap
-      val scope2 = addSpecialOverrides(Map.empty, Map.empty, origin, scope1)
-      val scope3 = addDeferredTypeTagImpls(origin, scope2)
-      val scope4 = addNormalizedMembers(origin, scope3)
-      // make all structural refinement members private (members may be added by special overrides and normalizedMembers)
-      GenPolyType(origin.info.typeParams, ClassInfoType(parents1, scope4, origin))
+        classes foreach { cls =>
+          log("  // specialized class:")
+          log("  " + cls.defString + " {")
+          for (decl <- cls.info.decls.toList.sortBy(_.defString) if !metadata.dummyConstructors(decl))
+            log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
+          log("  }\n")
+        }
+        log("\n\n")
     }
-
-    for (mbr <- tpe.decls) {
-      if (mbr.isStructuralRefinementMember) {
-//        println(s"SETTING PROTECTED: ${mbr.defString} in $origin: ${mbr.isStructuralRefinementMember}")
-        mbr.setFlag(PROTECTED)
-      }
-    }
-
-    tpe
-  }
-
-  /**
-   * Generate the information about how arguments and return value should
-   * be converted when forwarding to `target`.
-   */
-  private def genForwardingInfo(base: Symbol, overrider: Boolean = false): ForwardTo = {
-    ForwardTo(base)(overrider)
   }
 }

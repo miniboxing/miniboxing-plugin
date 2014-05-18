@@ -195,12 +195,13 @@ trait MiniboxMetadataUtils {
   }
 
   object heuristics {
-    def needsSpecialization(clazz: Symbol, member: Symbol) = flag_spec_no_opt || {
-      val tparams = clazz.typeParams.filter(_.isMiniboxAnnotated)
-      val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
-      tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
-      res
-    }
+    def hasSpecializedArgumentsOrReturn(clazz: Symbol, member: Symbol) =
+      flag_spec_no_opt || {
+        val tparams = clazz.typeParams.filter(_.isMiniboxAnnotated)
+        val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
+        tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
+        res
+      }
 
     /**
      * Tells whether a class must be specialized by looking at the annotations
