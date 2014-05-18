@@ -52,18 +52,6 @@ trait MiniboxMetadataUtils {
       }
   }
 
-  // Thanks to @xeno-by :)
-  implicit class RichSym(sym: Symbol) {
-    def getMiniboxedTypeParameters: List[Symbol] =
-      sym.typeParams.filter((s: Symbol) => s.isMiniboxAnnotated)
-    def hasMiniboxedTypeParameters: Boolean =
-      sym.typeParams.exists((s: Symbol) => s.isMiniboxAnnotated)
-    def isMiniboxAnnotated: Boolean = {
-      beforeMiniboxDupl(sym.info) // make sure the annotation hijacker updated it
-      sym hasAnnotation MinispecClass
-    }
-  }
-
   object PartialSpec {
 
     def isAllAnyRef(env: PartialSpec) = !env.isEmpty && env.forall(_._2 == Boxed)
@@ -169,7 +157,7 @@ trait MiniboxMetadataUtils {
     }
   }
 
-  object tags {
+  object tagUtils {
     def separateTypeTagArgsInTree(args: List[Tree]): (List[Tree], List[Tree]) = args match {
       case ttarg :: rest if ttarg.symbol.name.toString.endsWith("_TypeTag") =>
         val (ttargs, args) = separateTypeTagArgsInTree(rest)
@@ -197,7 +185,7 @@ trait MiniboxMetadataUtils {
   object heuristics {
     def hasSpecializedArgumentsOrReturn(clazz: Symbol, member: Symbol) =
       flag_spec_no_opt || {
-        val tparams = clazz.typeParams.filter(_.isMiniboxAnnotated)
+        val tparams = clazz.typeParams.filter(s => new RichSym(s).isMiniboxAnnotated)
         val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
         tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)
         res
@@ -209,7 +197,7 @@ trait MiniboxMetadataUtils {
     def isSpecializableClass(clazz: Symbol) =
       clazz.isClass &&
       !clazz.typeParams.isEmpty &&
-      clazz.typeParams.exists(_.isMiniboxAnnotated)
+      clazz.typeParams.exists(s => new RichSym(s).isMiniboxAnnotated)
 
     // shamelessly stolen from specialization
     def specializableClass(tp: Type): Boolean = (

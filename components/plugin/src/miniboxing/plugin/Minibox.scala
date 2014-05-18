@@ -236,8 +236,8 @@ class Minibox(val global: Global) extends Plugin {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- miniboxing.specializedStem)
-          if (miniboxing.originalTraitFlag(sym))
+        for (sym <- miniboxing.metadata.classStem.values)
+          if (miniboxing.metadata.classStemTraitFlag(sym))
             sym.resetFlag(ABSTRACT)
           else
             sym.resetFlag(ABSTRACT | TRAIT)
@@ -258,7 +258,7 @@ class Minibox(val global: Global) extends Plugin {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- miniboxing.specializedStem)
+        for (sym <- miniboxing.metadata.classStem.values)
           sym.setFlag(ABSTRACT | TRAIT)
       }
     }

@@ -53,13 +53,13 @@ trait MiniboxMetadata {
 
     /** Miniboxed classes and traits become traits with subclasses/subtraits as specialized variants
      *  This set contains the traits that were transformed. */
-    /* TODO: private[this] */ val classStemTraitFlag = mutable.Set.empty[Symbol]
+    val classStemTraitFlag = mutable.Set.empty[Symbol]
 
-    /* TODO: private[this] */  val classOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+    val classOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
-    /* TODO: private[this] */  val classSpecialization = new mutable.HashMap[Symbol, PartialSpec]
+    val classSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
-    private[this] val classStem = new mutable.HashMap[Symbol, Symbol]
+    val classStem = new mutable.HashMap[Symbol, Symbol]
 
     def setClassStem(variant: Symbol, stem: Symbol) = {
       assert(variant.isClass, s"Not a class: ${variant.defString}")
@@ -77,11 +77,11 @@ trait MiniboxMetadata {
 
     // Members (local scope, inside a class/trait):
 
-    /* TODO: private[this] */  val memberOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+    val memberOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
-    /* TODO: private[this] */  val memberSpecialization = new mutable.HashMap[Symbol, PartialSpec]
+    val memberSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
-    private[this] val memberStem = new mutable.HashMap[Symbol, Symbol]
+    val memberStem = new mutable.HashMap[Symbol, Symbol]
 
     def setMemberStem(variant: Symbol, stem: Symbol) = {
       assert(variant.isMethod, s"Not a method: ${variant.defString}")
@@ -97,18 +97,18 @@ trait MiniboxMetadata {
     def isMemberStem(clazz: Symbol) =
       getMemberStem(clazz) == clazz
 
-    /* TODO: private[this] */ val variantMemberStem = new mutable.HashMap[Symbol, Symbol]
+    val variantMemberStem = new mutable.HashMap[Symbol, Symbol]
 
     // Normalization (local scope):
 
     /** Partial normalization corresponding to a normalized method */
-    /* TODO: private[this] */ val normalSpecialization = new mutable.HashMap[Symbol, PartialSpec]
+    val normalSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
     /** For each method this keeps a mapping of its normalized variants */
-    /* TODO: private[this] */ val normalOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+    val normalOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
     /** For each method contains the stem method */
-    private[this] val normalStem = new mutable.HashMap[Symbol, Symbol]
+    val normalStem = new mutable.HashMap[Symbol, Symbol]
 
     def setNormalStem(variant: Symbol, stem: Symbol) = {
       assert(variant.isMethod, s"Not a method: ${variant.defString}")
@@ -129,38 +129,33 @@ trait MiniboxMetadata {
 
     /** Records for each of the specialized classes the tag field to type parameter
      *  correspondence. These are local type tags, used in all members. */
-    /* TODO: private[this] */ val globalTypeTags =
-      new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+    val globalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** Records for each of the specialized classes the tag field to type parameter
      *  correspondence. These are local type tags, used in each member. */
-    /* TODO: private[this] */ val localTypeTags =
-      new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+    val localTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** TODO */
-    /* TODO: private[this] */ val normalTypeTags =
-      new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+    val normalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** A list of members that represent type tags *inherited* from traits -- unlike type tags in a class,
      *  which are fields, these are methods which the inheriting class overrides. */
-    /* TODO: private[this] */ val inheritedDeferredTypeTags =
-      new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+    val inheritedDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** A list of members that represent a trait's *own type tags* -- not the ones inherited, but the ones
      *  corresponding to its type parameters. Keep in mind that several deferred type tags may ultimately correspond
      *  to the same type parameter, since the methods have different names in different inherited traits.  */
-    /* TODO: private[this] */ val primaryDeferredTypeTags =
-      new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
+    val primaryDeferredTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
 
 
     // Very specific things:
 
     /** A list of dummy constructors necessary to satisfy the duplicator */
-    /* TODO: private[this] */ val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
+    val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
 
     /** The set of members that provide the template to copy and specialize by the specialized overloads */
-    /* TODO: private[this] */ val templateMembers = mutable.Set[Symbol]()
+    val templateMembers = mutable.Set[Symbol]()
   }
 }
 
