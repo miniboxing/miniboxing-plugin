@@ -283,7 +283,7 @@ abstract class Duplicators extends Analyzer {
               invalidateAll(tparams ::: vparamss.flatten)
               tpt.tpe = envSubstitution(tpt.tpe)
             } else {
-              invalidateAll(tparams)
+              withDeepSubst(invalidateAll(tparams))
               withDeepSubst(invalidateAll(vparamss.flatten))
               tpt.tpe = envDeepSubst(tpt.tpe)
             }
@@ -339,7 +339,7 @@ abstract class Duplicators extends Analyzer {
     def castType(tree: Tree, pt: Type): Tree = tree
 
     def dupldbg(ind: Int, msg: => String): Unit = {
-      // println("  " * ind + msg)
+      println("  " * ind + msg)
     }
 
     var rewireThis = new scala.util.DynamicVariable(true)
@@ -362,7 +362,7 @@ abstract class Duplicators extends Analyzer {
       // val pt = WildcardType
       val ind = indent
       indent += 1
-      dupldbg(ind, " in:  " + tree + ": " + pt)
+      dupldbg(ind, " in:  " + tree + ": " + pt + "   " + tree.getClass)
 
       try {
         debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)

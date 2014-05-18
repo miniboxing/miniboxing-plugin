@@ -259,7 +259,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             // collect method body, it will be necessary
             // for the normalized members
             MethodBodiesCollector(ddef)
-            val normSymbols = normalizations(sym).values.toList.sortBy(_.defString).filterNot(_ == sym)
+            val normSymbols = normalizedMembers(sym).values.toList.sortBy(_.defString).filterNot(_ == sym)
             //println("normalizations for: " + sym.defString)
 //            for (m <- normSymbols)
 //              println(" ... " + m.defString)
@@ -302,7 +302,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           res
 
         // rewire member selection
-        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) || oldQual.isInstanceOf[Super] || overloads.isDefinedAt(tree.symbol) =>
+        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) || oldQual.isInstanceOf[Super] || specializedMembers.isDefinedAt(tree.symbol) =>
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
           val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
@@ -339,10 +339,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val specMbrSym = {
             val tpe1 = newQualTpe baseType (newMbrSym.owner)
             extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
-              case Some(pspec) if overloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
+              case Some(pspec) if specializedMembers.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
 //                println()
 //                println("spec: " + pspec)
-                val newMethodSym = overloads(newMbrSym)(pspec)
+                val newMethodSym = specializedMembers(newMbrSym)(pspec)
                 newMethodSym
 //              case Some(pspec) =>
 //                println()
@@ -477,9 +477,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
       val pSpecFromBaseClass = classSpecialization.getOrElse(inClass, Map.empty)
-      val mapTpar = typeEnv.getOrElse(inClass, Map.empty)
+      val mapTpar = variantTypeEnv.getOrElse(inClass, Map.empty)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
-      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
+      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(memberNormalization.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
 
       if (normalizationStemMember.isDefinedAt(target)) {
@@ -516,11 +516,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 //        println(!notSpecializable(target.owner, target))
 //        println(target.typeParams.exists(isSpecialized(target.owner, _)))
         if (!notSpecializable(target.owner, target) && target.typeParams.exists(_.isMiniboxAnnotated)) {
-          assert(normalizations.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
-          assert(normalizations(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizations(target))
+          assert(normalizedMembers.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
+          assert(normalizedMembers(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + normalizedMembers(target))
 //          println(target.defString + " ==> " + normalizations(target)(pspec))
 //          println(currentClass + "." + currentMethod)
-          Some(normalizations(target)(pspec))
+          Some(normalizedMembers(target)(pspec))
         } else
           None
       } else
@@ -529,9 +529,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
       val pSpecFromBaseClass = classSpecialization.getOrElse(inClass, Map.empty)
-      val mapTpar = typeEnv.getOrElse(inClass, EmptyTypeEnv)
+      val mapTpar = variantTypeEnv.getOrElse(inClass, EmptyTypeEnv)
       val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
-      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(normalSpec.getOrElse(_, Map.empty))
+      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(memberNormalization.getOrElse(_, Map.empty))
       val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
 
 //      println(showRaw(qualTpe) + " in " + inClass + " and " + inMethod)
@@ -645,20 +645,28 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     private def duplicateBody(tree0: Tree, source: Symbol, castmap: TypeEnv = Map.empty): Tree = {
 
       val symbol = tree0.symbol
-      val miniboxedEnv = typeEnv.getOrElse(symbol, EmptyTypeEnv)
+      val tparamUpdate: Map[Symbol, Symbol] = variantParamMap.getOrElse(symbol.owner, Map.empty)
+
+      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
+      println(tparamUpdate)
+      println(variantTypeEnv.get(symbol))
+
+      val miniboxedEnv: Map[Symbol, Type] = variantTypeEnv.getOrElse(symbol, EmptyTypeEnv).map({case (oldTpar, tpe) => (tparamUpdate(oldTpar), tpe)})
       val miniboxedTypeTags = typeTagTrees(symbol)
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree0}")
 
-//      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
-//      println(miniboxedEnv)
-//      println(tree)
+      println()
+      println()
+      println()
+      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
+      println(miniboxedEnv)
+      println(tree0)
 
-      //val access_error = !(new AccessibiltyChecker(unit, symbol.owner)).apply(tree0)
-      val tree = tree0 //if (access_error)  else tree0
+      val tree = tree0
 
       val d = new Duplicator(castmap)
-//      println("-->d DUPLICATING: " + tree)
+      println("-->d DUPLICATING: " + tree)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid
@@ -709,7 +717,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if specializationStemMember.getOrElse(symbol, NoSymbol) == symbol =>
           (tparams, Nil, vparams, tpt)
       }
-      val env = typeEnv.getOrElse(symbol, EmptyTypeEnv)
+      val env = variantTypeEnv.getOrElse(symbol, EmptyTypeEnv)
       val boundTvars = env.keySet
       val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
       if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)

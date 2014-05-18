@@ -11,6 +11,20 @@ trait MiniboxMetadataUtils {
   import definitions._
   import scala.collection.immutable
 
+  object ParamMap {
+    def apply(oldParams: List[Symbol], newOwner: Symbol): ParamMap = {
+      def newName(p: Symbol): Name = p.name.append("sp")
+      val newParams = oldParams map (p => p.cloneSymbol(newOwner, p.flags, newName(p)))
+
+      // Update references to old type parameters to the new type parameters
+      // See https://github.com/miniboxing/miniboxing-plugin/issues/36 for details.
+      newParams.map(_.modifyInfo(info => info.substituteSymbols(oldParams, newParams)))
+
+      newParams foreach (p => { p.removeAnnotation(MinispecClass); p.removeAnnotation(SpecializedClass) })
+      (oldParams zip newParams).toMap
+    }
+  }
+
   implicit class RichPartialSpec(pspec: PartialSpec) {
     def isAllBoxed: PartialSpec = pspec.keys.map(tp => (tp, Boxed)).toMap
   }
@@ -99,5 +113,5 @@ trait MiniboxMetadataUtils {
 
   def notSpecializable(clazz: Symbol, mbr: Symbol) =
     mbr.isMethod && mbr.isSynthetic ||
-    (mbr.alias != NoSymbol) && !(overloads.isDefinedAt(mbr.alias))
+    (mbr.alias != NoSymbol) && !(specializedMembers.isDefinedAt(mbr.alias))
 }
