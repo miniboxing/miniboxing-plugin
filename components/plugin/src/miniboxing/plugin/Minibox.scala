@@ -29,6 +29,7 @@ trait MiniboxDuplComponent extends
     with MiniboxNameUtils
     with MiniboxMetadata
     with MiniboxMetadataUtils
+    with MiniboxMetadataAddons
     with MiniboxMethodInfo
     with MiniboxDuplInfoTransformation
     with MiniboxDuplTreeTransformation

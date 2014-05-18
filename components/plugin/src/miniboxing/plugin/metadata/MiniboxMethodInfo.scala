@@ -79,7 +79,7 @@ trait MiniboxMethodInfo {
    * When the newly introduced symbol is abstract and does not
    * have an implementation at all.
    */
-  case class Interface() extends MethodInfo {
+  case object Interface extends MethodInfo {
     override def toString = "is an interface method"
   }
 
