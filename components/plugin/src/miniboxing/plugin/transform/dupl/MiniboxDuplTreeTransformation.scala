@@ -590,38 +590,36 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       val symbol = tree0.symbol
       val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams).toMap
-      val env1: List[(Symbol, Symbol)] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams)
-      val spec = metadata.classSpecialization.getOrElse(symbol.owner, Map())
 
-      val env2 =
-        for ((oldTarg, newTarg) <- env1) yield
-          if (spec.getOrElse(oldTarg, Boxed) == Miniboxed)
+
+      // specialization environment
+      val senv1: List[(Symbol, Symbol)] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams)
+      val sspec = metadata.classSpecialization.getOrElse(symbol.owner, Map())
+      val senv2 =
+        for ((oldTarg, newTarg) <- senv1) yield
+          if (sspec.getOrElse(oldTarg, Boxed) == Miniboxed)
             (oldTarg, storageType(newTarg))
           else
             (oldTarg, newTarg.tpeHK)
+      val senv3 = senv2.toMap
 
-      val env3 = env2.toMap
+      // normalization environment
+      val normStem = metadata.getNormalStem(symbol)
+      val nenv1: List[(Symbol, (Symbol, Symbol))] = source.typeParams zip (symbol.typeParams zip normStem.typeParams)
+      val nspec = metadata.normalSpecialization.getOrElse(symbol, Map())
+      val nenv2 =
+        for ((oldTarg, (newTarg, stemTarg)) <- nenv1) yield
+          if (nspec.getOrElse(stemTarg, Boxed) == Miniboxed)
+            (oldTarg, storageType(newTarg))
+          else
+            (oldTarg, newTarg.tpeHK)
+      val nenv3 = nenv2.toMap
 
-//      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
-//      println(tparamUpdate)
-//      println(variantTypeEnv.get(symbol))
-
-      val miniboxedEnv: Map[Symbol, Type] = env3
+      val miniboxedEnv: Map[Symbol, Type] = senv3 ++ nenv3
       val miniboxedTypeTags = typeTagTrees(symbol)
 
-      debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree0}")
-
-//      println()
-//      println()
-//      println()
-//      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
-//      println(miniboxedEnv)
-//      println(tree0)
-
       val tree = tree0
-
       val d = new Duplicator(Map.empty)
-//      println("-->d DUPLICATING: " + tree)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid
@@ -632,10 +630,6 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           clazz.resetFlag(ABSTRACT)
         else
           clazz.resetFlag(ABSTRACT | TRAIT)
-//
-//      println()
-//      println(tree)
-//      println(miniboxedEnv)
 
       val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
       val tree2 =
@@ -645,13 +639,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             tree,
             source.enclClass,
             symbol.enclClass,
-            mbSubst,
+            mbSubst.shallowSubst,
             mbSubst.deepSubst
           ))
         )(_ => localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))))
-
-//      println(tree2)
-//      println("\n\n")
 
       // get back flags
       for (clazz <- metadata.allStemClasses)

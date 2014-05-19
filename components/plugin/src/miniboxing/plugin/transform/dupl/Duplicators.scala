@@ -391,6 +391,7 @@ abstract class Duplicators extends Analyzer {
             debuglog("invalidating block")
             invalidateAll(stats)
             invalidate(res)
+            dupldbg(ind, " after invalidation: " + tree)
             tree.tpe = null
             super.typed(tree, mode, pt)
 
