@@ -25,11 +25,7 @@ class ListBuilder[@miniboxed T] extends Builder[T, List[T]] {
 
   private var head: List[T] = Nil
 
-  def +=(e1: T): Unit = {
-    if (head == Nil) head = new ::(e1, Nil)
-    else head = new ::(e1, head)
-  }
-
+  def +=(e1: T): Unit = head = e1 :: head
   def finalise: List[T] = head.reverse
 }
 
@@ -47,20 +43,15 @@ trait Numeric[@miniboxed T] {
 trait Traversable[@miniboxed +T] {
 
   def mapTo[@miniboxed U, To](f: Function1[T, U])(b: Builder[U, To]): To = {
-    val buff = b
-
-    foreach(new Function1[T,Unit] { def apply(t: T): Unit = buff += f(t) })
-
-    buff.finalise
+    foreach(new Function1[T,Unit] { def apply(t: T): Unit = b += f(t) })
+    b.finalise
   }
 
   def map[@miniboxed U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
 
   def sum[B >: T](implicit n : Numeric[B]): B = {
     var buff = n.zero
-
     foreach(new Function1[B,Unit] { def apply(b: B): Unit = buff = n.plus(buff,b) })
-
     buff
   }
 
@@ -74,15 +65,12 @@ trait Iterable[@miniboxed +T] extends Traversable[T] {
   def iterator: Iterator[T]
 
   def zipTo[@miniboxed U, To](that: Iterable[U])(b: Builder[Tuple2[T, U], To]): To = {
-    val buff = b
     val these = this.iterator
     val those = that.iterator
-
     while (these.hasNext() && those.hasNext()) {
-      buff += new Tuple2[T,U](these.next(),those.next())
+      b += new Tuple2[T,U](these.next(),those.next())
     }
-
-    buff.finalise
+    b.finalise
   }
 
   def zip[@miniboxed U](that: Iterable[U]): List[Tuple2[T, U]] = zipTo[U, List[Tuple2[T, U]]](that)(new ListBuilder[Tuple2[T, U]])
