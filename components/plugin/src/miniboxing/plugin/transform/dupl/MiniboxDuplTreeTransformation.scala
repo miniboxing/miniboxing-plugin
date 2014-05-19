@@ -385,40 +385,71 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           }
 
           // 1. Generate type tags
-          val (tagSyms, argTypes) = tagUtils.separateTypeTagArgsInType(newMethodSym.info, targs.map(_.tpe))
-          val tagsToTparams01 = metadata.localTypeTags.getOrElse(newMethodSym, HashMap()).toMap
-          val tagsToTparams02 = metadata.normalTypeTags.getOrElse(newMethodSym, HashMap()).toMap
-          val tagsToTparams1 = tagsToTparams01 ++ tagsToTparams02
-          val tparamInsts = for (tagSym <- tagSyms) yield {
-            try {
-              val tparam = tagsToTparams1(tagSym)
-              val instOwner = extractFunctionQualifierType(newFun).baseType(tparam.owner)
-              val tparamFromQualToInst = (instOwner.typeSymbol.typeParams zip instOwner.typeArgs).toMap
-              if (targs != null) assert(newMethodSym.info.typeParams.length == targs.length, "Type parameter mismatch in rewiring from " + oldMethodSym.defString + " to " + newMethodSym.defString + ": " + targs)
-              val tparamFromNormToInst = if (targs != null) (newMethodSym.info.typeParams zip targs.map(_.tpe)).toMap else Map.empty
-              val tparamToInst = tparamFromQualToInst ++ tparamFromNormToInst ++ ScalaValueClasses.map(sym => (sym, sym.tpe))
-              tparam.map(tparamToInst(_).typeSymbol)
-            } catch {
-              case ex: Exception =>
-                println("Tag not found:")
-                println(newMethodSym.defString)
-                println(tagSyms)
-                println(argTypes)
-                println(metadata.localTypeTags.getOrElse(newMethodSym, Map()))
-                println(tagsToTparams1)
-                println(currentClass)
-                println(currentMethod)
-                println(typeTagTrees())
-                ex.printStackTrace()
-                System.exit(1)
-                ???
+          val (tags, argTypes) = tagUtils.separateTypeTagArgsInType(newMethodSym.info, targs.map(_.tpe))
+
+          def tparamsToTargs(tree: Tree): List[(Symbol, Symbol)] = {
+            tree match {
+              case TypeApply(qual, targs) =>
+                (qual.symbol.typeParams zip targs.map(_.tpe.typeSymbol)) ::: tparamsToTargs(qual)
+              case Select(qual, _) =>
+                val qualTpe = qual.tpe
+                val owner = tree.symbol.owner
+                val ownerTpe = qualTpe.baseType(owner)
+                // val stem = metadata.getClassStem(owner)
+//                println()
+//                println("tree:     " + tree)
+//                println("qualTpe:  " + qualTpe)
+//                println("owner:    " + owner)
+//                println("ownerTpe: " + ownerTpe)
+//                println("tparams:  " + owner.typeParams)
+//                println("targs:    " + ownerTpe.typeArgs)
+//                println()
+
+                owner.typeParams zip ownerTpe.typeArgs.map(_.typeSymbol)
+              case _ =>
+                Nil
             }
           }
-          val typeTags = typeTagTrees()
-          val localTagArgs = tparamInsts.map(typeTags).map(localTyper.typed(_))
 
-          val tree1 = gen.mkMethodCall(newFun, localTagArgs ::: args)
+          //  local type tags ==> type parameters ==> type arguments ==> type tags from scope  //
+
+          //  local type tags ==> type parameters
+          val localTags  = metadata.localTypeTags.getOrElse(newMethodSym, HashMap()).toMap
+          val normTags   = metadata.normalTypeTags.getOrElse(newMethodSym, HashMap()).toMap
+          val tagToTpar  = localTags ++ normTags
+
+          // type parameters ==> type arguments
+          val tparToTarg = tparamsToTargs(newFun).toMap
+
+          // type arguments ==> type tags from scope
+          val targToTag  = typeTagTrees()
+
+          val tagArgs =
+              for (tag <- tags) yield
+                try {
+                  val tpar = tagToTpar(tag)
+                  val targ = tparToTarg.getOrElse(tpar, tpar)
+                  val tag2 = targToTag(targ)
+                  tag2
+                } catch {
+                  case ex: Exception =>
+                    reporter.error(tree.pos,
+                        s"""|[miniboxing plugin internal error]
+                            |Type tag not found:
+                            |  before:     $oldFun (of ${oldMethodSym.defString})
+                            |  after:      $newFun (of ${newMethodSym.defString}
+                            |  tags:       $tags
+                            |  tagToTpar:  $tagToTpar
+                            |  tparToTarg: $tparToTarg
+                            |  targToTag:  $targToTag""".stripMargin)
+                    gen.mkMethodCall(Predef_???, Nil)
+                }
+
+          val tree1 = gen.mkMethodCall(newFun, tagArgs ::: args)
           val tree2 = localTyper.typed(tree1)
+
+          println(tree2)
+
           tree2
 
         case _ =>
@@ -484,9 +515,14 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractSpec(qualTpe: Type, owner: Symbol = currentOwner): Option[PartialSpec] = {
-      qualTpe match {
+      val res = qualTpe match {
         case ThisType(cls) if metadata.isClassStem(cls) =>
           metadata.classSpecialization.get(cls)
+//        case SuperType(ThisType(cls), thatTpe) =>
+//          if (metadata.isClassStem(cls))
+//            None
+//          else
+//            extractSpec(thatTpe, owner)
         case SingleType(pre, x) =>
           extractSpec(qualTpe.widen, owner)
         case PolyType(tparams, rest) =>
@@ -498,6 +534,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // unknown
           None
       }
+      res
     }
 
     def ltypedpos(tree: Tree): Tree =
