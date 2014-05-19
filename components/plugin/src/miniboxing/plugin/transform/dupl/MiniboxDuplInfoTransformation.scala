@@ -645,12 +645,12 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
               // if sym is a forwarder to a more specialized member, let the overrider forward to
               // the the most specialized member, else we're losing optimality
               case Some(ForwardTo(moreSpec)) =>
-                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = false)
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
 
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
               case _ =>
-                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = false)
+                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
             }
             metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (localPSpec -> overrider)

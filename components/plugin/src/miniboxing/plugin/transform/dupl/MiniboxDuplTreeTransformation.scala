@@ -590,13 +590,23 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       val symbol = tree0.symbol
       val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams).toMap
-      val env: Map[Symbol, Type] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams.map(_.tpeHK)).toMap
+      val env1: List[(Symbol, Symbol)] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams)
+      val spec = metadata.classSpecialization.getOrElse(symbol.owner, Map())
+
+      val env2 =
+        for ((oldTarg, newTarg) <- env1) yield
+          if (spec.getOrElse(oldTarg, Boxed) == Miniboxed)
+            (oldTarg, storageType(newTarg))
+          else
+            (oldTarg, newTarg.tpeHK)
+
+      val env3 = env2.toMap
 
 //      println("DUPLICATING + " + symbol.defString + " based on " + source.defString)
 //      println(tparamUpdate)
 //      println(variantTypeEnv.get(symbol))
 
-      val miniboxedEnv: Map[Symbol, Type] = env
+      val miniboxedEnv: Map[Symbol, Type] = env3
       val miniboxedTypeTags = typeTagTrees(symbol)
 
       debug(s"duplicating tree: for ${symbol} based on ${source}:\n${tree0}")
@@ -622,6 +632,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           clazz.resetFlag(ABSTRACT)
         else
           clazz.resetFlag(ABSTRACT | TRAIT)
+//
+//      println()
+//      println(tree)
+//      println(miniboxedEnv)
 
       val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
       val tree2 =
