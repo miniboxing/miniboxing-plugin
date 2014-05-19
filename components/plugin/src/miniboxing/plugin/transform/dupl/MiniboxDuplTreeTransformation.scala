@@ -76,7 +76,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     def miniboxQualifier(pos: Position, tpe: Type): Type = {
       val oldClass = tpe.typeSymbol
       val newClass =
-        extractSpec(tpe, currentMethod, currentClass) match {
+        extractSpec(tpe, currentOwner) match {
           case Some(pspec) =>
             metadata.classOverloads(oldClass)(pspec)
           case None =>
@@ -313,7 +313,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                 val ntpe = extractQualifierType(nqual)
                 (nqual, ntpe, ntpe.typeSymbol)
             }
-          val spec = extractSpec(oldQual.tpe, currentMethod, currentClass)
+          val spec = extractSpec(oldQual.tpe, currentOwner)
 
           // patching for the corresponding symbol in the new receiver
           // new C[Int].foo => new C_J[Int].foo
@@ -332,7 +332,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           // new C[Int].foo_J => new C_J[Int].foo_J
           val specMbrSym = {
             val tpe1 = newQualTpe baseType (newMbrSym.owner)
-            extractSpec(tpe1, currentMethod, currentClass) match { // Get the partial specialization
+            extractSpec(tpe1, currentOwner) match { // Get the partial specialization
               case Some(pspec) if metadata.memberOverloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
                 val newMethodSym = metadata.memberOverloads(newMbrSym)(pspec)
                 newMethodSym
@@ -355,7 +355,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
           // find the normalized member
           val normSym =
-            extractNormSpec(targs.map(_.tpe), newFun.symbol, currentMethod, currentClass) match {
+            extractNormSpec(targs.map(_.tpe), newFun.symbol, currentOwner) match {
               case Some(newSym) => newSym
               case None => newFun.symbol
             }
@@ -426,106 +426,74 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
     }
 
-    def miniboxedTypeParameters(owner: Symbol = currentOwner): List[Symbol] =
-      owner.ownerChain flatMap { sym =>
-        // for methods => normalization
-        // for classes => specialization
-        if (sym.isMethod && !sym.typeParams.isEmpty) {
-          // NOTE: We could also rely on the method's specialization, but we rely on the
-          // assumption that a class' specialization is the one that dominates, else we
-          // would be messing up forwarders.
-          val localPSpec = metadata.getNormalLocalSpecialization(sym)
-          localPSpec.collect({ case (tp, Miniboxed) => tp})
-        } else if (sym.isClass || sym.isTrait) {
-          val localPSpec = metadata.getClassLocalSpecialization(sym)
-          localPSpec.collect({ case (tp, Miniboxed) => tp})
-        } else
-          Nil
-      }
+    def extractPartialSpecFromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol): PartialSpec = {
 
-    def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
+      def miniboxedTypeParameters(owner: Symbol = currentOwner): List[Symbol] =
+        owner.ownerChain flatMap { sym =>
+          // for methods => normalization
+          // for classes => specialization
+          afterMiniboxDupl(owner.info) // make sure it's specialized
+          if (sym.isMethod && !sym.typeParams.isEmpty) {
+            // NOTE: We could also rely on the method's specialization, but we rely on the
+            // assumption that a class' specialization is the one that dominates, else we
+            // would be messing up forwarders.
+            val localPSpec = metadata.getNormalLocalSpecialization(sym)
+            localPSpec.collect({ case (tp, Miniboxed) => tp})
+          } else if (sym.isClass || sym.isTrait) {
+            val localPSpec = metadata.getClassLocalSpecialization(sym)
+            localPSpec.collect({ case (tp, Miniboxed) => tp})
+          } else
+            Nil
+        }
+
       val mboxedTpars = miniboxedTypeParameters()
+      val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
+        pair match {
+          // case (2.3)
+          case (p, _) if !(p hasFlag MINIBOXED) => None
+          case (p, `UnitTpe`)    => Some((p, Miniboxed))
+          case (p, `BooleanTpe`) => Some((p, Miniboxed))
+          case (p, `ByteTpe`)    => Some((p, Miniboxed))
+          case (p, `ShortTpe`)   => Some((p, Miniboxed))
+          case (p, `CharTpe`)    => Some((p, Miniboxed))
+          case (p, `IntTpe`)     => Some((p, Miniboxed))
+          case (p, `LongTpe`)    => Some((p, Miniboxed))
+          case (p, `FloatTpe`)   => Some((p, Miniboxed))
+          case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+          // case (2.1)
+          // case (2.2)
+          // case (2.4)
+          case (p, TypeRef(_, tpar, _)) =>
+            if (mboxedTpars.contains(tpar.deSkolemize))
+              Some((p, Miniboxed))
+            else
+              Some((p, Boxed))
+        }
+      }
+      spec.toMap
+    }
 
+    def extractNormSpec(targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
       if (metadata.getNormalStem(target) != NoSymbol) {
         val tparams = afterMiniboxDupl(target.info).typeParams
-        assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + inMethod + " of " + inClass + ": " + targs.length)
-        val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
-          pair match {
-            // case (2.3)
-            case (p, _) if !(p hasFlag MINIBOXED) => None
-            case (p, `UnitTpe`)    => Some((p, Miniboxed))
-            case (p, `BooleanTpe`) => Some((p, Miniboxed))
-            case (p, `ByteTpe`)    => Some((p, Miniboxed))
-            case (p, `ShortTpe`)   => Some((p, Miniboxed))
-            case (p, `CharTpe`)    => Some((p, Miniboxed))
-            case (p, `IntTpe`)     => Some((p, Miniboxed))
-            case (p, `LongTpe`)    => Some((p, Miniboxed))
-            case (p, `FloatTpe`)   => Some((p, Miniboxed))
-            case (p, `DoubleTpe`)  => Some((p, Miniboxed))
-            // case (2.1)
-            // case (2.2)
-            // case (2.4)
-            case (p, TypeRef(_, tpar, _)) if mboxedTpars.contains(tpar.deSkolemize) =>
-              Some((p, Miniboxed))
-            case _ => None
-          }
-        }
-        val pspec = spec.toMap
-
-        metadata.normalOverloads.get(target).flatMap(_.get(pspec))
+        assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
+        val spec = extractPartialSpecFromTargs(tparams, targs, currentOwner)
+        metadata.normalOverloads.get(target).flatMap(_.get(spec))
       } else
         None
     }
 
-    def extractSpec(qualTpe: Type, inMethod: Symbol, inClass: Symbol): Option[PartialSpec] = {
-      val pSpecFromBaseClass = metadata.classSpecialization.getOrElse(inClass, Map.empty)
-      val mapTpar = metadata.getClassStem(inClass).typeParams.zip(inClass.typeParams.map(_.tpeHK)).toMap
-      val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
-      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(metadata.normalSpecialization.getOrElse(_, Map.empty))
-      val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
-
-//      println(showRaw(qualTpe) + " in " + inClass + " and " + inMethod)
-
+    def extractSpec(qualTpe: Type, owner: Symbol = currentOwner): Option[PartialSpec] = {
       qualTpe match {
-        case ThisType(cls) if metadata.isClassStem(inClass) && inClass == cls =>
-          // we're in the interface
-          None
-        case ThisType(cls) if metadata.isClassStem(inClass) && metadata.getClassStem(inClass) == cls =>
-          Some(pSpecFromBaseClass)
-//      since we don't specialize nested classes, this case will never occur:
-//        case t: ThisType =>
-//          extractSpec(t.widen, inMethod, inClass)
+        case ThisType(cls) if metadata.isClassStem(cls) =>
+          metadata.classSpecialization.get(cls)
         case SingleType(pre, x) =>
-          extractSpec(qualTpe.widen, inMethod, inClass)
+          extractSpec(qualTpe.widen, owner)
         case PolyType(tparams, rest) =>
-          extractSpec(rest, inMethod, inClass)
-        case TypeRef(pre, clazz, args) =>
-          import miniboxing.runtime.MiniboxConstants._
+          extractSpec(rest, owner)
+        case TypeRef(pre, clazz, targs) =>
           val tparams = afterMiniboxDupl(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
-          val spec = (tparams zip args) flatMap { (pair: (Symbol, Type)) =>
-            pair match {
-              // case (2.3)
-              case (p, _) if !(p hasFlag MINIBOXED) => None
-              case (p, `UnitTpe`)    => Some((p, Miniboxed))
-              case (p, `BooleanTpe`) => Some((p, Miniboxed))
-              case (p, `ByteTpe`)    => Some((p, Miniboxed))
-              case (p, `ShortTpe`)   => Some((p, Miniboxed))
-              case (p, `CharTpe`)    => Some((p, Miniboxed))
-              case (p, `IntTpe`)     => Some((p, Miniboxed))
-              case (p, `LongTpe`)    => Some((p, Miniboxed))
-              case (p, `FloatTpe`)   => Some((p, Miniboxed))
-              case (p, `DoubleTpe`)  => Some((p, Miniboxed))
-              // case (2.1)
-              // case (2.2)
-              // case (2.4)
-              case (p, tpe) =>
-                if (pSpec.isDefinedAt(tpe.typeSymbol))
-                  Some((p, pSpec(tpe.typeSymbol)))
-                else
-                  Some((p, Boxed))
-            }
-          }
-          Some(spec.toMap)
+          Some(extractPartialSpecFromTargs(tparams, targs, owner))
         case _ =>
           // unknown
           None
