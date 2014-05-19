@@ -570,62 +570,52 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // 1. Get the overridden members
       def specializedOverriddenMembers(sym: Symbol): List[Symbol] = {
-        for (baseOSym <- sym.allOverriddenSymbols) {
+        for (ovr <- sym.allOverriddenSymbols) {
 
           // Check we're not incorrectly overriding normalized members:
           // class B           {          def foo[@miniboxed T, U] = ???            }
           // class C extends B { override def foo[@miniboxed T, @miniboxed U] = ??? } // OK
           // class C extends D { override def foo[@miniboxed T, U] = ??? }            // NOT OK
           if (sym.typeParams.nonEmpty) {
-            val tparamMap = (baseOSym.typeParams zip sym.typeParams).toMap
-            val tparamMiss = baseOSym.typeParams.filter(tparam =>
+            val tparamMap = (ovr.typeParams zip sym.typeParams).toMap
+            val tparamMiss = ovr.typeParams.filter(tparam =>
               tparam.isMiniboxAnnotated && !tparamMap(tparam).isMiniboxAnnotated).map(tparamMap)
             if (tparamMiss.nonEmpty)
-              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + baseOSym + " in " + baseOSym.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
+              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + ovr + " in " + ovr.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
           }
 
           // Check for specialized classes, that makes things more complex
-          if (heuristics.isSpecializableClass(baseOSym.owner) && (base != baseOSym.owner)) {
-            // here we get the base class, not the specialized class
-            // therefore, the 1st step is to identify the specialized class
-            val baseParent = baseOSym.owner
-            val baseParentTpe = clazz.info.baseType(baseParent)
-
-            val baseSpec = PartialSpec.fromType(baseParentTpe.asInstanceOf[TypeRef], baseOSym, localPSpec)
-
-            if (!PartialSpec.isAllAnyRef(baseSpec) && metadata.memberOverloads.isDefinedAt(baseOSym)) {
-              metadata.memberOverloads(baseOSym).get(baseSpec) match {
-                case Some(mainSym) =>
-                  // TODO: Return all overridden symbols
-                  // and make sure there are no name/signature clashes
-                  return List(mainSym)
-                case _ =>
-              }
-            }
-          }
+          if (heuristics.isSpecializableClass(ovr.owner) && (base != ovr.owner) && metadata.memberOverloads.isDefinedAt(ovr))
+            return List(ovr)
         }
         Nil
       }
 
     // 2. Use this information to coordinate
     if (clazz.isClass) // class or trait
+
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
-        specializedOverriddenMembers(sym).foreach(oSym => {
+        specializedOverriddenMembers(sym).foreach(ovr => {
           // TODO: Inject owner chain specialization information here!
-          val localOverload = metadata.memberOverloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
+          val baseParent = ovr.owner
+          val baseParentTpe = clazz.info.baseType(baseParent)
+          val baseSpec = PartialSpec.fromTargs(baseParent.info.typeParams, baseParentTpe.typeArgs, clazz.owner, globalPSpec)
+
+          val localOverload = metadata.memberOverloads.get(ovr).flatMap(_.get(baseSpec)).getOrElse(NoSymbol)
           // only generate the override if we don't have an overload which matches the current symbol:
-          // matching the symbol is a pain in the arse, since oSym points to the interface while localOverload
+          // matching the symbol is a pain in the arse, since ovr points to the interface while localOverload
           // points to the current clazz -- TODO: we could carry newMembers and get the correspondence
-          if (localOverload.name != oSym.name) {
-            val overrider = oSym.cloneSymbol(clazz)
-            overrider.setInfo(oSym.info.cloneInfo(overrider).asSeenFrom(clazz.thisType, oSym.owner))
+          if ((localOverload.name != ovr.name) && (localOverload != NoSymbol)) {
+
+            val overrider = localOverload.cloneSymbol(clazz)
+            overrider.setInfo(localOverload.info.cloneInfo(overrider).asSeenFrom(clazz.thisType, localOverload.owner))
             overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
 
-            val paramUpdate = (oSym.info.params zip overrider.info.params).toMap
-            val baseClazz = oSym.owner
+            val paramUpdate = (localOverload.info.params zip overrider.info.params).toMap
+            val baseClazz = localOverload.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = metadata.localTypeTags.getOrElse(oSym, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
+            val typeTags = metadata.localTypeTags.getOrElse(localOverload, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
             // when using nested class variantClassialization:

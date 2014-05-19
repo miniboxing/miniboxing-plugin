@@ -88,6 +88,7 @@ trait MiniboxMetadataUtils {
         }
 
       val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
+
       val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
         pair match {
           // case (2.3)
