@@ -90,6 +90,8 @@ trait MiniboxMetadataUtils {
       protected override def matches(sym1: Symbol, sym2: Symbol) =
         if (sym2.isTypeSkolem) sym2.deSkolemize eq sym1
         else sym1 eq sym2
+      override def toString() =
+        s"SubstSkolemsTypeMap(${from zip to})"
     }
 
     case class MiniboxSubst(env: Map[Symbol, Type]) extends TypeMap {
@@ -99,7 +101,7 @@ trait MiniboxMetadataUtils {
       val shallowSubst = new SubstSkolemsTypeMap(keys, shallowTypes) {
         override def mapOver(tp: Type) = {
           val res = tp match {
-            case TypeRef(pre, sym, args) if (!keys.contains(sym)) =>
+            case TypeRef(pre, sym, args) if (!keys.exists(sym2 => matches(sym2, sym))) =>
               deepSubst(tp)
             case _ =>
               super.mapOver(tp)
@@ -109,6 +111,8 @@ trait MiniboxMetadataUtils {
       }
       def apply(tp: Type) = shallowSubst(tp)
       def mapOverDeep(tp: Type) = deepSubst(tp)
+      override def toString() =
+        s"MiniboxSubst with shallow=${shallowSubst} and deep=${deepSubst}"
     }
 
     /*
