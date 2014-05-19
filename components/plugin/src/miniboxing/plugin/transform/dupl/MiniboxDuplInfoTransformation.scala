@@ -711,7 +711,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
     def computeNewStemParentClasses(stemClass: Symbol, stemClassTpe: Type): List[Type] = {
       val artificialAnyRefReq = (
-           !stemClass.isTrait
+           !metadata.classStemTraitFlag(stemClass)
         && ((stemClassTpe.parents.size >= 1)
         &&  metadata.isClassStem(stemClassTpe.parents.head.typeSymbol)))
       val artificialAnyRef = if (artificialAnyRefReq) List(AnyRefTpe) else Nil
