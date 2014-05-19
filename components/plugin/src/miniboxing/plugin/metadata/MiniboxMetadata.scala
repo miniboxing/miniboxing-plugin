@@ -146,6 +146,14 @@ trait MiniboxMetadata {
     def allStemClasses: Set[Symbol] =
       classStem.values.toSet
 
+    def getClassLocalSpecialization(sym: Symbol): PartialSpec = {
+      val stem = getClassStem(sym)
+      val sym_tparams = sym.typeParams
+      val stem_tparams = stem.typeParams
+      val localTParam = (stem_tparams zip sym_tparams).toMap
+      val normalization = metadata.classSpecialization.getOrElse(sym, Map.empty)
+      normalization.map({ case (tparam, spec) => (localTParam(tparam), spec)})
+    }
 
 
     // Members:
@@ -163,7 +171,14 @@ trait MiniboxMetadata {
     def isMemberStem(variant: Symbol) =
       getMemberStem(variant) == variant
 
-
+    def getMemberLocalSpecialization(sym: Symbol): PartialSpec = {
+      val stem = getMemberStem(sym)
+      val sym_tparams = sym.typeParams
+      val stem_tparams = stem.typeParams
+      val localTParam = (stem_tparams zip sym_tparams).toMap
+      val normalization = metadata.memberSpecialization.getOrElse(sym, Map.empty)
+      normalization.map({ case (tparam, spec) => (localTParam(tparam), spec)})
+    }
 
     // Normalizations:
     def setNormalStem(variant: Symbol, stem: Symbol) = {
@@ -180,6 +195,14 @@ trait MiniboxMetadata {
     def isNormalStem(variant: Symbol) =
       getNormalStem(variant) == variant
 
+    def getNormalLocalSpecialization(sym: Symbol): PartialSpec = {
+      val stem = getNormalStem(sym)
+      val sym_tparams = sym.typeParams
+      val stem_tparams = stem.typeParams
+      val localTParam = (stem_tparams zip sym_tparams).toMap
+      val normalization = metadata.normalSpecialization.getOrElse(sym, Map.empty)
+      normalization.map({ case (tparam, spec) => (localTParam(tparam), spec)})
+    }
   }
 }
 

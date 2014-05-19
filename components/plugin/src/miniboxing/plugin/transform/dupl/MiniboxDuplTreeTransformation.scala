@@ -386,7 +386,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
           // 1. Generate type tags
           val (tagSyms, argTypes) = tagUtils.separateTypeTagArgsInType(newMethodSym.info, targs.map(_.tpe))
-          val tagsToTparams1 = metadata.localTypeTags.getOrElse(newMethodSym, HashMap()).toMap
+          val tagsToTparams01 = metadata.localTypeTags.getOrElse(newMethodSym, HashMap()).toMap
+          val tagsToTparams02 = metadata.normalTypeTags.getOrElse(newMethodSym, HashMap()).toMap
+          val tagsToTparams1 = tagsToTparams01 ++ tagsToTparams02
           val tparamInsts = for (tagSym <- tagSyms) yield {
             try {
               val tparam = tagsToTparams1(tagSym)
@@ -424,12 +426,25 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
     }
 
+    def miniboxedTypeParameters(owner: Symbol = currentOwner): List[Symbol] =
+      owner.ownerChain flatMap { sym =>
+        // for methods => normalization
+        // for classes => specialization
+        if (sym.isMethod && !sym.typeParams.isEmpty) {
+          // NOTE: We could also rely on the method's specialization, but we rely on the
+          // assumption that a class' specialization is the one that dominates, else we
+          // would be messing up forwarders.
+          val localPSpec = metadata.getNormalLocalSpecialization(sym)
+          localPSpec.collect({ case (tp, Miniboxed) => tp})
+        } else if (sym.isClass || sym.isTrait) {
+          val localPSpec = metadata.getClassLocalSpecialization(sym)
+          localPSpec.collect({ case (tp, Miniboxed) => tp})
+        } else
+          Nil
+      }
+
     def extractNormSpec(targs: List[Type], target: Symbol, inMethod: Symbol, inClass: Symbol): Option[Symbol] = {
-      val pSpecFromBaseClass = metadata.classSpecialization.getOrElse(inClass, Map.empty)
-      val mapTpar = metadata.getClassStem(inClass).typeParams.zip(inClass.typeParams.map(_.tpeHK)).toMap
-      val pSpecInCurrentClass = pSpecFromBaseClass.map({ case (tp, status) => (mapTpar.getOrElse(tp, tp.tpe).typeSymbol, status)})
-      val pSpecInCurrentMethod = inMethod.ownerChain.filter(_.isMethod).flatMap(metadata.normalSpecialization.getOrElse(_, Map.empty))
-      val pSpec = pSpecInCurrentClass ++ pSpecInCurrentMethod
+      val mboxedTpars = miniboxedTypeParameters()
 
       if (metadata.getNormalStem(target) != NoSymbol) {
         val tparams = afterMiniboxDupl(target.info).typeParams
@@ -450,22 +465,14 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             // case (2.1)
             // case (2.2)
             // case (2.4)
-            case (p, tpe) =>
-              if (pSpec.isDefinedAt(tpe.typeSymbol))
-                Some((p, pSpec(tpe.typeSymbol)))
-              else
-                Some((p, Boxed))
+            case (p, TypeRef(_, tpar, _)) if mboxedTpars.contains(tpar.deSkolemize) =>
+              Some((p, Miniboxed))
+            case _ => None
           }
         }
         val pspec = spec.toMap
-        if (!heuristics.specializableMethodInClass(target.owner, target) && target.typeParams.exists(_.isMiniboxAnnotated)) {
-          assert(metadata.normalOverloads.isDefinedAt(target), "No normalizations defined for " + target.defString + " in " + target.owner)
-          assert(metadata.normalOverloads(target).isDefinedAt(pspec), "No good normalizations found for " + target.defString + " in " + target.owner + ": " + pspec + " in " + metadata.normalOverloads(target))
-//          println(target.defString + " ==> " + normalizations(target)(pspec))
-//          println(currentClass + "." + currentMethod)
-          Some(metadata.normalOverloads(target)(pspec))
-        } else
-          None
+
+        metadata.normalOverloads.get(target).flatMap(_.get(pspec))
       } else
         None
     }
