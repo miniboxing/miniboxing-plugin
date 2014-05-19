@@ -1,0 +1,18 @@
+[[syntax trees at end of              minibox-spec]] // newSource1.scala
+package miniboxing.tests.compile.bug95 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug95.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def foo[@miniboxed T >: Nothing <: Any](t: T): Unit = {
+      val t2: T = t;
+      ()
+    };
+    def foo_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: Long): Unit = {
+      val t2: Long = t;
+      ()
+    };
+    def main(args: Array[String]): Unit = Test.this.foo_n_J[Int](5, MiniboxConversions.this.int2minibox(3))
+  }
+}
