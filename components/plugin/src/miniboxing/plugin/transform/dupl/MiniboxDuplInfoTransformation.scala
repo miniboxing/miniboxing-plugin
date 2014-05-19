@@ -432,6 +432,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // Replace the info in the copied members to reflect their new class
       for ((m, newMbr) <- newMembers if !m.isConstructor) {
 
+        val info0 = newMbr.info
+
         newMbr modifyInfo { info =>
 
           val info0 = info.asSeenFrom(variantClass.thisType, m.owner)
@@ -445,8 +447,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
           info2
         }
 
-        val oldTags = metadata.localTypeTags(newMbr).map(_._2)
-        metadata.localTypeTags(newMbr) = HashMap() ++ newMbr.info.params.zip(oldTags)
+        val updateParams = (info0.params zip newMbr.info.params).toMap
+        metadata.localTypeTags(newMbr) = metadata.localTypeTags(newMbr).map({ case (tag, tpar) => (updateParams(tag), tpar) })
         debug(variantClass + " entering: " + newMbr)
         variantClassScope enter newMbr
       }

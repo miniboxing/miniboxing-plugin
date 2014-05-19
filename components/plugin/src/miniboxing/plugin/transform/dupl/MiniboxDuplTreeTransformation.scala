@@ -394,8 +394,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               case Select(qual, _) =>
                 val qualTpe = qual.tpe
                 val owner = tree.symbol.owner
+                afterMiniboxDupl(owner.info)
                 val ownerTpe = qualTpe.baseType(owner)
-                // val stem = metadata.getClassStem(owner)
 //                println()
 //                println("tree:     " + tree)
 //                println("qualTpe:  " + qualTpe)
@@ -448,10 +448,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           val tree1 = gen.mkMethodCall(newFun, tagArgs ::: args)
           val tree2 = localTyper.typed(tree1)
 
-          println(tree2)
-
           tree2
-
         case _ =>
           Descend
       }

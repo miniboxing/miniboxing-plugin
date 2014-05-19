@@ -1,7 +1,7 @@
 Specializing class SpCls4Tuple2...
 
   // interface:
-  case abstract trait SpCls4Tuple2[U, V] extends Product with Serializable {
+  abstract trait SpCls4Tuple2[U, V] extends Product with Serializable {
     def canEqual(x$1: Any): Boolean
     def copy$default$1[U, V](): U @scala.annotation.unchecked.uncheckedVariance
     def copy$default$2[U, V](): V @scala.annotation.unchecked.uncheckedVariance
