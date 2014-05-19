@@ -183,6 +183,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
         // step1: add specialized overrides
         val scope0 = stemClassTpe.decls.cloneScope
+        val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass)
+        val parents1 = stemClassTpe.parents map specializeTypeMap
+
+        // TODO: Shouldn't addSpecialOverrides be aware of the new parents? Probably not strictly necessary
+        // if we count specialization from owners
         val scope1 = addSpecialOverrides(Map.empty, Map.empty, stemClass, scope0)
 
         // step2: add deferred type tags
@@ -191,10 +196,11 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         // step3: normalize methods with @miniboxed type parameters
         val scope3 = addNormalizedMembers(stemClass, scope2)
 
+        // step4: add deferred tags
+        val scope4 = addDeferredTypeTagImpls(stemClass, scope3)
+
         // step4:
-        val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass)
-        val parents1 = stemClassTpe.parents map specializeTypeMap
-        val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
+        val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope4, stemClass))
 
         tpe1
       }

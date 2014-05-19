@@ -1,7 +1,7 @@
 Specializing class Complex...
 
   // interface:
-  case abstract trait Complex[T] extends Product with Serializable {
+  abstract trait Complex[T] extends Product with Serializable {
     def canEqual(x$1: Any): Boolean
     def copy$default$1[T](): T @scala.annotation.unchecked.uncheckedVariance
     def copy$default$2[T](): T @scala.annotation.unchecked.uncheckedVariance
