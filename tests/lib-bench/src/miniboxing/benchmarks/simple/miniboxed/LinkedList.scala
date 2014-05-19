@@ -117,7 +117,7 @@ abstract class List[@miniboxed +T] extends Iterable[T] {
   }
 }
 
-case class ::[T](head: T, tail: List[T]) extends List[T] {
+case class ::[@miniboxed T](head: T, tail: List[T]) extends List[T] {
   def size = 1 + tail.size
 
   override def toString = head.toString + " :: " + tail.toString

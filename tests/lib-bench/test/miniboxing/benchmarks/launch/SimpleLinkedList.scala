@@ -13,7 +13,7 @@ class TweakedPerfomanceTest extends PerformanceTest {
 
     override def report(result: CurveData, persistor: Persistor) {
       for (measurement <- result.measurements)
-        print(f"  ${result.context.scope}%30s: ${measurement.params}%-120s: ${measurement.value}% 10.5f\n")
+        print(f"  ${result.context.scope}%-60s: ${measurement.params}%-30s: ${measurement.value}% 10.5f\n")
     }
 
     override def report(result: Tree[CurveData], persistor: Persistor) = {
@@ -29,7 +29,10 @@ class TweakedPerfomanceTest extends PerformanceTest {
 
   def persistor = Persistor.None
 
-  val sizes = Gen.range("size")(30000, 150000, 30000)
+  val sizes = Gen.range("size")(100000, 500000, 100000)
+
+  def report(bench: String) =
+    println(s"Starting $bench benchmarks. Lay back, it might take a few minutes to stabilize...")
 }
 
 object MiniboxedBenchmark extends TweakedPerfomanceTest {
@@ -57,6 +60,8 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
   val func = new Function1[Int, Double] {
     def apply(x: Int): Double = step*x + zero
   }
+
+  report("miniboxed")
 
   // Method approximates func with the Least Squares Method
   //   approximation function = m*x + b
@@ -127,6 +132,8 @@ object GenericBenchmark extends TweakedPerfomanceTest {
   val func = new Function1[Int, Double] {
     def apply(x: Int): Double = step*x + zero
   }
+
+  report("generic")
 
   // Method approximates func with the Least Squares Method
   //   approximation function = m*x + b
