@@ -395,15 +395,9 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                 val qualTpe = qual.tpe
                 val owner = tree.symbol.owner
                 afterMiniboxDupl(owner.info)
-                val ownerTpe = qualTpe.baseType(owner)
-//                println()
-//                println("tree:     " + tree)
-//                println("qualTpe:  " + qualTpe)
-//                println("owner:    " + owner)
-//                println("ownerTpe: " + ownerTpe)
-//                println("tparams:  " + owner.typeParams)
-//                println("targs:    " + ownerTpe.typeArgs)
-//                println()
+                var ownerTpe = qualTpe.baseType(owner)
+                if (ownerTpe == NoType)
+                    ownerTpe = qualTpe.underlying.baseType(owner)
 
                 owner.typeParams zip ownerTpe.typeArgs.map(_.typeSymbol)
               case _ =>
@@ -454,58 +448,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       }
     }
 
-    def extractPartialSpecFromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol): PartialSpec = {
-
-      def miniboxedTypeParameters(owner: Symbol = currentOwner): List[Symbol] =
-        owner.ownerChain flatMap { sym =>
-          // for methods => normalization
-          // for classes => specialization
-          afterMiniboxDupl(owner.info) // make sure it's specialized
-          if (sym.isMethod && !sym.typeParams.isEmpty) {
-            // NOTE: We could also rely on the method's specialization, but we rely on the
-            // assumption that a class' specialization is the one that dominates, else we
-            // would be messing up forwarders.
-            val localPSpec = metadata.getNormalLocalSpecialization(sym)
-            localPSpec.collect({ case (tp, Miniboxed) => tp})
-          } else if (sym.isClass || sym.isTrait) {
-            val localPSpec = metadata.getClassLocalSpecialization(sym)
-            localPSpec.collect({ case (tp, Miniboxed) => tp})
-          } else
-            Nil
-        }
-
-      val mboxedTpars = miniboxedTypeParameters()
-      val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
-        pair match {
-          // case (2.3)
-          case (p, _) if !(p hasFlag MINIBOXED) => None
-          case (p, `UnitTpe`)    => Some((p, Miniboxed))
-          case (p, `BooleanTpe`) => Some((p, Miniboxed))
-          case (p, `ByteTpe`)    => Some((p, Miniboxed))
-          case (p, `ShortTpe`)   => Some((p, Miniboxed))
-          case (p, `CharTpe`)    => Some((p, Miniboxed))
-          case (p, `IntTpe`)     => Some((p, Miniboxed))
-          case (p, `LongTpe`)    => Some((p, Miniboxed))
-          case (p, `FloatTpe`)   => Some((p, Miniboxed))
-          case (p, `DoubleTpe`)  => Some((p, Miniboxed))
-          // case (2.1)
-          // case (2.2)
-          // case (2.4)
-          case (p, TypeRef(_, tpar, _)) =>
-            if (mboxedTpars.contains(tpar.deSkolemize))
-              Some((p, Miniboxed))
-            else
-              Some((p, Boxed))
-        }
-      }
-      spec.toMap
-    }
-
     def extractNormSpec(targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
       if (metadata.getNormalStem(target) != NoSymbol) {
         val tparams = afterMiniboxDupl(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
-        val spec = extractPartialSpecFromTargs(tparams, targs, currentOwner)
+        val spec = PartialSpec.fromTargs(tparams, targs, currentOwner)
         metadata.normalOverloads.get(target).flatMap(_.get(spec))
       } else
         None
@@ -526,7 +473,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           extractSpec(rest, owner)
         case TypeRef(pre, clazz, targs) =>
           val tparams = afterMiniboxDupl(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
-          Some(extractPartialSpecFromTargs(tparams, targs, owner))
+          Some(PartialSpec.fromTargs(tparams, targs, owner))
         case _ =>
           // unknown
           None

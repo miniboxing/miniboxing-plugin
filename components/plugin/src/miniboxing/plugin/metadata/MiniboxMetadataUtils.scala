@@ -59,28 +59,59 @@ trait MiniboxMetadataUtils {
 
     def allAnyRefPSpec(clazz: Symbol): PartialSpec = clazz.typeParams.filter(_.isMiniboxAnnotated).map(t => (t, Boxed)).toMap
 
-    // used if the current class is not miniboxed
-    def fromType(tpe: TypeRef): PartialSpec = fromTypeInContext(tpe, Map.empty)
+    def fromType(tpe: TypeRef, owner: Symbol): PartialSpec = fromType(tpe, owner, Map.empty)
+    def fromType(tpe: TypeRef, owner: Symbol, pspec: PartialSpec): PartialSpec =
+      tpe match {
+        case TypeRef(pre, sym, targs) =>
+          val tparams = sym.info.typeParams
+          fromTargs(tparams, targs, owner, pspec)
+      }
 
-    // used if the current class is miniboxed
-    def fromTypeInContext(tpe: TypeRef, pspec: PartialSpec): PartialSpec = tpe match {
-      case TypeRef(pre, sym, args) =>
-        val tparams = sym.info.typeParams
-        ((tparams zip args) flatMap { (pair: (Symbol, Type)) =>
-          pair match {
-            case (p, _) if !(p hasFlag MINIBOXED) => None
-            case (p, `UnitTpe`)    => Some((p, Miniboxed))
-            case (p, `BooleanTpe`) => Some((p, Miniboxed))
-            case (p, `ByteTpe`)    => Some((p, Miniboxed))
-            case (p, `ShortTpe`)   => Some((p, Miniboxed))
-            case (p, `CharTpe`)    => Some((p, Miniboxed))
-            case (p, `IntTpe`)     => Some((p, Miniboxed))
-            case (p, `LongTpe`)    => Some((p, Miniboxed))
-            case (p, `FloatTpe`)   => Some((p, Miniboxed))
-            case (p, `DoubleTpe`)  => Some((p, Miniboxed))
-            case (p, tpe)          => Some((p, pspec.getOrElse(tpe.typeSymbol, Boxed)))
-          }
-        }).toMap
+    def fromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
+
+      def typeParametersFromOwnerChain(owner: Symbol = currentOwner): List[(Symbol, SpecInfo)] =
+        owner.ownerChain flatMap { sym =>
+          // for methods => normalization
+          // for classes => specialization
+          afterMiniboxDupl(owner.info) // make sure it's specialized
+          if (sym.isMethod && !sym.typeParams.isEmpty) {
+            // NOTE: We could also rely on the method's specialization, but we rely on the
+            // assumption that a class' specialization is the one that dominates, else we
+            // would be messing up forwarders.
+            val localPSpec = metadata.getNormalLocalSpecialization(sym)
+            localPSpec.collect({ case (tp, spec) if spec != Boxed => (tp, spec)})
+          } else if (sym.isClass || sym.isTrait) {
+            val localPSpec = metadata.getClassLocalSpecialization(sym)
+            localPSpec.collect({ case (tp, spec) if spec != Boxed => (tp, spec)})
+          } else
+            Nil
+        }
+
+      val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
+      val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
+        pair match {
+          // case (2.3)
+          case (p, _) if !(p hasFlag MINIBOXED) => None
+          case (p, `UnitTpe`)    => Some((p, Miniboxed))
+          case (p, `BooleanTpe`) => Some((p, Miniboxed))
+          case (p, `ByteTpe`)    => Some((p, Miniboxed))
+          case (p, `ShortTpe`)   => Some((p, Miniboxed))
+          case (p, `CharTpe`)    => Some((p, Miniboxed))
+          case (p, `IntTpe`)     => Some((p, Miniboxed))
+          case (p, `LongTpe`)    => Some((p, Miniboxed))
+          case (p, `FloatTpe`)   => Some((p, Miniboxed))
+          case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+          // case (2.1)
+          // case (2.2)
+          // case (2.4)
+          case (p, TypeRef(_, tpar, _)) =>
+            mboxedTpars.get(tpar.deSkolemize) match {
+              case Some(spec) => Some((p, spec))
+              case None       => Some((p, Boxed))
+            }
+        }
+      }
+      spec.toMap
     }
   }
 
@@ -131,7 +162,7 @@ trait MiniboxMetadataUtils {
       import metadata._
 
       // TODO: Take owneship chain into account!
-      def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref)
+      def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref, current.owner)
 
       override def apply(tp: Type): Type = tp match {
         case tref@TypeRef(pre, sym, args) if args.nonEmpty && classOverloads.isDefinedAt(sym)=>
@@ -153,7 +184,7 @@ trait MiniboxMetadataUtils {
     def specializeParentsTypeMapForGeneric(current: Symbol) = new SpecializeTypeMap(current)
 
     def specializeParentsTypeMapForSpec(spec: Symbol, origin: Symbol, pspec: PartialSpec) = new SpecializeTypeMap(spec) {
-      override def extractPSpec(tref: TypeRef) = PartialSpec.fromTypeInContext(tref, pspec)
+      override def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref, spec.owner, pspec)
       override def apply(tp: Type): Type = tp match {
         case tref@TypeRef(pre, sym, args) if sym == origin =>
           tref

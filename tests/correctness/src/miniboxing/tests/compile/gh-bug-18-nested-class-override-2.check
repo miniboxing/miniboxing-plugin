@@ -15,9 +15,9 @@ package miniboxing.tests.compile {
     def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Dist2_J.this.apply_J(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
     def apply_J(A_TypeTag: Byte, a: Long): Long;
     def iterateUntil(): miniboxing.tests.compile.Dist2[Asp] = {
-      final class $anon extends miniboxing.tests.compile.Dist2_L[Asp] {
+      final class $anon extends miniboxing.tests.compile.Dist2_J[Asp] {
         def <init>(): anonymous class $anon = {
-          $anon.super.<init>();
+          $anon.super.<init>(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
           ()
         };
         protected def loop(a: Long): Long = a;

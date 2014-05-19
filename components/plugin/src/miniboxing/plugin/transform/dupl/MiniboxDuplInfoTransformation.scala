@@ -184,6 +184,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         // step1: add specialized overrides
         val scope0 = stemClassTpe.decls.cloneScope
         val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass)
+
         val parents1 = stemClassTpe.parents map specializeTypeMap
 
         // TODO: Shouldn't addSpecialOverrides be aware of the new parents? Probably not strictly necessary
@@ -298,18 +299,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             if (alias != NoSymbol) {
               // Find the correct alias in a rewired class
               val baseTpe = stemClass.info.baseType(alias.owner)
-              val spec2 = ((baseTpe.typeSymbol.typeParams zip baseTpe.typeArgs) flatMap {
-                case (param, tpe) if param.hasFlag(MINIBOXED) =>
-                  if (ScalaValueClasses.contains(tpe.typeSymbol))
-                    Some((param, Miniboxed))
-                  // TODO: Take outside specializations into account!
-                  else if (spec.get(tpe.typeSymbol) == Some(Miniboxed))
-                    Some((param, Miniboxed))
-                  else
-                    Some((param, Boxed))
-                case _ =>
-                  None
-              }).toMap
+              val spec2 = PartialSpec.fromTargs(baseTpe.typeSymbol.typeParams, baseTpe.typeArgs, stemClass.owner, spec)
               if (metadata.memberOverloads.isDefinedAt(alias) &&
                   metadata.memberOverloads(alias).isDefinedAt(spec2)) {
                 variantMethod.asInstanceOf[TermSymbol].referenced = metadata.memberOverloads(alias)(spec2)
@@ -333,7 +323,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         }
 
         for (variantClass <- specs; variantMethod <- specializedOverloads get variantClass)
-          // TODO: This should be Interface(), but I'll keep it as it is to avoid breackage later on
+          // TODO: This should be Interface(), but I'll keep it as it is to avoid breakage later on
           memberSpecializationInfo(variantMethod) = ForwardTo(stemMethod)(overrider = false)
       }
 
@@ -348,7 +338,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val baseName = if (flag_loader_friendly) newTermName(stemClass.name.toString + "_class") else stemClass.name
       val variantClassName = specializedName(baseName, variantClassParamValues).toTypeName
       val bytecodeClass = stemClass.owner.info.decl(variantClassName)
-      // TODO: Same as SI-5054, to avoid duplicate definitions
+      // Same as SI-5054, to avoid duplicate definitions:
       bytecodeClass.info
 
       // step2: Create the symbol
@@ -376,7 +366,6 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       // step5: Create the class info
       val variantClassScope = newScope
 
-      // TODO: Take ownership chain into account here
       val specializeParents = parentClasses.specializeParentsTypeMapForSpec(variantClass, stemClass, localSpec)
       val specializedInfoType: Type = {
         val sParents = (stemClass.info.parents ::: List(stemClass.tpe)) map {
@@ -602,8 +591,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             val baseParent = baseOSym.owner
             val baseParentTpe = clazz.info.baseType(baseParent)
 
-            // TODO: Take external owners into account!
-            val baseSpec = PartialSpec.fromTypeInContext(baseParentTpe.asInstanceOf[TypeRef], localPSpec)
+            val baseSpec = PartialSpec.fromType(baseParentTpe.asInstanceOf[TypeRef], baseOSym, localPSpec)
 
             if (!PartialSpec.isAllAnyRef(baseSpec) && metadata.memberOverloads.isDefinedAt(baseOSym)) {
               metadata.memberOverloads(baseOSym).get(baseSpec) match {
@@ -623,6 +611,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     if (clazz.isClass) // class or trait
       for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
         specializedOverriddenMembers(sym).foreach(oSym => {
+          // TODO: Inject owner chain specialization information here!
           val localOverload = metadata.memberOverloads.get(sym).flatMap(_.get(globalPSpec)).getOrElse(NoSymbol)
           // only generate the override if we don't have an overload which matches the current symbol:
           // matching the symbol is a pain in the arse, since oSym points to the interface while localOverload
