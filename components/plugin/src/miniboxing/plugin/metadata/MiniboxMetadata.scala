@@ -42,7 +42,7 @@ trait MiniboxMetadata {
      *                      |             /                            \                |        / classSpecialization
      *                      |            /                              \               V       /
      *         +------------------------------------+        +------------------------------------+
-     *         | trait C_L[Tsp] extends C[Tsp] {    |        | trait C_J[Tsp](...) extends C[Tsp]{|  <== these are
+     *         | class C_L[Tsp] extends C[Tsp] {    |        | class C_J[Tsp](...) extends C[Tsp]{|  <== these are
      *         |   def foo(t: Tsp): Tsp = t         |        |   def foo(t: Tsp): Tsp = ...       |      called
      *         |   def foo_J(...): Tsp @storage =...|        |   def foo_J(...): Tsp @storage = t |      *specialized
      *         | }                                  |        | }                                  |      variants*
