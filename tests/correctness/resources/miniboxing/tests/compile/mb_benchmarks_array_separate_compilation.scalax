@@ -1,5 +1,9 @@
 package miniboxing.tests.compile.separate
 
+// this test is disabled since we are compiling the files
+// in separate paths so they don't see eachother. This is why
+// it's not possible to test separate compilation for now.
+
 object Test2 extends App {
   val a = new MBResizableArray[Int](implicitly[Manifest[Int]])
   a.add(1)
@@ -11,4 +15,3 @@ object Test2 extends App {
   a.reverse
   assert(a.contains(3))
 }
-

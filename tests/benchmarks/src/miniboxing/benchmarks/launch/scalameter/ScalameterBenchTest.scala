@@ -37,7 +37,7 @@ trait ScalameterBenchTest extends PerformanceTest
   // TODO: Not sure this is supposed to be transient, but it complains class is not serializable due to it
   @transient lazy val executor = SeparateJvmsExecutor(
     new Executor.Warmer.Default(),
-    Aggregator.complete(Aggregator.average),
+    Aggregator.average,
     new Executor.Measurer.Default
   )
 

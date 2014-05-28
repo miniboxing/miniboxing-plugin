@@ -46,7 +46,7 @@ class TestSuite {
     // use carefully:
 //    UPDATE_CHECKFILE = true
 
-    for (source <- files(List("src", "miniboxing", "tests", "compile"), ".scala")) {
+    for (source <- files(List("resources", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
 
       totalTests += 1
