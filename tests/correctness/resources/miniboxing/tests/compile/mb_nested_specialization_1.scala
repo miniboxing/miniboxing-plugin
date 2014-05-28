@@ -5,8 +5,10 @@ class C[@miniboxed T, @miniboxed U]
 class D[@miniboxed S] {
   def bar() = {
     class F[@miniboxed T] {
-      class Z extends C[S, T]
-      new Z
+      def foo(t: T) = {
+        class Z extends C[S, T]
+        new Z
+      }
     }
     ???
   }
