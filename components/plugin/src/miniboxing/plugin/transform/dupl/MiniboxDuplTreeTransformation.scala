@@ -94,7 +94,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     def extractQualifierType(tree: Tree): Type = tree match {
       case New(cl)     => afterMiniboxDupl(cl.tpe.typeSymbol.info); cl.tpe
-      case This(clazz) => afterMiniboxDupl(currentClass.info); appliedType(tree.symbol, currentClass.typeParams.map(_.tpe): _*)
+      case This(clazz) => afterMiniboxDupl(tree.symbol.info); tree.tpe.underlying
       case Super(qual, _) => tree.tpe
       case _ => tree.tpe
     }
@@ -290,7 +290,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
         // rewiring this calls
         // C.this.foo => C_J.this.foo
-        case This(cl) if metadata.isClassStem(tree.symbol) && !currentOwner.ownerChain.contains(tree.symbol)=>
+        case This(cl) if metadata.isClassStem(tree.symbol) && !currentOwner.ownerChain.contains(tree.symbol) =>
           val newType = miniboxQualifier(tree.pos, tree.tpe)
           val res = localTyper.typed(This(newType.typeSymbol))
           res
@@ -313,6 +313,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                 val ntpe = extractQualifierType(nqual)
                 (nqual, ntpe, ntpe.typeSymbol)
             }
+
           val spec = extractSpec(oldQual.tpe, currentOwner)
 
           // patching for the corresponding symbol in the new receiver

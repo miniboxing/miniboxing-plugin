@@ -1,0 +1,52 @@
+[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+package miniboxing.tests.compile.bug88 {
+  abstract trait CCC[@miniboxed T >: Nothing <: Any] extends Object {
+    <stable> <accessor> <paramaccessor> def c(): T;
+    abstract trait DDD[@miniboxed U >: Nothing <: Any] extends Object {
+      <stable> <accessor> <paramaccessor> def d(): U;
+      def foo(): Unit;
+      <stable> <accessor> def d_J(U_TypeTag: Byte): U @storage
+    };
+    class DDD_J[Usp >: Nothing <: Any] extends Object with CCC.this.DDD[Usp] {
+      def <init>(miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte, d: Usp @storage): CCC.this.DDD_J[Usp] = {
+        DDD_J.super.<init>();
+        ()
+      };
+      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag)));
+      <paramaccessor> private[this] val d: Usp @storage = _;
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte = _;
+      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag);
+      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage = DDD_J.this.d
+    };
+    class DDD_L[Usp >: Nothing <: Any] extends Object with CCC.this.DDD[Usp] {
+      def <init>(d: Usp): CCC.this.DDD_L[Usp] = {
+        DDD_L.super.<init>();
+        ()
+      };
+      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_L.this.d()));
+      <paramaccessor> private[this] val d: Usp = _;
+      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_L.this.d;
+      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage = DDD_L.this.d()
+    };
+    <stable> <accessor> def c_J(T_TypeTag: Byte): T @storage
+  };
+  class CCC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+    def <init>(miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte, c: Tsp @storage): miniboxing.tests.compile.bug88.CCC_J[Tsp] = {
+      CCC_J.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val c: Tsp @storage = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte = _;
+    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_J.this.c_J(CCC_J.this.miniboxing|tests|compile|bug88|CCC_J|T_TypeTag);
+    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage = CCC_J.this.c
+  };
+  class CCC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+    def <init>(c: Tsp): miniboxing.tests.compile.bug88.CCC_L[Tsp] = {
+      CCC_L.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val c: Tsp = _;
+    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_L.this.c;
+    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage = CCC_L.this.c()
+  }
+}
