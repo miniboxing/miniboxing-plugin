@@ -29,7 +29,7 @@ class TweakedPerfomanceTest extends PerformanceTest {
 
   def persistor = Persistor.None
 
-  val sizes = Gen.range("size")(100000, 1500000, 100000)
+  val sizes = Gen.range("size")(100000, 500000, 100000)
 
   def report(bench: String) =
     println(s"Starting $bench benchmarks. Lay back, it might take a few minutes to stabilize...")
