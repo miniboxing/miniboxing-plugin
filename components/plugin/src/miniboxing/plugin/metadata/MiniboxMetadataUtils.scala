@@ -134,6 +134,11 @@ trait MiniboxMetadataUtils {
           val res = tp match {
             case TypeRef(pre, sym, args) if (!keys.exists(sym2 => matches(sym2, sym))) =>
               deepSubst(tp)
+            case TypeBounds(lo, hi) =>
+              val lo1 = deepSubst(lo)
+              val hi1 = deepSubst(hi)
+              if ((lo1 eq lo) && (hi1 eq hi)) tp
+              else TypeBounds(lo1, hi1)
             case _ =>
               super.mapOver(tp)
           }
