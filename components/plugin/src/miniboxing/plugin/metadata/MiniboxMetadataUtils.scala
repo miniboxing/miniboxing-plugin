@@ -92,10 +92,10 @@ trait MiniboxMetadataUtils {
         pair match {
           // case (2.3)
           case (p, _) if !(p hasFlag MINIBOXED) => None
-          case (p, `UnitTpe`)    => Some((p, Miniboxed))
-          case (p, `BooleanTpe`) => Some((p, Miniboxed))
-          case (p, `ByteTpe`)    => Some((p, Miniboxed))
-          case (p, `ShortTpe`)   => Some((p, Miniboxed))
+//          case (p, `UnitTpe`)    => Some((p, Miniboxed))
+//          case (p, `BooleanTpe`) => Some((p, Miniboxed))
+//          case (p, `ByteTpe`)    => Some((p, Miniboxed))
+//          case (p, `ShortTpe`)   => Some((p, Miniboxed))
           case (p, `CharTpe`)    => Some((p, Miniboxed))
           case (p, `IntTpe`)     => Some((p, Miniboxed))
           case (p, `LongTpe`)    => Some((p, Miniboxed))

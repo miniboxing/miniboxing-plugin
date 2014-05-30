@@ -11,4 +11,4 @@ package miniboxing.tests.compile.inheritance
 
 class F1[@miniboxed T, @miniboxed R]
 
-class Predicate[T] extends F1[T, Boolean]
+class Predicate[T] extends F1[T, Int]

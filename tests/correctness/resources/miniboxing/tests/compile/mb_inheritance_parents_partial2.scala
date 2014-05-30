@@ -11,4 +11,4 @@ package miniboxing.tests.compile.inheritance
 
 class FF1[@miniboxed T, @miniboxed R]
 
-class PPredicate[@miniboxed T] extends FF1[T, Boolean]
+class PPredicate[@miniboxed T] extends FF1[T, Int]

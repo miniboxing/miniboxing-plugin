@@ -34,17 +34,17 @@ Specializing class FF1...
 Specializing class PPredicate...
 
   // interface:
-  abstract trait PPredicate[T] extends FF1[T,Boolean] {
+  abstract trait PPredicate[T] extends FF1[T,Int] {
   }
 
   // specialized class:
-  class PPredicate_J[Tsp] extends FF1_JJ[Tsp,Boolean] with PPredicate[Tsp] {
+  class PPredicate_J[Tsp] extends FF1_JJ[Tsp,Int] with PPredicate[Tsp] {
     def <init>(val miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] // is a specialized implementation of constructor PPredicate
     private[this] val miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte // no info
   }
 
   // specialized class:
-  class PPredicate_L[Tsp] extends FF1_LJ[Tsp,Boolean] with PPredicate[Tsp] {
+  class PPredicate_L[Tsp] extends FF1_LJ[Tsp,Int] with PPredicate[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.PPredicate_L[Tsp]   // is a specialized implementation of constructor PPredicate
   }
 
@@ -85,16 +85,16 @@ package miniboxing.tests.compile.inheritance {
     }
   };
   abstract trait PPredicate[@miniboxed T >: Nothing <: Any] extends AnyRef;
-  class PPredicate_J[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
+  class PPredicate_J[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Int] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
     def <init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] = {
-      PPredicate_J.super.<init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag, 1);
+      PPredicate_J.super.<init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag, 5);
       ()
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte = _
   };
-  class PPredicate_L[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Boolean] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
+  class PPredicate_L[Tsp >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.FF1_LJ[Tsp,Int] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.PPredicate_L[Tsp] = {
-      PPredicate_L.super.<init>(1);
+      PPredicate_L.super.<init>(5);
       ()
     }
   }

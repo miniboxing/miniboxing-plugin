@@ -64,9 +64,9 @@ package miniboxing.tests.compile.inheritance {
       ()
     }
   };
-  class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Boolean] {
+  class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Int] {
     def <init>(): miniboxing.tests.compile.inheritance.Predicate[T] = {
-      Predicate.super.<init>(1);
+      Predicate.super.<init>(5);
       ()
     }
   }

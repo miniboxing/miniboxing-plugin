@@ -125,7 +125,7 @@ package miniboxing.tests.correctness {
       SpCls8Static.super.<init>();
       ()
     };
-    def foo(): Int = MiniboxConversions.this.minibox2int(new miniboxing.tests.correctness.SpCls8Tgt_J[Byte](2).normalized_J_n_J[Int](5, 2, MiniboxConversions.this.byte2minibox(3), MiniboxConversions.this.int2minibox(4)));
+    def foo(): Int = MiniboxConversions.this.minibox2int(new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J_n_J[Int](5, 5, MiniboxConversions.this.int2minibox(3), MiniboxConversions.this.int2minibox(4)));
     def bar[@miniboxed Z >: Nothing <: Any](z: Z): Z = new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J[Z](5, MiniboxConversions.this.int2minibox(3), z);
     def bar_n_J[Z >: Nothing <: Any](Z_TypeTag: Byte, z: Long): Long = new miniboxing.tests.correctness.SpCls8Tgt_J[Int](5).normalized_J_n_J[Z](Z_TypeTag, 5, MiniboxConversions.this.int2minibox(3), z)
   }
