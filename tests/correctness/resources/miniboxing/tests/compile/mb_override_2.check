@@ -169,7 +169,7 @@ package miniboxing.tests.compile {
     def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte = 6;
     def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte = 6;
     def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte = 6;
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???())
   }
 }
 

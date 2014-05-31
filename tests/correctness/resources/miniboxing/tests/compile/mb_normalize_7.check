@@ -40,8 +40,8 @@ package miniboxing.tests.correctness {
       ()
     };
     def normalized[@miniboxed U >: Nothing <: Any, @miniboxed V >: Nothing <: Any](u: U, v: V): U = scala.this.Predef.???();
-    def normalized_n_JJ[U >: Nothing <: Any, V >: Nothing <: Any](U_TypeTag: Byte, V_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
-    def normalized_n_JL[U >: Nothing <: Any, V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def normalized_n_JJ[U >: Nothing <: Any, V >: Nothing <: Any](U_TypeTag: Byte, V_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[U](scala.this.Predef.???(), U_TypeTag);
+    def normalized_n_JL[U >: Nothing <: Any, V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): Long = MiniboxConversions.this.box2minibox_tt[U](scala.this.Predef.???(), U_TypeTag);
     def normalized_n_LJ[U >: Nothing <: Any, V >: Nothing <: Any](V_TypeTag: Byte, u: U, v: Long): U = scala.this.Predef.???()
   };
   abstract trait SpCls7[@miniboxed S >: Nothing <: Any] extends Object {

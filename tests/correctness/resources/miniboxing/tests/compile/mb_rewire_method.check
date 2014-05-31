@@ -14,7 +14,7 @@ package miniboxing.tests.compile {
       ()
     };
     def bar(t: miniboxing.tests.compile.TR[Tsp]): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR_J.this.bar_J(TR_J.this.miniboxing|tests|compile|TR_J|T_TypeTag, t), TR_J.this.miniboxing|tests|compile|TR_J|T_TypeTag);
-    def bar_J(T_TypeTag: Byte, t: miniboxing.tests.compile.TR[Tsp]): Long = t.foo_J(T_TypeTag, MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9));
+    def bar_J(T_TypeTag: Byte, t: miniboxing.tests.compile.TR[Tsp]): Long = t.foo_J(T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag));
     def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR_J.this.foo_J(TR_J.this.miniboxing|tests|compile|TR_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TR_J.this.miniboxing|tests|compile|TR_J|T_TypeTag)), TR_J.this.miniboxing|tests|compile|TR_J|T_TypeTag);
     def foo_J(T_TypeTag: Byte, t: Long): Long = TR_J.this.foo_J(T_TypeTag, t);
     <paramaccessor> private[this] val miniboxing|tests|compile|TR_J|T_TypeTag: Byte = _

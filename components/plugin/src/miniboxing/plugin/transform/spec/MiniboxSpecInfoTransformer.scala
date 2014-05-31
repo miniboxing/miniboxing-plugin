@@ -22,7 +22,8 @@ trait MiniboxPostInfoTransformer extends InfoTransform {
   lazy val deepTransformation: TypeMap = new TypeMap {
     def apply(tpe: Type): Type = mapOver(tpe)
     override def mapOver(tpe: Type): Type = tpe match {
-      case tpe if tpe.hasAnnotation(StorageClass) =>
+      case tpe if tpe.annotations.exists(ann => ann.tpe.typeSymbol == StorageClass) =>
+        // TODO: Specialize to the storage type in the @storage annotation
         LongTpe
       case _ =>
         super.mapOver(tpe)

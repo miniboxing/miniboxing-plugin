@@ -80,7 +80,7 @@ package miniboxing.tests.correctness {
     def normalized[@miniboxed V >: Nothing <: Any](u: Usp, v: V): V = SpCls8Tgt_J.this.normalized_J[V](SpCls8Tgt_J.this.miniboxing|tests|correctness|SpCls8Tgt_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, SpCls8Tgt_J.this.miniboxing|tests|correctness|SpCls8Tgt_J|U_TypeTag), v);
     def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = SpCls8Tgt_J.this.normalized_J_n_J[V](V_TypeTag, SpCls8Tgt_J.this.miniboxing|tests|correctness|SpCls8Tgt_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, SpCls8Tgt_J.this.miniboxing|tests|correctness|SpCls8Tgt_J|U_TypeTag), v);
     def normalized_J[@miniboxed V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): V = scala.this.Predef.???();
-    def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = MiniboxConversions.this.box2minibox_tt[V](scala.this.Predef.???(), V_TypeTag);
     <paramaccessor> private[this] val miniboxing|tests|correctness|SpCls8Tgt_J|U_TypeTag: Byte = _
   };
   class SpCls8Tgt_L[Usp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.SpCls8Tgt[Usp] {
@@ -89,7 +89,7 @@ package miniboxing.tests.correctness {
       ()
     };
     def normalized[@miniboxed V >: Nothing <: Any](u: Usp, v: V): V = scala.this.Predef.???();
-    def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def normalized_n_J[V >: Nothing <: Any](V_TypeTag: Byte, u: Usp, v: Long): Long = MiniboxConversions.this.box2minibox_tt[V](scala.this.Predef.???(), V_TypeTag);
     def normalized_J[@miniboxed V >: Nothing <: Any](U_TypeTag: Byte, u: Long, v: V): V = SpCls8Tgt_L.this.normalized[V](MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag), v);
     def normalized_J_n_J[V >: Nothing <: Any](V_TypeTag: Byte, U_TypeTag: Byte, u: Long, v: Long): Long = SpCls8Tgt_L.this.normalized_n_J[V](V_TypeTag, MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag), v)
   };

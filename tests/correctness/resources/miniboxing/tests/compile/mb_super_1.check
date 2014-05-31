@@ -12,7 +12,7 @@ package miniboxing.tests.compile.sup1 {
       ()
     };
     def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](C_J.this.foo_J(C_J.this.miniboxing|tests|compile|sup1|C_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, C_J.this.miniboxing|tests|compile|sup1|C_J|T_TypeTag)), C_J.this.miniboxing|tests|compile|sup1|C_J|T_TypeTag);
-    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
     <paramaccessor> private[this] val miniboxing|tests|compile|sup1|C_J|T_TypeTag: Byte = _
   };
   class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {

@@ -13,7 +13,7 @@ package miniboxing.tests.compile {
     };
     def hashMode(): Tsp = MiniboxConversions.this.minibox2box[Tsp](BUG3_J.this.hashMode_J(BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag), BUG3_J.this.miniboxing|tests|compile|BUG3_J|T_TypeTag);
     def hashMode_J(T_TypeTag: Byte): Long = {
-      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+      val headhash: Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
       headhash
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|BUG3_J|T_TypeTag: Byte = _

@@ -49,7 +49,8 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 
   class CoercionExtractor {
     def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type)] = tree match {
-      case Apply(TypeApply(fun, List(targ)), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe))
+      // TODO: Return the storage too
+      case Apply(TypeApply(fun, List(targ, _)), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe))
       case _ => None
     }
   }

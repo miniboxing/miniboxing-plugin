@@ -126,7 +126,7 @@ package miniboxing.tests.compile {
       ()
     };
     override def overrideMe(t: Int, s: Int): Int = MiniboxConversions.this.minibox2int(Override13.this.overrideMe_JJ(5, 5, MiniboxConversions.this.int2minibox(t), MiniboxConversions.this.int2minibox(s)));
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9)
+    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.int2minibox(scala.this.Predef.???())
   }
 }
 

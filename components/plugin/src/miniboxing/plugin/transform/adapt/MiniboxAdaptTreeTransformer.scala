@@ -15,9 +15,13 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   import global._
 
   implicit class RichType(tpe: Type) {
-    def isStorage: Boolean = tpe.dealiasWiden.hasAnnotation(StorageClass.asInstanceOf[Symbol])
-    def withStorage: Type = tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
-    def withoutStorage: Type = tpe.filterAnnotations(_.atp =:= StorageClass.tpe)
+    def getStorageType: Type = tpe.dealiasWiden.annotations.filter(_.tpe.typeSymbol == StorageClass) match {
+      case Nil        => assert(false, "No storage type detected?!?"); ???
+      case annot :: _ => annot.tpe.typeArgs(0)
+    }
+    def isStorage: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == StorageClass)
+    def withStorage(store: Type): Type = tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(store)), Nil, ListMap.empty)))
+    def withoutStorage: Type = tpe.filterAnnotations(_.tpe.typeSymbol != StorageClass)
   }
 
   implicit class RichTree(tree: Tree) {
@@ -92,7 +96,12 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         if (tree.isTerm) {
           if ((oldTpe.isStorage ^ newTpe.isStorage) && (!pt.isWildcard)) {
             val conversion = if (oldTpe.isStorage) marker_minibox2box else marker_box2minibox
-            val tree1 = Apply(gen.mkAttributedRef(conversion), List(tree))
+            val (tpe, storageType) =
+              if (oldTpe.isStorage)
+                (oldTpe.dealiasWiden.withoutStorage, oldTpe.getStorageType)
+              else
+                (newTpe.dealiasWiden.withoutStorage, newTpe.getStorageType)
+            val tree1 = gen.mkMethodCall(conversion, List(tpe, storageType), List(tree))
             val tree2 = super.typed(tree1, mode, pt)
             assert(tree2.tpe != ErrorType, tree2)
             // super.adapt is automatically executed when calling super.typed
@@ -124,7 +133,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(StorageClass)
               //val qual3 = super.typedQualifier(qual.setType(null), mode, tpe3)
-              val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_minibox2box), List(tpe3), List(qual2))
+              val storageType = qual2.tpe.getStorageType
+              val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_minibox2box), List(tpe3, storageType), List(qual2))
               super.typed(Select(qual3, meth) setSymbol tree.symbol, mode, pt)
             } else {
               tree.tpe = null

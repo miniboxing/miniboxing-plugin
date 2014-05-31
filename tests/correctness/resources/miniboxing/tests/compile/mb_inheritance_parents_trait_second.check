@@ -72,7 +72,7 @@ package miniboxing.tests.compile.inheritance.traits {
   };
   abstract trait CC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {
     def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](CC_J.this.foo_J(CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag())), CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag());
-    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
     def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte
   };
   abstract trait CC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {

@@ -92,20 +92,20 @@ package miniboxing.tests.correctness.erasure.torture1 {
         <synthetic> val x$2: Tsp @storage[Long] = A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
         {
   <synthetic> val x$1: Tsp @storage[Long] = A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
-  immutable.this.Nil.::[Tsp](marker_minibox2box[Tsp](x$1))
-}.::[Tsp](marker_minibox2box[Tsp](x$2))
+  immutable.this.Nil.::[Tsp](marker_minibox2box[Tsp, Long](x$1))
+}.::[Tsp](marker_minibox2box[Tsp, Long](x$2))
       };
       if (c)
-        marker_minibox2box[Tsp](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag))
+        marker_minibox2box[Tsp, Long](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag))
       else
         y
     };
     <paramaccessor> private[this] val a: Tsp @storage[Long] = _;
     <paramaccessor> private[this] val b: Tsp @storage[Long] = _;
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = marker_minibox2box[Tsp](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
+    <stable> <accessor> <paramaccessor> def a(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
     <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.a;
-    <stable> <accessor> <paramaccessor> def b(): Tsp = marker_minibox2box[Tsp](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
+    <stable> <accessor> <paramaccessor> def b(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
     <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.b
   };
   class A_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
@@ -133,9 +133,9 @@ package miniboxing.tests.correctness.erasure.torture1 {
     <paramaccessor> private[this] val a: Tsp = _;
     <paramaccessor> private[this] val b: Tsp = _;
     <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp](A_L.this.a());
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.a());
     <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp](A_L.this.b())
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.b())
   }
 }
 

@@ -19,7 +19,7 @@ package miniboxing.tests.compile {
     def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
     def abs(): Asp = MiniboxConversions.this.minibox2box[Asp](Cplx_J.this.abs_J(Cplx_J.this.miniboxing|tests|compile|Cplx_J|A_TypeTag), Cplx_J.this.miniboxing|tests|compile|Cplx_J|A_TypeTag);
-    def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9);
+    def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A_TypeTag);
     def isZero(): Boolean = scala.this.Predef.???();
     implicit <paramaccessor> private[this] val f: miniboxing.tests.compile.Fractional[Asp] = _;
     <paramaccessor> private[this] val imag: Long = _;

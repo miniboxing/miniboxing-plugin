@@ -88,8 +88,11 @@ trait MiniboxAnnotationCheckers {
         if (ts.forall(_.isStorage)) // note: forall!
           if (tp.isStorage)
             tp
-          else
-            tp.withStorage
+          else {
+            val storageTypes = ts.map(_.getStorageType.typeSymbol).distinct
+            assert(storageTypes.length == 1, s"More than one storage type in $ts: $storageTypes")
+            tp.withStorage(storageTypes(0).tpeHK)
+          }
         else
           if (tp.isStorage)
             tp.withoutStorage

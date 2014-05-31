@@ -74,7 +74,7 @@ package miniboxing.tests.compile {
       ()
     };
     def bar[X >: Nothing <: Any, Y >: Nothing <: Any](t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3_J.this.bar_J[X, Y](TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag, t, x, y), TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag);
-    def bar_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = t.foo_J[X, Y](T_TypeTag, MiniboxConversions.this.box2minibox_tt[Nothing](scala.this.Predef.???(), 9), x, y);
+    def bar_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = t.foo_J[X, Y](T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag), x, y);
     def foo[X >: Nothing <: Any, Y >: Nothing <: Any](t: Tsp, x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3_J.this.foo_J[X, Y](TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag), x, y), TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag);
     def foo_J[X >: Nothing <: Any, Y >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X, y: Y): Long = TR3_J.this.foo_J[Y, X](T_TypeTag, t, y, x);
     <paramaccessor> private[this] val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte = _

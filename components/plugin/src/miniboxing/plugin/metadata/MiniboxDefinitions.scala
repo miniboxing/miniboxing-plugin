@@ -76,13 +76,14 @@ trait MiniboxDefinitions {
   lazy val box2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
 
   // artificially created marker methods
-  // TODO: Allow multiple storage types, currently hardcoded for Long
+  // def marker_minibox2box[T, St](t: T @storage[St]): T
+  // def marker_box2minibox[T, St](t: T): T @storage[St]
   lazy val marker_minibox2box =
-    newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
-      tpar => (Some(List(tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil))), tpar.head.tpeHK))
+    newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
+      tpar => (Some(List(tpar(0).tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil))), tpar.head.tpeHK))
   lazy val marker_box2minibox =
-    newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_box2minibox"), 0L)(
-      tpar => (Some(List(tpar.head.tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil)))
+    newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_box2minibox"), 0L)(
+      tpar => (Some(List(tpar(0).tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil)))
 
   // direct conversions
   lazy val x2minibox = Map[Symbol, Symbol](
