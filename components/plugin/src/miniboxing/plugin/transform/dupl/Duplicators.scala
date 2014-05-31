@@ -16,7 +16,12 @@ import scala.collection.mutable
  *  and create fresh symbols for new local definitions.
  *
  *  @author  Iulian Dragos
- *  @version 1.0
+ *  @author  Vlad Ureche
+ *
+ *  This version of the duplicators in the Scala compiler has been
+ *  extensively modified to work with the miniboxing plugin.
+ *
+ *  @version miniboxing
  */
 abstract class Duplicators extends Analyzer {
   import global._

@@ -23,7 +23,7 @@ class TestSuite {
 
   private[this] def slurp(source: JFile) =
     try {
-      File(replaceExtension(source, "flags")).slurp
+      File(source).slurp
     } catch {
       case _: FileNotFoundException => ""
     }
@@ -45,6 +45,8 @@ class TestSuite {
     var UPDATE_CHECKFILE = false
     // use carefully:
 //    UPDATE_CHECKFILE = true
+
+    sys.props("miniboxing.no-logo") = "true"
 
     for (source <- files(List("resources", "miniboxing", "tests", "compile"), ".scala")) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")

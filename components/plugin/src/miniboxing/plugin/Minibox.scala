@@ -1,3 +1,12 @@
+//
+//     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+//    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+//   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+//  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+//  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+//          \/          \/          \/               \/         \/ /_____/
+// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+//
 package miniboxing.plugin
 
 import scala.tools.nsc.Global
@@ -33,7 +42,6 @@ trait MiniboxDuplComponent extends
     with MiniboxMethodInfo
     with MiniboxDuplInfoTransformation
     with MiniboxDuplTreeTransformation
-    with MiniboxDuplTreeSupport
     with TreeRewriters {
 
   def mboxDuplPhase: StdPhase
@@ -103,12 +111,14 @@ class Minibox(val global: Global) extends Plugin {
   val name = "minibox"
   val description = "specializes generic classes"
 
-  val components = List[PluginComponent](HijackPhase,
-                                         MiniboxDuplPhase,
-                                         MiniboxAdaptPhase,
-                                         MiniboxSpecPhase,
-                                         PreTyperPhase,
-                                         PostTyperPhase)
+  lazy val components = {
+      List[PluginComponent](HijackPhase,
+                            MiniboxDuplPhase,
+                            MiniboxAdaptPhase,
+                            MiniboxSpecPhase,
+                            PreTyperPhase,
+                            PostTyperPhase)
+  }
 
   // LDL adaptation
   global.addAnnotationChecker(MiniboxAdaptPhase.StorageAnnotationChecker)
@@ -119,6 +129,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
   var flag_spec_no_opt = sys.props.get("miniboxing.spec.no-opt").isDefined
   var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
+  var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -134,9 +145,21 @@ class Minibox(val global: Global) extends Plugin {
         flag_spec_no_opt = true
       else if (option.toLowerCase() == "loader")
         flag_loader_friendly = true
+      else if (option.toLowerCase() == "no-logo")
+        flag_no_logo = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
+    if (!flag_no_logo)
+      Console.println("""
+        |     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+        |    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+        |   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+        |  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+        |  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+        |          \/          \/          \/               \/         \/ /_____/
+        | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+        |""".stripMargin)
   }
 
   override val optionsHelp: Option[String] = Some(
@@ -145,7 +168,8 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)\n" +
     s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing\n" +
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
-    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n")
+    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n" +
+    s"  -P:${name}:no-logo           skip the miniboxing logo display)")
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
