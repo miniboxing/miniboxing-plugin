@@ -3,14 +3,14 @@ Specializing class UhOh1...
   // interface:
   abstract trait UhOh1[X, Y] extends Object {
     def foo(x: X,y: Y): X
-    def foo_J(val X_TypeTag: Byte,x: X @storage,y: Y): X @storage
+    def foo_J(val X_TypeTag: Byte,x: X @storage[Long],y: Y): X @storage[Long]
   }
 
   // specialized class:
   class UhOh1_J[Xsp, Ysp] extends UhOh1[Xsp,Ysp] {
     def <init>(val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh1_J[Xsp,Ysp] // is a specialized implementation of constructor UhOh1
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a forwarder to the specialized member
-    def foo_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage    // is a specialized implementation of method foo
+    def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte     // no info
   }
 
@@ -18,7 +18,7 @@ Specializing class UhOh1...
   class UhOh1_L[Xsp, Ysp] extends UhOh1[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.UhOh1_L[Xsp,Ysp]                // is a specialized implementation of constructor UhOh1
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a specialized implementation of method foo
-    def foo_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage    // is a forwarder to the specialized member
+    def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a forwarder to the specialized member
   }
 
 

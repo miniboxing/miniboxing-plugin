@@ -3,7 +3,7 @@ package miniboxing.tests.compile.bug993.partial {
   abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
     def foo(): Int;
     def bar(t: T): T;
-    def bar_J(T_TypeTag: Byte, t: T @storage): T @storage
+    def bar_J(T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long]
   };
   class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
     def <init>(miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C_J[Tsp] = {
@@ -11,7 +11,7 @@ package miniboxing.tests.compile.bug993.partial {
       ()
     };
     def bar(t: Tsp): Tsp = C_J.this.bar_J(C_J.this.miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag, t);
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage): Tsp @storage = t;
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = t;
     def foo(): Int = 3;
     <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _
   };
@@ -21,7 +21,7 @@ package miniboxing.tests.compile.bug993.partial {
       ()
     };
     def bar(t: Tsp): Tsp = t;
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage): Tsp @storage = C_L.this.bar(t);
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C_L.this.bar(t);
     def foo(): Int = 3
   }
 }

@@ -12,6 +12,20 @@ trait MiniboxDefinitions {
   import definitions._
   import miniboxing.runtime.MiniboxConstants._
 
+  // Specialization/normalization info:
+
+  /**  PartialSpec is a binding from type parameters to their representation (Boxed/Miniboxed)
+   *   INVARIANT: Regardless of whether the PartialSpec refers to the stem or a variant class,
+   *   the parent's type parameters are used. */
+  type PartialSpec = Map[Symbol, SpecInfo]
+
+  sealed trait SpecInfo
+  case object Miniboxed extends SpecInfo
+  case object Boxed     extends SpecInfo
+
+
+  // Flags and symbols:
+
   final val MINIBOXED = 1L << 46 // we define our own flag
 
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
@@ -23,7 +37,7 @@ trait MiniboxDefinitions {
     // This is what is should look like:
     // ```
     //   package __root__.scala {
-    //     class storage extends Annotation with TypeConstraint
+    //     class storage[Tpe] extends Annotation with TypeConstraint
     //   }
     // ```
     val AnnotationName = "scala.annotation.Annotation"
@@ -33,7 +47,9 @@ trait MiniboxDefinitions {
 
     val StorageName = newTypeName("storage")
     val StorageSym = ScalaPackageClass.newClassSymbol(StorageName, NoPosition, 0L)
-    StorageSym setInfoAndEnter ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym)
+    val TypeParamName = newTypeName("Tpe")
+    val TypeParamSym = StorageSym.newTypeParameter(TypeParamName, NoPosition, 0L) setInfo TypeBounds.empty
+    StorageSym setInfoAndEnter PolyType(List(TypeParamSym), ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym))
     StorageSym
   }
 
@@ -60,6 +76,7 @@ trait MiniboxDefinitions {
   lazy val box2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
 
   // artificially created marker methods
+  // TODO: Allow multiple storage types, currently hardcoded for Long
   lazy val marker_minibox2box =
     newPolyMethod(1, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
       tpar => (Some(List(tpar.head.tpeHK withAnnotation AnnotationInfo(StorageClass.tpe, Nil, Nil))), tpar.head.tpeHK))
@@ -109,9 +126,11 @@ trait MiniboxDefinitions {
   // Manifest's newArray
   lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
 
-  // TODO: This will also take the storage type
-  def storageType(tparam: Symbol): Type =
-    tparam.tpe.withAnnotations(List(Annotation.apply(StorageClass.tpe, Nil, ListMap.empty)))
+  def storageType(tparam: Symbol, spec: SpecInfo): Type = {
+    // TODO: Allow multiple storage types, currently hardcoded for Long
+    val storage = LongTpe
+    tparam.tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(storage)), Nil, ListMap.empty)))
+  }
 
   lazy val opStorageClass = Map(
     mbarray_apply -> LongClass,

@@ -43,7 +43,7 @@ package miniboxing.tests.compile.nested_rewiring.test4 {
           F.super.<init>();
           ()
         };
-        def foo[@miniboxed V >: Nothing <: Any](s: Ssp @storage, v: V): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
+        def foo[@miniboxed V >: Nothing <: Any](s: Ssp @storage[Long], v: V): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
           def zoo(): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
             class Z extends miniboxing.tests.compile.nested_rewiring.test4.C_JL[Ssp,V] {
               def <init>(): Z = {
@@ -55,7 +55,7 @@ package miniboxing.tests.compile.nested_rewiring.test4 {
           };
           zoo()
         };
-        def foo_n_J[V >: Nothing <: Any](V_TypeTag: Byte, s: Ssp @storage, v: V @storage): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
+        def foo_n_J[V >: Nothing <: Any](V_TypeTag: Byte, s: Ssp @storage[Long], v: V @storage[Long]): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
           def zoo(): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
             class Z extends miniboxing.tests.compile.nested_rewiring.test4.C_JJ[Ssp,V] {
               def <init>(): Z = {
@@ -95,7 +95,7 @@ package miniboxing.tests.compile.nested_rewiring.test4 {
           };
           zoo()
         };
-        def foo_n_J[V >: Nothing <: Any](V_TypeTag: Byte, s: Ssp, v: V @storage): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
+        def foo_n_J[V >: Nothing <: Any](V_TypeTag: Byte, s: Ssp, v: V @storage[Long]): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
           def zoo(): miniboxing.tests.compile.nested_rewiring.test4.C[Ssp,V] = {
             class Z extends miniboxing.tests.compile.nested_rewiring.test4.C_LJ[Ssp,V] {
               def <init>(): Z = {

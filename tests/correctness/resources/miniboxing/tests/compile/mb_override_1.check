@@ -3,18 +3,18 @@ Specializing class Base1...
   // interface:
   abstract trait Base1[T, S] extends Object {
     def overrideMe(t: T,s: S): T
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage,s: S @storage): T @storage
-    def overrideMe_JL(val T_TypeTag: Byte,t: T @storage,s: S): T @storage
-    def overrideMe_LJ(val S_TypeTag: Byte,t: T,s: S @storage): T
+    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long],s: S @storage[Long]): T @storage[Long]
+    def overrideMe_JL(val T_TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
+    def overrideMe_LJ(val S_TypeTag: Byte,t: T,s: S @storage[Long]): T
   }
 
   // specialized class:
   class Base1_JJ[Tsp, Ssp] extends Base1[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base1_JJ|T_TypeTag: Byte,val miniboxing|tests|compile|Base1_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base1_JJ[Tsp,Ssp] // is a specialized implementation of constructor Base1
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage,s: Ssp @storage): Tsp @storage // is a specialized implementation of method overrideMe
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage): Tsp     // is a forwarder to the specialized member
+    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|Base1_JJ|S_TypeTag: Byte    // no info
     private[this] val miniboxing|tests|compile|Base1_JJ|T_TypeTag: Byte    // no info
   }
@@ -23,9 +23,9 @@ Specializing class Base1...
   class Base1_LJ[Tsp, Ssp] extends Base1[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base1_LJ|S_TypeTag: Byte): miniboxing.tests.compile.Base1_LJ[Tsp,Ssp] // is a specialized implementation of constructor Base1
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage): Tsp     // is a specialized implementation of method overrideMe
+    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a specialized implementation of method overrideMe
     private[this] val miniboxing|tests|compile|Base1_LJ|S_TypeTag: Byte    // no info
   }
 
@@ -33,9 +33,9 @@ Specializing class Base1...
   class Base1_JL[Tsp, Ssp] extends Base1[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base1_JL|T_TypeTag: Byte): miniboxing.tests.compile.Base1_JL[Tsp,Ssp] // is a specialized implementation of constructor Base1
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage,s: Ssp): Tsp @storage // is a specialized implementation of method overrideMe
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage): Tsp     // is a forwarder to the specialized member
+    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|Base1_JL|T_TypeTag: Byte    // no info
   }
 
@@ -43,9 +43,9 @@ Specializing class Base1...
   class Base1_LL[Tsp, Ssp] extends Base1[Tsp,Ssp] {
     def <init>(): miniboxing.tests.compile.Base1_LL[Tsp,Ssp]               // is a specialized implementation of constructor Base1
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a specialized implementation of method overrideMe
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage): Tsp     // is a forwarder to the specialized member
+    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
   }
 
 

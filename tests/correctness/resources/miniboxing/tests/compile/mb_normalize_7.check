@@ -3,18 +3,18 @@ Specializing class SpCls7...
   // interface:
   abstract trait SpCls7[S] extends Object {
     def normalizeMe[T](s: S,t: T): S
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: S @storage,t: T): S @storage
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: S @storage,t: T @storage): S @storage
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: S,t: T @storage): S
+    def normalizeMe_J[T](val S_TypeTag: Byte,s: S @storage[Long],t: T): S @storage[Long]
+    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: S @storage[Long],t: T @storage[Long]): S @storage[Long]
+    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: S,t: T @storage[Long]): S
   }
 
   // specialized class:
   class SpCls7_J[Ssp] extends SpCls7[Ssp] {
     def <init>(val miniboxing|tests|correctness|SpCls7_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls7_J[Ssp] // is a specialized implementation of constructor SpCls7
     def normalizeMe[T](s: Ssp,t: T): Ssp                                   // is a forwarder to the specialized member
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage,t: T): Ssp @storage // is a specialized implementation of method normalizeMe
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage,t: T @storage): Ssp @storage // is a specialized implementation of method normalizeMe
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage): Ssp  // is a forwarder to the specialized member
+    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): Ssp @storage[Long] // is a specialized implementation of method normalizeMe
+    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): Ssp @storage[Long] // is a specialized implementation of method normalizeMe
+    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): Ssp // is a forwarder to the specialized member
     private[this] val miniboxing|tests|correctness|SpCls7_J|S_TypeTag: Byte // no info
   }
 
@@ -22,9 +22,9 @@ Specializing class SpCls7...
   class SpCls7_L[Ssp] extends SpCls7[Ssp] {
     def <init>(): miniboxing.tests.correctness.SpCls7_L[Ssp]               // is a specialized implementation of constructor SpCls7
     def normalizeMe[T](s: Ssp,t: T): Ssp                                   // is a specialized implementation of method normalizeMe
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage,t: T): Ssp @storage // is a forwarder to the specialized member
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage,t: T @storage): Ssp @storage // is a forwarder to the specialized member
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage): Ssp  // is a specialized implementation of method normalizeMe
+    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): Ssp @storage[Long] // is a forwarder to the specialized member
+    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): Ssp @storage[Long] // is a forwarder to the specialized member
+    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): Ssp // is a specialized implementation of method normalizeMe
   }
 
 

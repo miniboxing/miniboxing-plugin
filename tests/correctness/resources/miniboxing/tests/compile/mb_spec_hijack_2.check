@@ -3,18 +3,18 @@ Specializing class HijackMe2...
   // interface:
   abstract trait HijackMe2[T] extends Object {
     def hijackMeToo[U](t: T,u: U): Nothing
-    def hijackMeToo_J[U](val T_TypeTag: Byte,t: T @storage,u: U): Nothing
-    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: T @storage,u: U @storage): Nothing
-    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: T,u: U @storage): Nothing
+    def hijackMeToo_J[U](val T_TypeTag: Byte,t: T @storage[Long],u: U): Nothing
+    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: T @storage[Long],u: U @storage[Long]): Nothing
+    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: T,u: U @storage[Long]): Nothing
   }
 
   // specialized class:
   class HijackMe2_J[Tsp] extends HijackMe2[Tsp] {
     def <init>(val miniboxing|tests|compile|HijackMe2_J|T_TypeTag: Byte): miniboxing.tests.compile.HijackMe2_J[Tsp] // is a specialized implementation of constructor HijackMe2
     def hijackMeToo[U](t: Tsp,u: U): Nothing                               // is a forwarder to the specialized member
-    def hijackMeToo_J[U](val T_TypeTag: Byte,t: Tsp @storage,u: U): Nothing // is a specialized implementation of method hijackMeToo
-    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: Tsp @storage,u: U @storage): Nothing // is a specialized implementation of method hijackMeToo
-    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: Tsp,u: U @storage): Nothing // is a forwarder to the specialized member
+    def hijackMeToo_J[U](val T_TypeTag: Byte,t: Tsp @storage[Long],u: U): Nothing // is a specialized implementation of method hijackMeToo
+    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: Tsp @storage[Long],u: U @storage[Long]): Nothing // is a specialized implementation of method hijackMeToo
+    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: Tsp,u: U @storage[Long]): Nothing // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|HijackMe2_J|T_TypeTag: Byte // no info
   }
 
@@ -22,9 +22,9 @@ Specializing class HijackMe2...
   class HijackMe2_L[Tsp] extends HijackMe2[Tsp] {
     def <init>(): miniboxing.tests.compile.HijackMe2_L[Tsp]                // is a specialized implementation of constructor HijackMe2
     def hijackMeToo[U](t: Tsp,u: U): Nothing                               // is a specialized implementation of method hijackMeToo
-    def hijackMeToo_J[U](val T_TypeTag: Byte,t: Tsp @storage,u: U): Nothing // is a forwarder to the specialized member
-    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: Tsp @storage,u: U @storage): Nothing // is a forwarder to the specialized member
-    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: Tsp,u: U @storage): Nothing // is a specialized implementation of method hijackMeToo
+    def hijackMeToo_J[U](val T_TypeTag: Byte,t: Tsp @storage[Long],u: U): Nothing // is a forwarder to the specialized member
+    def hijackMeToo_J_n_J[U](val U_TypeTag: Byte,val T_TypeTag: Byte,t: Tsp @storage[Long],u: U @storage[Long]): Nothing // is a forwarder to the specialized member
+    def hijackMeToo_n_J[U](val U_TypeTag: Byte,t: Tsp,u: U @storage[Long]): Nothing // is a specialized implementation of method hijackMeToo
   }
 
 

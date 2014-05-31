@@ -3,14 +3,14 @@ Specializing class UhOh...
   // interface:
   abstract trait UhOh[X, Y] extends Object {
     def foo(x: X,y: Y): X
-    def foo_J(val X_TypeTag: Byte,x: X @storage,y: Y): X @storage
+    def foo_J(val X_TypeTag: Byte,x: X @storage[Long],y: Y): X @storage[Long]
   }
 
   // specialized class:
   class UhOh_J[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
     def <init>(val miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh_J[Xsp,Ysp] // is a specialized implementation of constructor UhOh
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a forwarder to the specialized member
-    def foo_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage    // is a specialized implementation of method foo
+    def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte      // no info
   }
 
@@ -18,7 +18,7 @@ Specializing class UhOh...
   class UhOh_L[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.UhOh_L[Xsp,Ysp]                 // is a specialized implementation of constructor UhOh
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a specialized implementation of method foo
-    def foo_J(val X_TypeTag: Byte,x: Xsp @storage,y: Ysp): Xsp @storage    // is a forwarder to the specialized member
+    def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a forwarder to the specialized member
   }
 
 
@@ -29,35 +29,35 @@ Specializing class OhUh...
   // interface:
   abstract trait OhUh[U] extends Object {
     def test(): U
-    def test_J(val U_TypeTag: Byte): U @storage
+    def test_J(val U_TypeTag: Byte): U @storage[Long]
     def u(): U
     def u_=(x$1: U): Unit
-    def u_J(val U_TypeTag: Byte): U @storage
-    def u_J_=(val U_TypeTag: Byte,x$1: U @storage): Unit
+    def u_J(val U_TypeTag: Byte): U @storage[Long]
+    def u_J_=(val U_TypeTag: Byte,x$1: U @storage[Long]): Unit
   }
 
   // specialized class:
   class OhUh_J[Usp] extends OhUh[Usp] {
-    def <init>(val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte,u: Usp @storage): miniboxing.tests.compile.OhUh_J[Usp] // is a specialized implementation of constructor OhUh
+    def <init>(val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte,u: Usp @storage[Long]): miniboxing.tests.compile.OhUh_J[Usp] // is a specialized implementation of constructor OhUh
     def test(): Usp                                                        // is a forwarder to the specialized member
-    def test_J(val U_TypeTag: Byte): Usp @storage                          // is a specialized implementation of method test
+    def test_J(val U_TypeTag: Byte): Usp @storage[Long]                    // is a specialized implementation of method test
     def u(): Usp                                                           // is a forwarder to the specialized member
     def u_=(x$1: Usp): Unit                                                // is a forwarder to the specialized member
-    def u_J(val U_TypeTag: Byte): Usp @storage                             // is a setter or getter for variable u
-    def u_J_=(val U_TypeTag: Byte,x$1: Usp @storage): Unit                 // is a setter or getter for variable u
+    def u_J(val U_TypeTag: Byte): Usp @storage[Long]                       // is a setter or getter for variable u
+    def u_J_=(val U_TypeTag: Byte,x$1: Usp @storage[Long]): Unit           // is a setter or getter for variable u
     private[this] val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte      // no info
-    private[this] var u: Usp @storage                                      // is a specialized implementation of variable u
+    private[this] var u: Usp @storage[Long]                                // is a specialized implementation of variable u
   }
 
   // specialized class:
   class OhUh_L[Usp] extends OhUh[Usp] {
     def <init>(u: Usp): miniboxing.tests.compile.OhUh_L[Usp]               // is a specialized implementation of constructor OhUh
     def test(): Usp                                                        // is a specialized implementation of method test
-    def test_J(val U_TypeTag: Byte): Usp @storage                          // is a forwarder to the specialized member
+    def test_J(val U_TypeTag: Byte): Usp @storage[Long]                    // is a forwarder to the specialized member
     def u(): Usp                                                           // is a setter or getter for variable u
     def u_=(x$1: Usp): Unit                                                // is a setter or getter for variable u
-    def u_J(val U_TypeTag: Byte): Usp @storage                             // is a forwarder to the specialized member
-    def u_J_=(val U_TypeTag: Byte,x$1: Usp @storage): Unit                 // is a forwarder to the specialized member
+    def u_J(val U_TypeTag: Byte): Usp @storage[Long]                       // is a forwarder to the specialized member
+    def u_J_=(val U_TypeTag: Byte,x$1: Usp @storage[Long]): Unit           // is a forwarder to the specialized member
     private[this] var u: Usp                                               // is a specialized implementation of variable u
   }
 

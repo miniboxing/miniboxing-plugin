@@ -4,8 +4,8 @@ Specializing class SpCls...
   abstract trait SpCls[S] extends Object {
     def normalizeMe3[T](t: T): T
     def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T
-    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage): T @storage
-    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage): T @storage
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
   }
 
   // specialized class:
@@ -13,8 +13,8 @@ Specializing class SpCls...
     def <init>(val miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls_J[Ssp] // is a specialized implementation of constructor SpCls
     def normalizeMe3[T](t: T): T                                           // is a forwarder to the specialized member
     def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T                     // is a specialized implementation of method normalizeMe3
-    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage): T @storage // is a specialized implementation of method normalizeMe3
-    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage): T @storage // is a forwarder to the specialized member
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe3
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
     private[this] val miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte // no info
   }
 
@@ -23,8 +23,8 @@ Specializing class SpCls...
     def <init>(): miniboxing.tests.correctness.SpCls_L[Ssp]                // is a specialized implementation of constructor SpCls
     def normalizeMe3[T](t: T): T                                           // is a specialized implementation of method normalizeMe3
     def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T                     // is a forwarder to the specialized member
-    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage): T @storage // is a forwarder to the specialized member
-    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage): T @storage // is a specialized implementation of method normalizeMe3
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe3
   }
 
 

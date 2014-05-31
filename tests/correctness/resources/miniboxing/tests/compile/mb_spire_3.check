@@ -3,20 +3,20 @@ Specializing trait Order2...
   // interface:
   abstract trait Order2[A] extends Object {
     def max(x: A,y: A): A
-    def max_J(val A_TypeTag: Byte,x: A @storage,y: A @storage): A @storage
+    def max_J(val A_TypeTag: Byte,x: A @storage[Long],y: A @storage[Long]): A @storage[Long]
   }
 
   // specialized class:
   abstract trait Order2_J[Asp] extends Order2[Asp] {
     def max(x: Asp,y: Asp): Asp                                            // is a forwarder to the specialized member
-    def max_J(val A_TypeTag: Byte,x: Asp @storage,y: Asp @storage): Asp @storage // is an interface method
+    def max_J(val A_TypeTag: Byte,x: Asp @storage[Long],y: Asp @storage[Long]): Asp @storage[Long] // is an interface method
     def miniboxing|tests|compile|Order2_J|A_TypeTag(): Byte                // is a type tag
   }
 
   // specialized class:
   abstract trait Order2_L[Asp] extends Order2[Asp] {
     def max(x: Asp,y: Asp): Asp                                            // is an interface method
-    def max_J(val A_TypeTag: Byte,x: Asp @storage,y: Asp @storage): Asp @storage // is a forwarder to the specialized member
+    def max_J(val A_TypeTag: Byte,x: Asp @storage[Long],y: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
 
 
@@ -27,14 +27,14 @@ Specializing class ArrayOps...
   // interface:
   abstract trait ArrayOps[A] extends Object {
     def qmax(ev: miniboxing.tests.compile.Order2[A]): A
-    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[A]): A @storage
+    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[A]): A @storage[Long]
   }
 
   // specialized class:
   final class ArrayOps_J[Asp] extends ArrayOps[Asp] {
     def <init>(val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte,arr: Array[Asp]): miniboxing.tests.compile.ArrayOps_J[Asp] // is a specialized implementation of constructor ArrayOps
     def qmax(ev: miniboxing.tests.compile.Order2[Asp]): Asp                // is a forwarder to the specialized member
-    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[Asp]): Asp @storage // is a specialized implementation of method qmax
+    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[Asp]): Asp @storage[Long] // is a specialized implementation of method qmax
     private[this] val arr: Array[Asp]                                      // is a specialized implementation of value arr
     private[this] val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte  // no info
   }
@@ -43,7 +43,7 @@ Specializing class ArrayOps...
   final class ArrayOps_L[Asp] extends ArrayOps[Asp] {
     def <init>(arr: Array[Asp]): miniboxing.tests.compile.ArrayOps_L[Asp]  // is a specialized implementation of constructor ArrayOps
     def qmax(ev: miniboxing.tests.compile.Order2[Asp]): Asp                // is a specialized implementation of method qmax
-    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[Asp]): Asp @storage // is a forwarder to the specialized member
+    def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[Asp]): Asp @storage[Long] // is a forwarder to the specialized member
     private[this] val arr: Array[Asp]                                      // is a specialized implementation of value arr
   }
 

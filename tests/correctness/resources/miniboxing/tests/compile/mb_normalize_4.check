@@ -14,62 +14,62 @@ Specializing class SpCls4Tuple2...
     override def productPrefix(): String
     override def toString(): String
     val u(): U
-    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): U @storage
-    val u_JL(val U_TypeTag: Byte): U @storage
+    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): U @storage[Long]
+    val u_JL(val U_TypeTag: Byte): U @storage[Long]
     val u_LJ(val V_TypeTag: Byte): U
     val v(): V
-    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): V @storage
+    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): V @storage[Long]
     val v_JL(val U_TypeTag: Byte): V
-    val v_LJ(val V_TypeTag: Byte): V @storage
+    val v_LJ(val V_TypeTag: Byte): V @storage[Long]
   }
 
   // specialized class:
   case class SpCls4Tuple2_JJ[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_JJ|U_TypeTag: Byte,val miniboxing|tests|correctness|SpCls4Tuple2_JJ|V_TypeTag: Byte,u: Usp @storage,v: Vsp @storage): miniboxing.tests.correctness.SpCls4Tuple2_JJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_JJ|U_TypeTag: Byte,val miniboxing|tests|correctness|SpCls4Tuple2_JJ|V_TypeTag: Byte,u: Usp @storage[Long],v: Vsp @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2_JJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
     private[this] val miniboxing|tests|correctness|SpCls4Tuple2_JJ|U_TypeTag: Byte // no info
     private[this] val miniboxing|tests|correctness|SpCls4Tuple2_JJ|V_TypeTag: Byte // no info
-    private[this] val u: Usp @storage                                      // is a specialized implementation of value u
-    private[this] val v: Vsp @storage                                      // is a specialized implementation of value v
+    private[this] val u: Usp @storage[Long]                                // is a specialized implementation of value u
+    private[this] val v: Vsp @storage[Long]                                // is a specialized implementation of value v
     val u(): Usp                                                           // is a forwarder to the specialized member
-    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage        // is a setter or getter for value u
-    val u_JL(val U_TypeTag: Byte): Usp @storage                            // is a forwarder to the specialized member
+    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage[Long]  // is a setter or getter for value u
+    val u_JL(val U_TypeTag: Byte): Usp @storage[Long]                      // is a forwarder to the specialized member
     val u_LJ(val V_TypeTag: Byte): Usp                                     // is a forwarder to the specialized member
     val v(): Vsp                                                           // is a forwarder to the specialized member
-    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage        // is a setter or getter for value v
+    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage[Long]  // is a setter or getter for value v
     val v_JL(val U_TypeTag: Byte): Vsp                                     // is a forwarder to the specialized member
-    val v_LJ(val V_TypeTag: Byte): Vsp @storage                            // is a forwarder to the specialized member
+    val v_LJ(val V_TypeTag: Byte): Vsp @storage[Long]                      // is a forwarder to the specialized member
   }
 
   // specialized class:
   case class SpCls4Tuple2_LJ[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_LJ|V_TypeTag: Byte,u: Usp,v: Vsp @storage): miniboxing.tests.correctness.SpCls4Tuple2_LJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_LJ|V_TypeTag: Byte,u: Usp,v: Vsp @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2_LJ[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
     private[this] val miniboxing|tests|correctness|SpCls4Tuple2_LJ|V_TypeTag: Byte // no info
     private[this] val u: Usp                                               // is a specialized implementation of value u
-    private[this] val v: Vsp @storage                                      // is a specialized implementation of value v
+    private[this] val v: Vsp @storage[Long]                                // is a specialized implementation of value v
     val u(): Usp                                                           // is a forwarder to the specialized member
-    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage        // is a forwarder to the specialized member
-    val u_JL(val U_TypeTag: Byte): Usp @storage                            // is a forwarder to the specialized member
+    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage[Long]  // is a forwarder to the specialized member
+    val u_JL(val U_TypeTag: Byte): Usp @storage[Long]                      // is a forwarder to the specialized member
     val u_LJ(val V_TypeTag: Byte): Usp                                     // is a setter or getter for value u
     val v(): Vsp                                                           // is a forwarder to the specialized member
-    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage        // is a forwarder to the specialized member
+    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage[Long]  // is a forwarder to the specialized member
     val v_JL(val U_TypeTag: Byte): Vsp                                     // is a forwarder to the specialized member
-    val v_LJ(val V_TypeTag: Byte): Vsp @storage                            // is a setter or getter for value v
+    val v_LJ(val V_TypeTag: Byte): Vsp @storage[Long]                      // is a setter or getter for value v
   }
 
   // specialized class:
   case class SpCls4Tuple2_JL[Usp, Vsp] extends Product with Serializable with SpCls4Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_JL|U_TypeTag: Byte,u: Usp @storage,v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_JL[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
+    def <init>(val miniboxing|tests|correctness|SpCls4Tuple2_JL|U_TypeTag: Byte,u: Usp @storage[Long],v: Vsp): miniboxing.tests.correctness.SpCls4Tuple2_JL[Usp,Vsp] // is a specialized implementation of constructor SpCls4Tuple2
     private[this] val miniboxing|tests|correctness|SpCls4Tuple2_JL|U_TypeTag: Byte // no info
-    private[this] val u: Usp @storage                                      // is a specialized implementation of value u
+    private[this] val u: Usp @storage[Long]                                // is a specialized implementation of value u
     private[this] val v: Vsp                                               // is a specialized implementation of value v
     val u(): Usp                                                           // is a forwarder to the specialized member
-    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage        // is a forwarder to the specialized member
-    val u_JL(val U_TypeTag: Byte): Usp @storage                            // is a setter or getter for value u
+    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage[Long]  // is a forwarder to the specialized member
+    val u_JL(val U_TypeTag: Byte): Usp @storage[Long]                      // is a setter or getter for value u
     val u_LJ(val V_TypeTag: Byte): Usp                                     // is a forwarder to the specialized member
     val v(): Vsp                                                           // is a forwarder to the specialized member
-    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage        // is a forwarder to the specialized member
+    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage[Long]  // is a forwarder to the specialized member
     val v_JL(val U_TypeTag: Byte): Vsp                                     // is a setter or getter for value v
-    val v_LJ(val V_TypeTag: Byte): Vsp @storage                            // is a forwarder to the specialized member
+    val v_LJ(val V_TypeTag: Byte): Vsp @storage[Long]                      // is a forwarder to the specialized member
   }
 
   // specialized class:
@@ -78,13 +78,13 @@ Specializing class SpCls4Tuple2...
     private[this] val u: Usp                                               // is a specialized implementation of value u
     private[this] val v: Vsp                                               // is a specialized implementation of value v
     val u(): Usp                                                           // is a setter or getter for value u
-    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage        // is a forwarder to the specialized member
-    val u_JL(val U_TypeTag: Byte): Usp @storage                            // is a forwarder to the specialized member
+    val u_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Usp @storage[Long]  // is a forwarder to the specialized member
+    val u_JL(val U_TypeTag: Byte): Usp @storage[Long]                      // is a forwarder to the specialized member
     val u_LJ(val V_TypeTag: Byte): Usp                                     // is a forwarder to the specialized member
     val v(): Vsp                                                           // is a setter or getter for value v
-    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage        // is a forwarder to the specialized member
+    val v_JJ(val U_TypeTag: Byte,val V_TypeTag: Byte): Vsp @storage[Long]  // is a forwarder to the specialized member
     val v_JL(val U_TypeTag: Byte): Vsp                                     // is a forwarder to the specialized member
-    val v_LJ(val V_TypeTag: Byte): Vsp @storage                            // is a forwarder to the specialized member
+    val v_LJ(val V_TypeTag: Byte): Vsp @storage[Long]                      // is a forwarder to the specialized member
   }
 
 
@@ -95,18 +95,18 @@ Specializing class SpCls4...
   // interface:
   abstract trait SpCls4[S] extends Object {
     def normalizeMe1[T](s: S,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
-    def normalizeMe1_J[T](val S_TypeTag: Byte,s: S @storage,t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
-    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: S @storage,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
-    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: S,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_J[T](val S_TypeTag: Byte,s: S @storage[Long],t: T): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: S @storage[Long],t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
+    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: S,t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[S,T]
   }
 
   // specialized class:
   class SpCls4_J[Ssp] extends SpCls4[Ssp] {
     def <init>(val miniboxing|tests|correctness|SpCls4_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls4_J[Ssp] // is a specialized implementation of constructor SpCls4
     def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
-    def normalizeMe1_J[T](val S_TypeTag: Byte,s: Ssp @storage,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
-    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
-    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
+    def normalizeMe1_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
     private[this] val miniboxing|tests|correctness|SpCls4_J|S_TypeTag: Byte // no info
   }
 
@@ -114,9 +114,9 @@ Specializing class SpCls4...
   class SpCls4_L[Ssp] extends SpCls4[Ssp] {
     def <init>(): miniboxing.tests.correctness.SpCls4_L[Ssp]               // is a specialized implementation of constructor SpCls4
     def normalizeMe1[T](s: Ssp,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
-    def normalizeMe1_J[T](val S_TypeTag: Byte,s: Ssp @storage,t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
-    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
-    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
+    def normalizeMe1_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
+    def normalizeMe1_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a forwarder to the specialized member
+    def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
   }
 
 

@@ -127,7 +127,7 @@ trait MiniboxMetadataUtils {
 
     case class MiniboxSubst(env: Map[Symbol, Type]) extends TypeMap {
       val (keys, shallowTypes) = env.toList.unzip
-      val deepTypes = shallowTypes.map(_.filterAnnotations(_.tpe != StorageClass.tpe))
+      val deepTypes = shallowTypes.map(_.filterAnnotations(_.tpe.typeSymbol != StorageClass))
       val deepSubst = new SubstSkolemsTypeMap(keys, deepTypes)
       val shallowSubst = new SubstSkolemsTypeMap(keys, shallowTypes) {
         override def mapOver(tp: Type) = {

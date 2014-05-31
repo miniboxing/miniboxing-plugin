@@ -7,12 +7,12 @@ package miniboxing.tests.compile.bug69.red3 {
     };
     def foo[@miniboxed T >: Nothing <: Any](t: T): T = {
       def bar[@miniboxed U >: Nothing <: Any](u: U): U = u;
-      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage): U @storage = u;
+      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = u;
       bar[T](t)
     };
-    def foo_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = {
+    def foo_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = {
       def bar[@miniboxed U >: Nothing <: Any](u: U): U = u;
-      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage): U @storage = u;
+      def bar_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = u;
       bar[T](t)
     }
   }

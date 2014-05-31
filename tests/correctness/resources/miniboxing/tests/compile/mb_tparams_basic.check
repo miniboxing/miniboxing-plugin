@@ -3,14 +3,14 @@ Specializing class TParams1...
   // interface:
   abstract trait TParams1[T] extends Object {
     def foo[X](t: T,x: X): Int
-    def foo_J[X](val T_TypeTag: Byte,t: T @storage,x: X): Int
+    def foo_J[X](val T_TypeTag: Byte,t: T @storage[Long],x: X): Int
   }
 
   // specialized class:
   class TParams1_J[Tsp] extends TParams1[Tsp] {
     def <init>(val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] // is a specialized implementation of constructor TParams1
     def foo[X](t: Tsp,x: X): Int                                           // is a forwarder to the specialized member
-    def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage,x: X): Int            // is a specialized implementation of method foo
+    def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X): Int      // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte // no info
   }
 
@@ -18,7 +18,7 @@ Specializing class TParams1...
   class TParams1_L[Tsp] extends TParams1[Tsp] {
     def <init>(): miniboxing.tests.compile.tparams.TParams1_L[Tsp]         // is a specialized implementation of constructor TParams1
     def foo[X](t: Tsp,x: X): Int                                           // is a specialized implementation of method foo
-    def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage,x: X): Int            // is a forwarder to the specialized member
+    def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X): Int      // is a forwarder to the specialized member
   }
 
 

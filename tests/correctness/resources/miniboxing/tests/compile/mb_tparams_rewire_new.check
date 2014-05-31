@@ -5,18 +5,18 @@ Specializing class TN...
     def foo(): miniboxing.tests.compile.tparams.TN[T,String]
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String]
     val t(): T
-    val t_J(val T_TypeTag: Byte): T @storage
+    val t_J(val T_TypeTag: Byte): T @storage[Long]
   }
 
   // specialized class:
   class TN_J[Tsp, Xsp] extends TN[Tsp,Xsp] {
-    def <init>(val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte,t: Tsp @storage): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] // is a specialized implementation of constructor TN
+    def <init>(val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte,t: Tsp @storage[Long]): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] // is a specialized implementation of constructor TN
     def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String]             // is a forwarder to the specialized member
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte // no info
-    private[this] val t: Tsp @storage                                      // is a specialized implementation of value t
+    private[this] val t: Tsp @storage[Long]                                // is a specialized implementation of value t
     val t(): Tsp                                                           // is a forwarder to the specialized member
-    val t_J(val T_TypeTag: Byte): Tsp @storage                             // is a setter or getter for value t
+    val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a setter or getter for value t
   }
 
   // specialized class:
@@ -26,7 +26,7 @@ Specializing class TN...
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a forwarder to the specialized member
     private[this] val t: Tsp                                               // is a specialized implementation of value t
     val t(): Tsp                                                           // is a setter or getter for value t
-    val t_J(val T_TypeTag: Byte): Tsp @storage                             // is a forwarder to the specialized member
+    val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a forwarder to the specialized member
   }
 
 

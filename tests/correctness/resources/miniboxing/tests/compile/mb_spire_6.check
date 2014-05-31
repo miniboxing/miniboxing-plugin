@@ -3,18 +3,18 @@ Specializing class TailCallsCrasher...
   // interface:
   abstract trait TailCallsCrasher[A] extends Object {
     final def zzz1(x: A): A
-    final def zzz1_J(val A_TypeTag: Byte,x: A @storage): A @storage
+    final def zzz1_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
     private[this] def zzz2(x: A): A
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: A @storage): A @storage
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
   }
 
   // specialized class:
   class TailCallsCrasher_J[Asp] extends TailCallsCrasher[Asp] {
     def <init>(val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] // is a specialized implementation of constructor TailCallsCrasher
     final def zzz1(x: Asp): Asp                                            // is a forwarder to the specialized member
-    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage): Asp @storage    // is a specialized implementation of method zzz1
+    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz1
     private[this] def zzz2(x: Asp): Asp                                    // is a forwarder to the specialized member
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage): Asp @storage // is a specialized implementation of method zzz2
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz2
     private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte // no info
   }
 
@@ -22,9 +22,9 @@ Specializing class TailCallsCrasher...
   class TailCallsCrasher_L[Asp] extends TailCallsCrasher[Asp] {
     def <init>(): miniboxing.tests.compile.TailCallsCrasher_L[Asp]         // is a specialized implementation of constructor TailCallsCrasher
     final def zzz1(x: Asp): Asp                                            // is a specialized implementation of method zzz1
-    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage): Asp @storage    // is a forwarder to the specialized member
+    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
     private[this] def zzz2(x: Asp): Asp                                    // is a specialized implementation of method zzz2
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage): Asp @storage // is a forwarder to the specialized member
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
 
 

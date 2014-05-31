@@ -10,17 +10,6 @@ trait MiniboxMetadata {
   import definitions._
   import scala.collection.immutable
 
-  // Specialization/normalization info:
-
-  /**  PartialSpec is a binding from type parameters to their representation (Boxed/Miniboxed)
-   *   INVARIANT: Regardless of whether the PartialSpec refers to the stem or a variant class,
-   *   the parent's type parameters are used. */
-  type PartialSpec = immutable.Map[Symbol, SpecInfo]
-
-  sealed trait SpecInfo
-  case object Miniboxed extends SpecInfo
-  case object Boxed     extends SpecInfo
-
   trait metadata {
 
     /* Class specialization:

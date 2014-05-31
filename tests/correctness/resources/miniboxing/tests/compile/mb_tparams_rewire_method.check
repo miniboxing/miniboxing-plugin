@@ -3,18 +3,18 @@ Specializing class TR3...
   // interface:
   abstract trait TR3[T, Z] extends Object {
     def bar[X, Y](t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T @storage
+    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T @storage[Long]
     def foo[X, Y](t: T,x: X,y: Y): T
-    def foo_J[X, Y](val T_TypeTag: Byte,t: T @storage,x: X,y: Y): T @storage
+    def foo_J[X, Y](val T_TypeTag: Byte,t: T @storage[Long],x: X,y: Y): T @storage[Long]
   }
 
   // specialized class:
   class TR3_J[Tsp, Zsp] extends TR3[Tsp,Zsp] {
     def <init>(val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte): miniboxing.tests.compile.TR3_J[Tsp,Zsp] // is a specialized implementation of constructor TR3
     def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp // is a forwarder to the specialized member
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage // is a specialized implementation of method bar
+    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method bar
     def foo[X, Y](t: Tsp,x: X,y: Y): Tsp                                   // is a forwarder to the specialized member
-    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage,x: X,y: Y): Tsp @storage // is a specialized implementation of method foo
+    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte       // no info
   }
 
@@ -22,9 +22,9 @@ Specializing class TR3...
   class TR3_L[Tsp, Zsp] extends TR3[Tsp,Zsp] {
     def <init>(): miniboxing.tests.compile.TR3_L[Tsp,Zsp]                  // is a specialized implementation of constructor TR3
     def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp // is a specialized implementation of method bar
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage // is a forwarder to the specialized member
+    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
     def foo[X, Y](t: Tsp,x: X,y: Y): Tsp                                   // is a specialized implementation of method foo
-    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage,x: X,y: Y): Tsp @storage // is a forwarder to the specialized member
+    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 
 
@@ -35,14 +35,14 @@ Specializing class RT3...
   // interface:
   abstract trait RT3[U, G] extends Object {
     def test(u: U): U
-    def test_J(val U_TypeTag: Byte,u: U @storage): U @storage
+    def test_J(val U_TypeTag: Byte,u: U @storage[Long]): U @storage[Long]
   }
 
   // specialized class:
   class RT3_J[Usp, Gsp] extends RT3[Usp,Gsp] {
     def <init>(val miniboxing|tests|compile|RT3_J|U_TypeTag: Byte,g: Gsp): miniboxing.tests.compile.RT3_J[Usp,Gsp] // is a specialized implementation of constructor RT3
     def test(u: Usp): Usp                                                  // is a forwarder to the specialized member
-    def test_J(val U_TypeTag: Byte,u: Usp @storage): Usp @storage          // is a specialized implementation of method test
+    def test_J(val U_TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a specialized implementation of method test
     private[this] val g: Gsp                                               // is a specialized implementation of value g
     private[this] val miniboxing|tests|compile|RT3_J|U_TypeTag: Byte       // no info
   }
@@ -51,7 +51,7 @@ Specializing class RT3...
   class RT3_L[Usp, Gsp] extends RT3[Usp,Gsp] {
     def <init>(g: Gsp): miniboxing.tests.compile.RT3_L[Usp,Gsp]            // is a specialized implementation of constructor RT3
     def test(u: Usp): Usp                                                  // is a specialized implementation of method test
-    def test_J(val U_TypeTag: Byte,u: Usp @storage): Usp @storage          // is a forwarder to the specialized member
+    def test_J(val U_TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a forwarder to the specialized member
     private[this] val g: Gsp                                               // is a specialized implementation of value g
   }
 

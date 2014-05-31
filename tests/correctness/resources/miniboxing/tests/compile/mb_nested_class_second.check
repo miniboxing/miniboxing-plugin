@@ -9,10 +9,10 @@ Specializing class CC...
 
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
-    def <init>(val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte,c: Tsp @storage): miniboxing.tests.compile.nested.CC_J[Tsp] // is a specialized implementation of constructor CC
+    def <init>(val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte,c: Tsp @storage[Long]): miniboxing.tests.compile.nested.CC_J[Tsp] // is a specialized implementation of constructor CC
     def test(): CC_J.this.DD[Tsp]                                          // is a forwarder to the specialized member
     def test_J(val T_TypeTag: Byte): CC_J.this.DD[Tsp]                     // is a specialized implementation of method test
-    private[this] val c: Tsp @storage                                      // is a specialized implementation of value c
+    private[this] val c: Tsp @storage[Long]                                // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|CC_J|T_TypeTag: Byte // no info
   }
 
@@ -35,8 +35,8 @@ Specializing class DD...
 
   // specialized class:
   class DD_J[Usp] extends CC.this.DD[Usp] {
-    def <init>(val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte,d: Usp @storage): CC.this.DD_J[Usp] // is a specialized implementation of constructor DD
-    private[this] val d: Usp @storage                                      // is a specialized implementation of value d
+    def <init>(val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte,d: Usp @storage[Long]): CC.this.DD_J[Usp] // is a specialized implementation of constructor DD
+    private[this] val d: Usp @storage[Long]                                // is a specialized implementation of value d
     private[this] val miniboxing|tests|compile|nested|CC|DD_J|U_TypeTag: Byte // no info
   }
 

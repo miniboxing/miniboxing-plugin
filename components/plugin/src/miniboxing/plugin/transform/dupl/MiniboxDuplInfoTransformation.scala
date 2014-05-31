@@ -60,8 +60,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
             member.typeParams.zip(info0.typeParams).toMap
           val normalizedSignatureEnv =       // <new tparam> ==> @storage <new tparam>
             pspec flatMap {
-              case (p, Boxed)     => None
-              case (p, Miniboxed) => Some((deepEnv(p), storageType(deepEnv(p))))
+              case (p, Boxed)  => None
+              case (p, mboxed) => Some((deepEnv(p), storageType(deepEnv(p), mboxed)))
             }
           val normalizedTypeMap = typeMappers.MiniboxSubst(normalizedSignatureEnv)
           val info1 = normalizedTypeMap(info0.resultType)
@@ -248,7 +248,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
           if (!PartialSpec.isAllAnyRef(spec)) {
             val env: Map[Symbol, Type] = spec map {
-              case (p, v) => (p, if (v == Boxed) p.tpe else storageType(p))
+              case (p, spinfo) => (p, if (spinfo == Boxed) p.tpe else storageType(p, spinfo))
             }
             val specializedTypeMap = typeMappers.MiniboxSubst(env)
 
@@ -356,8 +356,8 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
       val pmapOldToNew = createNewTParams(stemClass.typeParams, variantClass)         // T => Tsp
       val pmapOldToTpe = pmapOldToNew.map {case (s1, s2) => (s1, s2.tpeHK)}           // T => Tsp.tpeHK
       val pmapNewToStorageNew = spec.flatMap {                                        // Tsp => @storage Tsp
-        case (p, Miniboxed) => Some((pmapOldToNew(p), storageType(pmapOldToNew(p))))
-        case _ => None
+        case (_, Boxed)  => None
+        case (p, mboxed) => Some((pmapOldToNew(p), storageType(pmapOldToNew(p), mboxed)))
       }
       val localSpec: PartialSpec = spec.map({ case (t, sp) => (pmapOldToNew(t), sp)}) // Tsp => Boxed/Miniboxed
       val specializedTypeMapOuter = typeMappers.MiniboxSubst(pmapOldToTpe)            // T => Tsp

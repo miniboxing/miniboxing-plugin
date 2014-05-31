@@ -8,7 +8,7 @@ package miniboxing.tests.compile.bug69.full {
     def methodPlain(): Nothing = {
       def methodPlain(): Nothing = scala.this.Predef.???();
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       class ClassPlain extends Object {
         def <init>(): ClassPlain = {
           ClassPlain.super.<init>();
@@ -34,7 +34,7 @@ package miniboxing.tests.compile.bug69.full {
     def methodMbox[@miniboxed Z >: Nothing <: Any](z: Z): Nothing = {
       def methodPlain(): Nothing = scala.this.Predef.???();
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       class ClassPlain extends Object {
         def <init>(): ClassPlain = {
           ClassPlain.super.<init>();
@@ -57,10 +57,10 @@ package miniboxing.tests.compile.bug69.full {
       };
       scala.this.Predef.???()
     };
-    def methodMbox_n_J[Z >: Nothing <: Any](Z_TypeTag: Byte, z: Z @storage): Nothing = {
+    def methodMbox_n_J[Z >: Nothing <: Any](Z_TypeTag: Byte, z: Z @storage[Long]): Nothing = {
       def methodPlain(): Nothing = scala.this.Predef.???();
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       class ClassPlain extends Object {
         def <init>(): ClassPlain = {
           ClassPlain.super.<init>();
@@ -90,7 +90,7 @@ package miniboxing.tests.compile.bug69.full {
       };
       def methodPlain(): Nothing = scala.this.Predef.???();
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       class ClassPlain extends Object {
         def <init>(): ClassPlain.this.ClassPlain = {
           ClassPlain.super.<init>();
@@ -115,9 +115,9 @@ package miniboxing.tests.compile.bug69.full {
     abstract trait ClassMbox[@miniboxed Z >: Nothing <: Any] extends Object {
       def methodPlain(): Nothing;
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long];
       def methodMboxMbox[@miniboxed T >: Nothing <: Any](t: T, z: Z): T;
-      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage, z: Z): T @storage;
+      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long], z: Z): T @storage[Long];
       class ClassPlain extends Object {
         def <init>(): ClassMbox.this.ClassPlain = {
           ClassPlain.super.<init>();
@@ -138,8 +138,8 @@ package miniboxing.tests.compile.bug69.full {
           ()
         }
       };
-      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Z @storage): T;
-      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage, z: Z @storage): T @storage
+      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Z @storage[Long]): T;
+      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage[Long], z: Z @storage[Long]): T @storage[Long]
     };
     class ClassMbox_J[Zsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug69.full.Test.ClassMbox[Zsp] {
       def <init>(miniboxing|tests|compile|bug69|full|Test|ClassMbox_J|Z_TypeTag: Byte): miniboxing.tests.compile.bug69.full.Test.ClassMbox_J[Zsp] = {
@@ -147,11 +147,11 @@ package miniboxing.tests.compile.bug69.full {
         ()
       };
       def methodMboxMbox[@miniboxed T >: Nothing <: Any](t: T, z: Zsp): T = ClassMbox_J.this.methodMboxMbox_J[T](ClassMbox_J.this.miniboxing|tests|compile|bug69|full|Test|ClassMbox_J|Z_TypeTag, t, z);
-      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage, z: Zsp): T @storage = ClassMbox_J.this.methodMboxMbox_J_n_J[T](T_TypeTag, ClassMbox_J.this.miniboxing|tests|compile|bug69|full|Test|ClassMbox_J|Z_TypeTag, t, z);
-      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Zsp @storage): T = t;
-      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage, z: Zsp @storage): T @storage = t;
+      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long], z: Zsp): T @storage[Long] = ClassMbox_J.this.methodMboxMbox_J_n_J[T](T_TypeTag, ClassMbox_J.this.miniboxing|tests|compile|bug69|full|Test|ClassMbox_J|Z_TypeTag, t, z);
+      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Zsp @storage[Long]): T = t;
+      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage[Long], z: Zsp @storage[Long]): T @storage[Long] = t;
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       def methodPlain(): Nothing = scala.this.Predef.???();
       <paramaccessor> private[this] val miniboxing|tests|compile|bug69|full|Test|ClassMbox_J|Z_TypeTag: Byte = _
     };
@@ -161,11 +161,11 @@ package miniboxing.tests.compile.bug69.full {
         ()
       };
       def methodMboxMbox[@miniboxed T >: Nothing <: Any](t: T, z: Zsp): T = t;
-      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage, z: Zsp): T @storage = t;
-      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Zsp @storage): T = ClassMbox_L.this.methodMboxMbox[T](t, z);
-      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage, z: Zsp @storage): T @storage = ClassMbox_L.this.methodMboxMbox_n_J[T](T_TypeTag, t, z);
+      def methodMboxMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long], z: Zsp): T @storage[Long] = t;
+      def methodMboxMbox_J[@miniboxed T >: Nothing <: Any](Z_TypeTag: Byte, t: T, z: Zsp @storage[Long]): T = ClassMbox_L.this.methodMboxMbox[T](t, z);
+      def methodMboxMbox_J_n_J[T >: Nothing <: Any](T_TypeTag: Byte, Z_TypeTag: Byte, t: T @storage[Long], z: Zsp @storage[Long]): T @storage[Long] = ClassMbox_L.this.methodMboxMbox_n_J[T](T_TypeTag, t, z);
       def methodMbox[@miniboxed T >: Nothing <: Any](t: T): T = t;
-      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage): T @storage = t;
+      def methodMbox_n_J[T >: Nothing <: Any](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       def methodPlain(): Nothing = scala.this.Predef.???()
     }
   }

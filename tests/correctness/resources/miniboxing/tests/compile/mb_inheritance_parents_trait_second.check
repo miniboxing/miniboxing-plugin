@@ -3,20 +3,20 @@ Specializing trait CC...
   // interface:
   abstract trait CC[T] extends Object {
     def foo(t: T): T
-    def foo_J(val T_TypeTag: Byte,t: T @storage): T @storage
+    def foo_J(val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
   }
 
   // specialized class:
   abstract trait CC_J[Tsp] extends CC[Tsp] {
     def foo(t: Tsp): Tsp                                                   // is a forwarder to the specialized member
-    def foo_J(val T_TypeTag: Byte,t: Tsp @storage): Tsp @storage           // is a specialized implementation of method foo
+    def foo_J(val T_TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method foo
     def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte // is a type tag
   }
 
   // specialized class:
   abstract trait CC_L[Tsp] extends CC[Tsp] {
     def foo(t: Tsp): Tsp                                                   // is a specialized implementation of method foo
-    def foo_J(val T_TypeTag: Byte,t: Tsp @storage): Tsp @storage           // is a forwarder to the specialized member
+    def foo_J(val T_TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 
 

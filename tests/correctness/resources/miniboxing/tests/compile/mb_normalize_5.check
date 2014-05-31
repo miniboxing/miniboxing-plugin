@@ -6,26 +6,26 @@ Specializing class Sp5Tuple2...
 
   // specialized class:
   class Sp5Tuple2_JJ[Usp, Vsp] extends Sp5Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_JJ|U_TypeTag: Byte,val miniboxing|tests|correctness|Sp5Tuple2_JJ|V_TypeTag: Byte,u: Usp @storage,v: Vsp @storage): miniboxing.tests.correctness.Sp5Tuple2_JJ[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
+    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_JJ|U_TypeTag: Byte,val miniboxing|tests|correctness|Sp5Tuple2_JJ|V_TypeTag: Byte,u: Usp @storage[Long],v: Vsp @storage[Long]): miniboxing.tests.correctness.Sp5Tuple2_JJ[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
     private[this] val miniboxing|tests|correctness|Sp5Tuple2_JJ|U_TypeTag: Byte // no info
     private[this] val miniboxing|tests|correctness|Sp5Tuple2_JJ|V_TypeTag: Byte // no info
-    private[this] val u: Usp @storage                                      // is a specialized implementation of value u
-    private[this] val v: Vsp @storage                                      // is a specialized implementation of value v
+    private[this] val u: Usp @storage[Long]                                // is a specialized implementation of value u
+    private[this] val v: Vsp @storage[Long]                                // is a specialized implementation of value v
   }
 
   // specialized class:
   class Sp5Tuple2_LJ[Usp, Vsp] extends Sp5Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_LJ|V_TypeTag: Byte,u: Usp,v: Vsp @storage): miniboxing.tests.correctness.Sp5Tuple2_LJ[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
+    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_LJ|V_TypeTag: Byte,u: Usp,v: Vsp @storage[Long]): miniboxing.tests.correctness.Sp5Tuple2_LJ[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
     private[this] val miniboxing|tests|correctness|Sp5Tuple2_LJ|V_TypeTag: Byte // no info
     private[this] val u: Usp                                               // is a specialized implementation of value u
-    private[this] val v: Vsp @storage                                      // is a specialized implementation of value v
+    private[this] val v: Vsp @storage[Long]                                // is a specialized implementation of value v
   }
 
   // specialized class:
   class Sp5Tuple2_JL[Usp, Vsp] extends Sp5Tuple2[Usp,Vsp] {
-    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_JL|U_TypeTag: Byte,u: Usp @storage,v: Vsp): miniboxing.tests.correctness.Sp5Tuple2_JL[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
+    def <init>(val miniboxing|tests|correctness|Sp5Tuple2_JL|U_TypeTag: Byte,u: Usp @storage[Long],v: Vsp): miniboxing.tests.correctness.Sp5Tuple2_JL[Usp,Vsp] // is a specialized implementation of constructor Sp5Tuple2
     private[this] val miniboxing|tests|correctness|Sp5Tuple2_JL|U_TypeTag: Byte // no info
-    private[this] val u: Usp @storage                                      // is a specialized implementation of value u
+    private[this] val u: Usp @storage[Long]                                // is a specialized implementation of value u
     private[this] val v: Vsp                                               // is a specialized implementation of value v
   }
 

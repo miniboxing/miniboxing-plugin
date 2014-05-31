@@ -554,10 +554,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val sspec = metadata.classSpecialization.getOrElse(symbol.owner, Map())
       val senv2 =
         for ((oldTarg, newTarg) <- senv1) yield
-          if (sspec.getOrElse(oldTarg, Boxed) == Miniboxed)
-            (oldTarg, storageType(newTarg))
-          else
-            (oldTarg, newTarg.tpeHK)
+          sspec.getOrElse(oldTarg, Boxed) match {
+            case Boxed  => (oldTarg, newTarg.tpeHK)
+            case mboxed => (oldTarg, storageType(newTarg, mboxed))
+          }
       val senv3 = senv2.toMap
 
       // normalization environment
@@ -566,10 +566,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val nspec = metadata.normalSpecialization.getOrElse(symbol, Map())
       val nenv2 =
         for ((oldTarg, (newTarg, stemTarg)) <- nenv1) yield
-          if (nspec.getOrElse(stemTarg, Boxed) == Miniboxed)
-            (oldTarg, storageType(newTarg))
-          else
-            (oldTarg, newTarg.tpeHK)
+          nspec.getOrElse(stemTarg, Boxed) match {
+            case Boxed => (oldTarg, newTarg.tpeHK)
+            case mboxed => (oldTarg, storageType(newTarg, mboxed))
+          }
       val nenv3 = nenv2.toMap
 
       val miniboxedEnv: Map[Symbol, Type] = senv3 ++ nenv3

@@ -3,14 +3,14 @@ Specializing class Base42...
   // interface:
   abstract trait Base42[T, S] extends Base41[T,S] {
     override def overrideMe(t1: T,t2: T,t3: T,s: S): T
-    override def overrideMe_J(val T_TypeTag: Byte,t1: T @storage,t2: T @storage,t3: T @storage,s: S): T @storage
+    override def overrideMe_J(val T_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long],t3: T @storage[Long],s: S): T @storage[Long]
   }
 
   // specialized class:
   class Base42_J[Tsp, Ssp] extends Base41[Tsp,Ssp] with Base42[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base42_J|T_TypeTag: Byte): miniboxing.tests.compile.Base42_J[Tsp,Ssp] // is a specialized implementation of constructor Base42
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a forwarder to the specialized member
-    override def overrideMe_J(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a specialized implementation of method overrideMe
+    override def overrideMe_J(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
     private[this] val miniboxing|tests|compile|Base42_J|T_TypeTag: Byte    // no info
   }
 
@@ -18,7 +18,7 @@ Specializing class Base42...
   class Base42_L[Tsp, Ssp] extends Base41[Tsp,Ssp] with Base42[Tsp,Ssp] {
     def <init>(): miniboxing.tests.compile.Base42_L[Tsp,Ssp]               // is a specialized implementation of constructor Base42
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a specialized implementation of method overrideMe
-    override def overrideMe_J(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
+    override def overrideMe_J(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 
 
@@ -29,18 +29,18 @@ Specializing class Base43...
   // interface:
   abstract trait Base43[T, S] extends Base42[T,S] {
     override def overrideMe(t1: T,t2: T,t3: T,s: S): T
-    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: T @storage,t2: T @storage,t3: T @storage,s: S @storage): T @storage
-    override def overrideMe_JL(val T_TypeTag: Byte,t1: T @storage,t2: T @storage,t3: T @storage,s: S): T @storage
-    override def overrideMe_LJ(val S_TypeTag: Byte,t1: T,t2: T,t3: T,s: S @storage): T
+    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long],t3: T @storage[Long],s: S @storage[Long]): T @storage[Long]
+    override def overrideMe_JL(val T_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long],t3: T @storage[Long],s: S): T @storage[Long]
+    override def overrideMe_LJ(val S_TypeTag: Byte,t1: T,t2: T,t3: T,s: S @storage[Long]): T
   }
 
   // specialized class:
   class Base43_JJ[Tsp, Ssp] extends Base42_J[Tsp,Ssp] with Base43[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte,val miniboxing|tests|compile|Base43_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base43_JJ[Tsp,Ssp] // is a specialized implementation of constructor Base43
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a forwarder to the specialized member
-    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp @storage): Tsp @storage // is a specialized implementation of method overrideMe
-    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage): Tsp // is a forwarder to the specialized member
+    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|Base43_JJ|S_TypeTag: Byte   // no info
     private[this] val miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte   // no info
   }
@@ -49,9 +49,9 @@ Specializing class Base43...
   class Base43_LJ[Tsp, Ssp] extends Base42_L[Tsp,Ssp] with Base43[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base43_LJ|S_TypeTag: Byte): miniboxing.tests.compile.Base43_LJ[Tsp,Ssp] // is a specialized implementation of constructor Base43
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a forwarder to the specialized member
-    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage): Tsp // is a specialized implementation of method overrideMe
+    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage[Long]): Tsp // is a specialized implementation of method overrideMe
     private[this] val miniboxing|tests|compile|Base43_LJ|S_TypeTag: Byte   // no info
   }
 
@@ -59,9 +59,9 @@ Specializing class Base43...
   class Base43_JL[Tsp, Ssp] extends Base42_J[Tsp,Ssp] with Base43[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base43_JL|T_TypeTag: Byte): miniboxing.tests.compile.Base43_JL[Tsp,Ssp] // is a specialized implementation of constructor Base43
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a forwarder to the specialized member
-    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a specialized implementation of method overrideMe
-    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage): Tsp // is a forwarder to the specialized member
+    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|Base43_JL|T_TypeTag: Byte   // no info
   }
 
@@ -69,9 +69,9 @@ Specializing class Base43...
   class Base43_LL[Tsp, Ssp] extends Base42_L[Tsp,Ssp] with Base43[Tsp,Ssp] {
     def <init>(): miniboxing.tests.compile.Base43_LL[Tsp,Ssp]              // is a specialized implementation of constructor Base43
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a specialized implementation of method overrideMe
-    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp @storage): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage,t2: Tsp @storage,t3: Tsp @storage,s: Ssp): Tsp @storage // is a forwarder to the specialized member
-    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage): Tsp // is a forwarder to the specialized member
+    override def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_JL(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    override def overrideMe_LJ(val S_TypeTag: Byte,t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
   }
 
 
