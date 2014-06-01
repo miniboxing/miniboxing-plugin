@@ -25,18 +25,31 @@ trait MiniboxPostInfoTransformer extends InfoTransform {
   import minibox._
 
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    val tpe2 = deepTransformation(tpe)
+    val tpe2 = deepTransformation.transform(sym, tpe)
 //    if (!(tpe =:= tpe2))
 //      println(sym + "  old: " + tpe + "  new: " + tpe2)
     tpe2
   }
 
-  lazy val deepTransformation: TypeMap = new TypeMap {
-    def apply(tpe: Type): Type = mapOver(tpe)
+  object deepTransformation extends TypeMap {
+
+    var symbol: Symbol = NoSymbol
+
+    def apply(tpe: Type) = transform(NoSymbol, tpe)
+    def transform(sym: Symbol, tpe: Type): Type = {
+      symbol = sym
+      val res = mapOver(tpe)
+      symbol = NoSymbol
+      res
+    }
+
     override def mapOver(tpe: Type): Type = tpe match {
       case tpe if tpe.annotations.exists(ann => ann.tpe.typeSymbol == StorageClass) =>
-        // TODO: Specialize to the storage type in the @storage annotation
-        LongTpe
+        val annots = tpe.annotations.filter(ann => ann.tpe.typeSymbol == StorageClass)
+        if (annots.length != 1)
+          global.reporter.error(symbol.pos, s"Multiple annotations found for $symbol: ${beforeSpecialize(symbol.tpe)}")
+        val annot = annots.head
+        annot.tpe.typeArgs(0)
       case _ =>
         super.mapOver(tpe)
     }
