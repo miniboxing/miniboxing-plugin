@@ -55,5 +55,4 @@ public class MiniboxConversionsDouble {
         return (java.lang.Double)a;
     }
   }
-
 }

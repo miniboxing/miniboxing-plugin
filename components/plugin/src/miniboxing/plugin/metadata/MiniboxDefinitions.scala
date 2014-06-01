@@ -67,14 +67,22 @@ trait MiniboxDefinitions {
   }
 
   // artificially created marker methods:
+
+  def withStorage(tpar: Symbol, repr: Symbol) =
+    tpar.tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(repr.tpeHK)), Nil, Nil)
+
   //   def marker_minibox2box[T, St](t: T @storage[St]): T
   lazy val marker_minibox2box =
     newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
-      tpar => (Some(List(tpar(0).tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil))), tpar.head.tpeHK))
+      tpar => (Some(List(withStorage(tpar(0), tpar(1)))), tpar(0).tpeHK))
   //   def marker_box2minibox[T, St](t: T): T @storage[St]
   lazy val marker_box2minibox =
     newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_box2minibox"), 0L)(
-      tpar => (Some(List(tpar(0).tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil)))
+      tpar => (Some(List(tpar(0).tpeHK)), withStorage(tpar(0), tpar(1))))
+  //   def marker_minibox2minibox[T, St1, St2](t: T @storage[St1]): T @storage[St2]
+  lazy val marker_minibox2minibox =
+    newPolyMethod(3, ConversionsObjectSymbol, newTermName("marker_minibox2minibox"), 0L)(
+      tpar => (Some(List(withStorage(tpar(0), tpar(1)))), withStorage(tpar(0), tpar(2))))
 
 
   // Library:
@@ -187,6 +195,7 @@ trait MiniboxDefinitions {
   def box2minibox(repr: Symbol) = convs(repr).box2minibox
   def minibox2x(repr: Symbol) = convs(repr).minibox2x
   def x2minibox(repr: Symbol) = convs(repr).x2minibox
+  lazy val unreachableConversion = definitions.getMember(ConversionsObjectSymbol, newTermName("unreachableConversion"))
 
   // direct conversions
 

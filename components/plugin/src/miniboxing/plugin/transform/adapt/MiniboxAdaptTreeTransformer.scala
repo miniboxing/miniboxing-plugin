@@ -28,9 +28,9 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
   import global._
 
   implicit class RichType(tpe: Type) {
-    def getStorageType: Type = tpe.dealiasWiden.annotations.filter(_.tpe.typeSymbol == StorageClass) match {
-      case Nil        => assert(false, "No storage type detected?!?"); ???
-      case annot :: _ => annot.tpe.typeArgs(0)
+    def getStorageRepr: Symbol = tpe.dealiasWiden.annotations.filter(_.tpe.typeSymbol == StorageClass) match {
+      case Nil         => assert(false, "No storage type detected?!?"); ???
+      case List(annot) => annot.tpe.typeArgs(0).typeSymbol
     }
     def isStorage: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == StorageClass)
     def withStorage(store: Type): Type = tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(store)), Nil, ListMap.empty)))
@@ -109,21 +109,29 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         if (tree.isTerm) {
           if ((oldTpe.isStorage ^ newTpe.isStorage) && (!pt.isWildcard)) {
             val conversion = if (oldTpe.isStorage) marker_minibox2box else marker_box2minibox
-            val (tpe, storageType) =
+            val (tpe, repr) =
               if (oldTpe.isStorage)
-                (oldTpe.dealiasWiden.withoutStorage, oldTpe.getStorageType)
+                (oldTpe.dealiasWiden.withoutStorage, oldTpe.getStorageRepr)
               else
-                (newTpe.dealiasWiden.withoutStorage, newTpe.getStorageType)
-            val tree1 = gen.mkMethodCall(conversion, List(tpe, storageType), List(tree))
+                (newTpe.dealiasWiden.withoutStorage, newTpe.getStorageRepr)
+            val tree1 = gen.mkMethodCall(conversion, List(tpe, repr.tpeHK), List(tree))
             val tree2 = super.typed(tree1, mode, pt)
             assert(tree2.tpe != ErrorType, tree2)
             // super.adapt is automatically executed when calling super.typed
             tree2
           } else if (oldTpe.isStorage && (oldTpe.isStorage == newTpe.isStorage) && !(oldTpe <:< newTpe)) {
-            // workaround the isSubType issue with singleton types
-            // and annotated types (see mb_erasure_torture10.scala)
-            tree.tpe = newTpe
-            tree
+            val repr1 = oldTpe.getStorageRepr
+            val repr2 = newTpe.getStorageRepr
+            if (repr1 != repr2) {
+              // representation mismatch
+              val tree1 = gen.mkMethodCall(marker_minibox2minibox, List(oldTpe.dealiasWiden.withoutStorage, repr1.tpeHK, repr2.tpeHK), List(tree))
+              super.typed(tree1, mode, pt)
+            } else {
+              // workaround the isSubType issue with singleton types
+              // and annotated types (see mb_erasure_torture10.scala)
+              tree.tpe = newTpe
+              tree
+            }
           } else
             super.adapt(tree, mode, pt, original)
         } else {
@@ -146,7 +154,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(StorageClass)
               //val qual3 = super.typedQualifier(qual.setType(null), mode, tpe3)
-              val storageType = qual2.tpe.getStorageType
+              val storageType = qual2.tpe.getStorageRepr.tpeHK
               val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_minibox2box), List(tpe3, storageType), List(qual2))
               super.typed(Select(qual3, meth) setSymbol tree.symbol, mode, pt)
             } else {

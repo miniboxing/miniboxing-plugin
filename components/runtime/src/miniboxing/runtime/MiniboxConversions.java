@@ -112,4 +112,8 @@ public class MiniboxConversions {
         return (java.lang.Long)a;
     }
   }
+
+  public final static <T> T unreachableConversion(String repr1, String repr2) {
+    throw new Error("Unreachable conversion from " + repr1 + " to " + repr2 + ". Did you cast? :p");
+  }
 }

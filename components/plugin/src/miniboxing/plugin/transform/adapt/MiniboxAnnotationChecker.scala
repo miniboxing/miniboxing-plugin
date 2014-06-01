@@ -84,10 +84,11 @@ trait MiniboxAnnotationCheckers {
      */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
       if (global.phase.id > mboxAdaptPhase.id) {
-        val res = tpe1.dealiasWiden.hasAnnotation(StorageClass) == tpe2.dealiasWiden.hasAnnotation(StorageClass)
+        val res11 = tpe1.isStorage == tpe2.isStorage
+        val res12 = res11 && (!tpe1.isStorage || (tpe1.getStorageRepr == tpe2.getStorageRepr))
         val res2 = tpe1.isWildcard || tpe2.isWildcard
         // println("after: " + tpe1 + " <: " + tpe2 + " ==> " + res + " (phase = " + global.phase.name + " " + global.phase.id + "  " + mboxAdaptPhase.id + ")")
-        res || res2
+        res11 && res12 || res2
       } else {
         // println("before: " + tpe1 + " <: " + tpe2 + " ==> true" + " (phase = " + global.phase.name + "  " + global.phase.id + "  " + mboxAdaptPhase.id +  ")")
         true
@@ -101,7 +102,7 @@ trait MiniboxAnnotationCheckers {
           if (tp.isStorage)
             tp
           else {
-            val storageTypes = ts.map(_.getStorageType.typeSymbol).distinct
+            val storageTypes = ts.map(_.getStorageRepr).distinct
             assert(storageTypes.length == 1, s"More than one storage type in $ts: $storageTypes")
             tp.withStorage(storageTypes(0).tpeHK)
           }

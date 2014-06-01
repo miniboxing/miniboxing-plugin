@@ -60,19 +60,23 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   case object NoConstraint extends Constraint
 
   class CoercionExtractor {
-    def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type, Symbol)] = tree match {
+    def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type, List[Symbol])] = tree match {
       // TODO: Return the storage too
-      case Apply(TypeApply(fun, List(targ, reprTpe)), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe, reprTpe.tpe.typeSymbol))
+      case Apply(TypeApply(fun, targ :: reprTpes), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe, reprTpes.map(_.tpe.typeSymbol)))
       case _ => None
     }
   }
 
   object MiniboxToBox extends CoercionExtractor {
-    def unapply(tree: Tree): Option[(Tree, Type, Symbol)] = unapply(tree, marker_minibox2box)
+    def unapply(tree: Tree): Option[(Tree, Type, Symbol)] = unapply(tree, marker_minibox2box).map({ case (tree, tpe, List(repr)) => (tree, tpe, repr) })
   }
 
   object BoxToMinibox extends CoercionExtractor {
-    def unapply(tree: Tree): Option[(Tree, Type, Symbol)] = unapply(tree, marker_box2minibox)
+    def unapply(tree: Tree): Option[(Tree, Type, Symbol)] = unapply(tree, marker_box2minibox).map({ case (tree, tpe, List(repr)) => (tree, tpe, repr) })
+  }
+
+  object MiniboxToMinibox extends CoercionExtractor {
+    def unapply(tree: Tree): Option[(Tree, Type, Symbol, Symbol)] = unapply(tree, marker_minibox2minibox).map({ case (tree, tpe, List(repr1, repr2)) => (tree, tpe, repr1, repr2) })
   }
 
   class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
@@ -206,6 +210,11 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
                   gen.mkMethodCall(minibox2box(repr), List(targ), List(transform(tree), tags(targ.typeSymbol)))
               }
             localTyper.typed(tree1)
+
+          case MiniboxToMinibox(tree, targ, repr1, repr2) =>
+            val tree1 = gen.mkMethodCall(unreachableConversion, List(Literal(Constant(repr1.nameString)), Literal(Constant(repr2.nameString))))
+            localTyper.typed(tree1)
+
           case _ =>
             super.transform(tree0)
         }
