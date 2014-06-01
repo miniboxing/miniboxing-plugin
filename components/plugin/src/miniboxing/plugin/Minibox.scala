@@ -114,12 +114,24 @@ class Minibox(val global: Global) extends Plugin {
   val description = "specializes generic classes"
 
   lazy val components = {
-      List[PluginComponent](HijackPhase,
-                            MiniboxDuplPhase,
-                            MiniboxAdaptPhase,
-                            MiniboxSpecPhase,
-                            PreTyperPhase,
-                            PostTyperPhase)
+    if (!flag_no_logo)
+      Console.println("""
+        |     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+        |    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+        |   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+        |  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+        |  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+        |          \/          \/          \/               \/         \/ /_____/
+        | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+        |""".stripMargin)
+
+    // and here are the compiler phases miniboxing introduces:
+    List[PluginComponent](HijackPhase,
+                          MiniboxDuplPhase,
+                          MiniboxAdaptPhase,
+                          MiniboxSpecPhase,
+                          PreTyperPhase,
+                          PostTyperPhase)
   }
 
   // LDL adaptation
@@ -155,16 +167,6 @@ class Minibox(val global: Global) extends Plugin {
       else
         error("Miniboxing: Option not understood: " + option)
     }
-    if (!flag_no_logo)
-      Console.println("""
-        |     _____   .__         .__ ___.                    .__ scala-miniboxing.org
-        |    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
-        |   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
-        |  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
-        |  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
-        |          \/          \/          \/               \/         \/ /_____/
-        | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
-        |""".stripMargin)
   }
 
   override val optionsHelp: Option[String] = Some(
