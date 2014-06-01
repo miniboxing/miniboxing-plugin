@@ -55,15 +55,18 @@ trait MiniboxMetadataUtils {
 
       for (tParam <- mboxTParams)
         if (tParam.hasAnnotation(MinispecClass) || tParam.hasAnnotation(SpecializedClass))
-          envs = envs.flatMap(rest => List(Miniboxed :: rest, Boxed :: rest))
-
+          envs = envs.flatMap(rest =>
+            if (!flag_two_way)
+              List(Miniboxed(LongClass) :: rest, Boxed :: rest)
+            else
+              List(Miniboxed(LongClass) :: rest, Miniboxed(DoubleClass) :: rest, Boxed :: rest))
       envs.map((types: List[SpecInfo]) => (mboxTParams zip types).toMap)
     }
 
     def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
       clazz.typeParams.filter(_.hasFlag(MINIBOXED)).map(env) map {
-        case Boxed => AnyRefClass.tpe
-        case Miniboxed => LongClass.tpe
+        case Boxed           => AnyRefClass.tpe
+        case Miniboxed(repr) => repr.tpe
       }
   }
 
@@ -103,25 +106,22 @@ trait MiniboxMetadataUtils {
 
       val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
       val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
+        val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
           // case (2.3)
           case (p, _) if !(p hasFlag MINIBOXED) => None
-//          case (p, `UnitTpe`)    => Some((p, Miniboxed))
-//          case (p, `BooleanTpe`) => Some((p, Miniboxed))
-//          case (p, `ByteTpe`)    => Some((p, Miniboxed))
-//          case (p, `ShortTpe`)   => Some((p, Miniboxed))
-          case (p, `CharTpe`)    => Some((p, Miniboxed))
-          case (p, `IntTpe`)     => Some((p, Miniboxed))
-          case (p, `LongTpe`)    => Some((p, Miniboxed))
-          case (p, `FloatTpe`)   => Some((p, Miniboxed))
-          case (p, `DoubleTpe`)  => Some((p, Miniboxed))
+          case (p, `CharTpe`)    => Some((p, Miniboxed(LongClass)))
+          case (p, `IntTpe`)     => Some((p, Miniboxed(LongClass)))
+          case (p, `LongTpe`)    => Some((p, Miniboxed(LongClass)))
+          case (p, `FloatTpe`)   => Some((p, Miniboxed(FloatRepr)))
+          case (p, `DoubleTpe`)  => Some((p, Miniboxed(FloatRepr)))
           // case (2.1)
           // case (2.2)
           // case (2.4)
           case (p, TypeRef(_, tpar, _)) =>
             mboxedTpars.get(tpar.deSkolemize) match {
-              case Some(spec) => Some((p, spec))
-              case None       => Some((p, Boxed))
+              case Some(spec: SpecInfo) => Some((p, spec))
+              case None                 => Some((p, Boxed))
             }
         }
       }

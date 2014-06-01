@@ -33,8 +33,8 @@ trait MiniboxDefinitions {
   type PartialSpec = Map[Symbol, SpecInfo]
 
   sealed trait SpecInfo
-  case object Miniboxed extends SpecInfo
-  case object Boxed     extends SpecInfo
+  case class  Miniboxed(repr: Symbol) extends SpecInfo
+  case object Boxed                   extends SpecInfo
 
 
   // Flags and symbols:
@@ -203,22 +203,9 @@ trait MiniboxDefinitions {
   lazy val Manifest_newArray = definitions.getMember(FullManifestClass, newTermName("newArray"))
 
   def storageType(tparam: Symbol, spec: SpecInfo): Type = {
-    // TODO: Allow multiple storage types, currently hardcoded for Long
-    val storage = LongTpe
-    tparam.tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(storage)), Nil, ListMap.empty)))
+    val Miniboxed(repr) = spec
+    tparam.tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(repr.tpeHK)), Nil, ListMap.empty)))
   }
-
-//  lazy val opStorageClass = Map(
-//    mbarray_apply -> LongClass,
-//    mbarray_update -> LongClass,
-//    mbarray_length -> LongClass,
-//    mbarray_new -> LongClass,
-//    tag_hashCode -> LongClass,
-//    tag_toString -> LongClass,
-//    tag_== -> LongClass,
-//    notag_== -> LongClass,
-//    other_== -> LongClass
-//  )
 
   // filled in from outside
   def flag_two_way: Boolean

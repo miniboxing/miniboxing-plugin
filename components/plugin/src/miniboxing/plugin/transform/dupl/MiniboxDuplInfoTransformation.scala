@@ -87,7 +87,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
           // create type tags for the method's own miniboxed parameters
           val localTags =
-            for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam) == Miniboxed)
+            for (tparam <- member.typeParams if tparam.hasFlag(MINIBOXED) && pspec(tparam).isInstanceOf[Miniboxed])
               yield (newMbr.newValue(shortTypeTagName(tparam), newMbr.pos).setInfo(ByteClass.tpe), deepEnv(tparam))
           metadata.normalTypeTags(newMbr) = HashMap() ++ localTags
 
@@ -282,7 +282,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
               // step1: Create type tags
               val localTags =
-                for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed)
+                for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam).isInstanceOf[Miniboxed])
                   yield (variantMethod.newValue(shortTypeTagName(tparam), variantMethod.pos).setInfo(ByteClass.tpe), tparam)
 
               metadata.localTypeTags(variantMethod) = HashMap() ++ localTags
@@ -392,7 +392,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
       // step6: Add type tag fields for each parameter
       val typeTagMap: List[(Symbol, Symbol)] =
-        (for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam) == Miniboxed) yield {
+        (for (tparam <- stemClass.typeParams if tparam.hasFlag(MINIBOXED) && spec(tparam).isInstanceOf[Miniboxed]) yield {
           val tag =
             if (stemClass.isTrait) {
               val deferredTag = variantClass.newMethodSymbol(typeTagName(variantClass, tparam), variantClass.pos, DEFERRED).setInfo(MethodType(List(), ByteTpe))
