@@ -14,7 +14,7 @@ package miniboxing.runtime;
 
 import miniboxing.runtime.MiniboxConstants;
 
-public class MiniboxDispatch {
+public class MiniboxDispatchLong {
 
   public final static String mboxed_toString(long x, byte tag) {
     switch(tag) {
@@ -22,24 +22,20 @@ public class MiniboxDispatch {
         return Character.valueOf((char)x).toString();
       case MiniboxConstants.INT:
         return Integer.valueOf((int)x).toString();
-      case MiniboxConstants.FLOAT:
-        return Float.valueOf(Float.intBitsToFloat((int)x)).toString();
-      case MiniboxConstants.DOUBLE:
-        return Double.valueOf(Double.longBitsToDouble(x)).toString();
       default:
         return Long.valueOf(x).toString();
     }
   }
 
   public final static boolean mboxed_eqeq(long x, byte xtag, Object other) {
-    return MiniboxConversions.minibox2box(x, xtag).equals(other);
+    return MiniboxConversionsLong.minibox2box(x, xtag).equals(other);
   }
 
   public final static boolean mboxed_eqeq(long x, byte xtag, long y, byte ytag) {
     if (xtag == ytag)
       return (x == y);
     else
-      return MiniboxConversions.minibox2box(x, xtag).equals(MiniboxConversions.minibox2box(y, ytag));
+      return MiniboxConversionsLong.minibox2box(x, xtag).equals(MiniboxConversionsLong.minibox2box(y, ytag));
   }
 
   public final static boolean mboxed_eqeq(long x, long y) {
@@ -67,10 +63,6 @@ public class MiniboxDispatch {
         return Character.valueOf((char)x).hashCode();
       case MiniboxConstants.INT:
         return Integer.valueOf((int)x).hashCode();
-      case MiniboxConstants.FLOAT:
-        return Float.valueOf(Float.intBitsToFloat((int)x)).hashCode();
-      case MiniboxConstants.DOUBLE:
-        return Double.valueOf(Double.longBitsToDouble(x)).hashCode();
       default:
         return Long.valueOf(x).hashCode();
     }

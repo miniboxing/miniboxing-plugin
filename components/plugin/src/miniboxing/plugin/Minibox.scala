@@ -54,6 +54,7 @@ trait MiniboxDuplComponent extends
   def flag_stats: Boolean
   def flag_spec_no_opt: Boolean
   def flag_loader_friendly: Boolean
+  def flag_two_way: Boolean
 }
 
 /** Introduces explicit adaptations from `T` to `@storage T` and back */
@@ -87,6 +88,7 @@ trait MiniboxSpecComponent extends
   def flag_log: Boolean
   def flag_debug: Boolean
   def flag_stats: Boolean
+  def flag_two_way: Boolean
 }
 
 trait PreTyperComponent extends
@@ -130,6 +132,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_spec_no_opt = sys.props.get("miniboxing.spec.no-opt").isDefined
   var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
   var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
+  var flag_two_way = sys.props.get("miniboxing.two-way").isDefined
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -147,6 +150,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_loader_friendly = true
       else if (option.toLowerCase() == "no-logo")
         flag_no_logo = true
+      else if (option.toLowerCase() == "two-way")
+        flag_two_way = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
@@ -169,7 +174,8 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing\n" +
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
     s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n" +
-    s"  -P:${name}:no-logo           skip the miniboxing logo display)")
+    s"  -P:${name}:no-logo           skip the miniboxing logo display)" +
+    s"  -P:${name}:two-way           generate variants for long and double instead of just double)")
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -196,6 +202,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_stats = Minibox.this.flag_stats
     def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
     def flag_loader_friendly = Minibox.this.flag_loader_friendly
+    def flag_two_way = Minibox.this.flag_two_way
 
     var mboxDuplPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
@@ -239,6 +246,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_log = Minibox.this.flag_log
     def flag_debug = Minibox.this.flag_debug
     def flag_stats = Minibox.this.flag_stats
+    def flag_two_way = Minibox.this.flag_two_way
 
     var mboxSpecPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
