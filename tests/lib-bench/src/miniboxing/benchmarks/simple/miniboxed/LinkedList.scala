@@ -49,7 +49,7 @@ trait Traversable[@miniboxed +T] {
 
   def map[@miniboxed U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
 
-  def sum[B >: T](implicit n : Numeric[B]): B = {
+  def sum[@miniboxed B >: T](implicit n : Numeric[B]): B = {
     var buff = n.zero
     foreach(new Function1[B,Unit] { def apply(b: B): Unit = buff = n.plus(buff,b) })
     buff
