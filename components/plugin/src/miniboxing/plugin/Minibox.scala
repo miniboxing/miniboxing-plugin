@@ -184,6 +184,7 @@ class Minibox(val global: Global) extends Plugin {
     val phaseName = "hijacker"
 
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
+    def flag_two_way = Minibox.this.flag_two_way
 
     // no change
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {

@@ -66,53 +66,129 @@ trait MiniboxDefinitions {
     StorageSym
   }
 
-
-  // array ops
-  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")
-  lazy val mbarray_update = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_update_minibox"))
-  lazy val mbarray_apply  = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_apply_minibox"))
-  lazy val mbarray_length = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_length"))
-  lazy val mbarray_new    = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_new"))
-
-  // Any ops
-  lazy val TagDipatchObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatch")
-  lazy val tag_hashCode = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_hashCode"))
-  lazy val other_==     = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_other"))
-  lazy val tag_==       = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_tag"))
-  lazy val notag_==     = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_eqeq_notag"))
-  lazy val tag_toString = definitions.getMember(TagDipatchObjectSymbol, newTermName("mboxed_toString"))
-
-  // conversions
-  lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversions")
-  // type tag conversions
-  lazy val minibox2box        = definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2box"))
-  lazy val box2minibox        = definitions.getMember(ConversionsObjectSymbol, newTermName("box2minibox_tt"))
-
-  // artificially created marker methods
-  // def marker_minibox2box[T, St](t: T @storage[St]): T
-  // def marker_box2minibox[T, St](t: T): T @storage[St]
+  // artificially created marker methods:
+  //   def marker_minibox2box[T, St](t: T @storage[St]): T
   lazy val marker_minibox2box =
     newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_minibox2box"), 0L)(
       tpar => (Some(List(tpar(0).tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil))), tpar.head.tpeHK))
+  //   def marker_box2minibox[T, St](t: T): T @storage[St]
   lazy val marker_box2minibox =
     newPolyMethod(2, ConversionsObjectSymbol, newTermName("marker_box2minibox"), 0L)(
       tpar => (Some(List(tpar(0).tpeHK)), tpar.head.tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(tpar(1).tpeHK)), Nil, Nil)))
 
-  // direct conversions
-  lazy val x2minibox = Map[Symbol, Symbol](
+
+  // Library:
+
+  // array ops
+  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")
+  trait array {
+    def owner: Symbol
+    lazy val mbarray_update  = definitions.getMember(owner, newTermName("mbarray_update_minibox"))
+    lazy val mbarray_apply   = definitions.getMember(owner, newTermName("mbarray_apply_minibox"))
+  }
+
+  object array_1way        extends array { lazy val owner  = MiniboxArrayObjectSymbol }
+  object array_2way_long   extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArrayLong") }
+  object array_2way_double extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArrayDouble") }
+
+  def array(repr: Symbol): array = repr match {
+    case _ if !flag_two_way => array_1way
+    case LongClass          => array_2way_long
+    case DoubleClass        => array_2way_double
+  }
+
+  lazy val mbarray_length  = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_length"))
+  lazy val mbarray_new     = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_new"))
+  def mbarray_update(repr: Symbol) = array(repr).mbarray_update
+  def mbarray_apply(repr: Symbol)  = array(repr).mbarray_apply
+
+  // Any ops
+  trait ops {
+    def owner: Symbol
+    lazy val tag_hashCode = definitions.getMember(owner, newTermName("mboxed_hashCode"))
+    lazy val other_==     = definitions.getMember(owner, newTermName("mboxed_eqeq_other"))
+    lazy val tag_==       = definitions.getMember(owner, newTermName("mboxed_eqeq_tag"))
+    lazy val notag_==     = definitions.getMember(owner, newTermName("mboxed_eqeq_notag"))
+    lazy val tag_toString = definitions.getMember(owner, newTermName("mboxed_toString"))
+  }
+  object ops_1way        extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatch") }
+  object ops_2way_long   extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatchLong") }
+  object ops_2way_double extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatchDouble")}
+
+  def ops(repr: Symbol): ops = repr match {
+    case _ if !flag_two_way => ops_1way
+    case LongClass          => ops_2way_long
+    case DoubleClass        => ops_2way_double
+  }
+
+  def tag_hashCode(repr: Symbol) = ops(repr).tag_hashCode
+  def other_==(repr: Symbol)     = ops(repr).other_==
+  def tag_==(repr: Symbol)       = ops(repr).tag_==
+  def notag_==(repr: Symbol)     = ops(repr).notag_==
+  def tag_toString(repr: Symbol) = ops(repr).tag_toString
+
+  // conversions
+  lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversions")
+  lazy val ConversionsObjectLongSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversionsLong")
+  lazy val ConversionsObjectDoubleSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversionsDouble")
+  trait convs {
+    def owner: Symbol
+    lazy val box2minibox = definitions.getMember(owner, newTermName("box2minibox_tt"))
+    lazy val minibox2box = definitions.getMember(owner, newTermName("minibox2box"))
+    def minibox2x: Map[Symbol, Symbol]
+    def x2minibox: Map[Symbol, Symbol]
+  }
+  def x2minibox_long: Map[Symbol, Symbol] =
+    Map(
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
       IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("int2minibox")),
-      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox")),
-      DoubleClass ->  definitions.getMember(ConversionsObjectSymbol, newTermName("double2minibox")),
-      FloatClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("float2minibox"))
+      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox"))
     )
-  lazy val minibox2x = Map[Symbol, Symbol](
+  def minibox2x_long: Map[Symbol, Symbol] =
+    Map(
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
       IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2int")),
-      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long")),
-      DoubleClass ->  definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2double")),
-      FloatClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2float"))
+      LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long"))
     )
+  def x2minibox_double(owner: Symbol): Map[Symbol, Symbol] =
+    Map(
+      DoubleClass ->  definitions.getMember(owner, newTermName("double2minibox")),
+      FloatClass ->   definitions.getMember(owner, newTermName("float2minibox"))
+    )
+  def minibox2x_double(owner: Symbol): Map[Symbol, Symbol] =
+    Map(
+      DoubleClass ->  definitions.getMember(owner, newTermName("minibox2double")),
+      FloatClass ->   definitions.getMember(owner, newTermName("minibox2float"))
+    )
+
+  object convs_1way extends convs {
+    def owner = ConversionsObjectSymbol
+    lazy val minibox2x = minibox2x_long ++ minibox2x_double(owner)
+    lazy val x2minibox = x2minibox_long ++ x2minibox_double(owner)
+  }
+  object convs_2way_long extends convs {
+    def owner = ConversionsObjectLongSymbol
+    lazy val minibox2x = minibox2x_long
+    lazy val x2minibox = x2minibox_long
+  }
+  object convs_2way_double extends convs {
+    def owner = ConversionsObjectDoubleSymbol
+    lazy val minibox2x = minibox2x_double(owner)
+    lazy val x2minibox = x2minibox_double(owner)
+  }
+
+  def convs(repr: Symbol): convs =  repr match {
+    case _ if !flag_two_way => convs_1way
+    case LongClass          => convs_2way_long
+    case DoubleClass        => convs_2way_double
+  }
+
+  def minibox2box(repr: Symbol) = convs(repr).minibox2box
+  def box2minibox(repr: Symbol) = convs(repr).box2minibox
+  def minibox2x(repr: Symbol) = convs(repr).minibox2x
+  def x2minibox(repr: Symbol) = convs(repr).x2minibox
+
+  // direct conversions
 
   lazy val standardTypeTagTrees = Map(
       CharClass ->    Literal(Constant(CHAR)),
@@ -132,15 +208,18 @@ trait MiniboxDefinitions {
     tparam.tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(storage)), Nil, ListMap.empty)))
   }
 
-  lazy val opStorageClass = Map(
-    mbarray_apply -> LongClass,
-    mbarray_update -> LongClass,
-    mbarray_length -> LongClass,
-    mbarray_new -> LongClass,
-    tag_hashCode -> LongClass,
-    tag_toString -> LongClass,
-    tag_== -> LongClass,
-    notag_== -> LongClass,
-    other_== -> LongClass
-  )
+//  lazy val opStorageClass = Map(
+//    mbarray_apply -> LongClass,
+//    mbarray_update -> LongClass,
+//    mbarray_length -> LongClass,
+//    mbarray_new -> LongClass,
+//    tag_hashCode -> LongClass,
+//    tag_toString -> LongClass,
+//    tag_== -> LongClass,
+//    notag_== -> LongClass,
+//    other_== -> LongClass
+//  )
+
+  // filled in from outside
+  def flag_two_way: Boolean
 }

@@ -25,11 +25,11 @@ public class MiniboxConversionsDouble {
     return l;
   }
 
-  public final static double float2minibox_double(float f) {
+  public final static double float2minibox(float f) {
     return f;
   }
 
-  public final static double double2minibox_double(double f) {
+  public final static double double2minibox(double f) {
     return f;
   }
 
