@@ -106,7 +106,8 @@ object MiniboxingBuild extends Build {
   )
 
   val runtimeDeps = Seq(
-    scalacOptions ++= Seq("-optimize", "-Yinline-warnings")
+    scalacOptions ++= Seq("-optimize", "-Yinline-warnings"),
+    libraryDependencies += "com.github.scala-blitz" %% "scala-blitz" % "1.0-M2"
   )
 
   val pluginDeps = Seq(
@@ -182,5 +183,5 @@ object MiniboxingBuild extends Build {
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
-  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter ++ pluginCompilationDeps ++ twoWayCompilationDeps) dependsOn (plugin, runtime)
+  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter ++ pluginCompilationDeps ++ twoWayCompilationDeps ++ runtimeDeps) dependsOn (plugin, runtime)
 }
