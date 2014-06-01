@@ -23,10 +23,23 @@ trait Builder[-T, +To] {
 
 class ListBuilder[T] extends Builder[T, List[T]] {
 
-  private var head: List[T] = Nil
+  private var start: List[T] = Nil
+  private var last0: List[T] = Nil
+  private var len: Int = 0
 
-  def +=(e1: T): Unit = head = e1 :: head
-  def finalise: List[T] = head.reverse
+  def += (x: T): Unit = {
+    if (start.isEmpty) {
+      last0 = new :: (x, Nil)
+      start = last0
+    } else {
+      val last1 = last0.asInstanceOf[::[T]]
+      last0 = new :: (x, Nil)
+      last1.tail = last0
+    }
+    len += 1
+  }
+
+  def finalise: List[T] = start
 }
 
 
@@ -49,13 +62,13 @@ trait Traversable[+T] {
 
   def map[U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
 
-  def sum[B >: T](implicit n : Numeric[B]): B = {
-    var buff = n.zero
-    foreach(new Function1[B,Unit] { def apply(b: B): Unit = buff = n.plus(buff,b) })
-    buff
+  def sum[B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
+    new Function1[Tuple2[B, T], B] { def apply(b: Tuple2[B, T]): B = n.plus(b._1, b._2) }
   }
 
   def foreach[U](f: Function1[T, U]): Unit
+
+  def foldLeft[B](z: B)(op: Function1[Tuple2[B, T], B]): B
 }
 
 
@@ -64,12 +77,11 @@ trait Traversable[+T] {
 trait Iterable[+T] extends Traversable[T] {
   def iterator: Iterator[T]
 
-  def zipTo[U, To](that: Iterable[U])(b: Builder[Tuple2[T, U], To]): To = {
+  def zipTo[B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
     val these = this.iterator
     val those = that.iterator
-    while (these.hasNext() && those.hasNext()) {
-      b += new Tuple2[T,U](these.next(),those.next())
-    }
+    while (these.hasNext && those.hasNext)
+      b += (new Tuple2(these.next, those.next))
     b.finalise
   }
 
@@ -85,9 +97,38 @@ trait Iterator[+T] {
 }
 
 
+trait LinearSeqOptimized[+A] extends Iterable[A] {
+
+  def isEmpty: Boolean
+
+  def head: A
+
+  def tail: LinearSeqOptimized[A]
+
+  override /*IterableLike*/
+  def foreach[B](f: Function1[A, B]) {
+    var these = this
+    while (!these.isEmpty) {
+      f(these.head)
+      these = these.tail
+    }
+  }
+
+  override /*TraversableLike*/
+  def foldLeft[B](z: B)(f: Function1[Tuple2[B, A], B]): B = {
+    var acc = z
+    var these = this
+    while (!these.isEmpty) {
+      acc = f(new Tuple2(acc, these.head))
+      these = these.tail
+    }
+    acc
+  }
+}
+
 
 // List
-abstract class List[+T] extends Iterable[T] {
+abstract class List[+T] extends Traversable[T] with Iterable[T] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
     var current = List.this
@@ -98,9 +139,16 @@ abstract class List[+T] extends Iterable[T] {
       t
     }
   }
+
+  def isEmpty: Boolean
+
+  @inline override final
   def foreach[U](f: Function1[T, U]) {
-    val it = iterator
-    while (it.hasNext) f(it.next())
+    var these = this
+    while (!these.isEmpty) {
+      f(these.head)
+      these = these.tail
+    }
   }
 
   def head: T
@@ -117,8 +165,10 @@ abstract class List[+T] extends Iterable[T] {
   }
 }
 
-case class ::[T](head: T, tail: List[T]) extends List[T] {
+case class ::[T](head: T, var tail: List[T]) extends List[T] {
   def size = 1 + tail.size
+
+  def isEmpty: Boolean = false
 
   override def toString = head.toString + " :: " + tail.toString
 }
@@ -128,6 +178,8 @@ case object Nil extends List[Nothing] {
   def tail = throw new NoSuchElementException("tail of empty list")
 
   def size = 0
+
+  def isEmpty: Boolean = true
 
   override def toString = "Nil"
 }

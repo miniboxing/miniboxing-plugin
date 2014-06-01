@@ -23,17 +23,19 @@ class TweakedPerfomanceTest extends PerformanceTest {
 
   @transient lazy val executor = LocalExecutor.apply( //SeparateJvmsExecutor(
     Executor.Warmer.Default(),
-    Aggregator.complete(Aggregator.average),
+    Aggregator.average,
     new Executor.Measurer.Default
   )
 
   def persistor = Persistor.None
 
-  val sizes = Gen.range("size")(100000, 500000, 100000)
+  val sizes = Gen.range("size")(100000, 300000, 100000)
 
   def report(bench: String) =
     println(s"Starting $bench benchmarks. Lay back, it might take a few minutes to stabilize...")
 }
+
+
 
 object MiniboxedBenchmark extends TweakedPerfomanceTest {
 
@@ -216,7 +218,7 @@ object SpecializedBenchmark extends TweakedPerfomanceTest {
     def apply(x: Int): Double = step*x + zero
   }
 
-  report("generic")
+  report("specialized")
 
   var listx: List[Double] = Nil
   var listy: List[Double] = Nil
