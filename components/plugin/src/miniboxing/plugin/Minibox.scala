@@ -114,7 +114,8 @@ class Minibox(val global: Global) extends Plugin {
   val description = "specializes generic classes"
 
   lazy val components = {
-    if (!flag_no_logo)
+    if (!flag_no_logo) {
+      val twoWay = if (flag_two_way) " 2-way active.\n" else "\n"
       Console.println("""
         |     _____   .__         .__ ___.                    .__ scala-miniboxing.org
         |    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
@@ -123,7 +124,8 @@ class Minibox(val global: Global) extends Plugin {
         |  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
         |          \/          \/          \/               \/         \/ /_____/
         | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
-        |""".stripMargin)
+        | Developed and maintained by Vlad Ureche <vlad.ureche@epfl.ch>.""".stripMargin + twoWay)
+    }
 
     // and here are the compiler phases miniboxing introduces:
     List[PluginComponent](HijackPhase,

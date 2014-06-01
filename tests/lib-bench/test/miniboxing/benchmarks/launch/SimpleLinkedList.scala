@@ -63,21 +63,25 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
 
   report("miniboxed")
 
+  var listx: List[Double] = Nil
+  var listy: List[Double] = Nil
+
   // Method approximates func with the Least Squares Method
   //   approximation function = m*x + b
   performance of this.getClass.getSimpleName in {
     measure method "Least Squares Method with List[Double]" in {
-      using(sizes) in {
+      using(sizes) setUp {
         size =>
-        // generates random points from original function
-        var listx: List[Double] = Nil
-        var listy: List[Double] = Nil
-        var i = 0
-        while (i < size) {
-          listx = (i + rand) :: i + rand :: listx
-          listy = (func(i) + rand) :: func(i) + rand :: listy
-          i += 1
-        }
+          listx = Nil
+          listy = Nil
+          var i = 0
+          while (i < size) {
+            listx = (i + rand) :: i + rand :: listx
+            listy = (func(i) + rand) :: func(i) + rand :: listy
+            i += 1
+          }
+      } in {
+        size =>
 
         val listxy = listx.zip(listy)
 
@@ -135,21 +139,25 @@ object GenericBenchmark extends TweakedPerfomanceTest {
 
   report("generic")
 
+  var listx: List[Double] = Nil
+  var listy: List[Double] = Nil
+
   // Method approximates func with the Least Squares Method
   //   approximation function = m*x + b
   performance of this.getClass.getSimpleName in {
     measure method "Least Squares Method with List[Double]" in {
-      using(sizes) in {
+      using(sizes) setUp {
         size =>
-        // generates random points from original function
-        var listx: List[Double] = Nil
-        var listy: List[Double] = Nil
-        var i = 0
-        while (i < size) {
-          listx = (i + rand) :: i + rand :: listx
-          listy = (func(i) + rand) :: func(i) + rand :: listy
-          i += 1
-        }
+          listx = Nil
+          listy = Nil
+          var i = 0
+          while (i < size) {
+            listx = (i + rand) :: i + rand :: listx
+            listy = (func(i) + rand) :: func(i) + rand :: listy
+            i += 1
+          }
+      } in {
+        size =>
 
         val listxy = listx.zip(listy)
 
