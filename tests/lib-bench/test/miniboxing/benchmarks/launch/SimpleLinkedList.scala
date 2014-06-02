@@ -21,9 +21,9 @@ trait TestConfiguration {
 
   val sizes = {
     Gen.range("size")(from = 50000, upto = 1000000, hop = 50000)
-    Gen.range("size")(from = 500000, upto = 5000000, hop = 500000)
+    Gen.range("size")(from = 500000, upto = 500000, hop = 500000)
   }
-  val tests = List(miniboxed, specialized, generic, library)
+  val tests = List(specialized) // miniboxed, specialized, generic, library)
 
   def step = 5.0
   def zero = 3.0
@@ -98,6 +98,7 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
       measure method "Least Squares Method with List[Double]" in {
         using(sizes) setUp {
           size =>
+            System.gc()
             val random = new scala.util.Random(0)
             // Random between (-1.0, 1.0), mean = 0
             def rand = random.nextDouble - random.nextDouble
@@ -172,6 +173,7 @@ object GenericBenchmark extends TweakedPerfomanceTest {
       measure method "Least Squares Method with List[Double]" in {
         using(sizes) setUp {
           size =>
+            System.gc()
             val random = new scala.util.Random(0)
             // Random between (-1.0, 1.0), mean = 0
             def rand = random.nextDouble - random.nextDouble
@@ -246,6 +248,7 @@ object SpecializedBenchmark extends TweakedPerfomanceTest {
       measure method "Least Squares Method with List[Double]" in {
         using(sizes) setUp {
           size =>
+            System.gc()
             val random = new scala.util.Random(0)
             // Random between (-1.0, 1.0), mean = 0
             def rand = random.nextDouble - random.nextDouble
@@ -313,6 +316,7 @@ object LibraryGenericBenchmark extends TweakedPerfomanceTest {
       measure method "Least Squares Method with List[Double]" in {
         using(sizes) setUp {
           size =>
+            System.gc()
             val random = new scala.util.Random(0)
             // Random between (-1.0, 1.0), mean = 0
             def rand = random.nextDouble - random.nextDouble
@@ -371,6 +375,7 @@ object LibraryGenericBenchmark extends TweakedPerfomanceTest {
 //      measure method "Least Squares Method with List[Double]" in {
 //        using(sizes) setUp {
 //          size =>
+//            System.gc()
 //            val random = new scala.util.Random(0)
 //            // Random between (-1.0, 1.0), mean = 0
 //            def rand = random.nextDouble - random.nextDouble
