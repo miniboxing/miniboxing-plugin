@@ -181,6 +181,9 @@ trait MiniboxMetadata {
       normalization.map({ case (tparam, spec) => (localTParam(tparam), spec)})
     }
 
+    def memberHasOverloads(stem: Symbol): Boolean =
+      memberOverloads.get(stem).map(_.size).getOrElse(1) > 1
+
     // Normalizations:
     def setNormalStem(variant: Symbol, stem: Symbol) = {
       assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
@@ -204,6 +207,9 @@ trait MiniboxMetadata {
       val normalization = metadata.normalSpecialization.getOrElse(sym, Map.empty)
       normalization.map({ case (tparam, spec) => (localTParam(tparam), spec)})
     }
+
+    def memberHasNormalizations(stem: Symbol): Boolean =
+      normalOverloads.get(stem).map(_.size).getOrElse(1) > 1
   }
 }
 

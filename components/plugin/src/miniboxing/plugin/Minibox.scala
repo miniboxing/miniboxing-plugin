@@ -117,7 +117,7 @@ class Minibox(val global: Global) extends Plugin {
     if (!flag_no_logo) {
       val twoWay = if (flag_two_way) " 2-way active.\n" else "\n"
       Console.println("""
-        |     _____   .__         .__ ____.                    .__ scala-miniboxing.org
+        |     _____   .__         .__ ____.                     .__ scala-miniboxing.org
         |    /     \  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
         |   /  \ /  \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
         |  /    Y    \|  ||   |  \|  | |  \_\ \(  (_)  ) >    < |  ||   |  \(  /_/  )

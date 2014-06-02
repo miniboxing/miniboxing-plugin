@@ -1,0 +1,20 @@
+newSource1.scala:4: warning: Side-effecting constructor statement will not be specializedin miniboxed class/trait A.
+This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
+  println("we want a warning for this!")
+         ^
+newSource1.scala:8: warning: Side-effecting constructor statement will not be specializedin miniboxed class/trait C.
+This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
+  println(new A(t).getClass())
+         ^
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_L
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_L
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_L
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_J
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_D
+we want a warning for this!
+class miniboxing.tests.compile.bug64.workaround.A_L

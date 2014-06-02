@@ -177,11 +177,16 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
                   None
                 case _: DefTree =>
                   None
+                // the following two cases are here to guard against the warning in the workaround for bug #64:
+                case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == sym && !metadata.memberHasOverloads(app.symbol) =>
+                  Some(app)
+                case app @ TypeApply(Apply(Select(ths: This, _), Nil), _) if !metadata.memberHasOverloads(app.symbol) && !metadata.memberHasNormalizations(app.symbol) =>
+                  Some(app)
                 case other if !other.isInstanceOf[DefTree] =>
                   if (announce) {
-                    unit.warning(other.pos, "Side-effecting constructor statement will not be specialized " +
-                        "in miniboxing annotated class/trait " + tree.symbol.enclClass.name +
-                        ". (internal tree: " + other + ")")
+                    unit.warning(other.pos,
+                        s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
+                            |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
                     announce = false
                   }
                   Some(other)

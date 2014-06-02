@@ -1,4 +1,5 @@
-newSource1.scala:5: warning: Side-effecting constructor statement will not be specialized in miniboxing annotated class/trait C. (internal tree: C.this.t_=(C.this.t2()))
+newSource1.scala:5: warning: Side-effecting constructor statement will not be specializedin miniboxed class/trait C.
+This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
   t = t2
     ^
 [Now checking: minibox-dupl]
