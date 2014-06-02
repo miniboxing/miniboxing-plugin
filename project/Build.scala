@@ -128,8 +128,8 @@ object MiniboxingBuild extends Build {
     val scalaMeterFramework = new TestFramework("org.scalameter.ScalaMeterFramework")
     Seq(
       libraryDependencies ++= scalaMeter, 
-      testFrameworks += scalaMeterFramework,
-      testOptions in ThisBuild += Tests.Argument(scalaMeterFramework, "-silent")
+      testFrameworks += scalaMeterFramework
+      // testOptions in ThisBuild += Tests.Argument(scalaMeterFramework, "-silent")
     )
   }
 

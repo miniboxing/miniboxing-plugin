@@ -2,12 +2,46 @@ package miniboxing
 package benchmarks
 package launch
 
-import org.scalameter.CurveData
+import org.scalameter.KeyValue
 import org.scalameter.api._
+import org.scalameter.CurveData
 import org.scalameter.utils.Tree
 import org.scalameter.execution.LocalExecutor
+import org.scalameter.Executor.Measurer
+import org.scalameter.Key
 
-class TweakedPerfomanceTest extends PerformanceTest {
+trait TestConfiguration {
+
+  // Benchmarks to run
+  object miniboxed
+  object specialized
+  object generic
+  object library
+  object scalablitz
+
+  val sizes = {
+    Gen.range("size")(from = 50000, upto = 1000000, hop = 50000)
+    Gen.range("size")(from = 500000, upto = 5000000, hop = 500000)
+  }
+  val tests = List(miniboxed, specialized, generic, library)
+
+  def step = 5.0
+  def zero = 3.0
+
+  def testSettings =
+    Seq[KeyValue](
+      exec.benchRuns -> 20,
+      exec.minWarmupRuns -> 10,
+      exec.minWarmupRuns -> 20,
+      exec.independentSamples -> 10,
+      exec.outliers.suspectPercent -> 50,
+      exec.jvmflags -> "-Xmx16g -Xms16g  -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA"
+    )
+
+  def ignoreRunsWithGC = true
+}
+
+trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
 
   @transient lazy val reporter = new LoggingReporter {
 
@@ -23,27 +57,20 @@ class TweakedPerfomanceTest extends PerformanceTest {
 
   @transient lazy val executor = SeparateJvmsExecutor(
     Executor.Warmer.Default(),
-    Aggregator.average,
+    Aggregator.median,
     new Executor.Measurer.Default
   )
+
+  def measurer: Measurer =
+    if (ignoreRunsWithGC)
+      new Measurer.IgnoringGC with Measurer.OutlierElimination with Measurer.RelativeNoise
+    else
+      new Measurer.Default with Measurer.OutlierElimination with Measurer.RelativeNoise
 
   def persistor = Persistor.None
 
   def report(bench: String) =
     println(s"Starting $bench benchmarks. Lay back, it might take a few minutes to stabilize...")
-
-  // Benchmarks to run
-  object miniboxed
-  object specialized
-  object generic
-  object library
-  object scalablitz
-0
-  val sizes = Gen.range("size")(50000, 5000000, 500000)
-  val tests = List(miniboxed, specialized, generic, library)
-
-  def step = 5.0
-  def zero = 3.0
 }
 
 
@@ -87,9 +114,7 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
               i += 1
             }
         } config (
-          exec.benchRuns -> 20,
-          exec.minWarmupRuns -> 10,
-          exec.independentSamples -> 5
+            testSettings: _*
         ) in {
           size =>
 
@@ -163,9 +188,7 @@ object GenericBenchmark extends TweakedPerfomanceTest {
               i += 1
             }
         } config (
-          exec.benchRuns -> 20,
-          exec.minWarmupRuns -> 10,
-          exec.independentSamples -> 5
+            testSettings: _*
         ) in {
           size =>
 
@@ -239,9 +262,7 @@ object SpecializedBenchmark extends TweakedPerfomanceTest {
               i += 1
             }
         } config (
-          exec.benchRuns -> 20,
-          exec.minWarmupRuns -> 10,
-          exec.independentSamples -> 5
+            testSettings: _*
         ) in {
           size =>
 
@@ -308,9 +329,7 @@ object LibraryGenericBenchmark extends TweakedPerfomanceTest {
               i += 1
             }
         } config (
-          exec.benchRuns -> 20,
-          exec.minWarmupRuns -> 10,
-          exec.independentSamples -> 5
+            testSettings: _*
         ) in {
           size =>
 
@@ -368,9 +387,7 @@ object LibraryGenericBenchmark extends TweakedPerfomanceTest {
 //              i += 1
 //            }
 //        } config (
-//          exec.benchRuns -> 20,
-//          exec.minWarmupRuns -> 10,
-//          exec.independentSamples -> 5
+//            testSettings: _*
 //        ) in {
 //          size =>
 //          import scala.collection.optimizer._
