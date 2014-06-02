@@ -1,12 +1,14 @@
 package miniboxing.benchmarks.simple.specialized
 
 // Function
-// NOTE: We don't want specialization to generate 100 / 1000 classes here:
-trait Function1[@specialized(Double) -T, @specialized(Double) +S] {
+// NOTE: We don't want specialization to generate 100 / 1000 classes here,
+// but otherwise it simply crashes with an AbstractMethodError - the bytecode
+// it generates is probably missing one or more methods
+trait Function1[@specialized -T, @specialized +S] {
   def apply(t: T): S
 }
 
-trait Function2[@specialized(Double) -T1, @specialized(Double) -T2, @specialized(Double) +R] {
+trait Function2[@specialized -T1, @specialized -T2, @specialized +R] {
   def apply(t1: T1, t2: T2): R
 }
 
