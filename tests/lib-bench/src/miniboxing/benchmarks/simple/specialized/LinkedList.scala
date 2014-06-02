@@ -1,8 +1,13 @@
 package miniboxing.benchmarks.simple.specialized
 
 // Function
-trait Function1[@specialized -T, @specialized +S] {
+// NOTE: We don't want specialization to generate 100 / 1000 classes here:
+trait Function1[@specialized(Double) -T, @specialized(Double) +S] {
   def apply(t: T): S
+}
+
+trait Function2[@specialized(Double) -T1, @specialized(Double) -T2, @specialized(Double) +R] {
+  def apply(t1: T1, t2: T2): R
 }
 
 
@@ -63,12 +68,12 @@ trait Traversable[@specialized +T] {
   def map[@specialized U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
 
   def sum[@specialized B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
-    new Function1[Tuple2[B, T], B] { def apply(b: Tuple2[B, T]): B = n.plus(b._1, b._2) }
+    new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
   }
 
   def foreach[@specialized U](f: Function1[T, U]): Unit
 
-  def foldLeft[@specialized B](z: B)(op: Function1[Tuple2[B, T], B]): B
+  def foldLeft[@specialized B](z: B)(op: Function2[B, T, B]): B
 }
 
 
@@ -115,11 +120,11 @@ trait LinearSeqOptimized[@specialized +A] extends Iterable[A] {
   }
 
   override /*TraversableLike*/
-  def foldLeft[@specialized B](z: B)(f: Function1[Tuple2[B, A], B]): B = {
+  def foldLeft[@specialized B](z: B)(f: Function2[B, A, B]): B = {
     var acc = z
     var these = this
     while (!these.isEmpty) {
-      acc = f(new Tuple2(acc, these.head))
+      acc = f(acc, these.head)
       these = these.tail
     }
     acc
@@ -128,6 +133,7 @@ trait LinearSeqOptimized[@specialized +A] extends Iterable[A] {
 
 
 // List
+// NOTE: For specialization to work, List needs to be a trait instead of an abstract class
 trait List[@specialized +T] extends Traversable[T] with Iterable[T] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
@@ -183,4 +189,3 @@ case object Nil extends List[Nothing] {
 
   override def toString = "Nil"
 }
-

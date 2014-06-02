@@ -1,8 +1,12 @@
 package miniboxing.benchmarks.simple.generic
 
 // Function
-trait Function1[-T, +S] {
-  def apply(t: T): S
+trait Function1[-T, +R] {
+  def apply(t: T): R
+}
+
+trait Function2[-T1, -T2, +R] {
+  def apply(t1: T1, t2: T2): R
 }
 
 
@@ -63,12 +67,12 @@ trait Traversable[+T] {
   def map[U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
 
   def sum[B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
-    new Function1[Tuple2[B, T], B] { def apply(b: Tuple2[B, T]): B = n.plus(b._1, b._2) }
+    new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
   }
 
   def foreach[U](f: Function1[T, U]): Unit
 
-  def foldLeft[B](z: B)(op: Function1[Tuple2[B, T], B]): B
+  def foldLeft[B](z: B)(op: Function2[B, T, B]): B
 }
 
 
@@ -115,11 +119,11 @@ trait LinearSeqOptimized[+A] extends Iterable[A] {
   }
 
   override /*TraversableLike*/
-  def foldLeft[B](z: B)(f: Function1[Tuple2[B, A], B]): B = {
+  def foldLeft[B](z: B)(f: Function2[B, A, B]): B = {
     var acc = z
     var these = this
     while (!these.isEmpty) {
-      acc = f(new Tuple2(acc, these.head))
+      acc = f(acc, these.head)
       these = these.tail
     }
     acc
