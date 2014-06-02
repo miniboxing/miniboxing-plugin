@@ -30,5 +30,6 @@ trait MiniboxMetadataAddons {
       beforeMiniboxDupl(sym.info) // make sure the annotation hijacker updated it
       sym hasAnnotation MinispecClass
     }
+    def isField = sym.isValue && !sym.isMethod
   }
 }

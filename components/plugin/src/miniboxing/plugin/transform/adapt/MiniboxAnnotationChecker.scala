@@ -83,7 +83,7 @@ trait MiniboxAnnotationCheckers {
      *  LDL FTW -- Boil frog, boil!
      */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
-      if (global.phase.id > mboxAdaptPhase.id) {
+      if (mboxAdaptPhase != null && global.phase.id > mboxAdaptPhase.id) {
         val res11 = tpe1.isStorage == tpe2.isStorage
         val res12 = res11 && (!tpe1.isStorage || (tpe1.getStorageRepr == tpe2.getStorageRepr))
         val res2 = tpe1.isWildcard || tpe2.isWildcard

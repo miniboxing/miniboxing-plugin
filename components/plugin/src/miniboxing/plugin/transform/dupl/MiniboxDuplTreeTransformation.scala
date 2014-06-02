@@ -296,8 +296,11 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           }
 
         // Error on accessing non-existing fields
-        case sel@Select(ths, field) if (ths.symbol ne null) && (ths.symbol != NoSymbol) && { afterMiniboxDupl(ths.symbol.info); metadata.isClassStem(ths.tpe.typeSymbol) && (sel.symbol.isValue && !sel.symbol.isMethod) } =>
-          unit.error(sel.pos, "The program is accessing field " + sel.symbol.name + " of miniboxed class (or trait) " + ths.symbol.name + ", a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate getters (and possibly setters) by using val (or var) without the \"private[this]\" qualifier: " + (if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\".")
+        case sel@Select(ths, field) if isMiniboxedFieldInStem(sel) =>
+          unit.error(sel.pos,
+              s"""|The program is accessing field ${sel.symbol.name} of miniboxed class/trait ${ths.symbol.name}, a pattern which becomes invalid after the
+                  |miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier:
+                  |  ${(if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\"."}""".stripMargin)
           localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         // rewiring new class construction
@@ -685,6 +688,18 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       debuglog("now typing: " + tree1 + " in " + tree.symbol.owner.fullName)
 
       duplicateBody(tree1, origMember)
+    }
+
+    private def isMiniboxedFieldInStem(sel: Select) = sel match {
+      case Select(ths, field) if ths.hasSymbol =>
+        afterMiniboxDupl(ths.symbol.info)
+        val res = metadata.isClassStem(ths.tpe.typeSymbol) &&
+          sel.symbol.isField &&
+          sel.symbol.tpe.typeSymbol.isTypeParameterOrSkolem &&
+          sel.symbol.tpe.typeSymbol.hasFlag(MINIBOXED)
+        res
+      case _ =>
+        false
     }
   }
 }
