@@ -317,7 +317,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           res
 
         // rewire member selection
-        case Select(oldQual, mbr) if extractQualifierType(oldQual).typeSymbol.hasFlag(MINIBOXED) || oldQual.isInstanceOf[Super] || metadata.memberOverloads.isDefinedAt(tree.symbol) =>
+        case Select(oldQual, mbr) if metadata.miniboxedTParamFlag(extractQualifierType(oldQual).typeSymbol) || oldQual.isInstanceOf[Super] || metadata.memberOverloads.isDefinedAt(tree.symbol) =>
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
           val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
@@ -515,7 +515,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val mbrs = new ListBuffer[Tree]
 
       // keep the order for constructors:
-      val decls        = sClass.info.decls.toList.filter(s => s.hasFlag(MINIBOXED))
+      val decls        = sClass.info.decls.toList.filter(s => metadata.miniboxedMemberFlag(s))
       val constructors = decls.filter(_.isConstructor)
       val methods      = decls.filterNot(_.isConstructor).filter(s => metadata.getNormalStem(s).orElse(s) == s).sortBy(_.defString)
 
@@ -696,7 +696,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         val res = metadata.isClassStem(ths.tpe.typeSymbol) &&
           sel.symbol.isField &&
           sel.symbol.tpe.typeSymbol.isTypeParameterOrSkolem &&
-          sel.symbol.tpe.typeSymbol.hasFlag(MINIBOXED)
+          metadata.miniboxedTParamFlag(sel.symbol.tpe.typeSymbol)
         res
       case _ =>
         false

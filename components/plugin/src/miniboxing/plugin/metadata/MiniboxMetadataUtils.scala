@@ -64,7 +64,7 @@ trait MiniboxMetadataUtils {
     }
 
     def typeParamValues(clazz: Symbol, env: PartialSpec): List[Type] =
-      clazz.typeParams.filter(_.hasFlag(MINIBOXED)).map(env) map {
+      clazz.typeParams.filter(metadata.miniboxedTParamFlag(_)).map(env) map {
         case Boxed           => AnyRefClass.tpe
         case Miniboxed(repr) => repr.tpe
       }
@@ -109,7 +109,7 @@ trait MiniboxMetadataUtils {
         val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
           // case (2.3)
-          case (p, _) if !(p hasFlag MINIBOXED) => None
+          case (p, _) if !(metadata.miniboxedTParamFlag(p)) => None
           case (p, `CharTpe`)    => Some((p, Miniboxed(LongClass)))
           case (p, `IntTpe`)     => Some((p, Miniboxed(LongClass)))
           case (p, `LongTpe`)    => Some((p, Miniboxed(LongClass)))

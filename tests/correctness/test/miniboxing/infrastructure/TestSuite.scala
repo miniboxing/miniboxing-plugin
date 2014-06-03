@@ -11,6 +11,23 @@ import miniboxing.plugin.ScalacVersion
 /* Taken from: [[https://github.com/nicolasstucki/specialized/commit/f7ee90610d0052cb3607cef138051575db3c2eb9]] */
 class TestSuite extends ScalacVersion {
 
+  val scalaPrinterCompatibility = List[(String, String)](
+    " >: Nothing" -> "",
+    " <: Any" -> "",
+    "warning: 'minibox' selects 3 phases\n" -> "",
+    "<\\$anon: .*?>" -> "anonymous class \\$anon",
+    " @scala.annotation.unchecked.uncheckedVariance" -> "",
+    "Int\\([0-9]*?\\)" -> "Int",
+    "<artifact> " -> "",
+    "\\+([A-Z])" -> "$1",
+    "\\-([A-Z])" -> "$1",
+    "warning: \\[check:" -> "\\[check:",
+    "\n(?s)Out of scope symbol reference.*?}\n" -> " symbol out of scope\n",
+    "The symbol, tpe or info of tree.*?\n" -> "symbol out of scope\n",
+    "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
+    "warning: Reference to uninitialized variable t" -> "" // TODO: Remove after looking at #104
+  )
+
   private[this] def files(dirs: List[String], ext: String) = {
     val cwd = sys.props.get("user.dir").getOrElse(".")
     val res = dirs.foldLeft(Path(new JFile(cwd)))((path, dir) => path / dir)
@@ -58,13 +75,17 @@ class TestSuite extends ScalacVersion {
       val flags = pluginFlag + " " + slurp(replaceExtension(source, "flags"))
       val check_file = replaceExtension(source, "check")
       val launch_file = replaceExtension(source, "launch")
-      val expect = slurp(check_file)
+      var expect = slurp(check_file)
       val launch = slurp(launch_file).replace("\n","")
-      val output = new CompileTest(code, flags, launch).compilationOutput()
+      var output = new CompileTest(code, flags, launch).compilationOutput()
+      for ((regex, replace) <- scalaPrinterCompatibility) {
+        output = output.replaceAll(regex, replace)
+        expect = expect.replaceAll(regex, replace)
+      }
       import scala.collection.JavaConversions._
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
-      val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS))
-      val expect_lines = seqAsJavaList(expect.split("\n").toList.map(stripTrailingWS))
+      val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS)).filter(_ != "")
+      val expect_lines = seqAsJavaList(expect.split("\n").toList.map(stripTrailingWS)).filter(_ != "")
       val sdiff = DiffUtils.diff(expect_lines, output_lines)
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 

@@ -37,9 +37,7 @@ trait MiniboxDefinitions {
   case object Boxed                   extends SpecInfo
 
 
-  // Flags and symbols:
-
-  final val MINIBOXED = 1L << 46 // we define our own flag
+  // Symbols:
 
   lazy val MinispecClass = rootMirror.getRequiredClass("scala.miniboxed")
   /**

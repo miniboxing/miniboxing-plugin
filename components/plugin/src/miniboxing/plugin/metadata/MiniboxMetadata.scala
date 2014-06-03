@@ -24,6 +24,9 @@ trait MiniboxMetadata {
 
   trait metadata {
 
+    val miniboxedMemberFlag = mutable.Set.empty[Symbol]
+    val miniboxedTParamFlag = mutable.Set.empty[Symbol]
+
     /* Class specialization:
      *
      * (before transformation)
