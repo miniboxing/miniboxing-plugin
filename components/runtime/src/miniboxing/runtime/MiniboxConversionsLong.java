@@ -19,6 +19,13 @@ public class MiniboxConversionsLong {
 
   @SuppressWarnings("unchecked")
   public final static <T> T minibox2box(long l, byte tag) {
+//  val i: Int = null
+//  println(i) // produces 0
+//
+//    if (l == Long.MIN_VALUE)
+//      return null;
+//    else
+//      return (T)minibox2box_deep(l, tag);
     return (T)minibox2box_deep(l, tag);
   }
 
@@ -34,6 +41,14 @@ public class MiniboxConversionsLong {
   }
 
   public final static <T> long box2minibox_tt(T a, byte tag) {
+    if (a == null)
+//      return Long.MIN_VALUE;
+      return 0;
+    else
+      return box2minibox_deep(a, tag);
+  }
+
+  public final static <T> long box2minibox_deep(T a, byte tag) {
     switch(tag) {
       case MiniboxConstants.CHAR:
         return (java.lang.Character)a;

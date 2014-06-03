@@ -71,6 +71,14 @@ public class MiniboxConversions {
    */
   @SuppressWarnings("unchecked")
   public final static <T> T minibox2box(long l, byte tag) {
+// NOTE: We can't treat "null" correctly anyway, due to the scalac numeric conversions
+//  val i: Int = null
+//  println(i) // produces 0
+//
+//    if (l == Long.MIN_VALUE)
+//      return null;
+//    else
+//    return (T)minibox2box_deep(l, tag);
     return (T)minibox2box_deep(l, tag);
   }
 
@@ -95,10 +103,18 @@ public class MiniboxConversions {
     return 0;
   }
 
+  public final static <T> long box2minibox_tt(T a, byte tag) {
+    if (a == null)
+//      return Long.MIN_VALUE;
+      return 0l;
+    else
+      return box2minibox_deep(a, tag);
+  }
+
   /*
    *  Used in the rewiring, to keep the type and tag on all types
    */
-  public final static <T> long box2minibox_tt(T a, byte tag) {
+  public final static <T> long box2minibox_deep(T a, byte tag) {
     switch(tag) {
       case MiniboxConstants.CHAR:
         return (java.lang.Character)a;

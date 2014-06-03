@@ -35,7 +35,10 @@ public class MiniboxConversionsDouble {
 
   @SuppressWarnings("unchecked")
   public final static <T> T minibox2box(double l, byte tag) {
-    return (T)minibox2box_deep(l, tag);
+    if (l == Double.MIN_VALUE)
+      return null;
+    else
+      return (T)minibox2box_deep(l, tag);
   }
 
   private final static Object minibox2box_deep(double l, byte tag) {
@@ -48,6 +51,14 @@ public class MiniboxConversionsDouble {
   }
 
   public final static <T> double box2minibox_tt(T a, byte tag) {
+    if (a == null)
+//      return Double.MIN_VALUE;
+      return 0d;
+    else
+      return box2minibox_deep(a, tag);
+  }
+
+  public final static <T> double box2minibox_deep(T a, byte tag) {
     switch(tag) {
       case MiniboxConstants.FLOAT:
         return (java.lang.Float)a;
