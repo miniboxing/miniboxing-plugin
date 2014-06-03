@@ -35,10 +35,15 @@ public class MiniboxConversionsDouble {
 
   @SuppressWarnings("unchecked")
   public final static <T> T minibox2box(double l, byte tag) {
-    if (l == Double.MIN_VALUE)
-      return null;
-    else
-      return (T)minibox2box_deep(l, tag);
+// NOTE: We can't treat "null" correctly anyway, due to the scalac numeric conversions:
+//  val i: Int = null
+//  println(i) // produces 0
+//
+//    if (l == Double.MIN_VALUE)
+//      return null;
+//    else
+//      return (T)minibox2box_deep(l, tag);
+    return (T)minibox2box_deep(l, tag);
   }
 
   private final static Object minibox2box_deep(double l, byte tag) {
