@@ -25,7 +25,8 @@ import miniboxing.plugin.transform.hijack.MiniboxInfoHijack
 trait HijackComponent extends
     PluginComponent
     with MiniboxInfoHijack
-    with MiniboxDefinitions {
+    with MiniboxDefinitions
+    with ScalacCrossCompilingLayer {
 
   def flag_hijack_spec: Boolean
 }
@@ -42,7 +43,8 @@ trait MiniboxDuplComponent extends
     with MiniboxMethodInfo
     with MiniboxDuplInfoTransformation
     with MiniboxDuplTreeTransformation
-    with TreeRewriters {
+    with TreeRewriters
+    with ScalacCrossCompilingLayer {
 
   def mboxDuplPhase: StdPhase
 
@@ -61,7 +63,8 @@ trait MiniboxDuplComponent extends
 trait MiniboxAdaptComponent extends
     PluginComponent
     with MiniboxAdaptTreeTransformer
-    with MiniboxAnnotationCheckers {
+    with MiniboxAnnotationCheckers
+    with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxAdaptComponent.this.global.type }
 
@@ -76,7 +79,8 @@ trait MiniboxAdaptComponent extends
 trait MiniboxSpecComponent extends
     PluginComponent
     with MiniboxPostInfoTransformer
-    with MiniboxPostTreeTransformer {
+    with MiniboxPostTreeTransformer
+    with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxDuplComponent { val global: MiniboxSpecComponent.this.global.type }
 
@@ -92,14 +96,18 @@ trait MiniboxSpecComponent extends
 }
 
 trait PreTyperComponent extends
-  PluginComponent with
-  TypingTransformers {
+  PluginComponent
+  with TypingTransformers
+  with ScalacCrossCompilingLayer {
+
   val miniboxing: MiniboxDuplComponent { val global: PreTyperComponent.this.global.type }
 }
 
 trait PostTyperComponent extends
-  PluginComponent with
-  TypingTransformers {
+  PluginComponent
+  with TypingTransformers
+  with ScalacCrossCompilingLayer {
+
 
   import global._
   import global.Flag._

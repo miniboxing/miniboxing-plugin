@@ -3,13 +3,13 @@ package miniboxing.infrastructure
 import org.junit.Test
 import java.io.{ File => JFile }
 import scala.tools.nsc.io._
-import scala.tools.partest.nest.FileUtil._
 import java.io.FileNotFoundException
 import difflib._
 import java.io.PrintWriter
+import miniboxing.plugin.ScalacVersion
 
 /* Taken from: [[https://github.com/nicolasstucki/specialized/commit/f7ee90610d0052cb3607cef138051575db3c2eb9]] */
-class TestSuite {
+class TestSuite extends ScalacVersion {
 
   private[this] def files(dirs: List[String], ext: String) = {
     val cwd = sys.props.get("user.dir").getOrElse(".")
@@ -31,7 +31,7 @@ class TestSuite {
   // TODO: This needs to be general, it's currently a mess
   private[this] def pluginCompilerFlag() =
     try {
-      "-Xplugin:" + files(List("..", "..", "components", "plugin", "target", "scala-2.10"), ".jar").head.toString
+      "-Xplugin:" + files(List("..", "..", "components", "plugin", "target", "scala-" + scalaBinaryVersion), ".jar").head.toString
     } catch {
       case x: NoSuchElementException =>
         sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")

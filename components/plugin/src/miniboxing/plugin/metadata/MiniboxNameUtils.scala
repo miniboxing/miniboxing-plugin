@@ -29,11 +29,11 @@ trait MiniboxNameUtils {
    */
   def specializedName(name: Name, types: List[Type]): TermName = {
     if (nme.CONSTRUCTOR == name || (types.isEmpty))
-      name
+      name.toTermName
     else if (nme.isSetterName(name))
-      nme.getterToSetter(specializedName(nme.setterToGetter(name), types))
+      specializedName(name.toTermName.getterName, types).setterName
     else if (nme.isLocalName(name))
-      nme.getterToLocal(specializedName(nme.localToGetter(name), types))
+      specializedName(name.toTermName.getterName, types).localName
     else {
       newTermName(name.toString + "_" + types.map(t => definitions.abbrvTag(t.typeSymbol)).mkString(""))
     }

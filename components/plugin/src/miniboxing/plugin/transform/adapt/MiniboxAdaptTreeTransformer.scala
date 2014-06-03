@@ -100,10 +100,10 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
-      def supertyped(tree: Tree, mode: Int, pt: Type): Tree =
+      def supertyped(tree: Tree, mode: Mode, pt: Type): Tree =
         super.typed(tree, mode, pt)
 
-      override protected def adapt(tree: Tree, mode: Int, pt: Type, original: Tree = EmptyTree): Tree = {
+      override protected def adapt(tree: Tree, mode: Mode, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
         if (tree.isTerm) {
@@ -129,7 +129,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
             } else {
               // workaround the isSubType issue with singleton types
               // and annotated types (see mb_erasure_torture10.scala)
-              tree.tpe = newTpe
+              tree.setType(newTpe)
               tree
             }
           } else
@@ -139,7 +139,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
         }
       }
 
-      override def typed(tree: Tree, mode: Int, pt: Type): Tree = {
+      override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false))
@@ -158,16 +158,16 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
               val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_minibox2box), List(tpe3, storageType), List(qual2))
               super.typed(Select(qual3, meth) setSymbol tree.symbol, mode, pt)
             } else {
-              tree.tpe = null
+              tree.setType(null)
               super.typed(tree, mode, pt)
             }
           case _ =>
-            tree.tpe = null
+            tree.setType(null)
             super.typed(tree, mode, pt)
         }
         adaptdbg(ind, " ==> " + res + ": " + res.tpe)
-        if (res.tpe == ErrorType)
-          adaptdbg(ind, "ERRORS: " + context.errBuffer)
+//        if (res.tpe == ErrorType)
+//          adaptdbg(ind, "ERRORS: " + context.errBuffer)
         indent -= 1
         res
       }

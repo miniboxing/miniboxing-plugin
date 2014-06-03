@@ -75,7 +75,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
         override def castType(tree: Tree, pt: Type): Tree = {
-          tree.tpe = null
+          tree.setType(null)
           tree
         }
       }
@@ -128,7 +128,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case _ =>
       }
 
-      def sym = if (tree.hasSymbol) tree.symbol else NoSymbol
+      def sym = if (tree.hasSymbolField) tree.symbol else NoSymbol
 
       tree match {
         case ClassDef(_, _, _, impl: Template) =>
@@ -280,7 +280,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
             val normTrees =
               for (m <- normSymbols) yield
-                transform(localTyper.typed(DefDef(m, { paramss => EmptyTree })))
+                transform(localTyper.typed(DefDef(m, (_: List[List[Symbol]]) => EmptyTree)))
             res :: normTrees
           } else {
             res
@@ -523,7 +523,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       for (m <- constructors ::: methods) {
         debuglog("creating empty tree for " + m.fullName)
         if (m.isMethod) {
-          mbrs += atPos(m.pos)(DefDef(m, { paramss => EmptyTree }))
+          mbrs += atPos(m.pos)(DefDef(m, { (_: List[List[Symbol]]) => EmptyTree }))
         } else if (m.isValue) {
           mbrs += ValDef(m, EmptyTree).setType(NoType).setPos(m.pos)
         }
@@ -673,7 +673,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         vparams.map(_.symbol) ::: newtparams)
 
       val newBody = symSubstituter(body.duplicate)
-      tpt.tpe = tpt.tpe.substSym(oldtparams, newtparams)
+      tpt.setType(tpt.tpe.substSym(oldtparams, newtparams))
 
       val meth = copyDefDef(tree)(rhs = newBody)
       duplicateBody(meth, source)
@@ -691,7 +691,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     private def isMiniboxedFieldInStem(sel: Select) = sel match {
-      case Select(ths, field) if ths.hasSymbol =>
+      case Select(ths, field) if ths.hasSymbolField =>
         afterMiniboxDupl(ths.symbol.info)
         val res = metadata.isClassStem(ths.tpe.typeSymbol) &&
           sel.symbol.isField &&

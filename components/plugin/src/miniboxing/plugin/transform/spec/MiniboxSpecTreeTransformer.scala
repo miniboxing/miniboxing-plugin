@@ -87,7 +87,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
 //      println(oldTpe + " ==> " + newTpe)
 
       // force new info on the symbol
-      if (tree0.hasSymbol)
+      if (tree0.hasSymbolField)
         tree0.symbol.info
 
       val tree1 =

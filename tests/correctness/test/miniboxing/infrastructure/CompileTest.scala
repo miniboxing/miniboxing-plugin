@@ -1,8 +1,7 @@
 package miniboxing.infrastructure
 
-import scala.tools.partest._
+import scala.tools.partest.DirectTest
 import scala.tools.nsc._
-import nest.FileUtil._
 import scala.reflect.io._
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
