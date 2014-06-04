@@ -51,7 +51,7 @@ public class MiniboxDispatchDouble {
   }
 
   // non-overloaded:
-  public final static boolean mboxed_eqeq_notag(double x, long y) {
+  public final static boolean mboxed_eqeq_notag(double x, double y) {
     return mboxed_eqeq(x, y);
   }
 
