@@ -15,7 +15,7 @@ import miniboxing.runtime.MiniboxConstants;
 
 public class MiniboxArrayDouble {
 
-  public final static double mbarray_apply_minibox_double(Object array, int idx, byte tag) {
+  public final static double mbarray_apply_minibox(Object array, int idx, byte tag) {
     switch(tag) {
       case MiniboxConstants.FLOAT:
         return ((float[])array)[idx];
@@ -26,7 +26,7 @@ public class MiniboxArrayDouble {
 
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-  public final static void mbarray_update_minibox_double(Object array, int idx, double value, byte tag) {
+  public final static void mbarray_update_minibox(Object array, int idx, double value, byte tag) {
     switch(tag) {
       case MiniboxConstants.FLOAT:
         ((float[])array)[idx] = (float)value;

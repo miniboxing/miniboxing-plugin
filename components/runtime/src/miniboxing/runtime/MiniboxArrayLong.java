@@ -15,7 +15,7 @@ import miniboxing.runtime.MiniboxConstants;
 
 public class MiniboxArrayLong {
 
-  public final static long mbarray_apply_minibox_long(Object array, int idx, byte tag) {
+  public final static long mbarray_apply_minibox(Object array, int idx, byte tag) {
     switch(tag) {
       case MiniboxConstants.CHAR:
         return ((char[])array)[idx];
@@ -28,7 +28,7 @@ public class MiniboxArrayLong {
 
 ////////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-  public final static void mbarray_update_minibox_long(Object array, int idx, long value, byte tag) {
+  public final static void mbarray_update_minibox(Object array, int idx, long value, byte tag) {
     switch(tag) {
       case MiniboxConstants.CHAR:
         ((char[])array)[idx] = (char)value;
