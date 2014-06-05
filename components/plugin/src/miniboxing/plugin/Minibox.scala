@@ -20,6 +20,7 @@ import miniboxing.plugin.transform.dupl._
 import miniboxing.plugin.transform.adapt._
 import miniboxing.plugin.transform.spec._
 import miniboxing.plugin.transform.hijack.MiniboxInfoHijack
+import scala.tools.nsc.interpreter.ReplGlobal
 
 /** Specialization hijacking component `@specialized T -> @miniboxed T` */
 trait HijackComponent extends
@@ -123,16 +124,18 @@ class Minibox(val global: Global) extends Plugin {
 
   lazy val components = {
     if (!flag_no_logo) {
-      val twoWay = if (flag_two_way) " 2-way active.\n" else "\n"
-      Console.println("""
-        |     _____   .__         .__ ____.                     .__ scala-miniboxing.org
-        |    /     \  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
-        |   /  \ /  \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
-        |  /    Y    \|  ||   |  \|  | |  \_\ \(  (_)  ) >    < |  ||   |  \(  /_/  )
-        |  \____|__  /|__||___|  /|__| |____  / \_____/ /__/\_ \|__||___|  / \___  /
-        |          \/          \/           \/                \/         \/ /_____/
-        | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
-        | Developed and maintained by Vlad Ureche <vlad.ureche@epfl.ch>.""".stripMargin + twoWay)
+
+      def printLogo() =
+        Console.println("""
+          |     _____   .__         .__ ____.                     .__ scala-miniboxing.org
+          |    /     \  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
+          |   /  \ /  \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
+          |  /    Y    \|  ||   |  \|  | |  \_\ \(  (_)  ) >    < |  ||   |  \(  /_/  )
+          |  \____|__  /|__||___|  /|__| |____  / \_____/ /__/\_ \|__||___|  / \___  /
+          |          \/          \/           \/                \/         \/ /_____/
+          | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne.""".stripMargin)
+
+      printLogo()
     }
 
     // and here are the compiler phases miniboxing introduces:
