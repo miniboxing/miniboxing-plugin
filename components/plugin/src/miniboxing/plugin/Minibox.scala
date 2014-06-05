@@ -135,7 +135,7 @@ class Minibox(val global: Global) extends Plugin {
           |          \/          \/           \/                \/         \/ /_____/
           | Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne.""".stripMargin)
 
-      printLogo()
+      // printLogo()
     }
 
     // and here are the compiler phases miniboxing introduces:
