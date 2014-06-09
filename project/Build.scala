@@ -42,6 +42,7 @@ object MiniboxingBuild extends Build {
 
     scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-Xlint"),
 
+    parallelExecution in Global := false,
     publishArtifact in packageDoc := false
   )
 

@@ -16,5 +16,3 @@ organizationHomepage in Global := Some(url("http://lamp.epfl.ch"))
 licenses in Global := Seq("BSD-style" -> url("http://scala-miniboxing.org/license.html"))
 
 homepage in Global := Some(url("http://scala-miniboxing.org"))
-
-parallelExecution in Global := false
