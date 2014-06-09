@@ -1,11 +1,9 @@
 Specializing class UhOh...
-
   // interface:
   abstract trait UhOh[X, Y] extends Object {
     def foo(x: X,y: Y): X
     def foo_J(val X_TypeTag: Byte,x: X @storage[Long],y: Y): X @storage[Long]
   }
-
   // specialized class:
   class UhOh_J[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
     def <init>(val miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh_J[Xsp,Ysp] // is a specialized implementation of constructor UhOh
@@ -13,19 +11,13 @@ Specializing class UhOh...
     def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte      // no info
   }
-
   // specialized class:
   class UhOh_L[Xsp, Ysp] extends UhOh[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.UhOh_L[Xsp,Ysp]                 // is a specialized implementation of constructor UhOh
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a specialized implementation of method foo
     def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a forwarder to the specialized member
   }
-
-
-
-
 Specializing class OhUh...
-
   // interface:
   abstract trait OhUh[U] extends Object {
     def test(): U
@@ -35,7 +27,6 @@ Specializing class OhUh...
     def u_J(val U_TypeTag: Byte): U @storage[Long]
     def u_J_=(val U_TypeTag: Byte,x$1: U @storage[Long]): Unit
   }
-
   // specialized class:
   class OhUh_J[Usp] extends OhUh[Usp] {
     def <init>(val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte,u: Usp @storage[Long]): miniboxing.tests.compile.OhUh_J[Usp] // is a specialized implementation of constructor OhUh
@@ -48,7 +39,6 @@ Specializing class OhUh...
     private[this] val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte      // no info
     private[this] var u: Usp @storage[Long]                                // is a specialized implementation of variable u
   }
-
   // specialized class:
   class OhUh_L[Usp] extends OhUh[Usp] {
     def <init>(u: Usp): miniboxing.tests.compile.OhUh_L[Usp]               // is a specialized implementation of constructor OhUh
@@ -60,19 +50,15 @@ Specializing class OhUh...
     def u_J_=(val U_TypeTag: Byte,x$1: Usp @storage[Long]): Unit           // is a forwarder to the specialized member
     private[this] var u: Usp                                               // is a specialized implementation of variable u
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait UhOh[@miniboxed X >: Nothing <: Any, Y >: Nothing <: Any] extends Object {
+  abstract trait UhOh[@miniboxed X, Y] extends Object {
     def foo(x: X, y: Y): X;
     def foo_J(X_TypeTag: Byte, x: Long, y: Y): Long
   };
-  class UhOh_J[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
+  class UhOh_J[Xsp, Ysp] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
     def <init>(miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh_J[Xsp,Ysp] = {
       UhOh_J.super.<init>();
       ()
@@ -81,7 +67,7 @@ package miniboxing.tests.compile {
     def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = UhOh_J.this.foo_J(X_TypeTag, x, y);
     <paramaccessor> private[this] val miniboxing|tests|compile|UhOh_J|X_TypeTag: Byte = _
   };
-  class UhOh_L[Xsp >: Nothing <: Any, Ysp >: Nothing <: Any] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
+  class UhOh_L[Xsp, Ysp] extends Object with miniboxing.tests.compile.UhOh[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.UhOh_L[Xsp,Ysp] = {
       UhOh_L.super.<init>();
       ()
@@ -89,7 +75,7 @@ package miniboxing.tests.compile {
     def foo(x: Xsp, y: Ysp): Xsp = UhOh_L.this.foo(x, y);
     def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = MiniboxConversions.this.box2minibox_tt[Xsp](UhOh_L.this.foo(MiniboxConversions.this.minibox2box[Xsp](x, X_TypeTag), y), X_TypeTag)
   };
-  abstract trait OhUh[@miniboxed U >: Nothing <: Any] extends Object {
+  abstract trait OhUh[@miniboxed U] extends Object {
     <accessor> <paramaccessor> def u(): U;
     <accessor> <paramaccessor> def u_=(x$1: U): Unit;
     def test(): U;
@@ -97,7 +83,7 @@ package miniboxing.tests.compile {
     <accessor> def u_J(U_TypeTag: Byte): Long;
     <accessor> def u_J_=(U_TypeTag: Byte, x$1: Long): Unit
   };
-  class OhUh_J[Usp >: Nothing <: Any] extends Object with miniboxing.tests.compile.OhUh[Usp] {
+  class OhUh_J[Usp] extends Object with miniboxing.tests.compile.OhUh[Usp] {
     def <init>(miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte, u: Long): miniboxing.tests.compile.OhUh_J[Usp] = {
       OhUh_J.super.<init>();
       ()
@@ -114,7 +100,7 @@ package miniboxing.tests.compile {
     <paramaccessor> private[this] val miniboxing|tests|compile|OhUh_J|U_TypeTag: Byte = _;
     <paramaccessor> private[this] var u: Long = _
   };
-  class OhUh_L[Usp >: Nothing <: Any] extends Object with miniboxing.tests.compile.OhUh[Usp] {
+  class OhUh_L[Usp] extends Object with miniboxing.tests.compile.OhUh[Usp] {
     def <init>(u: Usp): miniboxing.tests.compile.OhUh_L[Usp] = {
       OhUh_L.super.<init>();
       ()
@@ -131,5 +117,4 @@ package miniboxing.tests.compile {
     <paramaccessor> private[this] var u: Usp = _
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

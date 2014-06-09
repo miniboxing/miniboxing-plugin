@@ -1,8 +1,8 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.separate {
-  abstract trait MBResizableArray[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait MBResizableArray[@miniboxed T] extends Object {
     final <stable> <accessor> def initialSize(): Int;
     <accessor> def size(): Int;
     <accessor> def size_=(x$1: Int): Unit;
@@ -38,7 +38,7 @@ package miniboxing.tests.compile.separate {
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int;
     override def toString_J(T_TypeTag: Byte): String
   };
-  class MBResizableArray_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
+  class MBResizableArray_J[Tsp] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
     def <init>(miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag: Byte, mf: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.separate.MBResizableArray_J[Tsp] = {
       MBResizableArray_J.super.<init>();
       ()
@@ -132,7 +132,7 @@ package miniboxing.tests.compile.separate {
     @inline final def getElement_J(T_TypeTag: Byte, p: Int): Long = MiniboxArray.this.mbarray_apply_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, T_TypeTag);
     @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_J.this.setElement_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag, p, MiniboxConversions.this.box2minibox_tt[Tsp](t, MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag));
     @inline final def setElement_J(T_TypeTag: Byte, p: Int, t: Long): Unit = MiniboxArray.this.mbarray_update_minibox(MBResizableArray_J.this.array_J(T_TypeTag), p, t, T_TypeTag);
-    final private[this] val initialSize: Int(4) = 4;
+    final private[this] val initialSize: Int = 4;
     final <stable> <accessor> def initialSize(): Int = 4;
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int = 4;
     override def toString(): String = MBResizableArray_J.this.toString_J(MBResizableArray_J.this.miniboxing|tests|compile|separate|MBResizableArray_J|T_TypeTag);
@@ -160,7 +160,7 @@ package miniboxing.tests.compile.separate {
     private[this] var newarray: Array[Tsp] = _;
     private[this] var size: Int = 4
   };
-  class MBResizableArray_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
+  class MBResizableArray_L[Tsp] extends Object with miniboxing.tests.compile.separate.MBResizableArray[Tsp] {
     def <init>(mf: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.separate.MBResizableArray_L[Tsp] = {
       MBResizableArray_L.super.<init>();
       ()
@@ -254,7 +254,7 @@ package miniboxing.tests.compile.separate {
     @inline final def getElement_J(T_TypeTag: Byte, p: Int): Long = MiniboxConversions.this.box2minibox_tt[Tsp](MBResizableArray_L.this.getElement(p), T_TypeTag);
     @inline final def setElement(p: Int, t: Tsp): Unit = MBResizableArray_L.this.array().update(p, t);
     @inline final def setElement_J(T_TypeTag: Byte, p: Int, t: Long): Unit = MBResizableArray_L.this.setElement(p, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag));
-    final private[this] val initialSize: Int(4) = 4;
+    final private[this] val initialSize: Int = 4;
     final <stable> <accessor> def initialSize(): Int = 4;
     final <stable> <accessor> def initialSize_J(T_TypeTag: Byte): Int = 4;
     override def toString(): String = {
@@ -282,5 +282,4 @@ package miniboxing.tests.compile.separate {
     private[this] var size: Int = 4
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

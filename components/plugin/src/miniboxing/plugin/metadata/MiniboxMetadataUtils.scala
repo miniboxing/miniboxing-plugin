@@ -19,7 +19,7 @@ import scala.Option.option2Iterable
 import scala.collection.immutable
 
 trait MiniboxMetadataUtils {
-  self: MiniboxDuplComponent =>
+  self: MiniboxInjectComponent =>
 
   import global._
   import definitions._
@@ -90,7 +90,7 @@ trait MiniboxMetadataUtils {
         owner.ownerChain flatMap { sym =>
           // for methods => normalization
           // for classes => specialization
-          afterMiniboxDupl(owner.info) // make sure it's specialized
+          afterMiniboxInject(owner.info) // make sure it's specialized
           if (sym.isMethod && !sym.typeParams.isEmpty) {
             // NOTE: We could also rely on the method's specialization, but we rely on the
             // assumption that a class' specialization is the one that dominates, else we
@@ -186,7 +186,7 @@ trait MiniboxMetadataUtils {
       override def apply(tp: Type): Type = tp match {
         case tref@TypeRef(pre, sym, args) if args.nonEmpty && classOverloads.isDefinedAt(sym)=>
           val pre1 = this(pre)
-          afterMiniboxDupl(sym.info)
+          afterMiniboxInject(sym.info)
           classOverloads(sym).get(extractPSpec(tref)) match {
             case Some(sym1) =>
               val localTParamMap = (sym1.typeParams zip args.map(_.typeSymbol)).toMap

@@ -1,6 +1,6 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of              minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.separate {
   object Test2 extends Object with App {
     def <init>(): miniboxing.tests.compile.separate.Test2.type = {
@@ -20,4 +20,4 @@ package miniboxing.tests.compile.separate {
   }
 }
 
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

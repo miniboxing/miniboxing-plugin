@@ -1,56 +1,55 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug51 {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait C[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
-    def foo[@miniboxed U >: Nothing <: Any](u: U): Boolean;
-    def foo_n_D[U >: Nothing <: Any](U_TypeTag: Byte, u: Double): Boolean;
-    def foo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: Long): Boolean;
+    def foo[@miniboxed U](u: U): Boolean;
+    def foo_n_D[U](U_TypeTag: Byte, u: Double): Boolean;
+    def foo_n_J[U](U_TypeTag: Byte, u: Long): Boolean;
     <stable> <accessor> def t_D(T_TypeTag: Byte): Double;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
-  class C_D[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
+  class C_D[Tsp] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
     def <init>(miniboxing|tests|compile|bug51|C_D|T_TypeTag: Byte, t: Double): miniboxing.tests.compile.bug51.C_D[Tsp] = {
       C_D.super.<init>();
       ()
     };
-    def foo[@miniboxed U >: Nothing <: Any](u: U): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_other(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, u);
-    def foo_n_D[U >: Nothing <: Any](U_TypeTag: Byte, u: Double): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_tag(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, u, U_TypeTag);
-    def foo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: Long): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_other(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, MiniboxConversionsLong.this.minibox2box[U](u, U_TypeTag));
+    def foo[@miniboxed U](u: U): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_other(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, u);
+    def foo_n_D[U](U_TypeTag: Byte, u: Double): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_tag(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, u, U_TypeTag);
+    def foo_n_J[U](U_TypeTag: Byte, u: Long): Boolean = MiniboxDispatchDouble.this.mboxed_eqeq_other(C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag, MiniboxConversionsLong.this.minibox2box[U](u, U_TypeTag));
     <paramaccessor> private[this] val miniboxing|tests|compile|bug51|C_D|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Double = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](C_D.this.t_D(C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag), C_D.this.miniboxing|tests|compile|bug51|C_D|T_TypeTag);
     <stable> <accessor> def t_D(T_TypeTag: Byte): Double = C_D.this.t;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
     def <init>(miniboxing|tests|compile|bug51|C_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.bug51.C_J[Tsp] = {
       C_J.super.<init>();
       ()
     };
-    def foo[@miniboxed U >: Nothing <: Any](u: U): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_other(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, u);
-    def foo_n_D[U >: Nothing <: Any](U_TypeTag: Byte, u: Double): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_other(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, MiniboxConversionsDouble.this.minibox2box[U](u, U_TypeTag));
-    def foo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: Long): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_tag(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, u, U_TypeTag);
+    def foo[@miniboxed U](u: U): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_other(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, u);
+    def foo_n_D[U](U_TypeTag: Byte, u: Double): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_other(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, MiniboxConversionsDouble.this.minibox2box[U](u, U_TypeTag));
+    def foo_n_J[U](U_TypeTag: Byte, u: Long): Boolean = MiniboxDispatchLong.this.mboxed_eqeq_tag(C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag, u, U_TypeTag);
     <paramaccessor> private[this] val miniboxing|tests|compile|bug51|C_J|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](C_J.this.t_J(C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug51|C_J|T_TypeTag);
     <stable> <accessor> def t_D(T_TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = C_J.this.t
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.tests.compile.bug51.C[Tsp] {
     def <init>(t: Tsp): miniboxing.tests.compile.bug51.C_L[Tsp] = {
       C_L.super.<init>();
       ()
     };
-    def foo[@miniboxed U >: Nothing <: Any](u: U): Boolean = C_L.this.t().==(u);
-    def foo_n_D[U >: Nothing <: Any](U_TypeTag: Byte, u: Double): Boolean = C_L.this.t().==(MiniboxConversionsDouble.this.minibox2box[U](u, U_TypeTag));
-    def foo_n_J[U >: Nothing <: Any](U_TypeTag: Byte, u: Long): Boolean = C_L.this.t().==(MiniboxConversionsLong.this.minibox2box[U](u, U_TypeTag));
+    def foo[@miniboxed U](u: U): Boolean = C_L.this.t().==(u);
+    def foo_n_D[U](U_TypeTag: Byte, u: Double): Boolean = C_L.this.t().==(MiniboxConversionsDouble.this.minibox2box[U](u, U_TypeTag));
+    def foo_n_J[U](U_TypeTag: Byte, u: Long): Boolean = C_L.this.t().==(MiniboxConversionsLong.this.minibox2box[U](u, U_TypeTag));
     <paramaccessor> private[this] val t: Tsp = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = C_L.this.t;
     <stable> <accessor> def t_D(T_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Tsp](C_L.this.t(), T_TypeTag);
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Tsp](C_L.this.t(), T_TypeTag)
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

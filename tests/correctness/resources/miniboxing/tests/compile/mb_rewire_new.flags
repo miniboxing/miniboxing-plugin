@@ -1,1 +1,1 @@
--Xprint:minibox-spec -Ycheck:minibox-spec -P:minibox:spec-no-opt
+-Xprint:minibox-commit -Ycheck:minibox-commit -P:minibox:spec-no-opt

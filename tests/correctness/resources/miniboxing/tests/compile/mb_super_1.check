@@ -1,12 +1,12 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.sup1 {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait C[@miniboxed T] extends Object {
     def foo(t: T): T;
     def foo_J(T_TypeTag: Byte, t: Long): Long
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
     def <init>(miniboxing|tests|compile|sup1|C_J|T_TypeTag: Byte): miniboxing.tests.compile.sup1.C_J[Tsp] = {
       C_J.super.<init>();
       ()
@@ -15,7 +15,7 @@ package miniboxing.tests.compile.sup1 {
     def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag);
     <paramaccessor> private[this] val miniboxing|tests|compile|sup1|C_J|T_TypeTag: Byte = _
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.tests.compile.sup1.C[Tsp] {
     def <init>(): miniboxing.tests.compile.sup1.C_L[Tsp] = {
       C_L.super.<init>();
       ()
@@ -32,5 +32,4 @@ package miniboxing.tests.compile.sup1 {
     override def foo_J(T_TypeTag: Byte, t: Long): Long = D.super.foo_J(5, MiniboxConversions.this.int2minibox(3))
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

@@ -1,11 +1,11 @@
-[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+[[syntax trees at end of            minibox-inject]] // newSource1.scala
 package miniboxing.tests.compile.bug993.partial {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait C[@miniboxed T] extends Object {
     def foo(): Int;
     def bar(t: T): T;
     def bar_J(T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long]
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
     def <init>(miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C_J[Tsp] = {
       C_J.super.<init>();
       ()
@@ -15,7 +15,7 @@ package miniboxing.tests.compile.bug993.partial {
     def foo(): Int = 3;
     <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
     def <init>(): miniboxing.tests.compile.bug993.partial.C_L[Tsp] = {
       C_L.super.<init>();
       ()

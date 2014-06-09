@@ -1,10 +1,9 @@
 Specializing class Complex...
-
   // interface:
   abstract trait Complex[T] extends Product with Serializable {
     def canEqual(x$1: Any): Boolean
-    def copy$default$1[T](): T @scala.annotation.unchecked.uncheckedVariance
-    def copy$default$2[T](): T @scala.annotation.unchecked.uncheckedVariance
+    def copy$default$1[T](): T
+    def copy$default$2[T](): T
     def copy[T](t1: T,t2: T): miniboxing.tests.compile.Complex[T]
     def productArity(): Int
     def productElement(x$1: Int): Any
@@ -18,7 +17,6 @@ Specializing class Complex...
     val t2(): T
     val t2_J(val T_TypeTag: Byte): T @storage[Long]
   }
-
   // specialized class:
   case class Complex_J[Tsp] extends Product with Serializable with Complex[Tsp] {
     def <init>(val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long]): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
@@ -30,7 +28,6 @@ Specializing class Complex...
     val t2(): Tsp                                                          // is a forwarder to the specialized member
     val t2_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a setter or getter for value t2
   }
-
   // specialized class:
   case class Complex_L[Tsp] extends Product with Serializable with Complex[Tsp] {
     def <init>(t1: Tsp,t2: Tsp): miniboxing.tests.compile.Complex_L[Tsp]   // is a specialized implementation of constructor Complex
@@ -41,20 +38,16 @@ Specializing class Complex...
     val t2(): Tsp                                                          // is a setter or getter for value t2
     val t2_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a forwarder to the specialized member
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Complex[@miniboxed T >: Nothing <: Any] extends Object with Product with Serializable {
+  abstract trait Complex[@miniboxed T] extends Object with Product with Serializable {
     <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): T;
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): T;
-    <synthetic> def copy[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    <synthetic> def copy$default$1[@miniboxed T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t1();
-    <synthetic> def copy$default$2[@miniboxed T >: Nothing <: Any](): T @scala.annotation.unchecked.uncheckedVariance = Complex.this.t2();
+    <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
+    <synthetic> def copy$default$1[@miniboxed T](): T = Complex.this.t1();
+    <synthetic> def copy$default$2[@miniboxed T](): T = Complex.this.t2();
     override <synthetic> def productPrefix(): String = "Complex";
     <synthetic> def productArity(): Int = 2;
     <synthetic> def productElement(x$1: Int): Any = {
@@ -90,7 +83,7 @@ package miniboxing.tests.compile {
     <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long;
     <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long
   };
-  case class Complex_J[Tsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
+  case class Complex_J[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
     def <init>(miniboxing|tests|compile|Complex_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex_J[Tsp] = {
       Complex_J.super.<init>();
       ()
@@ -103,7 +96,7 @@ package miniboxing.tests.compile {
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
     <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long = Complex_J.this.t2
   };
-  case class Complex_L[Tsp >: Nothing <: Any] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
+  case class Complex_L[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
     def <init>(t1: Tsp, t2: Tsp): miniboxing.tests.compile.Complex_L[Tsp] = {
       Complex_L.super.<init>();
       ()
@@ -121,13 +114,12 @@ package miniboxing.tests.compile {
       ()
     };
     final override <synthetic> def toString(): String = "Complex";
-    case <synthetic> def apply[@miniboxed T >: Nothing <: Any](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    case <synthetic> def unapply[@miniboxed T >: Nothing <: Any](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
+    case <synthetic> def apply[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
+    case <synthetic> def unapply[@miniboxed T](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
       scala.this.None
     else
       new Some[(T, T)](new (T, T)(x$0.t1(), x$0.t2()));
     <synthetic> private def readResolve(): Object = compile.this.Complex
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

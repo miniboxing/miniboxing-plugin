@@ -1,5 +1,4 @@
 Specializing class MBList...
-
   // interface:
   abstract trait MBList[T] extends Object {
     def contains(e: T): Boolean
@@ -21,7 +20,6 @@ Specializing class MBList...
     val tail(): miniboxing.benchmarks.minibox.MBList[T]
     val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[T]
   }
-
   // specialized class:
   class MBList_J[Tsp] extends MBList[Tsp] {
     def <init>(val miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte,head: Tsp @storage[Long],tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_J[Tsp] // is a specialized implementation of constructor MBList
@@ -47,7 +45,6 @@ Specializing class MBList...
     val tail(): miniboxing.benchmarks.minibox.MBList[Tsp]                  // is a forwarder to the specialized member
     val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] // is a setter or getter for value tail
   }
-
   // specialized class:
   class MBList_L[Tsp] extends MBList[Tsp] {
     def <init>(head: Tsp,tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_L[Tsp] // is a specialized implementation of constructor MBList
@@ -72,15 +69,11 @@ Specializing class MBList...
     val tail(): miniboxing.benchmarks.minibox.MBList[Tsp]                  // is a setter or getter for value tail
     val tail_J(val T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] // is a forwarder to the specialized member
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.benchmarks.minibox {
-  abstract trait MBList[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait MBList[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def head(): T;
     <stable> <accessor> <paramaccessor> def tail(): miniboxing.benchmarks.minibox.MBList[T];
     def length(): Int;
@@ -100,7 +93,7 @@ package miniboxing.benchmarks.minibox {
     <stable> <accessor> def head_J(T_TypeTag: Byte): Long;
     <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[T]
   };
-  class MBList_J[Tsp >: Nothing <: Any] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
+  class MBList_J[Tsp] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
     def <init>(miniboxing|benchmarks|minibox|MBList_J|T_TypeTag: Byte, head: Long, tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_J[Tsp] = {
       MBList_J.super.<init>();
       ()
@@ -145,7 +138,7 @@ package miniboxing.benchmarks.minibox {
     <stable> <accessor> <paramaccessor> def tail(): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_J.this.tail_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag);
     <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_J.this.tail
   };
-  class MBList_L[Tsp >: Nothing <: Any] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
+  class MBList_L[Tsp] extends Object with miniboxing.benchmarks.minibox.MBList[Tsp] {
     def <init>(head: Tsp, tail: miniboxing.benchmarks.minibox.MBList[Tsp]): miniboxing.benchmarks.minibox.MBList_L[Tsp] = {
       MBList_L.super.<init>();
       ()
@@ -190,5 +183,4 @@ package miniboxing.benchmarks.minibox {
     <stable> <accessor> def tail_J(T_TypeTag: Byte): miniboxing.benchmarks.minibox.MBList[Tsp] = MBList_L.this.tail()
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

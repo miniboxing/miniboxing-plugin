@@ -1,6 +1,6 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[Now checking: minibox-commit]
 [[syntax trees at end of                specialize]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait Base61[@miniboxed T >: Nothing <: Any, @miniboxed S >: Nothing <: Any] extends Object {

@@ -1,14 +1,14 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait CCC[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait CCC[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
     def foo(t1: T, t2: Any): String;
     def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
-  class CCC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.CCC[Tsp] {
+  class CCC_J[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
     def <init>(miniboxing|tests|compile|CCC_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.CCC_J[Tsp] = {
       CCC_J.super.<init>();
       ()
@@ -25,7 +25,7 @@ package miniboxing.tests.compile {
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag);
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = CCC_J.this.t
   };
-  class CCC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.CCC[Tsp] {
+  class CCC_L[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
     def <init>(t: Tsp): miniboxing.tests.compile.CCC_L[Tsp] = {
       CCC_L.super.<init>();
       ()
@@ -42,5 +42,4 @@ package miniboxing.tests.compile {
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](CCC_L.this.t(), T_TypeTag)
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

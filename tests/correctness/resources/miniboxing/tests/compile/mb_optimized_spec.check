@@ -36,6 +36,6 @@ Specializing class OptMeee...
 
 
 
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[Now checking: minibox-commit]

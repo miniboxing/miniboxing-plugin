@@ -13,7 +13,7 @@
 //
 package miniboxing.plugin
 package transform
-package dupl
+package inject
 
 import scala.tools.nsc.transform.TypingTransformers
 import scala.collection.mutable.HashMap
@@ -21,8 +21,8 @@ import scala.collection.mutable.ListBuffer
 import scala.tools.nsc.typechecker._
 import scala.reflect.internal.Flags._
 
-trait MiniboxDuplTreeTransformation extends TypingTransformers {
-  self: MiniboxDuplComponent =>
+trait MiniboxInjectTreeTransformation extends TypingTransformers {
+  self: MiniboxInjectComponent =>
 
   import global._
   import global.definitions._
@@ -66,10 +66,10 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type]) extends {
-      val global: MiniboxDuplTreeTransformation.this.global.type = MiniboxDuplTreeTransformation.this.global
-      val miniboxing: MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type } =
-        MiniboxDuplTreeTransformation.this.asInstanceOf[MiniboxDuplComponent { val global: MiniboxDuplTreeTransformation.this.global.type }]
-    } with miniboxing.plugin.transform.dupl.Duplicators {
+      val global: MiniboxInjectTreeTransformation.this.global.type = MiniboxInjectTreeTransformation.this.global
+      val miniboxing: MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type } =
+        MiniboxInjectTreeTransformation.this.asInstanceOf[MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type }]
+    } with miniboxing.plugin.transform.inject.Duplicators {
       private val (castfrom, castto) = casts.unzip
       private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
 
@@ -84,7 +84,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def typeTagTrees(member: Symbol = currentOwner) =
-      MiniboxDuplTreeTransformation.this.typeTagTrees(member)
+      MiniboxInjectTreeTransformation.this.typeTagTrees(member)
 
     def miniboxQualifier(pos: Position, tpe: Type): Type = {
       val oldClass = tpe.typeSymbol
@@ -106,8 +106,8 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
     }
 
     def extractQualifierType(tree: Tree): Type = tree match {
-      case New(cl)     => afterMiniboxDupl(cl.tpe.typeSymbol.info); cl.tpe
-      case This(clazz) => afterMiniboxDupl(tree.symbol.info); tree.tpe.underlying
+      case New(cl)     => afterMiniboxInject(cl.tpe.typeSymbol.info); cl.tpe
+      case This(clazz) => afterMiniboxInject(tree.symbol.info); tree.tpe.underlying
       case Super(qual, _) => tree.tpe
       case _ => tree.tpe
     }
@@ -124,7 +124,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
       // make sure specializations have been performed
       tree match {
-        case t: SymTree if t.symbol != null => afterMiniboxDupl(t.symbol.info)
+        case t: SymTree if t.symbol != null => afterMiniboxInject(t.symbol.info)
         case _ =>
       }
 
@@ -154,14 +154,14 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           }
 
         case Template(parents, self, body) =>
-          afterMiniboxDupl(tree.symbol.enclClass.info)
+          afterMiniboxInject(tree.symbol.enclClass.info)
           MethodBodiesCollector(tree)
 
           //  This is either a class that has nothing to do with miniboxing or that is the base
           //  class (now trait) for the specialization.
           //  Also collect the bodies of the methods that need to be copied and specialized.
           val sym = tree.symbol.enclClass
-          val decls = afterMiniboxDupl(sym.info).decls.toList
+          val decls = afterMiniboxInject(sym.info).decls.toList
 
           // members
           val specMembers = createMethodTrees(sym) map (localTyper.typed)
@@ -270,7 +270,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
             }
 
           // force the normalized members
-          afterMiniboxDupl(sym.info)
+          afterMiniboxInject(sym.info)
 
           if (metadata.isNormalStem(sym)) {
             // collect method body, it will be necessary
@@ -368,7 +368,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
           ntree
 
         case tapply @ TypeApply(oldFun @ Select(qual, fn), targs) =>
-          afterMiniboxDupl(oldFun.symbol.owner.info)
+          afterMiniboxInject(oldFun.symbol.owner.info)
           val oldSym = oldFun.symbol
           val oldType = tapply.tpe
           val newFun = transform(oldFun)
@@ -416,7 +416,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
               case Select(qual, _) =>
                 val qualTpe = qual.tpe
                 val owner = tree.symbol.owner
-                afterMiniboxDupl(owner.info)
+                afterMiniboxInject(owner.info)
                 var ownerTpe = qualTpe.baseType(owner)
                 if (ownerTpe == NoType)
                     ownerTpe = qualTpe.underlying.baseType(owner)
@@ -472,7 +472,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     def extractNormSpec(targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
       if (metadata.getNormalStem(target) != NoSymbol) {
-        val tparams = afterMiniboxDupl(target.info).typeParams
+        val tparams = afterMiniboxInject(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
         val spec = PartialSpec.fromTargs(tparams, targs, currentOwner)
         metadata.normalOverloads.get(target).flatMap(_.get(spec))
@@ -494,7 +494,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
         case PolyType(tparams, rest) =>
           extractSpec(rest, owner)
         case TypeRef(pre, clazz, targs) =>
-          val tparams = afterMiniboxDupl(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
+          val tparams = afterMiniboxInject(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
           Some(PartialSpec.fromTargs(tparams, targs, owner))
         case _ =>
           // unknown
@@ -612,7 +612,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
       val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
       val tree2 =
         reportError(symbol)(
-          beforeMiniboxDupl(d.retyped(
+          beforeMiniboxInject(d.retyped(
             localTyper.context1.asInstanceOf[d.Context],
             tree,
             source.enclClass,
@@ -692,7 +692,7 @@ trait MiniboxDuplTreeTransformation extends TypingTransformers {
 
     private def isMiniboxedFieldInStem(sel: Select) = sel match {
       case Select(ths, field) if ths.hasSymbolField =>
-        afterMiniboxDupl(ths.symbol.info)
+        afterMiniboxInject(ths.symbol.info)
         val res = metadata.isClassStem(ths.tpe.typeSymbol) &&
           sel.symbol.isField &&
           sel.symbol.tpe.typeSymbol.isTypeParameterOrSkolem &&

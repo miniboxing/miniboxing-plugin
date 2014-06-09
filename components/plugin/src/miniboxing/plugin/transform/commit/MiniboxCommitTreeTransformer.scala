@@ -12,13 +12,13 @@
 //
 package miniboxing.plugin
 package transform
-package spec
+package commit
 
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.typechecker._
 
-trait MiniboxPostTreeTransformer extends TypingTransformers {
-  self: MiniboxSpecComponent =>
+trait MiniboxCommitTreeTransformer extends TypingTransformers {
+  self: MiniboxCommitComponent =>
 
   import global._
   import definitions._
@@ -28,7 +28,7 @@ trait MiniboxPostTreeTransformer extends TypingTransformers {
   override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
     val specTrans = new MiniboxTreeTransformer(unit)
     override def transform(tree: Tree): Tree =
-      afterMiniboxSpec(checkNoStorage(specTrans.transform(tree)))
+      afterMiniboxCommit(checkNoStorage(specTrans.transform(tree)))
   }
 
   def checkNoStorage(tree: Tree) = {

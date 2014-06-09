@@ -18,7 +18,7 @@ import scala.Option.option2Iterable
 import scala.collection.immutable
 
 trait MiniboxNameUtils {
-  self: MiniboxDuplComponent =>
+  self: MiniboxInjectComponent =>
 
   import global._
   import definitions._

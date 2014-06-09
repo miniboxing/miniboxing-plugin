@@ -1,11 +1,9 @@
 Specializing class CCCCC...
-
   // interface:
   abstract trait CCCCC[T] extends Object {
     def test(): Unit
     def test_J(val T_TypeTag: Byte): Unit
   }
-
   // specialized class:
   class CCCCC_J[Tsp] extends CCCCC[Tsp] {
     def <init>(val miniboxing|tests|compile|nested|CCCCC_J|T_TypeTag: Byte,c: Tsp @storage[Long]): miniboxing.tests.compile.nested.CCCCC_J[Tsp] // is a specialized implementation of constructor CCCCC
@@ -14,7 +12,6 @@ Specializing class CCCCC...
     private[this] val c: Tsp @storage[Long]                                // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|CCCCC_J|T_TypeTag: Byte // no info
   }
-
   // specialized class:
   class CCCCC_L[Tsp] extends CCCCC[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.CCCCC_L[Tsp]       // is a specialized implementation of constructor CCCCC
@@ -22,25 +19,21 @@ Specializing class CCCCC...
     def test_J(val T_TypeTag: Byte): Unit                                  // is a forwarder to the specialized member
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.nested {
-  abstract trait CCCCC[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait CCCCC[@miniboxed T] extends Object {
     def test(): Unit;
     def test_J(T_TypeTag: Byte): Unit
   };
-  class CCCCC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.CCCCC[Tsp] {
+  class CCCCC_J[Tsp] extends Object with miniboxing.tests.compile.nested.CCCCC[Tsp] {
     def <init>(miniboxing|tests|compile|nested|CCCCC_J|T_TypeTag: Byte, c: Long): miniboxing.tests.compile.nested.CCCCC_J[Tsp] = {
       CCCCC_J.super.<init>();
       ()
     };
     def test(): Unit = CCCCC_J.this.test_J(CCCCC_J.this.miniboxing|tests|compile|nested|CCCCC_J|T_TypeTag);
     def test_J(T_TypeTag: Byte): Unit = {
-      class DDDDD[U >: Nothing <: Any] extends Object {
+      class DDDDD[U] extends Object {
         <paramaccessor> private[this] val d: U = _;
         def <init>(d: U): DDDDD[U] = {
           DDDDD.super.<init>();
@@ -62,13 +55,13 @@ package miniboxing.tests.compile.nested {
     <paramaccessor> private[this] val c: Long = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|nested|CCCCC_J|T_TypeTag: Byte = _
   };
-  class CCCCC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.CCCCC[Tsp] {
+  class CCCCC_L[Tsp] extends Object with miniboxing.tests.compile.nested.CCCCC[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.CCCCC_L[Tsp] = {
       CCCCC_L.super.<init>();
       ()
     };
     def test(): Unit = {
-      class DDDDD[U >: Nothing <: Any] extends Object {
+      class DDDDD[U] extends Object {
         <paramaccessor> private[this] val d: U = _;
         def <init>(d: U): DDDDD[U] = {
           DDDDD.super.<init>();
@@ -91,5 +84,4 @@ package miniboxing.tests.compile.nested {
     <paramaccessor> private[this] val c: Tsp = _
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

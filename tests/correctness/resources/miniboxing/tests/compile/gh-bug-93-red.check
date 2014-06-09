@@ -1,4 +1,4 @@
-[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+[[syntax trees at end of            minibox-inject]] // newSource1.scala
 package miniboxing.tests.compile.bug69.red1 {
   object Test extends Object {
     def <init>(): miniboxing.tests.compile.bug69.red1.Test.type = {
@@ -6,15 +6,15 @@ package miniboxing.tests.compile.bug69.red1 {
       ()
     };
     def foo(): Nothing = {
-      abstract trait C[@miniboxed T >: Nothing <: Any] extends Object;
-      class C_J[Tsp >: Nothing <: Any] extends Object with C[Tsp] {
+      abstract trait C[@miniboxed T] extends Object;
+      class C_J[Tsp] extends Object with C[Tsp] {
         def <init>(miniboxing|tests|compile|bug69|red1|Test|C_J|T_TypeTag: Byte): C_J[Tsp] = {
           C_J.super.<init>();
           ()
         };
         <paramaccessor> private[this] val miniboxing|tests|compile|bug69|red1|Test|C_J|T_TypeTag: Byte = _
       };
-      class C_L[Tsp >: Nothing <: Any] extends Object with C[Tsp] {
+      class C_L[Tsp] extends Object with C[Tsp] {
         def <init>(): C_L[Tsp] = {
           C_L.super.<init>();
           ()

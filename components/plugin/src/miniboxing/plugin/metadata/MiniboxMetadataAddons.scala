@@ -14,7 +14,7 @@ package miniboxing.plugin
 package metadata
 
 trait MiniboxMetadataAddons {
-  self: MiniboxDuplComponent =>
+  self: MiniboxInjectComponent =>
 
   import global._
   import definitions._
@@ -27,7 +27,7 @@ trait MiniboxMetadataAddons {
     def hasMiniboxedTypeParameters: Boolean =
       sym.typeParams.exists((s: Symbol) => s.isMiniboxAnnotated)
     def isMiniboxAnnotated: Boolean = {
-      beforeMiniboxDupl(sym.info) // make sure the annotation hijacker updated it
+      beforeMiniboxInject(sym.info) // make sure the annotation hijacker updated it
       sym hasAnnotation MinispecClass
     }
     def isField = sym.isValue && !sym.isMethod

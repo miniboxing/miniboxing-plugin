@@ -1,11 +1,9 @@
 Specializing class TParams1...
-
   // interface:
   abstract trait TParams1[T] extends Object {
     def foo[X](t: T,x: X): Int
     def foo_J[X](val T_TypeTag: Byte,t: T @storage[Long],x: X): Int
   }
-
   // specialized class:
   class TParams1_J[Tsp] extends TParams1[Tsp] {
     def <init>(val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] // is a specialized implementation of constructor TParams1
@@ -13,42 +11,36 @@ Specializing class TParams1...
     def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X): Int      // is a specialized implementation of method foo
     private[this] val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte // no info
   }
-
   // specialized class:
   class TParams1_L[Tsp] extends TParams1[Tsp] {
     def <init>(): miniboxing.tests.compile.tparams.TParams1_L[Tsp]         // is a specialized implementation of constructor TParams1
     def foo[X](t: Tsp,x: X): Int                                           // is a specialized implementation of method foo
     def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X): Int      // is a forwarder to the specialized member
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.tparams {
-  abstract trait TParams1[@miniboxed T >: Nothing <: Any] extends Object {
-    def foo[X >: Nothing <: Any](t: T, x: X): Int;
-    def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int
+  abstract trait TParams1[@miniboxed T] extends Object {
+    def foo[X](t: T, x: X): Int;
+    def foo_J[X](T_TypeTag: Byte, t: Long, x: X): Int
   };
-  class TParams1_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
+  class TParams1_J[Tsp] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
     def <init>(miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte): miniboxing.tests.compile.tparams.TParams1_J[Tsp] = {
       TParams1_J.super.<init>();
       ()
     };
-    def foo[X >: Nothing <: Any](t: Tsp, x: X): Int = TParams1_J.this.foo_J[X](TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag), x);
-    def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int = 12;
+    def foo[X](t: Tsp, x: X): Int = TParams1_J.this.foo_J[X](TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TParams1_J.this.miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag), x);
+    def foo_J[X](T_TypeTag: Byte, t: Long, x: X): Int = 12;
     <paramaccessor> private[this] val miniboxing|tests|compile|tparams|TParams1_J|T_TypeTag: Byte = _
   };
-  class TParams1_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
+  class TParams1_L[Tsp] extends Object with miniboxing.tests.compile.tparams.TParams1[Tsp] {
     def <init>(): miniboxing.tests.compile.tparams.TParams1_L[Tsp] = {
       TParams1_L.super.<init>();
       ()
     };
-    def foo[X >: Nothing <: Any](t: Tsp, x: X): Int = 12;
-    def foo_J[X >: Nothing <: Any](T_TypeTag: Byte, t: Long, x: X): Int = TParams1_L.this.foo[X](MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), x)
+    def foo[X](t: Tsp, x: X): Int = 12;
+    def foo_J[X](T_TypeTag: Byte, t: Long, x: X): Int = TParams1_L.this.foo[X](MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), x)
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

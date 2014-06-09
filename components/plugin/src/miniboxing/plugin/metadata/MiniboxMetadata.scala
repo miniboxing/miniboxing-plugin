@@ -16,7 +16,7 @@ package metadata
 import scala.collection.mutable
 
 trait MiniboxMetadata {
-  self: MiniboxDuplComponent =>
+  self: MiniboxInjectComponent =>
 
   import global._
   import definitions._

@@ -1,42 +1,33 @@
 Specializing class F1...
-
   // interface:
   abstract trait F1[T, R] extends Object {
   }
-
   // specialized class:
   class F1_JJ[Tsp, Rsp] extends F1[Tsp,Rsp] {
     def <init>(val miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte,val miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JJ[Tsp,Rsp] // is a specialized implementation of constructor F1
     private[this] val miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte // no info
     private[this] val miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte // no info
   }
-
   // specialized class:
   class F1_LJ[Tsp, Rsp] extends F1[Tsp,Rsp] {
     def <init>(val miniboxing|tests|compile|inheritance|F1_LJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_LJ[Tsp,Rsp] // is a specialized implementation of constructor F1
     private[this] val miniboxing|tests|compile|inheritance|F1_LJ|R_TypeTag: Byte // no info
   }
-
   // specialized class:
   class F1_JL[Tsp, Rsp] extends F1[Tsp,Rsp] {
     def <init>(val miniboxing|tests|compile|inheritance|F1_JL|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JL[Tsp,Rsp] // is a specialized implementation of constructor F1
     private[this] val miniboxing|tests|compile|inheritance|F1_JL|T_TypeTag: Byte // no info
   }
-
   // specialized class:
   class F1_LL[Tsp, Rsp] extends F1[Tsp,Rsp] {
     def <init>(): miniboxing.tests.compile.inheritance.F1_LL[Tsp,Rsp]      // is a specialized implementation of constructor F1
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
-  abstract trait F1[@miniboxed T >: Nothing <: Any, @miniboxed R >: Nothing <: Any] extends Object;
-  class F1_JJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
+  abstract trait F1[@miniboxed T, @miniboxed R] extends Object;
+  class F1_JJ[Tsp, Rsp] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte, miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JJ[Tsp,Rsp] = {
       F1_JJ.super.<init>();
       ()
@@ -44,32 +35,31 @@ package miniboxing.tests.compile.inheritance {
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte = _
   };
-  class F1_JL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
+  class F1_JL[Tsp, Rsp] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(miniboxing|tests|compile|inheritance|F1_JL|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JL[Tsp,Rsp] = {
       F1_JL.super.<init>();
       ()
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JL|T_TypeTag: Byte = _
   };
-  class F1_LJ[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
+  class F1_LJ[Tsp, Rsp] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(miniboxing|tests|compile|inheritance|F1_LJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_LJ[Tsp,Rsp] = {
       F1_LJ.super.<init>();
       ()
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_LJ|R_TypeTag: Byte = _
   };
-  class F1_LL[Tsp >: Nothing <: Any, Rsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
+  class F1_LL[Tsp, Rsp] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
     def <init>(): miniboxing.tests.compile.inheritance.F1_LL[Tsp,Rsp] = {
       F1_LL.super.<init>();
       ()
     }
   };
-  class Predicate[T >: Nothing <: Any] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Int] {
+  class Predicate[T] extends miniboxing.tests.compile.inheritance.F1_LJ[T,Int] {
     def <init>(): miniboxing.tests.compile.inheritance.Predicate[T] = {
       Predicate.super.<init>(5);
       ()
     }
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

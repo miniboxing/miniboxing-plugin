@@ -1,14 +1,14 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait VerifyArrayOps[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait VerifyArrayOps[@miniboxed T] extends Object {
     <stable> <accessor> def x(): Array[T];
     def reverse(): Unit;
     def reverse_J(T_TypeTag: Byte): Unit;
     <stable> <accessor> def x_J(T_TypeTag: Byte): Array[T]
   };
-  class VerifyArrayOps_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
+  class VerifyArrayOps_J[Tsp] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
     def <init>(miniboxing|tests|compile|VerifyArrayOps_J|T_TypeTag: Byte, evidence$1: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_J[Tsp] = {
       VerifyArrayOps_J.super.<init>();
       ()
@@ -40,7 +40,7 @@ package miniboxing.tests.compile {
     <stable> <accessor> def x(): Array[Tsp] = VerifyArrayOps_J.this.x_J(VerifyArrayOps_J.this.miniboxing|tests|compile|VerifyArrayOps_J|T_TypeTag);
     <stable> <accessor> def x_J(T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_J.this.x
   };
-  class VerifyArrayOps_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
+  class VerifyArrayOps_L[Tsp] extends Object with miniboxing.tests.compile.VerifyArrayOps[Tsp] {
     def <init>(evidence$1: scala.reflect.Manifest[Tsp]): miniboxing.tests.compile.VerifyArrayOps_L[Tsp] = {
       VerifyArrayOps_L.super.<init>();
       ()
@@ -72,5 +72,4 @@ package miniboxing.tests.compile {
     <stable> <accessor> def x_J(T_TypeTag: Byte): Array[Tsp] = VerifyArrayOps_L.this.x()
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

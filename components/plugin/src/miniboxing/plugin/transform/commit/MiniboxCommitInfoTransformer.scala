@@ -12,13 +12,12 @@
 //
 package miniboxing.plugin
 package transform
-package spec
+package commit
 
 import scala.tools.nsc.transform.InfoTransform
-import miniboxing.plugin.MiniboxSpecComponent
 
-trait MiniboxPostInfoTransformer extends InfoTransform {
-  this: MiniboxSpecComponent =>
+trait MiniboxCommitInfoTransformer extends InfoTransform {
+  this: MiniboxCommitComponent =>
 
   import global._
   import definitions._
@@ -47,7 +46,7 @@ trait MiniboxPostInfoTransformer extends InfoTransform {
       case tpe if tpe.annotations.exists(ann => ann.tpe.typeSymbol == StorageClass) =>
         val annots = tpe.annotations.filter(ann => ann.tpe.typeSymbol == StorageClass)
         if (annots.length != 1)
-          global.reporter.error(symbol.pos, s"Multiple annotations found for $symbol: ${beforeMiniboxSpec(symbol.tpe)}")
+          global.reporter.error(symbol.pos, s"Multiple annotations found for $symbol: ${beforeMiniboxCommit(symbol.tpe)}")
         val annot = annots.head
         annot.tpe.typeArgs(0)
       case _ =>

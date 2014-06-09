@@ -1,13 +1,13 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait Dist2[@miniboxed A >: Nothing <: Any] extends Object {
+  abstract trait Dist2[@miniboxed A] extends Object {
     def apply(a: A): A;
     def iterateUntil(): miniboxing.tests.compile.Dist2[A];
     def apply_J(A_TypeTag: Byte, a: Long): Long
   };
-  abstract class Dist2_J[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+  abstract class Dist2_J[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
     def <init>(miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte): miniboxing.tests.compile.Dist2_J[Asp] = {
       Dist2_J.super.<init>();
       ()
@@ -28,7 +28,7 @@ package miniboxing.tests.compile {
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte = _
   };
-  abstract class Dist2_L[Asp >: Nothing <: Any] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+  abstract class Dist2_L[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
     def <init>(): miniboxing.tests.compile.Dist2_L[Asp] = {
       Dist2_L.super.<init>();
       ()
@@ -48,5 +48,4 @@ package miniboxing.tests.compile {
     }
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

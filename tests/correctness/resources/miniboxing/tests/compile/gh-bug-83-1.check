@@ -2,11 +2,11 @@ newSource1.scala:5: warning: Side-effecting constructor statement will not be sp
 This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
   t = t2
     ^
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug83.alt1 {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait C[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def t1(): T;
     <stable> <accessor> <paramaccessor> def t2(): T;
     <accessor> def t(): T;
@@ -18,7 +18,7 @@ package miniboxing.tests.compile.bug83.alt1 {
     <stable> <accessor> def t1_J(T_TypeTag: Byte): Long;
     <stable> <accessor> def t2_J(T_TypeTag: Byte): Long
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug83.alt1.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.tests.compile.bug83.alt1.C[Tsp] {
     def <init>(miniboxing|tests|compile|bug83|alt1|C_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.bug83.alt1.C_J[Tsp] = {
       C_J.super.<init>();
       ()
@@ -36,7 +36,7 @@ package miniboxing.tests.compile.bug83.alt1 {
     <stable> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](C_J.this.t2_J(C_J.this.miniboxing|tests|compile|bug83|alt1|C_J|T_TypeTag), C_J.this.miniboxing|tests|compile|bug83|alt1|C_J|T_TypeTag);
     <stable> <accessor> def t2_J(T_TypeTag: Byte): Long = C_J.this.t2
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug83.alt1.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.tests.compile.bug83.alt1.C[Tsp] {
     def <init>(t1: Tsp, t2: Tsp): miniboxing.tests.compile.bug83.alt1.C_L[Tsp] = {
       C_L.super.<init>();
       ()
@@ -64,5 +64,4 @@ package miniboxing.tests.compile.bug83.alt1 {
     }
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

@@ -1,12 +1,12 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
-  abstract trait ArgumentRewire[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait ArgumentRewire[@miniboxed T] extends Object {
     def test(t: T): T;
     def test_J(T_TypeTag: Byte, t: Long): Long
   };
-  class ArgumentRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
+  class ArgumentRewire_J[Tsp] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
     def <init>(miniboxing|tests|compile|ArgumentRewire_J|T_TypeTag: Byte): miniboxing.tests.compile.ArgumentRewire_J[Tsp] = {
       ArgumentRewire_J.super.<init>();
       ()
@@ -19,7 +19,7 @@ package miniboxing.tests.compile {
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|ArgumentRewire_J|T_TypeTag: Byte = _
   };
-  class ArgumentRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
+  class ArgumentRewire_L[Tsp] extends Object with miniboxing.tests.compile.ArgumentRewire[Tsp] {
     def <init>(): miniboxing.tests.compile.ArgumentRewire_L[Tsp] = {
       ArgumentRewire_L.super.<init>();
       ()
@@ -31,11 +31,11 @@ package miniboxing.tests.compile {
     };
     def test_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](ArgumentRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
   };
-  abstract trait LocalRewire[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait LocalRewire[@miniboxed T] extends Object {
     def test(t: T): T;
     def test_J(T_TypeTag: Byte, t: Long): Long
   };
-  class LocalRewire_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
+  class LocalRewire_J[Tsp] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
     def <init>(miniboxing|tests|compile|LocalRewire_J|T_TypeTag: Byte): miniboxing.tests.compile.LocalRewire_J[Tsp] = {
       LocalRewire_J.super.<init>();
       ()
@@ -49,7 +49,7 @@ package miniboxing.tests.compile {
     };
     <paramaccessor> private[this] val miniboxing|tests|compile|LocalRewire_J|T_TypeTag: Byte = _
   };
-  class LocalRewire_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
+  class LocalRewire_L[Tsp] extends Object with miniboxing.tests.compile.LocalRewire[Tsp] {
     def <init>(): miniboxing.tests.compile.LocalRewire_L[Tsp] = {
       LocalRewire_L.super.<init>();
       ()
@@ -63,5 +63,4 @@ package miniboxing.tests.compile {
     def test_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](LocalRewire_L.this.test(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

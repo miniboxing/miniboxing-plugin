@@ -1,10 +1,10 @@
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.test.compile.bugs63 {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait C[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
     def <init>(miniboxing|test|compile|bugs63|C_J|T_TypeTag: Byte, t: Long): miniboxing.test.compile.bugs63.C_J[Tsp] = {
       C_J.super.<init>();
       ()
@@ -14,7 +14,7 @@ package miniboxing.test.compile.bugs63 {
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](C_J.this.t_J(C_J.this.miniboxing|test|compile|bugs63|C_J|T_TypeTag), C_J.this.miniboxing|test|compile|bugs63|C_J|T_TypeTag);
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long = C_J.this.t
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
     def <init>(t: Tsp): miniboxing.test.compile.bugs63.C_L[Tsp] = {
       C_L.super.<init>();
       ()

@@ -1,12 +1,12 @@
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.correctness.erasure.torture2 {
-  abstract trait A[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait A[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def a(): Array[T];
     def foo(c: Boolean): Any
   };
-  class A_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
+  class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
     def <init>(miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag: Byte, a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -32,7 +32,7 @@ package miniboxing.tests.correctness.erasure.torture2 {
     <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag: Byte = _;
     <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A_J.this.a
   };
-  class A_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
+  class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
     def <init>(a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A_L[Tsp] = {
       A_L.super.<init>();
       ()
@@ -58,5 +58,4 @@ package miniboxing.tests.correctness.erasure.torture2 {
     <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A_L.this.a
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]

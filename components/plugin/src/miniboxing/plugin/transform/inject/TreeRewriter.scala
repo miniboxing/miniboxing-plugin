@@ -13,13 +13,12 @@
 //
 package miniboxing.plugin
 package transform
-package dupl
+package inject
 
-import miniboxing.plugin.MiniboxDuplComponent
 import scala.language.implicitConversions
 
 trait TreeRewriters {
-  this: MiniboxDuplComponent =>
+  this: MiniboxInjectComponent =>
 
   import global._
 

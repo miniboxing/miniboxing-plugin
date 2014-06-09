@@ -5,7 +5,7 @@
 
 package miniboxing.plugin
 package transform
-package dupl
+package inject
 
 import scala.tools.nsc._
 import scala.tools.nsc.typechecker._

@@ -1,13 +1,13 @@
-[[syntax trees at end of              minibox-dupl]] // newSource1.scala
+[[syntax trees at end of            minibox-inject]] // newSource1.scala
 package miniboxing.tests.compile.bug88 {
-  abstract trait CCC[@miniboxed T >: Nothing <: Any] extends Object {
+  abstract trait CCC[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def c(): T;
-    abstract trait DDD[@miniboxed U >: Nothing <: Any] extends Object {
+    abstract trait DDD[@miniboxed U] extends Object {
       <stable> <accessor> <paramaccessor> def d(): U;
       def foo(): Unit;
       <stable> <accessor> def d_J(U_TypeTag: Byte): U @storage[Long]
     };
-    class DDD_J[Usp >: Nothing <: Any] extends Object with CCC.this.DDD[Usp] {
+    class DDD_J[Usp] extends Object with CCC.this.DDD[Usp] {
       def <init>(miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte, d: Usp @storage[Long]): CCC.this.DDD_J[Usp] = {
         DDD_J.super.<init>();
         ()
@@ -18,7 +18,7 @@ package miniboxing.tests.compile.bug88 {
       <stable> <accessor> <paramaccessor> def d(): Usp = DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag);
       <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage[Long] = DDD_J.this.d
     };
-    class DDD_L[Usp >: Nothing <: Any] extends Object with CCC.this.DDD[Usp] {
+    class DDD_L[Usp] extends Object with CCC.this.DDD[Usp] {
       def <init>(d: Usp): CCC.this.DDD_L[Usp] = {
         DDD_L.super.<init>();
         ()
@@ -30,7 +30,7 @@ package miniboxing.tests.compile.bug88 {
     };
     <stable> <accessor> def c_J(T_TypeTag: Byte): T @storage[Long]
   };
-  class CCC_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+  class CCC_J[Tsp] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
     def <init>(miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte, c: Tsp @storage[Long]): miniboxing.tests.compile.bug88.CCC_J[Tsp] = {
       CCC_J.super.<init>();
       ()
@@ -40,7 +40,7 @@ package miniboxing.tests.compile.bug88 {
     <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_J.this.c_J(CCC_J.this.miniboxing|tests|compile|bug88|CCC_J|T_TypeTag);
     <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage[Long] = CCC_J.this.c
   };
-  class CCC_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+  class CCC_L[Tsp] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.bug88.CCC_L[Tsp] = {
       CCC_L.super.<init>();
       ()

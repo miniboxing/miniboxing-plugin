@@ -13,14 +13,14 @@
 //
 package miniboxing.plugin
 package transform
-package dupl
+package inject
 
 import scala.tools.nsc.transform.InfoTransform
 import scala.reflect.internal.Flags._
 import scala.collection.mutable.HashMap
 
-trait MiniboxDuplInfoTransformation extends InfoTransform {
-  self: MiniboxDuplComponent =>
+trait MiniboxInjectInfoTransformation extends InfoTransform {
+  self: MiniboxInjectComponent =>
 
   import global._
   import definitions._
@@ -140,7 +140,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
     import specializationProcedures._
 
     // force info on parents to get all specialized metadata
-    afterMiniboxDupl(stemClassTpe.parents.map(_.typeSymbol.info))
+    afterMiniboxInject(stemClassTpe.parents.map(_.typeSymbol.info))
     val specs =
       if (heuristics.isSpecializableClass(stemClass))
         variants.allSpecializations(stemClass.info.typeParams)
@@ -173,7 +173,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
 
             // TODO: overrides in the specialized class
             if (stemClass.owner.info.decls != EmptyScope)
-              afterMiniboxDupl(stemClass.owner.info.decls enter variantClass)
+              afterMiniboxInject(stemClass.owner.info.decls enter variantClass)
 
             variantClass
         }
@@ -388,7 +388,7 @@ trait MiniboxDuplInfoTransformation extends InfoTransform {
         val newTParams: List[Symbol] = stemClass.typeParams.map(pmapOldToNew)
         GenPolyType(newTParams, ClassInfoType(sParents, variantClassScope, variantClass))
       }
-      afterMiniboxDupl(variantClass setInfo specializedInfoType)
+      afterMiniboxInject(variantClass setInfo specializedInfoType)
 
       // step6: Add type tag fields for each parameter
       val typeTagMap: List[(Symbol, Symbol)] =

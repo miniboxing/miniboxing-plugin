@@ -12,7 +12,7 @@
 //
 package miniboxing.plugin
 package transform
-package adapt
+package coerce
 
 /*
                                            .. ,:~~:,.
@@ -68,7 +68,7 @@ package adapt
   ASCII transformation: www.glassgiant.com/ascii/
 */
 trait MiniboxAnnotationCheckers {
-  this: MiniboxAdaptComponent =>
+  this: MiniboxCoerceComponent =>
 
   import global._
   import minibox._
@@ -83,7 +83,7 @@ trait MiniboxAnnotationCheckers {
      *  LDL FTW -- Boil frog, boil!
      */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
-      if (mboxAdaptPhase != null && global.phase.id > mboxAdaptPhase.id) {
+      if (mboxCoercePhase != null && global.phase.id > mboxCoercePhase.id) {
         val res11 = tpe1.isStorage == tpe2.isStorage
         val res12 = res11 && (!tpe1.isStorage || (tpe1.getStorageRepr == tpe2.getStorageRepr))
         val res2 = tpe1.isWildcard || tpe2.isWildcard

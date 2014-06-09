@@ -13,7 +13,7 @@
 //
 package miniboxing.plugin
 package transform
-package adapt
+package coerce
 
 import scala.tools.nsc._
 import scala.tools.nsc.typechecker._
@@ -21,8 +21,8 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.util.DynamicVariable
 import scala.collection.immutable.ListMap
 
-trait MiniboxAdaptTreeTransformer extends TypingTransformers {
-  self: MiniboxAdaptComponent =>
+trait MiniboxCoerceTreeTransformer extends TypingTransformers {
+  self: MiniboxCoerceComponent =>
 
   import minibox._
   import global._
@@ -41,8 +41,8 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
     def isStorage: Boolean = tree.tpe.isStorage
   }
 
-  class AdaptPhase(prev: Phase) extends StdPhase(prev) {
-    override def name = MiniboxAdaptTreeTransformer.this.phaseName
+  class CoercePhase(prev: Phase) extends StdPhase(prev) {
+    override def name = MiniboxCoerceTreeTransformer.this.phaseName
     override def checkable = false
     def apply(unit: CompilationUnit): Unit = {
 
@@ -50,7 +50,7 @@ trait MiniboxAdaptTreeTransformer extends TypingTransformers {
       // if any instantiation wasn't done properly.
       adaptClassFieldsAndCtors()
 
-      val tree = afterMiniboxAdapt(new TreeAdapters().adapt(unit))
+      val tree = afterMiniboxCoerce(new TreeAdapters().adapt(unit))
       tree.foreach(node => assert(node.tpe != null, node))
     }
 

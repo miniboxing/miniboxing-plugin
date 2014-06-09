@@ -1,55 +1,41 @@
 Specializing class C...
-
   // interface:
   abstract trait C[T] extends Object {
     class D[U] extends Object
   }
-
   // specialized class:
   class C_J[Tsp] extends C[Tsp] {
     def <init>(val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte,c: Tsp @storage[Long]): miniboxing.tests.compile.nested.C_J[Tsp] // is a specialized implementation of constructor C
     private[this] val c: Tsp @storage[Long]                                // is a specialized implementation of value c
     private[this] val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte  // no info
   }
-
   // specialized class:
   class C_L[Tsp] extends C[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.C_L[Tsp]           // is a specialized implementation of constructor C
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
-
-
-
-
 Specializing class D...
-
   // interface:
   abstract trait D[U] extends Object {
   }
-
   // specialized class:
   class D_J[Usp] extends C.this.D[Usp] {
     def <init>(val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte,d: Usp @storage[Long]): C.this.D_J[Usp] // is a specialized implementation of constructor D
     private[this] val d: Usp @storage[Long]                                // is a specialized implementation of value d
     private[this] val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte // no info
   }
-
   // specialized class:
   class D_L[Usp] extends C.this.D[Usp] {
     def <init>(d: Usp): C.this.D_L[Usp]                                    // is a specialized implementation of constructor D
     private[this] val d: Usp                                               // is a specialized implementation of value d
   }
-
-
-
-
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[[syntax trees at end of              minibox-spec]] // newSource1.scala
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.nested {
-  abstract trait C[@miniboxed T >: Nothing <: Any] extends Object {
-    abstract trait D[@miniboxed U >: Nothing <: Any] extends Object;
-    class D_J[Usp >: Nothing <: Any] extends Object with C.this.D[Usp] {
+  abstract trait C[@miniboxed T] extends Object {
+    abstract trait D[@miniboxed U] extends Object;
+    class D_J[Usp] extends Object with C.this.D[Usp] {
       def <init>(miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte, d: Long): C.this.D_J[Usp] = {
         D_J.super.<init>();
         ()
@@ -57,7 +43,7 @@ package miniboxing.tests.compile.nested {
       <paramaccessor> private[this] val d: Long = _;
       <paramaccessor> private[this] val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte = _
     };
-    class D_L[Usp >: Nothing <: Any] extends Object with C.this.D[Usp] {
+    class D_L[Usp] extends Object with C.this.D[Usp] {
       def <init>(d: Usp): C.this.D_L[Usp] = {
         D_L.super.<init>();
         ()
@@ -65,7 +51,7 @@ package miniboxing.tests.compile.nested {
       <paramaccessor> private[this] val d: Usp = _
     }
   };
-  class C_J[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
+  class C_J[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
     def <init>(miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte, c: Long): miniboxing.tests.compile.nested.C_J[Tsp] = {
       C_J.super.<init>();
       ()
@@ -73,7 +59,7 @@ package miniboxing.tests.compile.nested {
     <paramaccessor> private[this] val c: Long = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte = _
   };
-  class C_L[Tsp >: Nothing <: Any] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
+  class C_L[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
     def <init>(c: Tsp): miniboxing.tests.compile.nested.C_L[Tsp] = {
       C_L.super.<init>();
       ()
@@ -81,5 +67,4 @@ package miniboxing.tests.compile.nested {
     <paramaccessor> private[this] val c: Tsp = _
   }
 }
-
-[Now checking: minibox-spec]
+[Now checking: minibox-commit]
