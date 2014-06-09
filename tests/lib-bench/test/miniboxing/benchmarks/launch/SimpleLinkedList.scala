@@ -20,25 +20,24 @@ trait TestConfiguration {
   object scalablitz
 
   val sizes = {
-    Gen.range("size")(from = 50000, upto = 1000000, hop = 50000)
-    Gen.range("size")(from = 500000, upto = 500000, hop = 500000)
+    Gen.range("size")(from = 100000, upto = 500000, hop = 100000)
   }
-  val tests = List(specialized) // miniboxed, specialized, generic, library)
+  val tests = List(miniboxed, specialized, generic) // library
 
   def step = 5.0
   def zero = 3.0
 
   def testSettings =
     Seq[KeyValue](
-      exec.benchRuns -> 20,
+      exec.benchRuns -> 10,
       exec.minWarmupRuns -> 10,
       exec.minWarmupRuns -> 20,
-      exec.independentSamples -> 10,
-      exec.outliers.suspectPercent -> 50,
-      exec.jvmflags -> "-Xmx16g -Xms16g  -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA"
+      exec.independentSamples -> 2,
+      exec.outliers.suspectPercent -> 25,
+      exec.jvmflags -> "" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
     )
 
-  def ignoreRunsWithGC = true
+  def ignoreRunsWithGC = false
 }
 
 trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
@@ -70,7 +69,7 @@ trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
   def persistor = Persistor.None
 
   def report(bench: String) =
-    println(s"Starting $bench benchmarks. Lay back, it might take a few minutes to stabilize...")
+    println(s"Starting $bench benchmark. Lay back, it might take a few minutes to stabilize...")
 }
 
 
