@@ -20,7 +20,7 @@ trait TestConfiguration {
   object scalablitz
 
   val sizes = {
-    Gen.range("size")(from = 100000, upto = 500000, hop = 100000)
+    Gen.range("size")(from = 100000, upto = 300000, hop = 100000)
   }
   val tests = List(miniboxed, specialized, generic) // library
 
