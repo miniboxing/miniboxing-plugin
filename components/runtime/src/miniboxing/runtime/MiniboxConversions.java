@@ -1,3 +1,15 @@
+//
+//     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+//    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+//   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+//  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+//  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+//          \/          \/          \/               \/         \/ /_____/
+// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+//
+// Authors:
+//    * Vlad Ureche
+//
 package miniboxing.runtime;
 
 import miniboxing.runtime.MiniboxConstants;
@@ -5,24 +17,8 @@ import miniboxing.runtime.MiniboxConstants;
 
 public class MiniboxConversions {
 
-  public final static scala.runtime.BoxedUnit minibox2unit(long l) {
-    return scala.runtime.BoxedUnit.UNIT;
-  }
-
-  public final static boolean minibox2boolean(long l) {
-    return (l != 0);
-  }
-
-  public final static byte minibox2byte(long l) {
-    return (byte)l;
-  }
-
   public final static char minibox2char(long l) {
     return (char)l;
-  }
-
-  public final static short minibox2short(long l) {
-    return (short)l;
   }
 
   public final static int minibox2int(long l) {
@@ -41,24 +37,8 @@ public class MiniboxConversions {
     return Double.longBitsToDouble(l);
   }
 
-  public final static long unit2minibox(scala.runtime.BoxedUnit u) {
-    return 0;
-  }
-
-  public final static long boolean2minibox(boolean b) {
-    return b?1:0;
-  }
-
-  public final static long byte2minibox(byte b) {
-    return b;
-  }
-
   public final static long char2minibox(char c) {
     return c;
-  }
-
-  public final static long short2minibox(short s) {
-    return s;
   }
 
   public final static long int2minibox(int i) {
@@ -91,19 +71,19 @@ public class MiniboxConversions {
    */
   @SuppressWarnings("unchecked")
   public final static <T> T minibox2box(long l, byte tag) {
+// NOTE: We can't treat "null" correctly anyway, due to the scalac numeric conversions
+//  val i: Int = null
+//  println(i) // produces 0
+//
+//    if (l == Long.MIN_VALUE)
+//      return null;
+//    else
+//    return (T)minibox2box_deep(l, tag);
     return (T)minibox2box_deep(l, tag);
   }
 
   private final static Object minibox2box_deep(long l, byte tag) {
     switch(tag) {
-      case MiniboxConstants.UNIT:
-        return scala.runtime.BoxedUnit.UNIT;
-      case MiniboxConstants.BOOLEAN:
-        return (l != 0)?true:false;
-      case MiniboxConstants.BYTE:
-        return (byte)l;
-      case MiniboxConstants.SHORT:
-        return (short)l;
       case MiniboxConstants.CHAR:
         return (char)l;
       case MiniboxConstants.INT:
@@ -117,26 +97,25 @@ public class MiniboxConversions {
     }
   }
 
-
   // TODO: This needs to be removed, it's here just for
   // some stupid old benchmarks nobody cares about.
   public final static long box2minibox(Object a) {
     return 0;
   }
 
-    /*
+  public final static <T> long box2minibox_tt(T a, byte tag) {
+    if (a == null)
+//      return Long.MIN_VALUE;
+      return 0l;
+    else
+      return box2minibox_deep(a, tag);
+  }
+
+  /*
    *  Used in the rewiring, to keep the type and tag on all types
    */
-  public final static <T> long box2minibox_tt(T a, byte tag) {
+  public final static <T> long box2minibox_deep(T a, byte tag) {
     switch(tag) {
-      case MiniboxConstants.UNIT:
-        return 0;
-      case MiniboxConstants.BOOLEAN:
-        return ((java.lang.Boolean)a)?1:0;
-      case MiniboxConstants.BYTE:
-        return (java.lang.Byte)a;
-      case MiniboxConstants.SHORT:
-        return (java.lang.Short)a;
       case MiniboxConstants.CHAR:
         return (java.lang.Character)a;
       case MiniboxConstants.INT:
@@ -144,9 +123,13 @@ public class MiniboxConversions {
       case MiniboxConstants.FLOAT:
         return Float.floatToIntBits((java.lang.Float)a);
       case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits((java.lang.Long)a);
+        return Double.doubleToLongBits((java.lang.Double)a);
       default:
         return (java.lang.Long)a;
     }
+  }
+
+  public final static <T> T unreachableConversion(String repr1, String repr2) {
+    throw new Error("Unreachable conversion from " + repr1 + " to " + repr2 + ". Did you cast? :p");
   }
 }

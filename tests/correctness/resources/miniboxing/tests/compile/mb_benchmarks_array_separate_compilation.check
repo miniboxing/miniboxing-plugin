@@ -1,0 +1,23 @@
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of              minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.separate {
+  object Test2 extends Object with App {
+    def <init>(): miniboxing.tests.compile.separate.Test2.type = {
+      Test2.super.<init>();
+      ()
+    };
+    private[this] val a: miniboxing.tests.compile.separate.MBResizableArray[Int] = new miniboxing.tests.compile.separate.MBResizableArray_J[Int](5, scala.this.Predef.implicitly[scala.reflect.Manifest[Int]](reflect.this.ManifestFactory.Int()));
+    <stable> <accessor> def a(): miniboxing.tests.compile.separate.MBResizableArray[Int] = Test2.this.a;
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(1));
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(2));
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(3));
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(4));
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(5));
+    Test2.this.a().add_J(5, MiniboxConversions.this.int2minibox(6));
+    Test2.this.a().reverse_J(5);
+    scala.this.Predef.assert(Test2.this.a().contains_J(5, MiniboxConversions.this.int2minibox(3)))
+  }
+}
+
+[Now checking: minibox-commit]

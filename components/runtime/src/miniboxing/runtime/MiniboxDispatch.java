@@ -1,3 +1,15 @@
+//
+//     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+//    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+//   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+//  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+//  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+//          \/          \/          \/               \/         \/ /_____/
+// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+//
+// Authors:
+//    * Vlad Ureche
+//
 package miniboxing.runtime;
 
 import miniboxing.runtime.MiniboxConstants;
@@ -6,14 +18,6 @@ public class MiniboxDispatch {
 
   public final static String mboxed_toString(long x, byte tag) {
     switch(tag) {
-      case MiniboxConstants.UNIT:
-        return scala.runtime.BoxedUnit.UNIT.toString();
-      case MiniboxConstants.BOOLEAN:
-        return Boolean.valueOf(x != 0).toString();
-      case MiniboxConstants.BYTE:
-        return Byte.valueOf((byte)x).toString();
-      case MiniboxConstants.SHORT:
-        return Short.valueOf((short)x).toString();
       case MiniboxConstants.CHAR:
         return Character.valueOf((char)x).toString();
       case MiniboxConstants.INT:
@@ -59,14 +63,6 @@ public class MiniboxDispatch {
 
   public final static int mboxed_hashCode(long x, byte tag) {
     switch(tag) {
-      case MiniboxConstants.UNIT:
-        return scala.runtime.BoxedUnit.UNIT.hashCode();
-      case MiniboxConstants.BOOLEAN:
-        return Boolean.valueOf(x != 0).hashCode();
-      case MiniboxConstants.BYTE:
-        return Byte.valueOf((byte)x).hashCode();
-      case MiniboxConstants.SHORT:
-        return Short.valueOf((short)x).hashCode();
       case MiniboxConstants.CHAR:
         return Character.valueOf((char)x).hashCode();
       case MiniboxConstants.INT:

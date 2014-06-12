@@ -1,1 +1,0 @@
--Xprint:minibox-spec -P:minibox:log -Ycheck:minibox-dupl -Ycheck:minibox-spec -P:minibox:spec-no-opt

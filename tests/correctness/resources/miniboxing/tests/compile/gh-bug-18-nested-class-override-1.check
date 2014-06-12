@@ -1,0 +1,49 @@
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile {
+  abstract trait Dist1[@miniboxed A] extends Object {
+    def apply(a: A): A;
+    def iterateUntil(): miniboxing.tests.compile.Dist1[A];
+    def apply_J(A_TypeTag: Byte, a: Long): Long
+  };
+  abstract class Dist1_J[Asp] extends Object with miniboxing.tests.compile.Dist1[Asp] {
+    def <init>(miniboxing|tests|compile|Dist1_J|A_TypeTag: Byte): miniboxing.tests.compile.Dist1_J[Asp] = {
+      Dist1_J.super.<init>();
+      ()
+    };
+    def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Dist1_J.this.apply_J(Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag)), Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
+    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def iterateUntil(): miniboxing.tests.compile.Dist1[Asp] = {
+      final class $anon extends miniboxing.tests.compile.Dist1_J[Asp] {
+        def <init>(): anonymous class $anon = {
+          $anon.super.<init>(Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
+          ()
+        };
+        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply_J(Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag)), Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
+        override def apply_J(A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A_TypeTag)
+      };
+      new anonymous class $anon()
+    };
+    <paramaccessor> private[this] val miniboxing|tests|compile|Dist1_J|A_TypeTag: Byte = _
+  };
+  abstract class Dist1_L[Asp] extends Object with miniboxing.tests.compile.Dist1[Asp] {
+    def <init>(): miniboxing.tests.compile.Dist1_L[Asp] = {
+      Dist1_L.super.<init>();
+      ()
+    };
+    def apply(a: Asp): Asp;
+    def apply_J(A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](Dist1_L.this.apply(MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag)), A_TypeTag);
+    def iterateUntil(): miniboxing.tests.compile.Dist1[Asp] = {
+      final class $anon extends miniboxing.tests.compile.Dist1_L[Asp] {
+        def <init>(): anonymous class $anon = {
+          $anon.super.<init>();
+          ()
+        };
+        def apply(a: Asp): Asp = scala.this.Predef.???()
+      };
+      new anonymous class $anon()
+    }
+  }
+}
+[Now checking: minibox-commit]

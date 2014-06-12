@@ -1,6 +1,0 @@
-newSource1.scala:11: warning: Side-effecting constructor statement will not be specialized in miniboxing annotated class/trait C. (internal tree: C.this.t_=(C.this.t2()))
-  t = t2
-    ^
-[Now checking: minibox-dupl]
-[Not checkable: minibox-adapt]
-[Now checking: minibox-spec]

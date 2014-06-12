@@ -1,6 +1,30 @@
 #!/bin/bash
-DIR=../tests/correctness/src/miniboxing/tests/compile/
-cp $1 $DIR
-vim $DIR/${1/\.scala/.flags}
-vim $DIR/${1/\.scala/.check}
-ls $DIR/${1/\.scala/\*}
+DIR=../tests/correctness/resources/miniboxing/tests/compile/
+
+if [ $# -lt 1 -o ! -f "$1" ]
+then
+  echo "$0 <test file>"
+  exit 1
+fi
+
+FILE=$1
+shift
+
+# file
+cp $FILE $DIR
+
+# command-line args
+if [ $# -eq 0 ]
+then
+  vim $DIR/${FILE/\.scala/.flags}
+else
+  echo $@ > $DIR/${FILE/\.scala/.flags}
+fi
+
+# checked output
+vim $DIR/${FILE/\.scala/.check}
+sed -i "s/$FILE/newSource1.scala/" $DIR/${FILE/\.scala/.check}
+
+# launch configuration
+vim $DIR/${FILE/\.scala/.launch}
+ls $DIR/${FILE/\.scala/\*}

@@ -1,0 +1,23 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug53 {
+  object Test1 extends Object {
+    def <init>(): miniboxing.tests.compile.bug53.Test1.type = {
+      Test1.super.<init>();
+      ()
+    };
+    abstract trait BUG53[@miniboxed T] extends Object;
+    class BUG53_J[Tsp] extends Object with miniboxing.tests.compile.bug53.Test1.BUG53[Tsp] {
+      def <init>(miniboxing|tests|compile|bug53|Test1|BUG53_J|T_TypeTag: Byte): miniboxing.tests.compile.bug53.Test1.BUG53_J[Tsp] = {
+        BUG53_J.super.<init>();
+        ()
+      };
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug53|Test1|BUG53_J|T_TypeTag: Byte = _
+    };
+    class BUG53_L[Tsp] extends Object with miniboxing.tests.compile.bug53.Test1.BUG53[Tsp] {
+      def <init>(): miniboxing.tests.compile.bug53.Test1.BUG53_L[Tsp] = {
+        BUG53_L.super.<init>();
+        ()
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+newSource1.scala:7: error: The program is accessing field c of miniboxed class/trait CCC, a pattern which becomes invalid after the
+miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier:
+  val c: T".
+    def foo() = println(c == d)
+                        ^

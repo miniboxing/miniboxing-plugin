@@ -1,0 +1,14 @@
+[[syntax trees at end of            minibox-inject]] // newSource1.scala
+package miniboxing.tests.compile.bug93 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug93.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def bar(): Unit = {
+      def baz[@miniboxed T](t: T): T = t;
+      def baz_n_J[T](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
+      ()
+    }
+  }
+}

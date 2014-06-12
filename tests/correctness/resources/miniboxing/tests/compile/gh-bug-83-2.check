@@ -1,0 +1,4 @@
+newSource1.scala:11: warning: Side-effecting constructor statement will not be specializedin miniboxed class/trait C.
+This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
+  t = t2
+    ^

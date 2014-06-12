@@ -1,0 +1,1 @@
+ -Xprint:minibox-commit -P:minibox:spec-no-opt -P:minibox:log -Ycheck:minibox

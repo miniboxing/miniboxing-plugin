@@ -1,0 +1,22 @@
+Specializing trait C...
+  // interface:
+  abstract trait C[T] extends Object {
+  }
+  // specialized class:
+  abstract trait C_J[Tsp] extends C[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|C_J|T_TypeTag(): Byte  // is a type tag
+  }
+  // specialized class:
+  abstract trait C_L[Tsp] extends C[Tsp] {
+  }
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.inheritance.traits {
+  abstract trait C[@miniboxed T] extends Object;
+  abstract trait C_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|C_J|T_TypeTag(): Byte
+  };
+  abstract trait C_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.C[Tsp]
+}
+[Now checking: minibox-commit]

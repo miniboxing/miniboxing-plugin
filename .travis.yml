@@ -1,8 +1,8 @@
 language: scala
 script:
-  - sbt ++$TRAVIS_SCALA_VERSION clean update compile test package publish
+  - sbt clean +update +compile +test +package +publish
 scala:
-  - 2.10.3
+  - 2.10.4
 jdk:
   - oraclejdk7
 notifications:

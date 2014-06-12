@@ -1,0 +1,39 @@
+Specializing class DDDD...
+  // interface:
+  abstract trait DDDD[U] extends CCCC[U] {
+  }
+  // specialized class:
+  class DDDD_J[Usp] extends CCCC[Usp] with DDDD[Usp] {
+    def <init>(val miniboxing|tests|compile|inheritance|DDDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDDD_J[Usp] // is a specialized implementation of constructor DDDD
+    private[this] val miniboxing|tests|compile|inheritance|DDDD_J|U_TypeTag: Byte // no info
+  }
+  // specialized class:
+  class DDDD_L[Usp] extends CCCC[Usp] with DDDD[Usp] {
+    def <init>(): miniboxing.tests.compile.inheritance.DDDD_L[Usp]         // is a specialized implementation of constructor DDDD
+  }
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.inheritance {
+  class CCCC[T] extends Object {
+    def <init>(): miniboxing.tests.compile.inheritance.CCCC[T] = {
+      CCCC.super.<init>();
+      ()
+    }
+  };
+  abstract trait DDDD[@miniboxed U] extends miniboxing.tests.compile.inheritance.CCCC[U];
+  class DDDD_J[Usp] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
+    def <init>(miniboxing|tests|compile|inheritance|DDDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDDD_J[Usp] = {
+      DDDD_J.super.<init>();
+      ()
+    };
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|DDDD_J|U_TypeTag: Byte = _
+  };
+  class DDDD_L[Usp] extends miniboxing.tests.compile.inheritance.CCCC[Usp] with miniboxing.tests.compile.inheritance.DDDD[Usp] {
+    def <init>(): miniboxing.tests.compile.inheritance.DDDD_L[Usp] = {
+      DDDD_L.super.<init>();
+      ()
+    }
+  }
+}
+[Now checking: minibox-commit]

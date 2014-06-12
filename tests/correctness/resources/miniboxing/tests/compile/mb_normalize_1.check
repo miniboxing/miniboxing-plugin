@@ -1,0 +1,74 @@
+Specializing class SpCls...
+  // interface:
+  abstract trait SpCls[S] extends Object {
+    def normalizeMe3[T](t: T): T
+    def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
+  }
+  // specialized class:
+  class SpCls_J[Ssp] extends SpCls[Ssp] {
+    def <init>(val miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls_J[Ssp] // is a specialized implementation of constructor SpCls
+    def normalizeMe3[T](t: T): T                                           // is a forwarder to the specialized member
+    def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T                     // is a specialized implementation of method normalizeMe3
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe3
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
+    private[this] val miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte // no info
+  }
+  // specialized class:
+  class SpCls_L[Ssp] extends SpCls[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls_L[Ssp]                // is a specialized implementation of constructor SpCls
+    def normalizeMe3[T](t: T): T                                           // is a specialized implementation of method normalizeMe3
+    def normalizeMe3_J[T](val S_TypeTag: Byte,t: T): T                     // is a forwarder to the specialized member
+    def normalizeMe3_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
+    def normalizeMe3_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe3
+  }
+[Now checking: minibox-inject]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.correctness {
+  object Obj extends Object {
+    def <init>(): miniboxing.tests.correctness.Obj.type = {
+      Obj.super.<init>();
+      ()
+    };
+    def normalizeMe1[@miniboxed T](t: T): T = t;
+    def normalizeMe1_n_J[T](T_TypeTag: Byte, t: Long): Long = t
+  };
+  class Cls extends Object {
+    def <init>(): miniboxing.tests.correctness.Cls = {
+      Cls.super.<init>();
+      ()
+    };
+    def normalizeMe2[@miniboxed T](t: T): T = t;
+    def normalizeMe2_n_J[T](T_TypeTag: Byte, t: Long): Long = t
+  };
+  abstract trait SpCls[@miniboxed S] extends Object {
+    def normalizeMe3[@miniboxed T](t: T): T;
+    def normalizeMe3_n_J[T](T_TypeTag: Byte, t: Long): Long;
+    def normalizeMe3_J[@miniboxed T](S_TypeTag: Byte, t: T): T;
+    def normalizeMe3_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long
+  };
+  class SpCls_J[Ssp] extends Object with miniboxing.tests.correctness.SpCls[Ssp] {
+    def <init>(miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls_J[Ssp] = {
+      SpCls_J.super.<init>();
+      ()
+    };
+    def normalizeMe3[@miniboxed T](t: T): T = SpCls_J.this.normalizeMe3_J[T](SpCls_J.this.miniboxing|tests|correctness|SpCls_J|S_TypeTag, t);
+    def normalizeMe3_n_J[T](T_TypeTag: Byte, t: Long): Long = SpCls_J.this.normalizeMe3_J_n_J[T](T_TypeTag, SpCls_J.this.miniboxing|tests|correctness|SpCls_J|S_TypeTag, t);
+    def normalizeMe3_J[@miniboxed T](S_TypeTag: Byte, t: T): T = t;
+    def normalizeMe3_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long = t;
+    <paramaccessor> private[this] val miniboxing|tests|correctness|SpCls_J|S_TypeTag: Byte = _
+  };
+  class SpCls_L[Ssp] extends Object with miniboxing.tests.correctness.SpCls[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls_L[Ssp] = {
+      SpCls_L.super.<init>();
+      ()
+    };
+    def normalizeMe3[@miniboxed T](t: T): T = t;
+    def normalizeMe3_n_J[T](T_TypeTag: Byte, t: Long): Long = t;
+    def normalizeMe3_J[@miniboxed T](S_TypeTag: Byte, t: T): T = SpCls_L.this.normalizeMe3[T](t);
+    def normalizeMe3_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, t: Long): Long = SpCls_L.this.normalizeMe3_n_J[T](T_TypeTag, t)
+  }
+}
+[Now checking: minibox-commit]
