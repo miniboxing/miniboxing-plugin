@@ -187,7 +187,7 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
     s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n" +
     s"  -P:${name}:no-logo           skip the miniboxing logo display\n" +
-    s"  -P:${name}:two-way           generate variants for long and double instead of just double")
+    s"  -P:${name}:two-way           generate variants for long and double instead of just long")
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
