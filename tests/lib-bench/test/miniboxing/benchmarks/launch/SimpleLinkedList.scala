@@ -20,7 +20,7 @@ trait TestConfiguration {
   object scalablitz
 
   val sizes = {
-    Gen.range("size")(from = 100000, upto = 300000, hop = 100000)
+    Gen.range("size")(from = 100000, upto = 500000, hop = 100000)
   }
   val tests = List(miniboxed, specialized, generic) // library
 
@@ -32,9 +32,9 @@ trait TestConfiguration {
       exec.benchRuns -> 10,
       exec.minWarmupRuns -> 10,
       exec.minWarmupRuns -> 20,
-      exec.independentSamples -> 2,
-      exec.outliers.suspectPercent -> 25,
-      exec.jvmflags -> "" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
+      exec.independentSamples -> 10,
+      exec.outliers.suspectPercent -> 0,
+      exec.jvmflags -> "-Xmx2g -Xms2g -Xss4m" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
     )
 
   def ignoreRunsWithGC = false
@@ -56,7 +56,7 @@ trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
 
   @transient lazy val executor = SeparateJvmsExecutor(
     Executor.Warmer.Default(),
-    Aggregator.median,
+    Aggregator.average,
     new Executor.Measurer.Default
   )
 
