@@ -24,6 +24,7 @@ trait TestConfiguration {
   }
   val tests = List(miniboxed, specialized, generic) // library
 
+  // Generated data parameters:
   def step = 5.0
   def zero = 3.0
 
@@ -79,8 +80,8 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
   import simple.miniboxed._
 
   // sanity check:
-  lazy val fun = new Function1[Int, Int] { def apply(i: Int) = i }
-  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1_JJ"), fun.getClass().getInterfaces())
+  lazy val fun = new Function1[Double, Double] { def apply(d: Double) = d }
+  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1_DD"), fun.getClass().getInterfaces())
 
   implicit object Num_D extends Numeric[Double] {
     def plus(x: Double, y: Double): Double = x + y
