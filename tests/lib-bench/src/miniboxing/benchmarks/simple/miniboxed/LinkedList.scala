@@ -25,6 +25,13 @@ trait Builder[@miniboxed -T, +To] {
   def finalise: To
 }
 
+// Can build from implicit
+trait CanBuildFrom[-From, -Elem, +To] {
+
+  def apply(): Builder[Elem, To]
+}
+
+
 class ListBuilder[@miniboxed T] extends Builder[T, List[T]] {
 
   private var start: List[T] = Nil
@@ -57,14 +64,16 @@ trait Numeric[@miniboxed T] {
 
 
 // Traversable
-trait Traversable[@miniboxed +T] {
+trait Traversable[@miniboxed +T] extends TraversableLike[T, Traversable[T]]
+
+trait TraversableLike[@miniboxed +T, +Repr] {
 
   def mapTo[@miniboxed U, To](f: Function1[T, U])(b: Builder[U, To]): To = {
     foreach(new Function1[T,Unit] { def apply(t: T): Unit = b += f(t) })
     b.finalise
   }
 
-  def map[@miniboxed U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
+  def map[@miniboxed U, That](f: Function1[T, U])(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
 
   def sum[@miniboxed B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
     new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
@@ -80,6 +89,11 @@ trait Traversable[@miniboxed +T] {
 // Iterable
 trait Iterable[@miniboxed +T] extends Traversable[T] {
   def iterator: Iterator[T]
+}
+
+trait IterableLike[+T, +Repr] extends Traversable[T] {
+
+  def iterator: Iterator[T]
 
   def zipTo[@miniboxed B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
     val these = this.iterator
@@ -89,9 +103,8 @@ trait Iterable[@miniboxed +T] extends Traversable[T] {
     b.finalise
   }
 
-  def zip[@miniboxed U](that: Iterable[U]): List[Tuple2[T, U]] = zipTo[U, List[Tuple2[T, U]]](that)(new ListBuilder[Tuple2[T, U]])
+  def zip[@miniboxed U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
-
 
 
 // Iterator
@@ -132,7 +145,7 @@ trait LinearSeqOptimized[@miniboxed +A] extends Iterable[A] {
 
 
 // List
-abstract class List[@miniboxed +T] extends Traversable[T] with Iterable[T] with LinearSeqOptimized[T] {
+abstract class List[@miniboxed +T] extends Traversable[T] with TraversableLike[T, List[T]] with Iterable[T] with IterableLike[T, List[T]] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
     var current = List.this
@@ -167,6 +180,13 @@ abstract class List[@miniboxed +T] extends Traversable[T] with Iterable[T] with 
     while (it.hasNext) list = it.next :: list
     list
   }
+}
+
+object List {
+  implicit def canBuildFrom[@miniboxed A]: CanBuildFrom[List[_], A, List[A]] =
+    new CanBuildFrom[List[_], A, List[A]] {
+      def apply = new ListBuilder[A]
+    }
 }
 
 case class ::[@miniboxed T](head: T, var tail: List[T]) extends List[T] {

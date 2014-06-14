@@ -33,9 +33,9 @@ trait TestConfiguration {
       exec.benchRuns -> 10,
       exec.minWarmupRuns -> 10,
       exec.minWarmupRuns -> 20,
-      exec.independentSamples -> 10,
+      exec.independentSamples -> 1,
       exec.outliers.suspectPercent -> 0,
-      exec.jvmflags -> "-Xmx2g -Xms2g -Xss4m" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
+      exec.jvmflags -> "-Xmx2g -Xms2g -Xss4m -XX:+UseParallelGC" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
     )
 
   def ignoreRunsWithGC = false
@@ -75,7 +75,7 @@ trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
 
 
 
-object MiniboxedBenchmark extends TweakedPerfomanceTest {
+object MiniboxedLinkedListBenchmark extends TweakedPerfomanceTest {
 
   import simple.miniboxed._
 
@@ -150,7 +150,7 @@ object MiniboxedBenchmark extends TweakedPerfomanceTest {
 
 
 
-object GenericBenchmark extends TweakedPerfomanceTest {
+object GenericLinkedListBenchmark extends TweakedPerfomanceTest {
 
   import simple.generic._
 
@@ -225,7 +225,7 @@ object GenericBenchmark extends TweakedPerfomanceTest {
 
 
 
-object SpecializedBenchmark extends TweakedPerfomanceTest {
+object SpecializedLinkedListBenchmark extends TweakedPerfomanceTest {
 
   import simple.specialized._
 

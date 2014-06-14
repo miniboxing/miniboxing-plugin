@@ -25,6 +25,12 @@ trait Builder[-T, +To] {
   def finalise: To
 }
 
+// Can build from implicit
+trait CanBuildFrom[-From, -Elem, +To] {
+
+  def apply(): Builder[Elem, To]
+}
+
 class ListBuilder[T] extends Builder[T, List[T]] {
 
   private var start: List[T] = Nil
@@ -57,28 +63,34 @@ trait Numeric[T] {
 
 
 // Traversable
-trait Traversable[+T] {
+trait Traversable[+T] extends TraversableLike[T, Traversable[T]]
+
+trait TraversableLike[+T, +Repr] {
+
+  def foreach[U](f: Function1[T, U]): Unit
+
+  def foldLeft[B](z: B)(op: Function2[B, T, B]): B
 
   def mapTo[U, To](f: Function1[T, U])(b: Builder[U, To]): To = {
     foreach(new Function1[T,Unit] { def apply(t: T): Unit = b += f(t) })
     b.finalise
   }
 
-  def map[U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
+  def map[U, That](f: Function1[T, U])(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
 
   def sum[B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
     new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
   }
-
-  def foreach[U](f: Function1[T, U]): Unit
-
-  def foldLeft[B](z: B)(op: Function2[B, T, B]): B
 }
 
 
-
 // Iterable
-trait Iterable[+T] extends Traversable[T] {
+trait Iterable[+T] extends Traversable[T] with IterableLike[T, Iterable[T]] {
+  def iterator: Iterator[T]
+}
+
+trait IterableLike[+T, +Repr] extends Traversable[T] {
+
   def iterator: Iterator[T]
 
   def zipTo[B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
@@ -89,9 +101,8 @@ trait Iterable[+T] extends Traversable[T] {
     b.finalise
   }
 
-  def zip[U](that: Iterable[U]): List[Tuple2[T, U]] = zipTo[U, List[Tuple2[T, U]]](that)(new ListBuilder[Tuple2[T, U]])
+  def zip[U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
-
 
 
 // Iterator
@@ -132,7 +143,7 @@ trait LinearSeqOptimized[+A] extends Iterable[A] {
 
 
 // List
-abstract class List[+T] extends Traversable[T] with Iterable[T] with LinearSeqOptimized[T] {
+abstract class List[+T] extends Traversable[T] with TraversableLike[T, List[T]] with Iterable[T] with IterableLike[T, List[T]] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
     var current = List.this
@@ -167,6 +178,13 @@ abstract class List[+T] extends Traversable[T] with Iterable[T] with LinearSeqOp
     while (it.hasNext) list = it.next :: list
     list
   }
+}
+
+object List {
+  implicit def canBuildFrom[A]: CanBuildFrom[List[_], A, List[A]] =
+    new CanBuildFrom[List[_], A, List[A]] {
+      def apply = new ListBuilder[A]
+    }
 }
 
 case class ::[T](head: T, var tail: List[T]) extends List[T] {

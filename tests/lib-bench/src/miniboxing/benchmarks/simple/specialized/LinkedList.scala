@@ -28,6 +28,13 @@ trait Builder[@specialized -T, +To] {
   def finalise: To
 }
 
+// Can build from implicit
+trait CanBuildFrom[-From, -Elem, +To] {
+
+  def apply(): Builder[Elem, To]
+}
+
+
 class ListBuilder[@specialized T] extends Builder[T, List[T]] {
 
   private var start: List[T] = Nil
@@ -60,14 +67,16 @@ trait Numeric[@specialized T] {
 
 
 // Traversable
-trait Traversable[@specialized +T] {
+trait Traversable[@specialized +T] extends TraversableLike[T, Traversable[T]]
+
+trait TraversableLike[@specialized +T, +Repr] {
 
   def mapTo[@specialized U, To](f: Function1[T, U])(b: Builder[U, To]): To = {
     foreach(new Function1[T,Unit] { def apply(t: T): Unit = b += f(t) })
     b.finalise
   }
 
-  def map[@specialized U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
+  def map[@specialized U, That](f: Function1[T, U])(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
 
   def sum[@specialized B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
     new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
@@ -83,6 +92,12 @@ trait Traversable[@specialized +T] {
 // Iterable
 trait Iterable[@specialized +T] extends Traversable[T] {
   def iterator: Iterator[T]
+}
+
+
+trait IterableLike[+T, +Repr] extends Traversable[T] {
+
+  def iterator: Iterator[T]
 
   def zipTo[@specialized B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
     val these = this.iterator
@@ -92,9 +107,8 @@ trait Iterable[@specialized +T] extends Traversable[T] {
     b.finalise
   }
 
-  def zip[@specialized U](that: Iterable[U]): List[Tuple2[T, U]] = zipTo[U, List[Tuple2[T, U]]](that)(new ListBuilder[Tuple2[T, U]])
+  def zip[@specialized U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
-
 
 
 // Iterator
@@ -136,7 +150,7 @@ trait LinearSeqOptimized[@specialized +A] extends Iterable[A] {
 
 // List
 // NOTE: For specialization to work, List needs to be a trait instead of an abstract class
-trait List[@specialized +T] extends Traversable[T] with Iterable[T] with LinearSeqOptimized[T] {
+trait List[@specialized +T] extends Traversable[T] with TraversableLike[T, List[T]] with Iterable[T] with IterableLike[T, List[T]] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
     var current = List.this
@@ -172,6 +186,14 @@ trait List[@specialized +T] extends Traversable[T] with Iterable[T] with LinearS
     list
   }
 }
+
+object List {
+  implicit def canBuildFrom[@specialized A]: CanBuildFrom[List[_], A, List[A]] =
+    new CanBuildFrom[List[_], A, List[A]] {
+      def apply = new ListBuilder[A]
+    }
+}
+
 
 case class ::[@specialized T](head: T, var tail: List[T]) extends List[T] {
   def size = 1 + tail.size
