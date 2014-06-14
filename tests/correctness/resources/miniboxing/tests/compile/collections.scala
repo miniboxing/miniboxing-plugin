@@ -5,6 +5,10 @@ trait Function1[@miniboxed -T, @miniboxed +S] {
   def apply(t: T): S
 }
 
+trait Function2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] {
+  def apply(t1: T1, t2: T2): R
+}
+
 
 
 // Tuple
@@ -21,12 +25,32 @@ trait Builder[@miniboxed -T, +To] {
   def finalise: To
 }
 
+// Can build from implicit
+trait CanBuildFrom[-From, -Elem, +To] {
+
+  def apply(): Builder[Elem, To]
+}
+
+
 class ListBuilder[@miniboxed T] extends Builder[T, List[T]] {
 
-  private var head: List[T] = Nil
+  private var start: List[T] = Nil
+  private var last0: List[T] = Nil
+  private var len: Int = 0
 
-  def +=(e1: T): Unit = head = e1 :: head
-  def finalise: List[T] = head.reverse
+  def += (x: T): Unit = {
+    if (start.isEmpty) {
+      last0 = new :: (x, Nil)
+      start = last0
+    } else {
+      val last1 = last0.asInstanceOf[::[T]]
+      last0 = new :: (x, Nil)
+      last1.tail = last0
+    }
+    len += 1
+  }
+
+  def finalise: List[T] = start
 }
 
 
@@ -40,22 +64,24 @@ trait Numeric[@miniboxed T] {
 
 
 // Traversable
-trait Traversable[@miniboxed +T] {
+trait Traversable[@miniboxed +T] extends TraversableLike[T, Traversable[T]]
+
+trait TraversableLike[@miniboxed +T, +Repr] {
 
   def mapTo[@miniboxed U, To](f: Function1[T, U])(b: Builder[U, To]): To = {
     foreach(new Function1[T,Unit] { def apply(t: T): Unit = b += f(t) })
     b.finalise
   }
 
-  def map[@miniboxed U](f: Function1[T, U]): List[U] = mapTo[U, List[U]](f)(new ListBuilder)
+  def map[@miniboxed U, That](f: Function1[T, U])(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
 
-  def sum[@miniboxed B >: T](implicit n : Numeric[B]): B = {
-    var buff = n.zero
-    foreach(new Function1[B,Unit] { def apply(b: B): Unit = buff = n.plus(buff,b) })
-    buff
+  def sum[@miniboxed B >: T](implicit n : Numeric[B]): B = foldLeft(n.zero) {
+    new Function2[B, T, B] { def apply(b: B, t: T): B = n.plus(b, t) }
   }
 
   def foreach[@miniboxed U](f: Function1[T, U]): Unit
+
+  def foldLeft[@miniboxed B](z: B)(op: Function2[B, T, B]): B
 }
 
 
@@ -63,20 +89,22 @@ trait Traversable[@miniboxed +T] {
 // Iterable
 trait Iterable[@miniboxed +T] extends Traversable[T] {
   def iterator: Iterator[T]
+}
 
-  def zipTo[@miniboxed U, To](that: Iterable[U])(b: Builder[Tuple2[T, U], To]): To = {
+trait IterableLike[+T, +Repr] extends Traversable[T] {
+
+  def iterator: Iterator[T]
+
+  def zipTo[@miniboxed B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
     val these = this.iterator
     val those = that.iterator
-    while (these.hasNext() && those.hasNext()) {
-      b += new Tuple2[T,U](these.next(),those.next())
-    }
+    while (these.hasNext && those.hasNext)
+      b += (new Tuple2(these.next, those.next))
     b.finalise
   }
 
-  def zip[@miniboxed U](that: Iterable[U]): List[Tuple2[T, U]] = zipTo[U, List[Tuple2[T, U]]](that)(new ListBuilder[Tuple2[T, U]])
+  def zip[@miniboxed U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
-
-
 
 
 // Iterator
@@ -86,9 +114,38 @@ trait Iterator[@miniboxed +T] {
 }
 
 
+trait LinearSeqOptimized[@miniboxed +A] extends Iterable[A] {
+
+  def isEmpty: Boolean
+
+  def head: A
+
+  def tail: LinearSeqOptimized[A]
+
+  override /*IterableLike*/
+  def foreach[@miniboxed B](f: Function1[A, B]) {
+    var these = this
+    while (!these.isEmpty) {
+      f(these.head)
+      these = these.tail
+    }
+  }
+
+  override /*TraversableLike*/
+  def foldLeft[@miniboxed B](z: B)(f: Function2[B, A, B]): B = {
+    var acc = z
+    var these = this
+    while (!these.isEmpty) {
+      acc = f(acc, these.head)
+      these = these.tail
+    }
+    acc
+  }
+}
+
 
 // List
-abstract class List[@miniboxed +T] extends Iterable[T] {
+abstract class List[@miniboxed +T] extends Traversable[T] with TraversableLike[T, List[T]] with Iterable[T] with IterableLike[T, List[T]] with LinearSeqOptimized[T] {
 
   def iterator = new Iterator[T] {
     var current = List.this
@@ -99,9 +156,16 @@ abstract class List[@miniboxed +T] extends Iterable[T] {
       t
     }
   }
+
+  def isEmpty: Boolean
+
+  @inline override final
   def foreach[@miniboxed U](f: Function1[T, U]) {
-    val it = iterator
-    while (it.hasNext) f(it.next())
+    var these = this
+    while (!these.isEmpty) {
+      f(these.head)
+      these = these.tail
+    }
   }
 
   def head: T
@@ -118,8 +182,17 @@ abstract class List[@miniboxed +T] extends Iterable[T] {
   }
 }
 
-case class ::[@miniboxed T](head: T, tail: List[T]) extends List[T] {
+object List {
+  implicit def canBuildFrom[@miniboxed A]: CanBuildFrom[List[_], A, List[A]] =
+    new CanBuildFrom[List[_], A, List[A]] {
+      def apply = new ListBuilder[A]
+    }
+}
+
+case class ::[@miniboxed T](head: T, var tail: List[T]) extends List[T] {
   def size = 1 + tail.size
+
+  def isEmpty: Boolean = false
 
   override def toString = head.toString + " :: " + tail.toString
 }
@@ -129,6 +202,8 @@ case object Nil extends List[Nothing] {
   def tail = throw new NoSuchElementException("tail of empty list")
 
   def size = 0
+
+  def isEmpty: Boolean = true
 
   override def toString = "Nil"
 }
