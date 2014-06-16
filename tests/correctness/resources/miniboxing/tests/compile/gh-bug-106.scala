@@ -1,4 +1,4 @@
-package miniboxing.tests.compile.bugX
+package miniboxing.tests.compile.bug106
 
 trait PolyRing[@miniboxed G] {
   val scalar: String
