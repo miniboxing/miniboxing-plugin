@@ -20,6 +20,7 @@ import scala.tools.nsc.typechecker._
 import scala.tools.nsc.transform.TypingTransformers
 import scala.util.DynamicVariable
 import scala.collection.immutable.ListMap
+import scala.reflect.internal.Mode
 
 trait MiniboxCoerceTreeTransformer extends TypingTransformers {
   self: MiniboxCoerceComponent =>
@@ -93,7 +94,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
       new TreeAdapter(context)
 
     def adaptdbg(ind: Int, msg: => String): Unit = {
-      //println("  " * ind + msg)
+      // println("  " * ind + msg)
     }
 
     class TreeAdapter(context0: Context) extends Typer(context0) {
@@ -139,6 +140,8 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
         }
       }
 
+      case object AlreadyTyped
+
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
@@ -148,8 +151,17 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
             super.typed(tree, mode, pt)
           case _ if tree.tpe == null =>
             super.typed(tree, mode, pt)
+
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
-            val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType)
+            val qual2 =
+              if (qual.hasAttachment[AlreadyTyped.type])
+                qual
+              else {
+                val res = super.typedQualifier(qual.setType(null), mode, WildcardType)
+                res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
+                res
+              }
+
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(StorageClass)
