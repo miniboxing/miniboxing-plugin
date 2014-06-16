@@ -94,7 +94,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
       new TreeAdapter(context)
 
     def adaptdbg(ind: Int, msg: => String): Unit = {
-      // println("  " * ind + msg)
+//       println("  " * ind + msg)
     }
 
     class TreeAdapter(context0: Context) extends Typer(context0) {
@@ -145,7 +145,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
-        adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false))
+        adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe)
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
@@ -177,6 +177,16 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
             tree.setType(null)
             super.typed(tree, mode, pt)
         }
+
+        // Stupid hack to get rid of an error when typing the <outer>
+        // reference - the typer set the Outer.type as type instead of
+        // ()Outer.type. There, I fixed it:
+        if (tree.hasSymbolField && tree.symbol.name.decoded == "<outer>" && !tree.isInstanceOf[Apply])
+          tree.tpe match {
+            case MethodType(Nil, _) => // ok
+            case _ => tree.setType(MethodType(Nil, tree.tpe))
+          }
+
         adaptdbg(ind, " ==> " + res + ": " + res.tpe)
 //        if (res.tpe == ErrorType)
 //          adaptdbg(ind, "ERRORS: " + context.errBuffer)
