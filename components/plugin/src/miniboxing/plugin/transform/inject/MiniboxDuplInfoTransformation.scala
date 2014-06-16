@@ -510,7 +510,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
             if (metadata.memberOverloads(mbr)(spec) == mbr) {
               if (mbr.hasAccessorFlag) {
                 memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
-                  case Some(ForwardTo(target)) =>
+                  case Some(ForwardTo(target)) if target.accessed != NoSymbol =>
                     FieldAccessor(newMembers(target.accessed))
                   case _ =>
                     global.error(s"""|Unaccounted case when specializing ${newMbr.defString} in ${variantClass}

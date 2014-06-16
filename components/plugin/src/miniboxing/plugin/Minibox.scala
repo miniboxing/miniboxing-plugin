@@ -227,7 +227,7 @@ class Minibox(val global: Global) extends Plugin {
       override def transform(tree: Tree) = {
         // execute the tree transformer after all symbols have been processed
         val tree1 = afterMiniboxInject(new MiniboxTreeTransformer(unit).transform(tree))
-        tree1.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
+        //tree1.foreach(tree => assert(tree.tpe != null, "tree not typed: " + tree))
         tree1
       }
     }

@@ -317,7 +317,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           res
 
         // rewire member selection
-        case Select(oldQual, mbr) if metadata.miniboxedTParamFlag(extractQualifierType(oldQual).typeSymbol) || oldQual.isInstanceOf[Super] || metadata.memberOverloads.isDefinedAt(tree.symbol) =>
+        case Select(oldQual, mbr) if (metadata.miniboxedTParamFlag(extractQualifierType(oldQual).typeSymbol) || oldQual.isInstanceOf[Super] || metadata.memberOverloads.isDefinedAt(tree.symbol)) =>
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
           val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
@@ -462,9 +462,16 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 }
 
           val tree1 = gen.mkMethodCall(newFun, tagArgs ::: args)
-          val tree2 = localTyper.typed(tree1)
+          val tree2 =
+            localTyper.silent(_.typed(tree1)) match {
+              case global.analyzer.SilentResultValue(t: Tree) => t
+              case global.analyzer.SilentTypeError(err) =>
+                global.warning(err.errPos, "Miniboxing error at: " + currentOwner.ownerChain + "\n" + err.toString() + "\n" + err.getStackTrace().take(20).mkString("\n  "))
+                tree1
+            }
 
           tree2
+
         case _ =>
           Descend
       }
