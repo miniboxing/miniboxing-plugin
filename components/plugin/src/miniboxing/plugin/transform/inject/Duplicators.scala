@@ -439,9 +439,8 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer {
               if (isTailLabel)
                 Ident(updateSym(p.symbol))
               else {
-                // This is quite a piece of crap:
-                val owner = if (context.owner != NoSymbol) context.owner.owner else context.owner
-                val newsym = p.symbol.cloneSymbol(owner) // TODO owner?
+                val owner = context.owner.enclClass
+                val newsym = p.symbol.cloneSymbol(owner)
                 Ident(newsym.setInfo(fixType(p.symbol.info)))
               }
 
