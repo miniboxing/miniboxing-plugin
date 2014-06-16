@@ -3,7 +3,7 @@ name := "miniboxing"
 
 scalaVersion in Global := "2.11.1"
 
-crossScalaVersions in Global := Seq("2.10.4", "2.11.1")
+crossScalaVersions in Global := Seq("2.11.1")
 
 version in Global := "0.3-SNAPSHOT"
 
