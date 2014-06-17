@@ -82,7 +82,7 @@ public class MiniboxArray {
       case MiniboxConstants.FLOAT:
         return ((float[])array).length;
       case MiniboxConstants.DOUBLE:
-        return ((float[])array).length;
+        return ((double[])array).length;
       default:
         return ((long[])array).length;
     }
