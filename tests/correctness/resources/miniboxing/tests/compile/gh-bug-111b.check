@@ -1,0 +1,3 @@
+newSource1.scala:7: warning: unreachable code
+      case _ => default.apply(x1)
+                             ^
