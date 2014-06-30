@@ -372,12 +372,24 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer {
 
       try {
         debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
+
         val origtreesym = tree.symbol
         if (tree.hasSymbolField && tree.symbol != NoSymbol
             && !tree.symbol.isLabel  // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
             && invalidSyms.isDefinedAt(tree.symbol)) {
-          debuglog("removed symbol " + tree.symbol)
-          tree.symbol = NoSymbol
+
+          // if possible, shortcut the name-based resolution, which is known to be difficult
+          // to get right when shadowed values are used based on their symbol
+          val updatedSym = updateSym(tree.symbol)
+          if ((updatedSym != null) && (updatedSym != NoSymbol)) {
+            if (context.scope.lookup(tree.symbol.name) != updatedSym)
+              debuglog("Fixed a duplicators case where pure name-based resolution would crash: " + tree + " in " + context.owner.ownerChain.reverse.map(_.nameString).mkString(".") )
+            tree.symbol = updatedSym
+          } else {
+            // if not possible, resort to name-based resolution :(
+            debuglog("removed symbol " + tree.symbol)
+            tree.symbol = NoSymbol
+          }
         }
 
         val res = tree match {

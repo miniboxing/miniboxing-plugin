@@ -54,6 +54,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       case te: TypeError =>
         reporter.error(te.pos, s"[ occured while creating miniboxed ${location.fullLocationString} ]\n${te.msg}")
         handler(te)
+//        throw(te)
     }
 
   /**
