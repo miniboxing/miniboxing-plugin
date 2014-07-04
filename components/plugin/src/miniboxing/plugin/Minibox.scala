@@ -144,7 +144,7 @@ class Minibox(val global: Global) extends Plugin {
                           MiniboxCommitPhase)
   }
 
-  // LDL Coerceation
+  // LDL Coercion
   global.addAnnotationChecker(MiniboxCoercePhase.StorageAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
@@ -154,7 +154,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_spec_no_opt = sys.props.get("miniboxing.Commit.no-opt").isDefined
   var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
   var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
-  var flag_two_way = sys.props.get("miniboxing.two-way").isDefined
+  var flag_two_way = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -172,22 +172,25 @@ class Minibox(val global: Global) extends Plugin {
         flag_loader_friendly = true
       else if (option.toLowerCase() == "no-logo")
         flag_no_logo = true
+      else if (option.toLowerCase() == "one-way") // Undocumented flag, only used for running the test suite,
+        flag_two_way = false                      // where the tests required the one-way translation
       else if (option.toLowerCase() == "two-way")
-        flag_two_way = true
+        global.warning("The two-way transformation (with long and double as storage types) has become default in " +
+                       "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
+                       "command line")
       else
         error("Miniboxing: Option not understood: " + option)
     }
   }
 
-  override val optionsHelp: Option[String] = Some(
-    s"  -P:${name}:log               log miniboxing signature transformations\n" +
-    s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)\n" +
-    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)\n" +
-    s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing\n" +
-    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n" +
-    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)\n" +
-    s"  -P:${name}:no-logo           skip the miniboxing logo display\n" +
-    s"  -P:${name}:two-way           generate variants for long and double instead of just long")
+  override val optionsHelp: Option[String] = Some(Seq(
+    s"  -P:${name}:log               log miniboxing signature transformations",
+    s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)",
+    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)",
+    s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing",
+    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n",
+    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)",
+    s"  -P:${name}:no-logo           skip the miniboxing logo display").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global

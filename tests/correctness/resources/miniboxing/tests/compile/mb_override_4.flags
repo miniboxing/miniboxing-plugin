@@ -1,1 +1,1 @@
--P:minibox:log -Ycheck:minibox -Xprint:minibox-commit
+-P:minibox:log -Ycheck:minibox -Xprint:minibox-commit -P:minibox:one-way

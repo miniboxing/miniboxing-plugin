@@ -1,3 +1,4 @@
+warning: The two-way transformation (with long and double as storage types) has become default in version 0.4 version of the miniboxing plugin, so there is no need to specify it in the command line
 newSource1.scala:4: warning: Side-effecting constructor statement will not be specializedin miniboxed class/trait A.
 This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64
   println("we want a warning for this!")
@@ -15,6 +16,6 @@ class miniboxing.tests.compile.bug64.workaround.A_L
 we want a warning for this!
 class miniboxing.tests.compile.bug64.workaround.A_J
 we want a warning for this!
-class miniboxing.tests.compile.bug64.workaround.A_D
+class miniboxing.tests.compile.bug64.workaround.A_J
 we want a warning for this!
 class miniboxing.tests.compile.bug64.workaround.A_L

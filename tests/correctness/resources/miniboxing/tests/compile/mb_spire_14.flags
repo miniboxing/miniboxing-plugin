@@ -1,1 +1,1 @@
--Ycheck:minibox-inject
+-Ycheck:minibox-inject -P:minibox:one-way

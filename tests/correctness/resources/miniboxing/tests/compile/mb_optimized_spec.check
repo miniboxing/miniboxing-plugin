@@ -1,5 +1,4 @@
 Specializing class OptMeee...
-
   // interface:
   abstract trait OptMeee[X, Y] extends Object {
     def nfoo3(y: Y): Y
@@ -9,7 +8,6 @@ Specializing class OptMeee...
     def yfoo2(y: Y): X
     def yfoo2_J(val X_TypeTag: Byte,y: Y): X @storage[Long]
   }
-
   // specialized class:
   class OptMeee_J[Xsp, Ysp] extends OptMeee[Xsp,Ysp] {
     def <init>(val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte): miniboxing.tests.compile.OptMeee_J[Xsp,Ysp] // is a specialized implementation of constructor OptMeee
@@ -21,7 +19,6 @@ Specializing class OptMeee...
     def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage[Long]            // is a specialized implementation of method yfoo2
     private[this] val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte   // no info
   }
-
   // specialized class:
   class OptMeee_L[Xsp, Ysp] extends OptMeee[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.OptMeee_L[Xsp,Ysp]              // is a specialized implementation of constructor OptMeee
@@ -32,10 +29,6 @@ Specializing class OptMeee...
     def yfoo2(y: Ysp): Xsp                                                 // is a specialized implementation of method yfoo2
     def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage[Long]            // is a forwarder to the specialized member
   }
-
-
-
-
 [Now checking: minibox-inject]
 [Not checkable: minibox-coerce]
 [Now checking: minibox-commit]

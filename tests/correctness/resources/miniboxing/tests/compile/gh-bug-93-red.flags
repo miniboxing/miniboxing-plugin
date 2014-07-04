@@ -1,1 +1,1 @@
--Xprint:minibox-inject
+-Xprint:minibox-inject -P:minibox:one-way

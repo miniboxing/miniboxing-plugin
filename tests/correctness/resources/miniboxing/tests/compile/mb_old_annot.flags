@@ -1,1 +1,1 @@
--P:minibox:log -Ycheck:minibox
+-P:minibox:log -Ycheck:minibox -P:minibox:one-way

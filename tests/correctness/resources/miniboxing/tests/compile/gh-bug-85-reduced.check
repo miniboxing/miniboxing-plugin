@@ -1,27 +1,20 @@
 Specializing trait MakeImplClass...
-
   // interface:
   abstract trait MakeImplClass[A] extends Object {
     def foo(a: A): A
     def foo_J(val A_TypeTag: Byte,a: A @storage[Long]): A @storage[Long]
   }
-
   // specialized class:
   abstract trait MakeImplClass_J[Asp] extends MakeImplClass[Asp] {
     def foo(a: Asp): Asp                                                   // is a forwarder to the specialized member
     def foo_J(val A_TypeTag: Byte,a: Asp @storage[Long]): Asp @storage[Long] // is an interface method
     def miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(): Byte // is a type tag
   }
-
   // specialized class:
   abstract trait MakeImplClass_L[Asp] extends MakeImplClass[Asp] {
     def foo(a: Asp): Asp                                                   // is an interface method
     def foo_J(val A_TypeTag: Byte,a: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
-
-
-
-
 [[syntax trees at end of                   cleanup]] // newSource1.scala
 package miniboxing.tests.compile.bug85.reduced {
   abstract trait MakeImplClass extends Object {

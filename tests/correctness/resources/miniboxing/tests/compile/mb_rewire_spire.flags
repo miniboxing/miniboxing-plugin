@@ -1,1 +1,1 @@
--Xprint:minibox-commit -Ycheck:minibox
+-Xprint:minibox-commit -Ycheck:minibox -P:minibox:one-way

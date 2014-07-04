@@ -1,1 +1,1 @@
--Xprint:cleanup -P:minibox:log
+-Xprint:cleanup -P:minibox:log -P:minibox:one-way

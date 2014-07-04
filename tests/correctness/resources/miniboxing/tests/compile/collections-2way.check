@@ -1,17 +1,17 @@
+warning: The two-way transformation (with long and double as storage types) has become default in version 0.4 version of the miniboxing plugin, so there is no need to specify it in the command line
 [Now checking: minibox-inject]
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_D. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_D. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_D. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_D. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_D. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_J. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_J. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_J. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_J. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_J. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_L. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_L. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_L. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_L. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-[check: minibox-inject] The symbol, tpe or info of tree `(miniboxing.tests.compile.collctions1.Iterator[Tsp]) : miniboxing.tests.compile.collctions1.Iterator[Tsp]` refers to a out-of-scope symbol, type Tsp in class List_L. tree.symbol.ownerChain: iterator, method iterator, trait List, package collctions1, package compile, package tests, package miniboxing, package <root>
-warning: TreeCheckers detected non-compliant trees in newSource1.scala
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope
+[check: minibox-inject] symbol out of scope

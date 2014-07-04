@@ -1,1 +1,1 @@
- -Ycheck:minibox -Xprint:spec
+ -Ycheck:minibox -Xprint:spec -P:minibox:one-way

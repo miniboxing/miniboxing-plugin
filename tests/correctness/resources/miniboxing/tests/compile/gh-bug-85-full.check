@@ -1,5 +1,4 @@
 Specializing trait F1...
-
   // interface:
   abstract trait F1[A, B] extends Object {
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
@@ -11,7 +10,6 @@ Specializing trait F1...
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
     def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
   }
-
   // specialized class:
   abstract trait F1_JJ[Asp, Bsp] extends F1[Asp,Bsp] {
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
@@ -25,7 +23,6 @@ Specializing trait F1...
     def miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(): Byte        // is a type tag
     def miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(): Byte        // is a type tag
   }
-
   // specialized class:
   abstract trait F1_LJ[Asp, Bsp] extends F1[Asp,Bsp] {
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
@@ -38,7 +35,6 @@ Specializing trait F1...
     def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(): Byte        // is a type tag
   }
-
   // specialized class:
   abstract trait F1_JL[Asp, Bsp] extends F1[Asp,Bsp] {
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
@@ -51,7 +47,6 @@ Specializing trait F1...
     def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(): Byte        // is a type tag
   }
-
   // specialized class:
   abstract trait F1_LL[Asp, Bsp] extends F1[Asp,Bsp] {
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
