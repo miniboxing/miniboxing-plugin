@@ -19,6 +19,9 @@ import inject._
 import coerce._
 import commit._
 import hijack._
+import interop.inject._
+import interop.coerce._
+import interop.commit._
 
 /** Specialization hijacking component `@specialized T -> @miniboxed T` */
 trait HijackComponent extends
@@ -28,6 +31,50 @@ trait HijackComponent extends
     with ScalacCrossCompilingLayer {
 
   def flag_hijack_spec: Boolean
+}
+
+/** Glue transformation to bridge Function and MiniboxedFunction */
+trait InteropInjectComponent extends
+    PluginComponent
+    with InteropDefinitions
+    with InteropInjectInfoTransformer
+    with ScalacCrossCompilingLayer {
+
+  def interopInjectPhase: StdPhase
+
+  def afterInteropInject[T](op: => T): T = global.afterPhase(interopInjectPhase)(op)
+  def beforeInteropInject[T](op: => T): T = global.beforePhase(interopInjectPhase)(op)
+
+  def flag_rewire_functionX: Boolean
+}
+
+/** Glue transformation to bridge Function and MiniboxedFunction */
+trait InteropCoerceComponent extends
+    PluginComponent
+    with InteropCoerceTreeTransformer
+    with ScalacCrossCompilingLayer {
+
+  val interop: InteropInjectComponent { val global: InteropCoerceComponent.this.global.type }
+
+  def interopCoercePhase: StdPhase
+
+  def afterInteropCoerce[T](op: => T): T = global.afterPhase(interopCoercePhase)(op)
+  def beforeInteropCoerce[T](op: => T): T = global.beforePhase(interopCoercePhase)(op)
+}
+
+/** Glue transformation to bridge Function and MiniboxedFunction */
+trait InteropCommitComponent extends
+    PluginComponent
+    with InteropCommitInfoTransformer
+    with InteropCommitTreeTransformer
+    with ScalacCrossCompilingLayer {
+
+  val interop: InteropInjectComponent { val global: InteropCommitComponent.this.global.type }
+
+  def interopCommitPhase: StdPhase
+
+  def afterInteropCommit[T](op: => T): T = global.afterPhase(interopCommitPhase)(op)
+  def beforeInteropCommit[T](op: => T): T = global.beforePhase(interopCommitPhase)(op)
 }
 
 /** Injecticator component `def t -> def t_L, def t_J` */
@@ -138,6 +185,9 @@ class Minibox(val global: Global) extends Plugin {
     // and here are the compiler phases miniboxing introduces:
     List[PluginComponent](PreTyperPhase,
                           PostTyperPhase,
+                          InteropInjectPhase,
+                          InteropCoercePhase,
+                          InteropCommitPhase,
                           HijackPhase,
                           MiniboxInjectPhase,
                           MiniboxCoercePhase,
@@ -155,6 +205,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
   var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
   var flag_two_way = true
+  var flag_rewire_functionX = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -172,8 +223,10 @@ class Minibox(val global: Global) extends Plugin {
         flag_loader_friendly = true
       else if (option.toLowerCase() == "no-logo")
         flag_no_logo = true
-      else if (option.toLowerCase() == "one-way") // Undocumented flag, only used for running the test suite,
-        flag_two_way = false                      // where the tests required the one-way translation
+      else if (option.toLowerCase() == "yone-way")   // Undocumented flag, only used for running the test suite,
+        flag_two_way = false                         // where the tests required the one-way translation
+      else if (option.toLowerCase() == "ybootstrap") // Undocumented flag, only used for bootstrapping the
+        flag_rewire_functionX  = false               // runtime library of the miniboxing plugin
       else if (option.toLowerCase() == "two-way")
         global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                        "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
@@ -204,6 +257,55 @@ class Minibox(val global: Global) extends Plugin {
     // no change
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = tree
+    }
+  }
+
+  private object InteropInjectPhase extends InteropInjectComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List("patmat")
+    override val runsRightAfter = Some("patmat")
+    val phaseName = "interop-inject"
+
+    def flag_rewire_functionX: Boolean = Minibox.this.flag_rewire_functionX
+
+    var interopInjectPhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      interopInjectPhase = new Phase(prev)
+      interopInjectPhase
+    }
+
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = tree
+    }
+  }
+
+  private object InteropCoercePhase extends {
+    val interop: InteropInjectPhase.type = InteropInjectPhase
+  } with InteropCoerceComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(InteropInjectPhase.phaseName)
+    override val runsRightAfter = Some(InteropInjectPhase.phaseName)
+    val phaseName = "interop-coerce"
+
+    var interopCoercePhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      interopCoercePhase = new CoercePhase(prev.asInstanceOf[InteropCoercePhase.this.Phase])
+      interopCoercePhase
+    }
+  }
+
+  private object InteropCommitPhase extends {
+    val interop: InteropInjectPhase.type = InteropInjectPhase
+  } with InteropCommitComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(InteropCoercePhase.phaseName)
+    override val runsRightAfter = Some(InteropCoercePhase.phaseName)
+    val phaseName = "interop-commit"
+
+    var interopCommitPhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      interopCommitPhase = new Phase(prev)
+      interopCommitPhase
     }
   }
 
