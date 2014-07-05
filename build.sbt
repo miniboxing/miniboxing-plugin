@@ -16,3 +16,8 @@ organizationHomepage in Global := Some(url("http://lamp.epfl.ch"))
 licenses in Global := Seq("BSD-style" -> url("http://scala-miniboxing.org/license.html"))
 
 homepage in Global := Some(url("http://scala-miniboxing.org"))
+
+resolvers in ThisBuild ++= Seq(
+  Resolver.sonatypeRepo("releases"),
+  Resolver.sonatypeRepo("snapshots")
+)

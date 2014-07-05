@@ -35,11 +35,6 @@ object MiniboxingBuild extends Build {
     //http://stackoverflow.com/questions/10472840/how-to-attach-sources-to-sbt-managed-dependencies-in-scala-ide#answer-11683728
     com.typesafe.sbteclipse.plugin.EclipsePlugin.EclipseKeys.withSource := true,
 
-    resolvers in ThisBuild ++= Seq(
-      Resolver.sonatypeRepo("releases"),
-      Resolver.sonatypeRepo("snapshots")
-    ),
-
     scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-Xlint"),
 
     parallelExecution in Global := false,
@@ -190,8 +185,16 @@ object MiniboxingBuild extends Build {
     )
   )
 
+  val recursiveDeps = {
+    val ver = "0.3-SNAPSHOT"
+    Seq(
+      addCompilerPlugin("org.scala-miniboxing.plugins" %% "miniboxing-plugin" % ver from 
+                      s"https://oss.sonatype.org/content/repositories/snapshots/org/scala-miniboxing/plugins/miniboxing-plugin_2.11/$ver/miniboxing-plugin_2.11-$ver.jar")
+    )
+  }
+
   lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
-  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps)
+  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps ++ recursiveDeps)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps ++ crossCompilationLayer) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
