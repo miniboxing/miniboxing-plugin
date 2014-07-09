@@ -20,7 +20,6 @@ import scala.tools.nsc.typechecker._
 import scala.tools.nsc.transform.TypingTransformers
 import scala.util.DynamicVariable
 import scala.collection.immutable.ListMap
-import scala.reflect.internal.Mode
 
 trait MiniboxCoerceTreeTransformer extends TypingTransformers {
   self: MiniboxCoerceComponent =>
@@ -154,13 +153,14 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
 
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
             val qual2 =
-              if (qual.hasAttachment[AlreadyTyped.type])
-                qual
-              else {
-                val res = super.typedQualifier(qual.setType(null), mode, WildcardType)
-                res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
-                res
-              }
+               if (qual.hasAttachment[AlreadyTyped.type])
+                 qual
+               else {
+                 val res = super.typedQualifier(qual.setType(null), mode, WildcardType)
+                 res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
+                 res
+               }
+              super.typedQualifier(qual.setType(null), mode, WildcardType)
 
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen

@@ -467,7 +467,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             localTyper.silent(_.typed(tree1)) match {
               case global.analyzer.SilentResultValue(t: Tree) => t
               case global.analyzer.SilentTypeError(err) =>
-                global.warning(err.errPos, "Miniboxing error at: " + currentOwner.ownerChain + "\n" + err.toString() + "\n" + err.getStackTrace().take(20).mkString("\n  "))
+                global.reporter.warning(err.errPos, "Miniboxing error at: " + currentOwner.ownerChain + "\n" + err.toString() + "\n" + err.getStackTrace().take(20).mkString("\n  "))
                 tree1
             }
 

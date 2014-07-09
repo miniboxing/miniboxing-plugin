@@ -6,6 +6,7 @@ import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
+import scala.reflect.ClassTag
 
 trait ScalacCrossCompilingLayer {
 
@@ -16,7 +17,8 @@ trait ScalacCrossCompilingLayer {
   type Mode = Int
 
   implicit class CompatTree(tree: Tree) {
-    def hasSymbolField: Boolean = tree.hasSymbol 
+    def hasSymbolField: Boolean = tree.hasSymbol
+    def hasAttachment[T: ClassTag]: Boolean = tree.attachments.get[T].isDefined
   }
 
   implicit class CompatTermName(name: TermName) {
