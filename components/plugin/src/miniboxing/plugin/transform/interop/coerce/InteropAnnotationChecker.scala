@@ -10,8 +10,10 @@
 // Authors:
 //    * Vlad Ureche
 //
-package miniboxing.plugin
+package miniboxing
+package plugin
 package transform
+package interop
 package coerce
 
 /*
@@ -67,13 +69,13 @@ package coerce
   Frog clipart credits: www.frog-life-cycle.com
   ASCII transformation: www.glassgiant.com/ascii/
 */
-trait MiniboxAnnotationCheckers {
-  this: MiniboxCoerceComponent =>
+trait InteropAnnotationCheckers {
+  this: InteropCoerceComponent =>
 
   import global._
-  import minibox._
+  import interop._
 
-  object StorageAnnotationChecker extends AnnotationChecker{
+  object mbFunctionAnnotationChecker extends AnnotationChecker{
 
     /**
      *  Check the annotations on two types conform.
@@ -83,14 +85,11 @@ trait MiniboxAnnotationCheckers {
      *  LDL FTW -- Boil frog, boil!
      */
     override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
-      if (mboxCoercePhase != null && global.phase.id > mboxCoercePhase.id) {
-        val res11 = tpe1.isStorage == tpe2.isStorage
-        val res12 = res11 && (!tpe1.isStorage || (tpe1.getStorageRepr == tpe2.getStorageRepr))
+      if (interopCoercePhase != null && global.phase.id > interopCoercePhase.id) {
+        val res1 = tpe1.isMbFunction == tpe2.isMbFunction
         val res2 = tpe2.isWildcard
-        // println("after: " + tpe1 + " <: " + tpe2 + " ==> " + res + " (phase = " + global.phase.name + " " + global.phase.id + "  " + mboxAdaptPhase.id + ")")
-        res11 && res12 || res2
+        res1 || res2
       } else {
-        // println("before: " + tpe1 + " <: " + tpe2 + " ==> true" + " (phase = " + global.phase.name + "  " + global.phase.id + "  " + mboxAdaptPhase.id +  ")")
         true
       }
 
@@ -98,20 +97,17 @@ trait MiniboxAnnotationCheckers {
      *  All this should do is add annotations. */
     override def annotationsLub(tp: Type, ts: List[Type]): Type = {
       val res =
-        if (ts.forall(_.isStorage)) // note: forall!
-          if (tp.isStorage)
+        if (ts.forall(_.isMbFunction)) // note: forall!
+          if (tp.isMbFunction)
             tp
           else {
-            val storageTypes = ts.map(_.getStorageRepr).distinct
-            assert(storageTypes.length == 1, s"More than one storage type in $ts: $storageTypes")
-            tp.withStorage(storageTypes(0).tpeHK)
+            tp.withMbFunction
           }
         else
-          if (tp.isStorage)
-            tp.withoutStorage
+          if (tp.isMbFunction)
+            tp.withoutMbFunction
           else
             tp
-//      println(s"lub($ts, $tp) = $res")
       res
     }
 

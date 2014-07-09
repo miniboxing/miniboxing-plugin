@@ -47,6 +47,17 @@ trait InteropDefinitions {
   lazy val Function1Class = global.definitions.FunctionClass(1)
   lazy val Function2Class = global.definitions.FunctionClass(2)
 
+  lazy val FunctionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedFunctionBridge")
+
+  //   def marker_mbfun2fun[T](t: T @mbFunction): T
+  lazy val marker_mbfun2fun =
+    newPolyMethod(1, FunctionsObjectSymbol, newTermName("marker_mbfun2fun"), 0L)(
+      tpar => (Some(List(tpar(0).tpeHK.withMbFunction)), tpar(0).tpeHK))
+  //   def marker_fun2mbfun[T](t: T): T @storage
+  lazy val marker_fun2mbfun =
+    newPolyMethod(1, FunctionsObjectSymbol, newTermName("marker_fun2mbfun"), 0L)(
+      tpar => (Some(List(tpar(0).tpeHK)), tpar(0).tpeHK.withMbFunction))
+
   def flag_rewire_functionX: Boolean
 
   // Addons, not yet separated:

@@ -17,6 +17,8 @@ trait ScalacCrossCompilingLayer {
     def afterPhase[T](phase: Phase)(f: => T): T =
       global.exitingPhase(phase)(f)
   }
+
+  type Mode = scala.reflect.internal.Mode
 }
 
 trait ScalacVersion {

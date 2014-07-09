@@ -52,6 +52,7 @@ trait InteropInjectComponent extends
 trait InteropCoerceComponent extends
     PluginComponent
     with InteropCoerceTreeTransformer
+    with InteropAnnotationCheckers
     with ScalacCrossCompilingLayer {
 
   val interop: InteropInjectComponent { val global: InteropCoerceComponent.this.global.type }
@@ -194,8 +195,9 @@ class Minibox(val global: Global) extends Plugin {
                           MiniboxCommitPhase)
   }
 
-  // LDL Coercion
+  // LDL Coercions
   global.addAnnotationChecker(MiniboxCoercePhase.StorageAnnotationChecker)
+  global.addAnnotationChecker(InteropCoercePhase.mbFunctionAnnotationChecker)
 
   var flag_log = sys.props.get("miniboxing.log").isDefined
   var flag_debug = sys.props.get("miniboxing.debug").isDefined
