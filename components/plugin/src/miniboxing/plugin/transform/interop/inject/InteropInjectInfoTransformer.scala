@@ -13,5 +13,15 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   import definitions._
 
   override def transformInfo(sym: Symbol, tpe: Type): Type =
-    tpe
+    if (currentRun.compiles(sym)) {
+      if (tpe.typeSymbol == Function0Class)
+        tpe.withMbFunction
+      else if (tpe.typeSymbol == Function1Class)
+        tpe.withMbFunction
+      else if (tpe.typeSymbol == Function2Class)
+        tpe.withMbFunction
+      else
+        tpe
+    } else
+      tpe
 }

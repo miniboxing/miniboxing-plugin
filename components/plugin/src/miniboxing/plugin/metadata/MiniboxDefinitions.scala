@@ -67,7 +67,7 @@ trait MiniboxDefinitions {
   // artificially created marker methods:
 
   def withStorage(tpar: Symbol, repr: Symbol) =
-    tpar.tpeHK withAnnotation AnnotationInfo(appliedType(StorageClass.tpe, List(repr.tpeHK)), Nil, Nil)
+    tpar.tpeHK withAnnotation AnnotationInfo(appliedType(PolyType(StorageClass.typeParams, StorageClass.tpe), List(repr.tpeHK)), Nil, Nil)
 
   //   def marker_minibox2box[T, St](t: T @storage[St]): T
   lazy val marker_minibox2box =
@@ -211,7 +211,7 @@ trait MiniboxDefinitions {
 
   def storageType(tparam: Symbol, spec: SpecInfo): Type = {
     val Miniboxed(repr) = spec
-    tparam.tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(repr.tpeHK)), Nil, ListMap.empty)))
+    withStorage(tparam, repr)
   }
 
   // filled in from outside
