@@ -37,23 +37,21 @@ class CompileTest(val code: String, flags: String, launch: String) extends Direc
   def compilationOutput(): String = {
     val ba = new ByteArrayOutputStream();
     val pa = new PrintStream(ba)
-    val pOut = Console.out
-    val pErr = Console.err
-    Console.setOut(pa)
-    Console.setErr(pa)
-    // compile the given file:
-    val result = compile()
-    // if necessary, reflectively launch the test execution:
-    if (launch != "") {
-      val args = launch.split(" ")
-      val loader = new URLClassLoader(Array(jfile.toURI().toURL()), this.getClass.getClassLoader)
-      val clazz = loader.loadClass(args(0))
-      val method = clazz.getMethod("main", classOf[Array[String]])
-      method.invoke(null, args.drop(1))
+    Console.withOut(pa) {
+      Console.withErr(pa) {
+        // compile the given file:
+        val result = compile()
+        // if necessary, reflectively launch the test execution:
+        if (launch != "") {
+          val args = launch.split(" ")
+          val loader = new URLClassLoader(Array(jfile.toURI().toURL()), this.getClass.getClassLoader)
+          val clazz = loader.loadClass(args(0))
+          val method = clazz.getMethod("main", classOf[Array[String]])
+          method.invoke(null, args.drop(1))
+        }
+      }
     }
     pa.flush()
-    Console.setOut(pOut)
-    Console.setErr(pErr)
-   ba.toString
+    ba.toString
   }
 }
