@@ -286,7 +286,7 @@ class Minibox(val global: Global) extends Plugin {
   } with InteropCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(InteropInjectPhase.phaseName)
-    override val runsRightAfter = Some(InteropInjectPhase.phaseName)
+    override val runsRightAfter = Some("uncurry")
     val phaseName = "interop-coerce"
 
     var interopCoercePhase : StdPhase = _
@@ -314,7 +314,7 @@ class Minibox(val global: Global) extends Plugin {
   private object MiniboxInjectPhase extends MiniboxInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("refchecks")
-    override val runsRightAfter = Some("uncurry")
+    override val runsRightAfter = Some(InteropCommitPhase.phaseName)
     val phaseName = Minibox.this.name + "-inject"
 
     def flag_log = Minibox.this.flag_log
