@@ -29,6 +29,12 @@ trait InteropInjectInfoTransformer extends InfoTransform {
         updatedType(tpe)
       } else
         tpe
+//
+//    if (res ne tpe)
+//      println(beforeInteropInject(sym.defString) + "  " + res)
+//    else if (sym.isMethod && currentRun.compiles(sym))
+//      println(beforeInteropInject(sym.defString) + "  : no change")
+
     res
   }
 
@@ -37,6 +43,15 @@ trait InteropInjectInfoTransformer extends InfoTransform {
       case TypeRef(_, Function0Class, _) => tpe.withMbFunction
       case TypeRef(_, Function1Class, _) => tpe.withMbFunction
       case TypeRef(_, Function2Class, _) => tpe.withMbFunction
+      case NullaryMethodType(res)        =>
+        val nres = updatedType(res)
+        if (nres eq res) tpe else NullaryMethodType(nres)
+      case MethodType(args, res)         =>
+        val nres = updatedType(res)
+        if (nres eq res) tpe else MethodType(args, nres)
+      case PolyType(targs, res)          =>
+        val nres = updatedType(res)
+        if (nres eq res) tpe else PolyType(targs, updatedType(res))
       case _ => tpe
     }
 }

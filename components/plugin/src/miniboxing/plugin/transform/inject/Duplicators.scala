@@ -382,7 +382,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer {
           // to get right when shadowed values are used based on their symbol
           val updatedSym = updateSym(tree.symbol)
           if ((updatedSym != null) && (updatedSym != NoSymbol)) {
-            if (context.scope.lookup(tree.symbol.name) != updatedSym)
+            if (context.scope.lookupAll(tree.symbol.name).toList != List(updatedSym))
               debuglog("Fixed a duplicators case where pure name-based resolution would crash: " + tree + " in " + context.owner.ownerChain.reverse.map(_.nameString).mkString(".") )
             tree.symbol = updatedSym
           } else {
