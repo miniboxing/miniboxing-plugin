@@ -38,6 +38,7 @@ trait InteropInjectComponent extends
     PluginComponent
     with InteropDefinitions
     with InteropInjectInfoTransformer
+    with InteropInjectTreeTransformer
     with ScalacCrossCompilingLayer {
 
   def interopInjectPhase: StdPhase
@@ -274,10 +275,6 @@ class Minibox(val global: Global) extends Plugin {
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       interopInjectPhase = new Phase(prev)
       interopInjectPhase
-    }
-
-    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-      override def transform(tree: Tree) = tree
     }
   }
 

@@ -73,7 +73,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
         val oldTpe = tree.tpe
         val newTpe = pt
         if (tree.isTerm) {
-          if ((oldTpe.isMbFunction ^ newTpe.isMbFunction) && (!pt.isWildcard)) {
+          if ((oldTpe.isMbFunction ^ newTpe.isMbFunction) && (!newTpe.isWildcard)) {
             val conversion = if (oldTpe.isMbFunction) marker_mbfun2fun else marker_fun2mbfun
             val tpe =
               if (oldTpe.isMbFunction)

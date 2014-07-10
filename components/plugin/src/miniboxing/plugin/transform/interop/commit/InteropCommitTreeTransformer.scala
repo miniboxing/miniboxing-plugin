@@ -28,12 +28,13 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
 
   def newTransformer(unit: CompilationUnit) = new Transformer {
     val specTrans = new InteropTreeTransformer(unit)
-    override def transform(tree: Tree): Tree =
-      afterInteropCommit(checkNoMbFunction(specTrans.transform(tree)))
-  }
-
-  class InteropTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
-    override def transform(tree: Tree) = tree
+    override def transform(tree: Tree): Tree = {
+      val res = afterInteropCommit(checkNoMbFunction(specTrans.transform(tree)))
+      // clear the two functions
+      FunctionsObjectSymbol.info.decls unlink marker_fun2mbfun
+      FunctionsObjectSymbol.info.decls unlink marker_mbfun2fun
+      res
+    }
   }
 
   def checkNoMbFunction(tree: Tree) = {
@@ -74,7 +75,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
     def unapply(tree: Tree): Option[(Tree, Type)] = unapply(tree, marker_fun2mbfun).map({ case (tree, tpe) => (tree, tpe) })
   }
 
-  class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+  class InteropTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
     override def transform(tree0: Tree): Tree = {
       val oldTpe = tree0.tpe
@@ -89,7 +90,6 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
         tree0 match {
 
           case FunToMbFun(tree, targ) =>
-
             val (conversion, targs) =
               targ match {
                 case TypeRef(_, Function0Class, targs) => (function0_bridge, targs)
@@ -98,15 +98,13 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
               }
 
             val tree1 = gen.mkMethodCall(conversion, targs, List(transform(tree)))
+//            println(tree + " ==> " + tree1)
             localTyper.typed(tree1)
 
           case MbFunToFun(tree, targ) =>
             val tree1 = gen.mkMethodCall(Select(transform(tree), newTermName("f")), Nil)
+//            println(tree + " ==> " + tree1)
             localTyper.typed(tree1)
-
-//          case MiniboxToMinibox(tree, targ, repr1, repr2) =>
-//            val tree1 = gen.mkMethodCall(unreachableConversion, List(Literal(Constant(repr1.nameString)), Literal(Constant(repr2.nameString))))
-//            localTyper.typed(tree1)
 
           case _ =>
             super.transform(tree0)

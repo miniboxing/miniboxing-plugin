@@ -16,27 +16,29 @@ package transform
 package interop
 package inject
 
-import scala.tools.nsc.transform.InfoTransform
+import scala.tools.nsc.transform.TypingTransformers
 
-trait InteropInjectInfoTransformer extends InfoTransform {
-  self: InteropInjectComponent =>
+trait InteropInjectTreeTransformer extends TypingTransformers {
+  this: InteropInjectComponent =>
 
   import global._
+  import definitions._
 
-  override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    val res =
-      if (flag_rewire_functionX && currentRun.compiles(sym)) {
-        updatedType(tpe)
-      } else
-        tpe
-    res
-  }
+  def newTransformer(unit: CompilationUnit) =
+    new InteropTreeInjector(unit)
 
-  def updatedType(tpe: Type): Type =
-    tpe.withoutAnnotations match {
-      case TypeRef(_, Function0Class, _) => tpe.withMbFunction
-      case TypeRef(_, Function1Class, _) => tpe.withMbFunction
-      case TypeRef(_, Function2Class, _) => tpe.withMbFunction
-      case _ => tpe
+  class InteropTreeInjector(unit: CompilationUnit) extends TypingTransformer(unit) {
+    override def transform(tree: Tree): Tree = tree match   {
+      case TypeApply(sel, tpes) =>
+        treeCopy.TypeApply(tree, transform(sel), tpes)
+      case tree: TypeTree =>
+        val res = updatedType(tree.tpe)
+        if (res eq tree.tpe)
+          tree
+        else
+          TypeTree(res)
+      case _ =>
+        super.transform(tree)
     }
+  }
 }

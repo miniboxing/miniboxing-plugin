@@ -84,14 +84,17 @@ trait InteropAnnotationCheckers {
      *
      *  LDL FTW -- Boil frog, boil!
      */
-    override def annotationsConform(tpe1: Type, tpe2: Type): Boolean =
+    override def annotationsConform(tpe1: Type, tpe2: Type): Boolean = {
       if (interopCoercePhase != null && global.phase.id > interopCoercePhase.id) {
-        val res1 = tpe1.isMbFunction == tpe2.isMbFunction
+        val res1 = tpe1.isMbFunction ^ tpe2.isMbFunction
         val res2 = tpe2.isWildcard
-        res1 || res2
+//        if (tpe1.isMbFunction || tpe2.isMbFunction)
+//          println(tpe1 + " <: " + tpe2 + "  ==> " + res1 + "  " + res2 + " ==> " + (!res1 || res2))
+        !res1 || res2
       } else {
         true
       }
+    }
 
     /** Refine the computed least upper bound of a list of types.
      *  All this should do is add annotations. */
