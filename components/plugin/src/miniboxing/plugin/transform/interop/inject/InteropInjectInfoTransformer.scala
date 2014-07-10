@@ -24,16 +24,20 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   import global._
   import definitions._
 
-  override def transformInfo(sym: Symbol, tpe: Type): Type =
-    if (flag_rewire_functionX && currentRun.compiles(sym)) {
-      if (tpe.typeSymbol == Function0Class)
-        tpe.withMbFunction
-      else if (tpe.typeSymbol == Function1Class)
-        tpe.withMbFunction
-      else if (tpe.typeSymbol == Function2Class)
-        tpe.withMbFunction
-      else
+  override def transformInfo(sym: Symbol, tpe: Type): Type = {
+    val res =
+      if (flag_rewire_functionX && currentRun.compiles(sym)) {
+        if (tpe.typeSymbol == Function0Class)
+          tpe.withMbFunction
+        else if (tpe.typeSymbol == Function1Class)
+          tpe.withMbFunction
+        else if (tpe.typeSymbol == Function2Class)
+          tpe.withMbFunction
+        else
+          tpe
+      } else
         tpe
-    } else
-      tpe
+//    println(tpe + " ==> " + res)
+    res
+  }
 }

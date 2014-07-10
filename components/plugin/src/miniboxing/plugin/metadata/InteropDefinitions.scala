@@ -15,6 +15,7 @@ package metadata
 
 import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
+import sun.org.mozilla.javascript.internal.FunctionObject
 
 trait InteropDefinitions {
   this: PluginComponent =>
@@ -43,6 +44,9 @@ trait InteropDefinitions {
   lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction0")
   lazy val MiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction1")
   lazy val MiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction2")
+  lazy val MiniboxedFunction0PolyTpe = PolyType(MiniboxedFunction0Class.typeParams, MiniboxedFunction0Class.tpe)
+  lazy val MiniboxedFunction1PolyTpe = PolyType(MiniboxedFunction1Class.typeParams, MiniboxedFunction1Class.tpe)
+  lazy val MiniboxedFunction2PolyTpe = PolyType(MiniboxedFunction2Class.typeParams, MiniboxedFunction2Class.tpe)
   lazy val Function0Class = global.definitions.FunctionClass(0)
   lazy val Function1Class = global.definitions.FunctionClass(1)
   lazy val Function2Class = global.definitions.FunctionClass(2)
@@ -57,6 +61,10 @@ trait InteropDefinitions {
   lazy val marker_fun2mbfun =
     newPolyMethod(1, FunctionsObjectSymbol, newTermName("marker_fun2mbfun"), 0L)(
       tpar => (Some(List(tpar(0).tpeHK)), tpar(0).tpeHK.withMbFunction))
+
+  lazy val function0_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function0_bridge"))
+  lazy val function1_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function1_bridge"))
+  lazy val function2_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function2_bridge"))
 
   def flag_rewire_functionX: Boolean
 
