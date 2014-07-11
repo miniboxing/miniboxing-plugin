@@ -28,10 +28,6 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
   import definitions._
   import interop._
 
-  override def newTransformer(unit: CompilationUnit) = new TypingTransformer(unit) {
-    def apply(tree: Tree) = tree
-  }
-
   override def transformInfo(sym: Symbol, tpe: Type): Type =
     tpe
 
