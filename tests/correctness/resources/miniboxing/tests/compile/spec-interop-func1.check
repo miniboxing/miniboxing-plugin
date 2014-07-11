@@ -1,8 +1,2 @@
-warning: 'interop' selects 3 phases
-warning: 'minibox' selects 3 phases
-[Now checking: interop-inject]
-[Not checkable: interop-coerce]
 [Now checking: interop-commit]
-[Now checking: minibox-inject]
-[Not checkable: minibox-coerce]
 [Now checking: minibox-commit]

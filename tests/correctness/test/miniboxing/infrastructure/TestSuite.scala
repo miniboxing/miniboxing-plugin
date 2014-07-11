@@ -25,7 +25,8 @@ class TestSuite extends ScalacVersion {
     "\n(?s)Out of scope symbol reference.*?}\n" -> " symbol out of scope\n",
     "The symbol, tpe or info of tree.*?\n" -> "symbol out of scope\n",
     "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
-    "warning: Reference to uninitialized variable t" -> "" // TODO: Remove after looking at #104
+    "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104
+    "\\$anon .*?>" -> "\\$anonfun"
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
