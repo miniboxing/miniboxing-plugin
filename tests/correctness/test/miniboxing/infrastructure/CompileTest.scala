@@ -20,12 +20,13 @@ class CompileTest(val code: String, flags: String, launch: String) extends Direc
     while (root == null) {
       val rand = scala.util.Random.nextLong()
       val rand_pos = if (rand < 0) -rand else rand
-      root = new JFile(System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + rand_pos)
+      val path = System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + rand_pos
+      root = new JFile(path)
       if (root.exists() && root.isDirectory())
         root = null
     }
     root.mkdirs()
-    root.deleteOnExit()
+    //root.deleteOnExit()
     root
   }
   override lazy val testPath = File(jfile)
