@@ -228,8 +228,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_no_logo = true
       else if (option.toLowerCase() == "yone-way")   // Undocumented flag, only used for running the test suite,
         flag_two_way = false                         // where the tests required the one-way translation
-      else if (option.toLowerCase() == "ybootstrap") // Undocumented flag, only used for bootstrapping the
-        flag_rewire_functionX  = false               // runtime library of the miniboxing plugin
+      else if (option.toLowerCase() == "library-functions")
+        flag_rewire_functionX  = false
       else if (option.toLowerCase() == "two-way")
         global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                        "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
@@ -240,13 +240,14 @@ class Minibox(val global: Global) extends Plugin {
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
-    s"  -P:${name}:log               log miniboxing signature transformations",
-    s"  -P:${name}:stats             log miniboxing tree transformations (verbose logging)",
-    s"  -P:${name}:debug             debug logging for the miniboxing plugin (rarely used)",
-    s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing",
-    s"  -P:${name}:spec-no-opt       don't optimize method specialization, do create useless specializations\n",
-    s"  -P:${name}:loader            generate classloader-friendly code (but more verbose)",
-    s"  -P:${name}:no-logo           skip the miniboxing logo display").mkString("\n"))
+    s"  -P:${name}:log                 log miniboxing signature transformations",
+    s"  -P:${name}:stats               log miniboxing tree transformations (verbose logging)",
+    s"  -P:${name}:debug               debug logging for the miniboxing plugin (rarely used)",
+    s"  -P:${name}:hijack              hijack the @specialized(...) notation for miniboxing",
+    s"  -P:${name}:spec-no-opt         don't optimize method specialization, do create useless specializations\n",
+    s"  -P:${name}:loader              generate classloader-friendly code (but more verbose)",
+    s"  -P:${name}:no-logo             skip the miniboxing logo display",
+    s"  -P:${name}:library-functions   do not rewrite scala.FunctionX to the optimized MiniboxedFunctionX (X=1,2,3)").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
