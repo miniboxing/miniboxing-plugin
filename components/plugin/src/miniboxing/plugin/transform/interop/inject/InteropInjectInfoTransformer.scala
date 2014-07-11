@@ -39,7 +39,7 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   }
 
   def updatedType(tpe: Type): Type =
-    tpe.withoutAnnotations match {
+    (tpe.withoutAnnotations match {
       case TypeRef(_, Function0Class, _) => tpe.withMbFunction
       case TypeRef(_, Function1Class, _) => tpe.withMbFunction
       case TypeRef(_, Function2Class, _) => tpe.withMbFunction
@@ -53,5 +53,5 @@ trait InteropInjectInfoTransformer extends InfoTransform {
         val nres = updatedType(res)
         if (nres eq res) tpe else PolyType(targs, updatedType(res))
       case _ => tpe
-    }
+    }).withAnnotations(tpe.annotations)
 }

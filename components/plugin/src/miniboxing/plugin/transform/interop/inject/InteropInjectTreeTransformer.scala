@@ -25,7 +25,10 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
   import definitions._
 
   def newTransformer(unit: CompilationUnit) =
-    new InteropTreeInjector(unit)
+    if (flag_rewire_functionX)
+      new InteropTreeInjector(unit)
+    else
+      new Transformer { def apply(tree: Tree) = tree }
 
   class InteropTreeInjector(unit: CompilationUnit) extends TypingTransformer(unit) {
     override def transform(tree: Tree): Tree = tree match   {
