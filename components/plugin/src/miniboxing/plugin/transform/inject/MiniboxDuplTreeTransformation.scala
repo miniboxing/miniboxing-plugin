@@ -110,7 +110,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       case New(cl)     => afterMiniboxInject(cl.tpe.typeSymbol.info); cl.tpe
       case This(clazz) => afterMiniboxInject(tree.symbol.info); tree.tpe.underlying
       case Super(qual, _) => tree.tpe
-      case _ => tree.tpe
+      case _ => if (tree.hasSymbolField && tree.symbol != null) afterMiniboxInject(tree.symbol.info.typeSymbol.info); tree.tpe
     }
 
     def extractFunctionQualifierType(tree: Tree): Type = tree match {
@@ -125,7 +125,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
       // make sure specializations have been performed
       tree match {
-        case t: SymTree if t.symbol != null => afterMiniboxInject(t.symbol.info)
+        case t: Tree if t.hasSymbolField => if (t.symbol != null) afterMiniboxInject(t.symbol.info)
         case _ =>
       }
 
@@ -364,6 +364,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             }
           }
 
+          val tpe1 = newQualTpe baseType (newMbrSym.owner)
           val ntree = localTyper.typedOperator(gen.mkAttributedSelect(newQual, specMbrSym))
           assert(!metadata.dummyConstructors(ntree.symbol), "dummy constructor: " + ntree.symbol.defString + " left in tree " + tree)
           ntree

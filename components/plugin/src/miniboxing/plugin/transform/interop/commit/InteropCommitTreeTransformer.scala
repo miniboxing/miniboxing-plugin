@@ -77,6 +77,15 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
 
   class InteropTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
+    val applyUpdate =
+      Map(
+        FunctionClass(0).tpe.member(newTermName("apply")) -> MiniboxedFunction0Class.tpe.member(newTermName("apply")),
+        FunctionClass(1).tpe.member(newTermName("apply")) -> MiniboxedFunction1Class.tpe.member(newTermName("apply")),
+        FunctionClass(2).tpe.member(newTermName("apply")) -> MiniboxedFunction2Class.tpe.member(newTermName("apply"))
+      )
+
+    val applySymbols = applyUpdate.keySet.toList
+
     override def transform(tree0: Tree): Tree = {
       val oldTpe = tree0.tpe
       val newTpe = deepTransformation(oldTpe)
@@ -98,13 +107,21 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
               }
 
             val tree1 = gen.mkMethodCall(conversion, targs, List(transform(tree)))
-//            println(tree + " ==> " + tree1)
+//            println(tree0 + " ==> " + tree1)
             localTyper.typed(tree1)
 
           case MbFunToFun(tree, targ) =>
             val tree1 = gen.mkMethodCall(Select(transform(tree), newTermName("f")), Nil)
-//            println(tree + " ==> " + tree1)
+//            println(tree0 + " ==> " + tree1)
             localTyper.typed(tree1)
+
+          case Select(MbFunToFun(fun, targ), apply) if applySymbols.contains(tree0.symbol) =>
+            val tree1 = gen.mkAttributedSelect(transform(fun), applyUpdate(tree0.symbol))
+            val res = localTyper.typedOperator(tree1)
+//            println(tree0 + " ==> " + res)
+//            println(res.symbol.defString)
+//            println(res.symbol.owner)
+             res
 
           case _ =>
             super.transform(tree0)

@@ -59,7 +59,8 @@ trait InteropCommitInfoTransformer extends InfoTransform {
             case TypeRef(_, Function1Class, tpes) =>  appliedType(MiniboxedFunction1PolyTpe, tpes)
             case TypeRef(_, Function2Class, tpes) =>  appliedType(MiniboxedFunction2PolyTpe, tpes)
             case _ =>
-              println("unknown type: " + tpe + "   " + tpe.typeSymbol.ownerChain)
+//              This occurs for the marker_fun2mbfun and the reverse
+//              println("unknown type: " + tpe + "   " + tpe.typeSymbol.ownerChain)
               tpe
           }
         // keep all other annotations
