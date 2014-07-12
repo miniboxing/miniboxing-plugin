@@ -215,6 +215,45 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(unreachableConversion, List(Literal(Constant(repr1.nameString)), Literal(Constant(repr2.nameString))))
             localTyper.typed(tree1)
 
+          case Apply(TypeApply(conv, _targs), _args) if interop.flag_rewire_functionX_bridges && interop.function_bridges(conv.symbol) =>
+            val targs = _targs.map(transform(_).tpe)
+            val args  = _args.map(transform)
+            val bridge = conv.symbol
+            val pspec = PartialSpec.fromTargsAllTargs(conv.symbol.typeParams, targs, currentOwner)
+            val allTparsAreMboxed = !pspec.exists(_._2 == minibox.Boxed)
+            if (allTparsAreMboxed) {
+              val reprs = pspec.map({ case (tpar, minibox.Miniboxed(repr)) => repr; case _ => ??? }).toList
+
+              interop.function_bridge_optimized.get(bridge).flatMap(_.get(reprs)) match {
+                case Some(bridge_opt) =>
+                  val tags = minibox.typeTagTrees(currentOwner)
+                  val tag_targs = targs.map(_.typeSymbol)
+                  val tag_opts = tag_targs.map(tags.get(_))
+                  if (tag_opts.exists(_ == None)) {
+                    global.reporter.error(tree0.pos,
+                        s"""[miniboxing plugin internal error] Cannot find tag when rewriting function to miniboxed function bridge.
+                           |Diagnostics:stripPrefix
+                           |  tree:  ${tree0}
+                           |  pspec: $pspec
+                           |  tags:  $tags
+                        """.stripMargin)
+                  }
+                  val tag_params = tag_opts.map(_.getOrElse(gen.mkMethodCall(Predef_???, Nil))).toList
+                  val tree1 = gen.mkMethodCall(bridge_opt, targs, tag_params.map(localTyper.typed) ::: args)
+                  localTyper.typed(tree1)
+                case None =>
+                  global.reporter.error(tree0.pos,
+                      s"""[miniboxing plugin internal error] Cannot find tag when rewriting function to miniboxed function bridge.
+                         |Diagnostics:stripPrefix
+                         |  tree:  ${tree0}
+                         |  pspec: $pspec
+                         |  tags:  ${conv.symbol}
+                      """.stripMargin)
+                  localTyper.typed(gen.mkMethodCall(Predef_???, Nil))
+              }
+            } else
+              super.transform(tree0)
+
           case _ =>
             super.transform(tree0)
         }

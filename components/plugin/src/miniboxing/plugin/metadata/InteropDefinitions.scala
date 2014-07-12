@@ -69,7 +69,7 @@ trait InteropDefinitions {
   lazy val function2_bridge = bridgeSymbol("function2_bridge")
 
   lazy val function_bridges = Set(function0_bridge, function1_bridge, function2_bridge)
-  lazy val function_bridge_optimized =
+  lazy val function_bridge_optimized: Map[Symbol, Map[List[Symbol], Symbol]] =
     Map(
       function0_bridge ->
         Map(

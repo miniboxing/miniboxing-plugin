@@ -84,7 +84,10 @@ trait MiniboxMetadataUtils {
           fromTargs(tparams, targs, owner, pspec)
       }
 
-    def fromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
+    def fromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec =
+      fromTargsAllTargs(tparams, targs, currentOwner, pspec).collect({ case (tparam, spec) if metadata.miniboxedTParamFlag(tparam) => (tparam, spec) })
+
+    def fromTargsAllTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
 
       def typeParametersFromOwnerChain(owner: Symbol = currentOwner): List[(Symbol, SpecInfo)] =
         owner.ownerChain flatMap { sym =>
@@ -109,7 +112,6 @@ trait MiniboxMetadataUtils {
         val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
           // case (2.3)
-          case (p, _) if !(metadata.miniboxedTParamFlag(p)) => None
           case (p, `CharTpe`)    => Some((p, Miniboxed(LongClass)))
           case (p, `IntTpe`)     => Some((p, Miniboxed(LongClass)))
           case (p, `LongTpe`)    => Some((p, Miniboxed(LongClass)))
@@ -123,6 +125,7 @@ trait MiniboxMetadataUtils {
               case Some(spec: SpecInfo) => Some((p, spec))
               case None                 => Some((p, Boxed))
             }
+          case _                 => None
         }
       }
       spec.toMap

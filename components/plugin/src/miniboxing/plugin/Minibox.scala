@@ -47,6 +47,7 @@ trait InteropInjectComponent extends
   def beforeInteropInject[T](op: => T): T = global.beforePhase(interopInjectPhase)(op)
 
   def flag_rewire_functionX: Boolean
+  def flag_rewire_functionX_bridges: Boolean
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -210,6 +211,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
   var flag_two_way = true
   var flag_rewire_functionX = true
+  var flag_rewire_functionX_bridges = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -229,6 +231,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_no_logo = true
       else if (option.toLowerCase() == "yone-way")   // Undocumented flag, only used for running the test suite,
         flag_two_way = false                         // where the tests required the one-way translation
+      else if (option.toLowerCase() == "ygen-brdgs") // Undocumented flag, only used for running the test suite
+        flag_rewire_functionX_bridges = false        // while avoiding func. to miniboxed func. bridge optimization
       else if (option.toLowerCase() == "library-functions")
         flag_rewire_functionX  = false
       else if (option.toLowerCase() == "two-way")
@@ -272,6 +276,7 @@ class Minibox(val global: Global) extends Plugin {
     val phaseName = "interop-inject"
 
     def flag_rewire_functionX: Boolean = Minibox.this.flag_rewire_functionX
+    def flag_rewire_functionX_bridges  = Minibox.this.flag_rewire_functionX_bridges
 
     var interopInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
