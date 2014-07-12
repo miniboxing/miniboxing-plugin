@@ -186,14 +186,15 @@ object MiniboxingBuild extends Build {
   )
 
   val recursiveDeps = {
-    val ver = "0.3-SNAPSHOT"
+    val ver = "0.4-SNAPSHOT"
     Seq(
       libraryDependencies += {
                                val sVer = scalaBinaryVersion.value
                                compilerPlugin(
                                  "org.scala-miniboxing.plugins" %% "miniboxing-plugin" % ver from 
                                    s"https://oss.sonatype.org/content/repositories/snapshots/org/scala-miniboxing/plugins/miniboxing-plugin_$sVer/$ver/miniboxing-plugin_$sVer-$ver.jar")
-                             } 
+                             },
+      scalacOptions += "-P:minibox:library-functions"
     )
   }
 
