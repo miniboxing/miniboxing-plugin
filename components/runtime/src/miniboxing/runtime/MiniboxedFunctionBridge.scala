@@ -21,7 +21,7 @@ object MiniboxedFunctionBridge {
     }
 
   // Specialized bridges:
-  def function0_opt_bridge_long[R](R_Tag: Byte, _f: Function0[R]): Function0[R] =
+  def function0_opt_bridge_long[R](R_Tag: Byte, _f: Function0[R]): MiniboxedFunction0[R] =
     ((R_Tag) match {
       case 5 =>
         val _f_cast = _f.asInstanceOf[Function0[Int]]
@@ -43,10 +43,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function0_bridge(_f)
-    }).asInstanceOf[Function0[R]]
+    }).asInstanceOf[MiniboxedFunction0[R]]
 
 
-  def function0_opt_bridge_double[R](R_Tag: Byte, _f: Function0[R]): Function0[R] =
+  def function0_opt_bridge_double[R](R_Tag: Byte, _f: Function0[R]): MiniboxedFunction0[R] =
     ((R_Tag) match {
       case 7 =>
         val _f_cast = _f.asInstanceOf[Function0[Float]]
@@ -62,10 +62,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function0_bridge(_f)
-    }).asInstanceOf[Function0[R]]
+    }).asInstanceOf[MiniboxedFunction0[R]]
 
 
-  def function1_opt_bridge_long_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): Function1[T, R] =
+  def function1_opt_bridge_long_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): MiniboxedFunction1[T, R] =
     ((T_Tag + R_Tag * 10) match {
       case 55 =>
         val _f_cast = _f.asInstanceOf[Function1[Int, Int]]
@@ -93,10 +93,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function1_bridge(_f)
-    }).asInstanceOf[Function1[T, R]]
+    }).asInstanceOf[MiniboxedFunction1[T, R]]
 
 
-  def function1_opt_bridge_double_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): Function1[T, R] =
+  def function1_opt_bridge_double_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): MiniboxedFunction1[T, R] =
     ((T_Tag + R_Tag * 10) match {
       case 57 =>
         val _f_cast = _f.asInstanceOf[Function1[Float, Int]]
@@ -124,10 +124,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function1_bridge(_f)
-    }).asInstanceOf[Function1[T, R]]
+    }).asInstanceOf[MiniboxedFunction1[T, R]]
 
 
-  def function1_opt_bridge_long_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): Function1[T, R] =
+  def function1_opt_bridge_long_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): MiniboxedFunction1[T, R] =
     ((T_Tag + R_Tag * 10) match {
       case 75 =>
         val _f_cast = _f.asInstanceOf[Function1[Int, Float]]
@@ -155,10 +155,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function1_bridge(_f)
-    }).asInstanceOf[Function1[T, R]]
+    }).asInstanceOf[MiniboxedFunction1[T, R]]
 
 
-  def function1_opt_bridge_double_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): Function1[T, R] =
+  def function1_opt_bridge_double_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: Function1[T, R]): MiniboxedFunction1[T, R] =
     ((T_Tag + R_Tag * 10) match {
       case 77 =>
         val _f_cast = _f.asInstanceOf[Function1[Float, Float]]
@@ -186,10 +186,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function1_bridge(_f)
-    }).asInstanceOf[Function1[T, R]]
+    }).asInstanceOf[MiniboxedFunction1[T, R]]
 
 
-  def function2_opt_bridge_long_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_long_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T1_Tag + T2_Tag * 10 + R_Tag * 10 * 10) match {
       case 555 =>
         val _f_cast = _f.asInstanceOf[Function2[Int, Int, Int]]
@@ -241,10 +241,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_long_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_long_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T1_Tag + R_Tag * 10) match {
       case 55 =>
         val _f_cast = _f.asInstanceOf[Function2[Int, Double, Int]]
@@ -272,10 +272,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_double_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_double_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T2_Tag + R_Tag * 10) match {
       case 55 =>
         val _f_cast = _f.asInstanceOf[Function2[Double, Int, Int]]
@@ -303,10 +303,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_double_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_double_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((R_Tag) match {
       case 5 =>
         val _f_cast = _f.asInstanceOf[Function2[Double, Double, Int]]
@@ -322,10 +322,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_long_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_long_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T1_Tag + T2_Tag * 10 + R_Tag * 10 * 10) match {
       case 755 =>
         val _f_cast = _f.asInstanceOf[Function2[Int, Int, Float]]
@@ -377,10 +377,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_long_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_long_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T1_Tag + R_Tag * 10) match {
       case 75 =>
         val _f_cast = _f.asInstanceOf[Function2[Int, Double, Float]]
@@ -408,10 +408,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_double_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_double_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((T2_Tag + R_Tag * 10) match {
       case 75 =>
         val _f_cast = _f.asInstanceOf[Function2[Double, Int, Float]]
@@ -439,10 +439,10 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 
 
-  def function2_opt_bridge_double_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): Function2[T1, T2, R] =
+  def function2_opt_bridge_double_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: Function2[T1, T2, R]): MiniboxedFunction2[T1, T2, R] =
     ((R_Tag) match {
       case 7 =>
         val _f_cast = _f.asInstanceOf[Function2[Double, Double, Float]]
@@ -458,5 +458,5 @@ object MiniboxedFunctionBridge {
         }
       case _ =>
         function2_bridge(_f)
-    }).asInstanceOf[Function2[T1, T2, R]]
+    }).asInstanceOf[MiniboxedFunction2[T1, T2, R]]
 }
