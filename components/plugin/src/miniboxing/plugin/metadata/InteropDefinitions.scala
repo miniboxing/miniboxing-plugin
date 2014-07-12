@@ -62,9 +62,39 @@ trait InteropDefinitions {
     newPolyMethod(1, FunctionsObjectSymbol, newTermName("marker_fun2mbfun"), 0L)(
       tpar => (Some(List(tpar(0).tpeHK)), tpar(0).tpeHK.withMbFunction))
 
-  lazy val function0_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function0_bridge"))
-  lazy val function1_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function1_bridge"))
-  lazy val function2_bridge = definitions.getMember(FunctionsObjectSymbol, newTermName("function2_bridge"))
+  def bridgeSymbol(name: String) = definitions.getMember(FunctionsObjectSymbol, newTermName(name))
+
+  lazy val function0_bridge = bridgeSymbol("function0_bridge")
+  lazy val function1_bridge = bridgeSymbol("function1_bridge")
+  lazy val function2_bridge = bridgeSymbol("function2_bridge")
+
+  lazy val function_bridges = Set(function0_bridge, function1_bridge, function2_bridge)
+  lazy val function_bridge_optimized =
+    Map(
+      function0_bridge ->
+        Map(
+          List(LongClass)   -> bridgeSymbol("function0_opt_bridge_long"),
+          List(DoubleClass) -> bridgeSymbol("function0_opt_bridge_double")
+        ),
+      function1_bridge ->
+        Map(
+          List(LongClass, LongClass)     -> bridgeSymbol("function1_opt_bridge_long_long"),
+          List(LongClass, DoubleClass)   -> bridgeSymbol("function1_opt_bridge_long_double"),
+          List(DoubleClass, LongClass)   -> bridgeSymbol("function1_opt_bridge_double_long"),
+          List(DoubleClass, DoubleClass) -> bridgeSymbol("function1_opt_bridge_double_double")
+        ),
+      function2_bridge ->
+        Map(
+          List(LongClass, LongClass, LongClass)       -> bridgeSymbol("function2_opt_bridge_long_long_long"),
+          List(LongClass, LongClass, DoubleClass)     -> bridgeSymbol("function2_opt_bridge_long_long_double"),
+          List(LongClass, DoubleClass, LongClass)     -> bridgeSymbol("function2_opt_bridge_long_double_long"),
+          List(LongClass, DoubleClass, DoubleClass)   -> bridgeSymbol("function2_opt_bridge_long_double_double"),
+          List(DoubleClass, LongClass, LongClass)     -> bridgeSymbol("function2_opt_bridge_double_long_long"),
+          List(DoubleClass, LongClass, DoubleClass)   -> bridgeSymbol("function2_opt_bridge_double_long_double"),
+          List(DoubleClass, DoubleClass, LongClass)   -> bridgeSymbol("function2_opt_bridge_double_double_long"),
+          List(DoubleClass, DoubleClass, DoubleClass) -> bridgeSymbol("function2_opt_bridge_double_double_double")
+        )
+    )
 
   def flag_rewire_functionX: Boolean
 

@@ -131,6 +131,7 @@ trait MiniboxCommitComponent extends
     with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxInjectComponent { val global: MiniboxCommitComponent.this.global.type }
+  val interop: InteropInjectComponent { val global: MiniboxCommitComponent.this.global.type }
 
   def mboxCommitPhase: StdPhase
 
@@ -355,6 +356,7 @@ class Minibox(val global: Global) extends Plugin {
 
   private object MiniboxCommitPhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val interop: InteropInjectPhase.type = InteropInjectPhase
   } with MiniboxCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(MiniboxCoercePhase.phaseName)

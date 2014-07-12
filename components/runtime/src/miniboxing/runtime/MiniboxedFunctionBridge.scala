@@ -8,28 +8,6 @@ object MiniboxedFunctionBridge {
       def apply(): R = _f()
     }
 
-  def function0_opt_bridge_long_orig[R](R_Tag: Byte, _f: Function0[R]): MiniboxedFunction0[R] =
-    (R_Tag match {
-      case MiniboxConstants.INT =>
-        val _f_opt = _f.asInstanceOf[Function0[Int]]
-        new MiniboxedFunction0[Int] {
-          def f = _f_opt
-          def apply(): Int = _f_opt()
-        }
-      case MiniboxConstants.LONG =>
-        val _f_opt = _f.asInstanceOf[Function0[Long]]
-        new MiniboxedFunction0[Long] {
-          def f = _f_opt
-          def apply(): Long = _f_opt()
-        }
-      case MiniboxConstants.CHAR =>
-        val _f_opt = _f.asInstanceOf[Function0[Char]]
-        new MiniboxedFunction0[Char] {
-          def f = _f_opt
-          def apply(): Char = _f_opt()
-        }
-    }).asInstanceOf[MiniboxedFunction0[R]]
-
   def function1_bridge[T, R](_f: Function1[T, R]): MiniboxedFunction1[T, R] =
     new MiniboxedFunction1[T, R] {
       def f = _f
