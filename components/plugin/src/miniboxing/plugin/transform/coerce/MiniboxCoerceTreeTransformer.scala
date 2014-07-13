@@ -84,6 +84,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
+      context.set(disable = ContextMode.ReportErrors)
       val checker = new TreeAdapter(context)
       unit.body = checker.typed(unit.body)
       unit.body
