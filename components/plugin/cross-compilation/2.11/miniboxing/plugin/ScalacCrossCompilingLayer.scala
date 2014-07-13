@@ -6,6 +6,7 @@ import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
+import scala.tools.nsc.typechecker.Analyzer
 
 trait ScalacCrossCompilingLayer {
 
@@ -19,6 +20,12 @@ trait ScalacCrossCompilingLayer {
   }
 
   type Mode = scala.reflect.internal.Mode
+
+  def turnOffErrorReporting(analyzer: Analyzer)(context: analyzer.Context) = {
+    // copy pasted from the impl
+    import scala.tools.nsc.typechecker.ContextMode
+    context.set(disable = ContextMode.ReportErrors)
+  }
 }
 
 trait ScalacVersion {

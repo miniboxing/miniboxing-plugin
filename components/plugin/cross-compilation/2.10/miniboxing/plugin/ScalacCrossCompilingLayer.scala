@@ -7,6 +7,7 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 import scala.reflect.ClassTag
+import scala.tools.nsc.typechecker.Analyzer
 
 trait ScalacCrossCompilingLayer {
 
@@ -29,6 +30,12 @@ trait ScalacCrossCompilingLayer {
     def localName: TermName            = getterName append encode(LOCAL_SUFFIX_STRING)
     def setterName: TermName           = getterName append SETTER_SUFFIX
     def getterName: TermName           = dropSetter.dropLocal
+  }
+
+  def turnOffErrorReporting(analyzer: Analyzer)(context: analyzer.Context) = {
+    // copy pasted from the impl
+    val ReportErrors     = 1 << 0
+    context.restoreState(context.state & ~ReportErrors)
   }
 
   lazy val noSelfType = emptyValDef

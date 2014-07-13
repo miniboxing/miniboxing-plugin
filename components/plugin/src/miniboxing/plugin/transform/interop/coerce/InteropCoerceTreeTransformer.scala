@@ -20,7 +20,6 @@ import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.typechecker.Analyzer
-import scala.tools.nsc.typechecker.ContextMode
 
 trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers {
   self: InteropCoerceComponent =>
@@ -51,7 +50,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
-      context.set(disable = ContextMode.ReportErrors)
+      turnOffErrorReporting(this)(context)
       val checker = new TreeAdapter(context)
       unit.body = checker.typed(unit.body)
       unit.body
