@@ -20,7 +20,7 @@ trait TestConfiguration {
   object scalablitz
 
   val sizes = {
-    Gen.range("size")(from = 100000, upto = 1000000, hop = 100000)
+    Gen.range("size")(from = 100000, upto = 1500000, hop = 100000)
   }
   val tests = List(miniboxed, specialized, generic) // library
 
@@ -35,7 +35,7 @@ trait TestConfiguration {
       exec.minWarmupRuns -> 20,
       exec.independentSamples -> 1,
       exec.outliers.suspectPercent -> 0,
-      exec.jvmflags -> "-Xmx2g -Xms2g -Xss4m -XX:+UseParallelGC" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
+      exec.jvmflags -> "-Xmx8g -Xms8g -Xss4m -XX:+UseParallelGC" // server config: -Xmx16g -Xms16g -Xss4m -XX:+CMSClassUnloadingEnabled -XX:ReservedCodeCacheSize=256m -XX:+TieredCompilation -XX:+UseNUMA
     )
 
   def ignoreRunsWithGC = false
