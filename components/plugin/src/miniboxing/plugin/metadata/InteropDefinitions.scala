@@ -23,23 +23,7 @@ trait InteropDefinitions {
   import global._
   import definitions._
 
-  lazy val mbFunctionClass = {
-    // This is what is should look like:
-    // ```
-    // package __root__.scala {
-    // class mbFunction extends Annotation with TypeConstraint
-    // }
-    // ```
-    val AnnotationName = "scala.annotation.Annotation"
-    val TypeConstrName = "scala.annotation.TypeConstraint"
-    val AnnotationTpe = rootMirror.getRequiredClass(AnnotationName).tpe
-    val TypeConstrTpe = rootMirror.getRequiredClass(TypeConstrName).tpe
-
-    val StorageName = newTypeName("mbFunction")
-    val StorageSym = ScalaPackageClass.newClassSymbol(StorageName, NoPosition, 0L)
-    StorageSym setInfoAndEnter ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym)
-    StorageSym
-  }
+  lazy val mbFunctionClass = global.rootMirror.getRequiredClass("miniboxing.mbFunction")
 
   lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction0")
   lazy val MiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction1")

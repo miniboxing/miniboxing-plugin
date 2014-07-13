@@ -20,7 +20,7 @@ trait TestConfiguration {
   object scalablitz
 
   val sizes = {
-    Gen.range("size")(from = 100000, upto = 500000, hop = 100000)
+    Gen.range("size")(from = 100000, upto = 1000000, hop = 100000)
   }
   val tests = List(miniboxed, specialized, generic) // library
 
@@ -75,78 +75,78 @@ trait TweakedPerfomanceTest extends PerformanceTest with TestConfiguration {
 
 
 
-//object MiniboxedLinkedListBenchmark extends TweakedPerfomanceTest {
-//
-//  import simple.miniboxed._
-//
-//  // sanity check:
-//  lazy val fun = new Function1[Double, Double] { def apply(d: Double) = d }
-//  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1_DD"), fun.getClass().getInterfaces())
-//
-//  implicit object Num_D extends Numeric[Double] {
-//    def plus(x: Double, y: Double): Double = x + y
-//    def zero: Double = 0.0
-//  }
-//
-//  var listx: List[Double] = Nil
-//  var listy: List[Double] = Nil
-//
-//  if (tests.contains(miniboxed)) {
-//
-//    report("miniboxed")
-//    performance of this.getClass.getSimpleName in {
-//      measure method "Least Squares Method with List[Double]" in {
-//        using(sizes) setUp {
-//          size =>
-//            System.gc()
-//            val random = new scala.util.Random(0)
-//            // Random between (-1.0, 1.0), mean = 0
-//            def rand = random.nextDouble - random.nextDouble
-//            // Function to approximate = 5x + 3
-//            val func = new Function1[Int, Double] {
-//              def apply(x: Int): Double = step*x + zero
-//            }
-//            listx = Nil
-//            listy = Nil
-//            var i = 0
-//            while (i < size) {
-//              listx = (i + rand) :: i + rand :: listx
-//              listy = (func(i) + rand) :: func(i) + rand :: listy
-//              i += 1
-//            }
-//        } config (
-//            testSettings: _*
-//        ) in {
-//          size =>
-//
-//          val listxy = listx.zip(listy)
-//
-//          val sumx  = listx.sum
-//          val sumy  = listy.sum
-//
-//          // function (x, y) => x * y
-//          val fxy = new Function1[Tuple2[Double,Double], Double] {
-//            def apply(t: Tuple2[Double, Double]): Double = t._1 * t._2
-//          }
-//          val sumxy = listxy.map(fxy).sum
-//
-//          // function x => x * x
-//          val fxx = new Function1[Double, Double] {
-//            def apply(x: Double): Double = x * x
-//          }
-//          val squarex = listx.map(fxx).sum
-//
-//          val m = (size*sumxy - sumx*sumy) / (size*squarex - sumx*sumx)
-//          val b = (sumy*squarex - sumx*sumxy) / (size*squarex - sumx*sumx)
-//
-//          // was it a good approximation?
-//          assert(m - step < 0.1, "m exceeded 10% of error : " + m + " instead of " + step)
-//          assert(b - zero < 0.1, "b exceeded 10% of error : " + b + " instead of " + zero)
-//        }
-//      }
-//    }
-//  }
-//}
+object MiniboxedLinkedListBenchmark extends TweakedPerfomanceTest {
+
+  import simple.miniboxed._
+
+  // sanity check:
+  lazy val fun = new Function1[Double, Double] { def apply(d: Double) = d }
+  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1_DD"), fun.getClass().getInterfaces())
+
+  implicit object Num_D extends Numeric[Double] {
+    def plus(x: Double, y: Double): Double = x + y
+    def zero: Double = 0.0
+  }
+
+  var listx: List[Double] = Nil
+  var listy: List[Double] = Nil
+
+  if (tests.contains(miniboxed)) {
+
+    report("miniboxed")
+    performance of this.getClass.getSimpleName in {
+      measure method "Least Squares Method with List[Double]" in {
+        using(sizes) setUp {
+          size =>
+            System.gc()
+            val random = new scala.util.Random(0)
+            // Random between (-1.0, 1.0), mean = 0
+            def rand = random.nextDouble - random.nextDouble
+            // Function to approximate = 5x + 3
+            val func = new Function1[Int, Double] {
+              def apply(x: Int): Double = step*x + zero
+            }
+            listx = Nil
+            listy = Nil
+            var i = 0
+            while (i < size) {
+              listx = (i + rand) :: i + rand :: listx
+              listy = (func(i) + rand) :: func(i) + rand :: listy
+              i += 1
+            }
+        } config (
+            testSettings: _*
+        ) in {
+          size =>
+
+          val listxy = listx.zip(listy)
+
+          val sumx  = listx.sum
+          val sumy  = listy.sum
+
+          // function (x, y) => x * y
+          val fxy = new Function1[Tuple2[Double,Double], Double] {
+            def apply(t: Tuple2[Double, Double]): Double = t._1 * t._2
+          }
+          val sumxy = listxy.map(fxy).sum
+
+          // function x => x * x
+          val fxx = new Function1[Double, Double] {
+            def apply(x: Double): Double = x * x
+          }
+          val squarex = listx.map(fxx).sum
+
+          val m = (size*sumxy - sumx*sumy) / (size*squarex - sumx*sumx)
+          val b = (sumy*squarex - sumx*sumxy) / (size*squarex - sumx*sumx)
+
+          // was it a good approximation?
+          assert(m - step < 0.1, "m exceeded 10% of error : " + m + " instead of " + step)
+          assert(b - zero < 0.1, "b exceeded 10% of error : " + b + " instead of " + zero)
+        }
+      }
+    }
+  }
+}
 
 
 
@@ -177,7 +177,7 @@ object MiniboxedLinkedListWithLibraryFunctionsBenchmark extends TweakedPerfomanc
 
   if (tests.contains(miniboxed)) {
 
-    report("miniboxed")
+    report("miniboxed with bridges")
     performance of this.getClass.getSimpleName in {
       measure method "Least Squares Method with List[Double]" in {
         using(sizes) setUp {
@@ -229,79 +229,79 @@ object MiniboxedLinkedListWithLibraryFunctionsBenchmark extends TweakedPerfomanc
 
 
 
-//object GenericLinkedListBenchmark extends TweakedPerfomanceTest {
-//
-//  import simple.generic._
-//
-//  // sanity check:
-//  lazy val fun = new Function1[Int, Int] { def apply(i: Int) = i }
-//  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1"), fun.getClass().getInterfaces())
-//
-//  implicit object Num_D extends Numeric[Double] {
-//    def plus(x: Double, y: Double): Double = x + y
-//    def zero: Double = 0.0
-//  }
-//
-//  var listx: List[Double] = Nil
-//  var listy: List[Double] = Nil
-//
-//  if (tests.contains(generic)) {
-//
-//    report("generic")
-//    performance of this.getClass.getSimpleName in {
-//      measure method "Least Squares Method with List[Double]" in {
-//        using(sizes) setUp {
-//          size =>
-//            System.gc()
-//            val random = new scala.util.Random(0)
-//            // Random between (-1.0, 1.0), mean = 0
-//            def rand = random.nextDouble - random.nextDouble
-//            // Function to approximate = 5x + 3
-//            val func = new Function1[Int, Double] {
-//              def apply(x: Int): Double = step*x + zero
-//            }
-//            listx = Nil
-//            listy = Nil
-//            var i = 0
-//            while (i < size) {
-//              listx = (i + rand) :: i + rand :: listx
-//              listy = (func(i) + rand) :: func(i) + rand :: listy
-//              i += 1
-//            }
-//        } config (
-//            testSettings: _*
-//        ) in {
-//          size =>
-//
-//          val listxy = listx.zip(listy)
-//
-//          val sumx  = listx.sum
-//          val sumy  = listy.sum
-//
-//          // function (x, y) => x * y
-//          val fxy = new Function1[Tuple2[Double,Double], Double] {
-//            def apply(t: Tuple2[Double, Double]): Double = t._1 * t._2
-//          }
-//          val sumxy = listxy.map(fxy).sum
-//
-//          // function x => x * x
-//          val fxx = new Function1[Double, Double] {
-//            def apply(x: Double): Double = x * x
-//          }
-//          val squarex = listx.map(fxx).sum
-//
-//          val m = (size*sumxy - sumx*sumy) / (size*squarex - sumx*sumx)
-//          val b = (sumy*squarex - sumx*sumxy) / (size*squarex - sumx*sumx)
-//
-//          // was it a good approximation?
-//          assert(m - step < 0.1, "m exceeded 10% of error : " + m + " instead of " + step)
-//          assert(b - zero < 0.1, "b exceeded 10% of error : " + b + " instead of " + zero)
-//        }
-//      }
-//    }
-//  }
-//}
-//
+object GenericLinkedListBenchmark extends TweakedPerfomanceTest {
+
+  import simple.generic._
+
+  // sanity check:
+  lazy val fun = new Function1[Int, Int] { def apply(i: Int) = i }
+  assert(fun.getClass().getInterfaces().map(_.getSimpleName()).contains("Function1"), fun.getClass().getInterfaces())
+
+  implicit object Num_D extends Numeric[Double] {
+    def plus(x: Double, y: Double): Double = x + y
+    def zero: Double = 0.0
+  }
+
+  var listx: List[Double] = Nil
+  var listy: List[Double] = Nil
+
+  if (tests.contains(generic)) {
+
+    report("generic")
+    performance of this.getClass.getSimpleName in {
+      measure method "Least Squares Method with List[Double]" in {
+        using(sizes) setUp {
+          size =>
+            System.gc()
+            val random = new scala.util.Random(0)
+            // Random between (-1.0, 1.0), mean = 0
+            def rand = random.nextDouble - random.nextDouble
+            // Function to approximate = 5x + 3
+            val func = new Function1[Int, Double] {
+              def apply(x: Int): Double = step*x + zero
+            }
+            listx = Nil
+            listy = Nil
+            var i = 0
+            while (i < size) {
+              listx = (i + rand) :: i + rand :: listx
+              listy = (func(i) + rand) :: func(i) + rand :: listy
+              i += 1
+            }
+        } config (
+            testSettings: _*
+        ) in {
+          size =>
+
+          val listxy = listx.zip(listy)
+
+          val sumx  = listx.sum
+          val sumy  = listy.sum
+
+          // function (x, y) => x * y
+          val fxy = new Function1[Tuple2[Double,Double], Double] {
+            def apply(t: Tuple2[Double, Double]): Double = t._1 * t._2
+          }
+          val sumxy = listxy.map(fxy).sum
+
+          // function x => x * x
+          val fxx = new Function1[Double, Double] {
+            def apply(x: Double): Double = x * x
+          }
+          val squarex = listx.map(fxx).sum
+
+          val m = (size*sumxy - sumx*sumy) / (size*squarex - sumx*sumx)
+          val b = (sumy*squarex - sumx*sumxy) / (size*squarex - sumx*sumx)
+
+          // was it a good approximation?
+          assert(m - step < 0.1, "m exceeded 10% of error : " + m + " instead of " + step)
+          assert(b - zero < 0.1, "b exceeded 10% of error : " + b + " instead of " + zero)
+        }
+      }
+    }
+  }
+}
+
 //
 //
 //object SpecializedLinkedListBenchmark extends TweakedPerfomanceTest {
