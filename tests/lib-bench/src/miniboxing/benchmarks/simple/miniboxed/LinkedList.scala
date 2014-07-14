@@ -91,7 +91,7 @@ trait Iterable[@miniboxed +T] extends Traversable[T] {
   def iterator: Iterator[T]
 }
 
-trait IterableLike[+T, +Repr] extends Traversable[T] {
+trait IterableLike[@miniboxed +T, +Repr] extends Traversable[T] {
 
   def iterator: Iterator[T]
 
