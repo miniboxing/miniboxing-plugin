@@ -132,6 +132,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       def sym = if (tree.hasSymbolField) tree.symbol else NoSymbol
 
       tree match {
+        case Select(qual, _) =>
+          qual.tpe.typeSymbol.info
+        case _ =>
+      }
+
+      tree match {
         case ClassDef(_, _, _, impl: Template) =>
 
           if (heuristics.isSpecializableClass(tree.symbol) && metadata.isClassStem(tree.symbol)) {
