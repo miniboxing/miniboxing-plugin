@@ -1,0 +1,9 @@
+[[syntax trees at end of                  hijacker]] // newSource1.scala
+package miniboxing.tests.compile.mark.all.flag {
+  class C[@miniboxed T, @miniboxed U, @miniboxed V] extends scala.AnyRef {
+    def <init>(): miniboxing.tests.compile.mark.all.flag.C[T,U,V] = {
+      C.super.<init>();
+      ()
+    }
+  }
+}

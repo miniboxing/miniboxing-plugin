@@ -31,6 +31,7 @@ trait HijackComponent extends
     with ScalacCrossCompilingLayer {
 
   def flag_hijack_spec: Boolean
+  def flag_mark_all: Boolean
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -212,6 +213,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_two_way = true
   var flag_rewire_functionX = true
   var flag_rewire_functionX_bridges = true
+  var flag_mark_all = false // type parameters as @miniboxed
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -239,6 +241,8 @@ class Minibox(val global: Global) extends Plugin {
         global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                        "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
                        "command line")
+      else if (option.toLowerCase() == "mark-all")
+        flag_mark_all = true
       else
         error("Miniboxing: Option not understood: " + option)
     }
@@ -252,7 +256,8 @@ class Minibox(val global: Global) extends Plugin {
     s"  -P:${name}:spec-no-opt         don't optimize method specialization, do create useless specializations\n",
     s"  -P:${name}:loader              generate classloader-friendly code (but more verbose)",
     s"  -P:${name}:no-logo             skip the miniboxing logo display",
-    s"  -P:${name}:library-functions   do not rewrite scala.FunctionX to the optimized MiniboxedFunctionX (X=1,2,3)").mkString("\n"))
+    s"  -P:${name}:library-functions   do not rewrite scala.FunctionX to the optimized MiniboxedFunctionX (X=1,2,3)",
+    s"  -P:${name}:mark-all            implicitly add @miniboxed annotations to all type parameters").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -262,6 +267,7 @@ class Minibox(val global: Global) extends Plugin {
 
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_two_way = Minibox.this.flag_two_way
+    def flag_mark_all = Minibox.this.flag_mark_all
 
     // no change
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
