@@ -50,7 +50,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
-      turnOffErrorReporting(this)(context)
+      // turnOffErrorReporting(this)(context)
       val checker = new TreeAdapter(context)
       unit.body = checker.typed(unit.body)
       unit.body
@@ -73,6 +73,16 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
       override protected def adapt(tree: Tree, mode: Mode, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
+
+        def superAdapt =
+          if (oldTpe <:< newTpe)
+            super.adapt(tree, mode, pt, original)
+          else
+            if (flag_strict_typechecking)
+              super.adapt(tree, mode, pt, original)
+            else
+              tree.setType(newTpe)
+
         if (tree.isTerm) {
           if ((oldTpe.isMbFunction ^ newTpe.isMbFunction) && (!newTpe.isWildcard)) {
             val conversion = if (oldTpe.isMbFunction) marker_mbfun2fun else marker_fun2mbfun
@@ -92,10 +102,9 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
             tree.setType(newTpe)
             tree
           } else
-            super.adapt(tree, mode, pt, original)
-        } else {
-          super.adapt(tree, mode, pt, original)
-        }
+            superAdapt
+        } else
+          superAdapt
       }
 
       case object AlreadyTyped
@@ -103,7 +112,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
-        adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe)
+        adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe + "   " + tree.pos)
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)

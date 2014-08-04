@@ -84,7 +84,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
-      turnOffErrorReporting(this)(context)
+      // turnOffErrorReporting(this)(context)
       val checker = new TreeAdapter(context)
       unit.body = checker.typed(unit.body)
       unit.body
@@ -107,6 +107,15 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
       override protected def adapt(tree: Tree, mode: Mode, pt: Type, original: Tree = EmptyTree): Tree = {
         val oldTpe = tree.tpe
         val newTpe = pt
+        def superAdapt =
+          if (oldTpe <:< newTpe)
+            super.adapt(tree, mode, pt, original)
+          else
+            if (flag_strict_typechecking)
+              super.adapt(tree, mode, pt, original)
+            else
+              tree.setType(newTpe)
+
         if (tree.isTerm) {
           if ((oldTpe.isStorage ^ newTpe.isStorage) && (!pt.isWildcard)) {
             val conversion = if (oldTpe.isStorage) marker_minibox2box else marker_box2minibox
@@ -134,9 +143,9 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
               tree
             }
           } else
-            super.adapt(tree, mode, pt, original)
+            superAdapt
         } else {
-          super.adapt(tree, mode, pt, original)
+          superAdapt
         }
       }
 

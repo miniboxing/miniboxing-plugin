@@ -62,6 +62,8 @@ trait InteropCoerceComponent extends
 
   def interopCoercePhase: StdPhase
 
+  def flag_strict_typechecking: Boolean
+
   def afterInteropCoerce[T](op: => T): T = global.afterPhase(interopCoercePhase)(op)
   def beforeInteropCoerce[T](op: => T): T = global.beforePhase(interopCoercePhase)(op)
 }
@@ -119,6 +121,8 @@ trait MiniboxCoerceComponent extends
   val minibox: MiniboxInjectComponent { val global: MiniboxCoerceComponent.this.global.type }
 
   def mboxCoercePhase: StdPhase
+
+  def flag_strict_typechecking: Boolean
 
   def afterMiniboxCoerce[T](op: => T): T = global.afterPhase(mboxCoercePhase)(op)
   def beforeMiniboxCoerce[T](op: => T): T = global.beforePhase(mboxCoercePhase)(op)
@@ -214,6 +218,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_rewire_functionX = true
   var flag_rewire_functionX_bridges = true
   var flag_mark_all = false // type parameters as @miniboxed
+  var flag_strict_typechecking = false
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -235,6 +240,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_two_way = false                         // where the tests required the one-way translation
       else if (option.toLowerCase() == "ygen-brdgs") // Undocumented flag, only used for running the test suite
         flag_rewire_functionX_bridges = false        // while avoiding func. to miniboxed func. bridge optimization
+      else if (option.toLowerCase() == "ystrict-typechecking") // Undocumented flag
+        flag_strict_typechecking = true
       else if (option.toLowerCase() == "library-functions")
         flag_rewire_functionX  = false
       else if (option.toLowerCase() == "two-way")
@@ -299,6 +306,8 @@ class Minibox(val global: Global) extends Plugin {
     override val runsRightAfter = Some("uncurry")
     val phaseName = "interop-coerce"
 
+    def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
+
     var interopCoercePhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       interopCoercePhase = new CoercePhase(prev.asInstanceOf[InteropCoercePhase.this.Phase])
@@ -357,6 +366,8 @@ class Minibox(val global: Global) extends Plugin {
     val runsAfter = List(MiniboxInjectPhase.phaseName)
     override val runsRightAfter = Some(MiniboxInjectPhase.phaseName)
     val phaseName = Minibox.this.name + "-coerce"
+
+    def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
 
     var mboxCoercePhase : StdPhase = _
     def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
