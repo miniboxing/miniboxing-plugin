@@ -22,3 +22,6 @@ bin/
 # sandbox and graphs
 /graphs
 /sandbox
+
+# sbt publish
+/sbt-publish
