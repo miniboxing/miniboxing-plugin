@@ -128,7 +128,6 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
                  res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
                  res
                }
-              super.typedQualifier(qual.setType(null), mode, WildcardType)
 
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(mbFunctionClass)) qual2.tpe else qual2.tpe.widen
