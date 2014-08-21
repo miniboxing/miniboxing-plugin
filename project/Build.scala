@@ -12,6 +12,8 @@ import Keys._
 import Process._
 import sbtassembly.Plugin._
 import AssemblyKeys._
+import xerial.sbt.Sonatype._ 
+import SonatypeKeys._
 
 object MiniboxingBuild extends Build {
 
@@ -38,7 +40,13 @@ object MiniboxingBuild extends Build {
     scalacOptions ++= Seq("-feature", "-deprecation", "-unchecked", "-Xlint"),
 
     parallelExecution in Global := false,
-    publishArtifact in packageDoc := false
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (isSnapshot.value)
+        Some("snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    }
   )
 
   val crossCompilationLayer = Seq(
@@ -58,16 +66,10 @@ object MiniboxingBuild extends Build {
 
   val publishDeps: Seq[Setting[_]] = publishCredAvailable match {
     case true => 
-      Seq(
+      sonatypeSettings ++ Seq(
         // sonatype
+        profileName := "vlad.ureche",
         publishMavenStyle := true,
-        publishTo := {
-          val nexus = "https://oss.sonatype.org/"
-          if (version.value.trim.endsWith("SNAPSHOT"))
-            Some("snapshots" at nexus + "content/repositories/snapshots")
-          else
-            Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-        },
         publishArtifact in Test := false,
         pomIncludeRepository := { _ => false },
         pomExtra := (
@@ -92,7 +94,8 @@ object MiniboxingBuild extends Build {
                                          sys.env(publishUser),
                                          sys.env(publishPass))
           }
-        }
+        },
+        publishArtifact in packageDoc := !isSnapshot.value
       )
    case false => 
      Seq(
@@ -101,8 +104,7 @@ object MiniboxingBuild extends Build {
   }
 
   val nopublishDeps = Seq(
-    publish := { }, 
-    publishLocal := { }
+    publishArtifact := false
   )
 
   val runtimeDeps = Seq(
