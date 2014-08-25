@@ -43,13 +43,15 @@ class CompileTest(val code: String, flags: String, launch: String) extends Direc
         // compile the given file:
         val result = compile()
         // if necessary, reflectively launch the test execution:
-        if (launch != "") {
-          val args = launch.split(" ")
-          val loader = new URLClassLoader(Array(jfile.toURI().toURL()), this.getClass.getClassLoader)
-          val clazz = loader.loadClass(args(0))
-          val method = clazz.getMethod("main", classOf[Array[String]])
-          method.invoke(null, args.drop(1))
-        }
+        if (launch != "")
+          if (result) {
+            val args = launch.split(" ")
+            val loader = new URLClassLoader(Array(jfile.toURI().toURL()), this.getClass.getClassLoader)
+            val clazz = loader.loadClass(args(0))
+            val method = clazz.getMethod("main", classOf[Array[String]])
+            method.invoke(null, args.drop(1))
+          } else
+            println(s"Not executing $launch since compilation failed! :( scuze!")
       }
     }
     pa.flush()
