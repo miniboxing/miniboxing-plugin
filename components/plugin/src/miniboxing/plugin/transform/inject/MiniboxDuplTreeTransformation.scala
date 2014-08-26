@@ -123,17 +123,13 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     def rewrite(tree: Tree): Result = {
       curTree = tree
 
-      // make sure specializations have been performed
-      tree match {
-        case t: Tree if t.hasSymbolField => if (t.symbol != null) afterMiniboxInject(t.symbol.info)
-        case _ =>
-      }
-
       def sym = if (tree.hasSymbolField) tree.symbol else NoSymbol
 
       tree match {
         case Select(qual, _) =>
           qual.tpe.typeSymbol.info
+        case _ if tree.hasSymbolField && tree.symbol != null =>
+          tree.symbol.info
         case _ =>
       }
 
@@ -564,26 +560,25 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       private def collect(member: Symbol, rhs: Tree, params: List[List[Symbol]]) = {
         body(member) = (rhs.duplicate, params)
         metadata.templateMembers -= member
-        debug("collected " + member.fullName + ":")
+        debug("collected " + member.fullName + " -- " + member + ":")
         debug("  " + rhs)
       }
 
-      def getMethodBody(meth: Symbol) =
+      def getMethodBody(meth: Symbol, owner: Symbol) =
         try {
           body.apply(meth)
         } catch {
           case e: Throwable =>
-            unit.error(meth.pos, "Internal miniboxing plugin error: Method body for " + meth + " not collected.")
+            unit.error(meth.pos, "Internal miniboxing plugin error: Method body for " + meth + " not collected (when duplicating into " + owner + ")")
             (localTyper.typed(gen.mkMethodCall(Predef_???, Nil)), meth.paramss)
         }
-      def getFieldBody(fld: Symbol) = body(fld)._1
+      def getFieldBody(fld: Symbol, owner: Symbol) = getMethodBody(fld, owner)._1
     }
 
     private def duplicateBody(tree0: Tree, source: Symbol): Tree = {
 
       val symbol = tree0.symbol
       val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams).toMap
-
 
       // specialization environment
       val senv1: List[(Symbol, Symbol)] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams)
@@ -654,11 +649,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val symbol = tree.symbol
       debuglog("specializing body of " + symbol.defString)
       val (tparams, tags, vparams, tpt) = tree match {
-        case DefDef(_, _, tparams, tvparams :: Nil, tpt, _) if !metadata.isMemberStem(symbol) =>
+        case DefDef(_, _, tparams, tvparams :: Nil, tpt, _) =>
           val (ttags, vparams) = tagUtils.separateTypeTagArgsInTree(tvparams)
           (tparams, ttags, vparams, tpt)
-        case DefDef(_, _, tparams, vparams :: Nil, tpt, _) if metadata.isMemberStem(symbol) =>
-          (tparams, Nil, vparams, tpt)
       }
 
 
@@ -681,7 +674,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       // log("Type vars of: " + source + ": " + source.typeParams)
       // log("Type env of: " + tree.symbol + ": " + boundTvars)
       // log("newtparams: " + newtparams)
-      val (body, parameters) = MethodBodiesCollector.getMethodBody(source)
+      val (body, parameters) = MethodBodiesCollector.getMethodBody(source, symbol.owner)
 
       val symSubstituter = new TreeSymSubstituter(
         parameters.flatten ::: origtparams,
@@ -695,8 +688,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     }
 
     private def addValDefBody(tree: Tree, origMember: Symbol): Tree = {
-      val defSymbol = tree.symbol
-      val origBody = MethodBodiesCollector.getFieldBody(origMember);
+      val valSymbol = tree.symbol
+      val origBody = MethodBodiesCollector.getFieldBody(origMember, valSymbol);
       val origClass = origMember.owner
 
       val tree1 = deriveValDef(tree)(_ => origBody.duplicate)

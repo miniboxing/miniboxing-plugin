@@ -169,7 +169,7 @@ trait MiniboxMetadata {
 
     def getMemberStem(variant: Symbol) = {
       assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
-      classStem.getOrElse(variant, NoSymbol)
+      memberStem.getOrElse(variant, NoSymbol)
     }
 
     def isMemberStem(variant: Symbol) =

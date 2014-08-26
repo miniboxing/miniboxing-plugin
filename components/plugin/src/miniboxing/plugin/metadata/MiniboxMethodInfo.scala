@@ -36,7 +36,7 @@ trait MiniboxMethodInfo {
    * This class should be extended by various classes containing information
    * about different types of methods that are created during specialization.
    */
-  sealed class MethodInfo
+  sealed abstract class MethodInfo
 
 
   /**
@@ -48,9 +48,9 @@ trait MiniboxMethodInfo {
   case class ForwardTo(base: Symbol)(overrider: Boolean) extends MethodInfo {
     override def toString =
       if (overrider)
-        "is an override which forwards to the specialized member"
+        s"is an override which forwards to the specialized member" // $base"
       else
-        "is a forwarder to the specialized member"
+        s"is a forwarder to the specialized member" // $base"
   }
 
   /**

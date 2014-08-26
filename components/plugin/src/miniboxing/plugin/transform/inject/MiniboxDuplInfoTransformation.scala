@@ -336,8 +336,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
         }
 
         for (variantClass <- specs; variantMethod <- specializedOverloads get variantClass)
-          // TODO: This should be Interface(), but I'll keep it as it is to avoid breakage later on
-          memberSpecializationInfo(variantMethod) = ForwardTo(stemMethod)(overrider = false)
+          memberSpecializationInfo(variantMethod) = Interface
       }
 
       stemClass.info.decls.toList ++ newMembers
@@ -425,12 +424,8 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
         }).toMap
 
       // Update relationships
-      for ((mbr, newMbr) <- newMembers if mbr.isMethod) {
-        if (metadata.isMemberStem(mbr))
-          metadata.setMemberStem(newMbr, newMbr)
-        else
-          metadata.setMemberStem(newMbr, newMembers(mbr))
-      }
+      for ((mbr, newMbr) <- newMembers if mbr.isMethod)
+        metadata.setMemberStem(newMbr, newMembers(mbr))
 
       // Replace the info in the copied members to reflect their new class
       for ((m, newMbr) <- newMembers if !m.isConstructor) {
@@ -508,35 +503,15 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
           // that will have an implementation and forward to it
           if (metadata.memberOverloads(mbr).isDefinedAt(spec)) {
             if (metadata.memberOverloads(mbr)(spec) == mbr) {
-              if (mbr.isAccessor) {
-                memberSpecializationInfo(newMbr) = memberSpecializationInfo.get(mbr) match {
-                  case Some(ForwardTo(target)) =>
-                    if (!newMbr.isDeferred)
-                      FieldAccessor(newMembers(target.accessed))
-                    else
-                      Interface
-                  case _ =>
-                    global.error(s"""|Unaccounted case when specializing ${newMbr.defString} in ${variantClass}
-                                     |based on the ${mbr.defString} in ${stemClass}
-                                     |${memberSpecializationInfo.get(mbr)}""".stripMargin)
-                    Interface
-                }
-              } else {
-                memberSpecializationInfo.get(mbr) match {
-                  case Some(ForwardTo(target)) =>
-                    memberSpecializationInfo(newMbr) =
-                      if (!mbr.isDeferred)
-                        SpecializedImplementationOf(target)
-                      else
-                        Interface
-                  case Some(x) =>
-                    global.error(s"""|Unaccounted case when specializing ${newMbr.defString} in ${variantClass}
-                                     |based on the ${mbr.defString} in ${stemClass}
-                                     |${memberSpecializationInfo.get(mbr)}""".stripMargin)
-                  case None =>
-                    memberSpecializationInfo(newMbr) = SpecializedImplementationOf(mbr)
-                }
-              }
+              val origin = metadata.getMemberStem(mbr).orElse(mbr)
+              memberSpecializationInfo(newMbr) =
+                if (!newMbr.isDeferred)
+                  if (origin.isAccessor)
+                    FieldAccessor(newMembers(origin.accessed))
+                  else
+                    SpecializedImplementationOf(origin)
+                else
+                  Interface
             } else {
               // here, we're forwarding to the all-AnyRef member, knowing that the
               // redirection algorithm will direct to the appropriate member later
@@ -652,13 +627,27 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
               case Some(ForwardTo(moreSpec)) =>
                 memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
 
+              // if sym is a field accessor, the overrider will point to it, as there's no reason
+              // for the field access to minibox and unbox back
+              case Some(FieldAccessor(fld)) =>
+                memberSpecializationInfo(sym) = FieldAccessor(fld)
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
+
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
-              case _ =>
+              case Some(SpecializedImplementationOf(parent)) =>
+                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
+                memberSpecializationInfo(overrider) = SpecializedImplementationOf(parent)
+
+              case None =>
                 memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
+
+              case info =>
+                global.reporter.error(sym.pos, "Member override creation: unaccounted case " + info + " for " + sym.fullName + "(" + sym + ")")
+                memberSpecializationInfo(overrider) = Interface
             }
-            metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (localPSpec -> overrider)
+            metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (globalPSpec -> overrider)
 
             scope1 enter overrider
           }
