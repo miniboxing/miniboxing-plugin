@@ -34,6 +34,8 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
     override def transform(tree: Tree): Tree = tree match   {
       case TypeApply(sel, tpes) =>
         treeCopy.TypeApply(tree, transform(sel), tpes)
+      case Template(parents, self, body) =>
+         deriveTemplate(tree)(body => transformStats(body, currentOwner))
       case tree: TypeTree =>
         val res = updatedType(tree.tpe)
         if (res eq tree.tpe)

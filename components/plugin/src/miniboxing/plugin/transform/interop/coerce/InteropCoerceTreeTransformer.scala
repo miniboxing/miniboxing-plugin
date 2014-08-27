@@ -138,19 +138,12 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
               tree.setType(null)
               super.typed(tree, mode, pt)
             }
+          case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
+            super.typed(outer, mode, pt)
           case _ =>
             tree.setType(null)
             super.typed(tree, mode, pt)
         }
-
-        // Stupid hack to get rid of an error when typing the <outer>
-        // reference - the typer set the Outer.type as type instead of
-        // ()Outer.type. There, I fixed it:
-        if (tree.hasSymbolField && tree.symbol.name.decoded == "<outer>" && !tree.isInstanceOf[Apply])
-          tree.tpe match {
-            case MethodType(Nil, _) => // ok
-            case _ => tree.setType(MethodType(Nil, tree.tpe))
-          }
 
         adaptdbg(ind, " ==> " + res + ": " + res.tpe)
 //        if (res.tpe == ErrorType)

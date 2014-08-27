@@ -630,8 +630,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             mbSubst.shallowSubst,
             mbSubst.deepSubst
           ))
-        )(_ => localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))))
-
+        )(_ => {
+          println(tree)
+          localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil))))
+        })
       // get back flags
       for (clazz <- metadata.allStemClasses)
         clazz.setFlag(ABSTRACT | TRAIT)

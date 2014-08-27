@@ -311,25 +311,12 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
-  private object PreparePhase extends PrepareComponent {
-    val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropInjectPhase.phaseName)
-    override val runsRightAfter = Some("uncurry")
-    val phaseName = "mb-ext-prepare"
-
-    var preparePhase : StdPhase = _
-    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      preparePhase = new PreparePhaseImpl(prev)
-      preparePhase
-    }
-  }
-
   private object InteropCoercePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with InteropCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(PreparePhase.phaseName)
-    override val runsRightAfter = Some(PreparePhase.phaseName)
+    val runsAfter = List(InteropInjectPhase.phaseName)
+    override val runsRightAfter = Some("uncurry")
     val phaseName = "interop-coerce"
 
     def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
@@ -356,10 +343,23 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
+  private object PreparePhase extends PrepareComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(InteropCommitPhase.phaseName)
+    override val runsRightAfter = Some(InteropCommitPhase.phaseName)
+    val phaseName = "mb-ext-prepare"
+
+    var preparePhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      preparePhase = new PreparePhaseImpl(prev)
+      preparePhase
+    }
+  }
+
   private object MiniboxInjectPhase extends MiniboxInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("refchecks")
-    override val runsRightAfter = Some(InteropCommitPhase.phaseName)
+    val runsAfter = List(PreparePhase.phaseName)
+    override val runsRightAfter = Some(PreparePhase.phaseName)
     val phaseName = Minibox.this.name + "-inject"
 
     def flag_log = Minibox.this.flag_log
