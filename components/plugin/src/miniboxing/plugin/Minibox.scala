@@ -51,6 +51,18 @@ trait InteropInjectComponent extends
   def flag_rewire_functionX_bridges: Boolean
 }
 
+/** Tree preparer before retyping the tree */
+trait PrepareComponent extends
+    PluginComponent
+    with PrepareTreeTransformer
+    with ScalacCrossCompilingLayer {
+
+  def preparePhase: StdPhase
+
+  def afterPrepare[T](op: => T): T = global.afterPhase(preparePhase)(op)
+  def beforePrepare[T](op: => T): T = global.beforePhase(preparePhase)(op)
+}
+
 /** Glue transformation to bridge Function and MiniboxedFunction */
 trait InteropCoerceComponent extends
     PluginComponent
@@ -195,6 +207,7 @@ class Minibox(val global: Global) extends Plugin {
     List[PluginComponent](PreTyperPhase,
                           PostTyperPhase,
                           InteropInjectPhase,
+                          PreparePhase,
                           InteropCoercePhase,
                           InteropCommitPhase,
                           HijackPhase,
@@ -270,7 +283,7 @@ class Minibox(val global: Global) extends Plugin {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
     override val runsRightAfter = Some("extmethods")
-    val phaseName = "hijacker"
+    val phaseName = "mb-ext-hijacker"
 
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_two_way = Minibox.this.flag_two_way
@@ -298,19 +311,32 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
+  private object PreparePhase extends PrepareComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(InteropInjectPhase.phaseName)
+    override val runsRightAfter = Some("uncurry")
+    val phaseName = "mb-ext-prepare"
+
+    var preparePhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      preparePhase = new PreparePhaseImpl(prev)
+      preparePhase
+    }
+  }
+
   private object InteropCoercePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with InteropCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropInjectPhase.phaseName)
-    override val runsRightAfter = Some("uncurry")
+    val runsAfter = List(PreparePhase.phaseName)
+    override val runsRightAfter = Some(PreparePhase.phaseName)
     val phaseName = "interop-coerce"
 
     def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
 
     var interopCoercePhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      interopCoercePhase = new CoercePhase(prev.asInstanceOf[InteropCoercePhase.this.Phase])
+      interopCoercePhase = new CoercePhase(prev)
       interopCoercePhase
     }
   }
@@ -403,7 +429,7 @@ class Minibox(val global: Global) extends Plugin {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List()
     override val runsRightAfter = Some("parser")
-    val phaseName = "mb-pretyper"
+    val phaseName = "mb-ext-pretyper"
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PreTyperPhase.phaseName
@@ -425,7 +451,7 @@ class Minibox(val global: Global) extends Plugin {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
     //override val runsRightAfter = Some("typer")
-    val phaseName = "mb-posttyper"
+    val phaseName = "mb-ext-posttyper"
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PostTyperPhase.phaseName

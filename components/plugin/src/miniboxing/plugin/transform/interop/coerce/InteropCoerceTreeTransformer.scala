@@ -35,7 +35,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
     override def transform(tree: Tree) = tree
   }
 
-  class CoercePhase(prev: Phase) extends StdPhase(prev) {
+  class CoercePhase(prev: scala.tools.nsc.Phase) extends StdPhase(prev) {
     override def name = InteropCoerceTreeTransformer.this.phaseName
     override def checkable = false
     def apply(unit: CompilationUnit): Unit = {
