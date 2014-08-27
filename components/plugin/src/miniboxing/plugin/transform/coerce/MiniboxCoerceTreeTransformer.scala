@@ -109,7 +109,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
         val newTpe = pt
         def superAdapt =
           if (oldTpe <:< newTpe)
-            super.adapt(tree, mode, pt, original)
+            tree
           else
             if (flag_strict_typechecking)
               super.adapt(tree, mode, pt, original)
@@ -124,7 +124,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
                 (oldTpe.dealiasWiden.withoutStorage, oldTpe.getStorageRepr)
               else
                 (newTpe.dealiasWiden.withoutStorage, newTpe.getStorageRepr)
-            val tree1 = gen.mkMethodCall(conversion, List(tpe, repr.tpeHK), List(tree))
+            val tree1 = gen.mkMethodCall(conversion, List(tpe, repr.tpeHK), List(tree.withTypedAnnot))
             val tree2 = super.typed(tree1, mode, pt)
             assert(tree2.tpe != ErrorType, tree2)
             // super.adapt is automatically executed when calling super.typed
@@ -134,7 +134,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
             val repr2 = newTpe.getStorageRepr
             if (repr1 != repr2) {
               // representation mismatch
-              val tree1 = gen.mkMethodCall(marker_minibox2minibox, List(oldTpe.dealiasWiden.withoutStorage, repr1.tpeHK, repr2.tpeHK), List(tree))
+              val tree1 = gen.mkMethodCall(marker_minibox2minibox, List(oldTpe.dealiasWiden.withoutStorage, repr1.tpeHK, repr2.tpeHK), List(tree.withTypedAnnot))
               super.typed(tree1, mode, pt)
             } else {
               // workaround the isSubType issue with singleton types
@@ -150,26 +150,24 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
       }
 
       case object AlreadyTyped
+      implicit class WithAlreadyTyped(val tree: Tree) {
+        def withTypedAnnot: tree.type = tree.updateAttachment[AlreadyTyped.type](AlreadyTyped)
+      }
 
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe)
+
+        if (tree.hasAttachment[AlreadyTyped.type] && (pt == WildcardType) && (tree.tpe != null))
+          return tree
+
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
-          case _ if tree.tpe == null =>
-            super.typed(tree, mode, pt)
 
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
-            val qual2 =
-               if (qual.hasAttachment[AlreadyTyped.type])
-                 qual
-               else {
-                 val res = super.typedQualifier(qual.setType(null), mode, WildcardType)
-                 res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
-                 res
-               }
+            val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType).withTypedAnnot
 
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(StorageClass)) qual2.tpe else qual2.tpe.widen
@@ -182,6 +180,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
               tree.setType(null)
               super.typed(tree, mode, pt)
             }
+
           case _ =>
             tree.setType(null)
             super.typed(tree, mode, pt)

@@ -76,7 +76,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
 
         def superAdapt =
           if (oldTpe <:< newTpe)
-            super.adapt(tree, mode, pt, original)
+            tree
           else
             if (flag_strict_typechecking)
               super.adapt(tree, mode, pt, original)
@@ -108,26 +108,27 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
       }
 
       case object AlreadyTyped
+      implicit class WithAlreadyTyped(val tree: Tree) {
+        def withTypedAnnot: tree.type = tree.updateAttachment[AlreadyTyped.type](AlreadyTyped)
+      }
 
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val ind = indent
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe + "   " + tree.pos)
+
+        if (tree.hasAttachment[AlreadyTyped.type] && (pt == WildcardType) && tree.tpe != null)
+          return tree
+
         val res = tree match {
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
-          case _ if tree.tpe == null =>
-            super.typed(tree, mode, pt)
+
+          case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
+            super.typed(outer, mode, pt)
 
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
-            val qual2 =
-               if (qual.hasAttachment[AlreadyTyped.type])
-                 qual
-               else {
-                 val res = super.typedQualifier(qual.setType(null), mode, WildcardType)
-                 res.updateAttachment[AlreadyTyped.type](AlreadyTyped)
-                 res
-               }
+            val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType).withTypedAnnot
 
             if (qual2.isStorage) {
               val tpe2 = if (qual2.tpe.hasAnnotation(mbFunctionClass)) qual2.tpe else qual2.tpe.widen
@@ -138,8 +139,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
               tree.setType(null)
               super.typed(tree, mode, pt)
             }
-          case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
-            super.typed(outer, mode, pt)
+
           case _ =>
             tree.setType(null)
             super.typed(tree, mode, pt)
