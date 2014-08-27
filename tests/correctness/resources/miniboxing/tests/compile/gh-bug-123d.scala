@@ -9,7 +9,7 @@ class Worker {
 //    val id = opt.get
 //  }
 
-  def receive[Id: ClassTag] = (x: Any) => x match {
+  def receive[@miniboxed Id: ClassTag] = (x: Any) => x match {
     case source: Id =>
       val src: Id = source
   }
