@@ -151,7 +151,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
 
       case object AlreadyTyped
       implicit class WithAlreadyTyped(val tree: Tree) {
-        def withTypedAnnot: tree.type = tree.updateAttachment[AlreadyTyped.type](AlreadyTyped)
+        def withTypedAnnot: Tree = tree.updateAttachment[AlreadyTyped.type](AlreadyTyped)
       }
 
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
