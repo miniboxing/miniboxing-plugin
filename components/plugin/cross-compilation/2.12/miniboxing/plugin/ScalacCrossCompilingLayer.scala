@@ -29,7 +29,7 @@ trait ScalacCrossCompilingLayer {
 }
 
 trait ScalacVersion {
-  lazy val scalaBinaryVersion = "2.11"
-  lazy val scalaVersion = "2.11.2"
+  lazy val scalaBinaryVersion = "2.12"
+  lazy val scalaVersion = "2.12.0-SNAPSHOT"
 }
 

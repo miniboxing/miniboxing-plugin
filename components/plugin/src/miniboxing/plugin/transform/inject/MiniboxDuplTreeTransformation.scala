@@ -187,7 +187,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   Some(app)
                 case other if !other.isInstanceOf[DefTree] =>
                   if (announce) {
-                    unit.warning(other.pos,
+                    global.reporter.warning(other.pos,
                         s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
                             |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
                     announce = false
@@ -300,7 +300,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
         // Error on accessing non-existing fields
         case sel@Select(ths, field) if isMiniboxedFieldInStem(sel) =>
-          unit.error(sel.pos,
+          global.reporter.error(sel.pos,
               s"""|The program is accessing field ${sel.symbol.name} of miniboxed class/trait ${ths.symbol.name}, a pattern which becomes invalid after the
                   |miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier:
                   |  ${(if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\"."}""".stripMargin)
@@ -569,7 +569,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           body.apply(meth)
         } catch {
           case e: Throwable =>
-            unit.error(meth.pos, "Internal miniboxing plugin error: Method body for " + meth + " not collected (when duplicating into " + owner + ")")
+            global.reporter.error(meth.pos, "Internal miniboxing plugin error: Method body for " + meth + " not collected (when duplicating into " + owner + ")")
             (localTyper.typed(gen.mkMethodCall(Predef_???, Nil)), meth.paramss)
         }
       def getFieldBody(fld: Symbol, owner: Symbol) = getMethodBody(fld, owner)._1

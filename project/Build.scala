@@ -185,15 +185,19 @@ object MiniboxingBuild extends Build {
 
   val recursiveDeps = {
     val ver = "0.4-SNAPSHOT"
-    Seq(
-      libraryDependencies += {
-                               val sVer = scalaBinaryVersion.value
-                               compilerPlugin(
-                                 "org.scala-miniboxing.plugins" %% "miniboxing-plugin" % ver from 
-                                   s"https://oss.sonatype.org/content/repositories/snapshots/org/scala-miniboxing/plugins/miniboxing-plugin_$sVer/$ver/miniboxing-plugin_$sVer-$ver.jar")
-                             },
-      scalacOptions += "-P:minibox:library-functions"
-    )
+    val bootstrap = true //false
+    if (bootstrap)
+      Seq()
+    else
+      Seq(
+        libraryDependencies += {
+                                 val sVer = scalaBinaryVersion.value
+                                 compilerPlugin(
+                                   "org.scala-miniboxing.plugins" %% "miniboxing-plugin" % ver from 
+                                     s"https://oss.sonatype.org/content/repositories/snapshots/org/scala-miniboxing/plugins/miniboxing-plugin_$sVer/$ver/miniboxing-plugin_$sVer-$ver.jar")
+                               },
+        scalacOptions += "-P:minibox:library-functions"
+      )
   }
 
   lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
