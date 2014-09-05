@@ -220,6 +220,28 @@ trait MiniboxMetadata {
 
     def memberHasNormalizations(stem: Symbol): Boolean =
       normalOverloads.get(stem).map(_.size).getOrElse(1) > 1
+
+
+    // Class state
+    def getClassState(cls: Symbol): ClassState = {
+      afterMiniboxInject(cls.info)
+      val isStem = isClassStem(cls)
+      val isSpecialized = getClassStem(cls) != NoSymbol
+      val state =
+        if (!isSpecialized)
+          NotSpecialized
+        else
+          if (isStem)
+            SpecializedStem
+          else
+            SpecializedVariant
+      state
+    }
   }
+
+  abstract class ClassState
+  case object SpecializedStem extends ClassState
+  case object SpecializedVariant extends ClassState
+  case object NotSpecialized extends ClassState
 }
 

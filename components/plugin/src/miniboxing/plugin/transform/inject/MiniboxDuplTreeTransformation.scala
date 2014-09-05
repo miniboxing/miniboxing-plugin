@@ -197,11 +197,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           afterMiniboxInject(tree.symbol.enclClass.info)
           MethodBodiesCollector(tree)
 
-          abstract class State
-          case object SpecializedStem extends State
-          case object SpecializedVariant extends State
-          case object NotSpecialized extends State
-
           //  This is either a class that has nothing to do with miniboxing or that is the base
           //  class (now trait) for the specialization.
           //  Also collect the bodies of the methods that need to be copied and specialized.
@@ -209,21 +204,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val decls = afterMiniboxInject(cls.info).decls.toList
           val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false))
           def memberVariants(mbr: Symbol): List[Tree] = {
-              // get all variants, obtained through specialization and/or normalization
-              val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
-              val normVariants = specVariants.flatMap(mbr => metadata.normalOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr)))
-              normVariants.filter(_ != mbr).map(createMemberTree)
+            val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
+            specVariants.filter(_ != mbr).map(createMemberTree)
           }
-          val isStem = metadata.isClassStem(cls)
-          val isSpecialized = metadata.getClassStem(cls) != NoSymbol
-          val state =
-            if (!isSpecialized)
-              NotSpecialized
-            else
-              if (isStem)
-                SpecializedStem
-              else
-                SpecializedVariant
+          val state = metadata.getClassState(cls)
 
           var sideEffectWarning = true
           def equivalentMemberTree(sym: Symbol) =
@@ -259,7 +243,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case SpecializedVariant => Nil
                 }
               // the following two cases are here to guard against the warning in the workaround for bug #64:
-              case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == sym && !metadata.memberHasOverloads(app.symbol) =>
+              case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) =>
                 state match {
                   case NotSpecialized => List(app)
                   case SpecializedStem => List(app)
@@ -280,10 +264,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 }
             }).flatten
           val tagMembers = tags.map(createMemberTree)
-          val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, sym))
+          val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, cls))
 
           // parents
-          val parents1 = map2(sym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+          val parents1 = map2(cls.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
 
           // new template def
           val templateDef = treeCopy.Template(tree, parents1, self, atOwner(currentOwner)(memberDefs))
