@@ -120,6 +120,38 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       case _ => NoType
     }
 
+    /** Goes from a member in the stem class to its equivalent in the specialized class variant.
+     * ```
+     * class C[@miniboxed T] {
+     *   def foo = ???
+     * }
+     * ```
+     *  =>
+     * ```
+     * trait C[T] {
+     *   def foo: Nothing // (1)
+     * }
+     * class C_J[T](...) extends C[T] {
+     *   def foo: Nothing = ??? // (2)
+     * }
+     *
+     * Namely from (1) to (2), where sym points to `C`'s `foo` and specClass points to `C_J`
+     */
+    def equivalentMemberInSpecializedClass(sym: Symbol, specClass: Symbol): Symbol = {
+      assert(metadata.isClassStem(sym.owner), sym.owner)
+      assert(!metadata.isClassStem(specClass), specClass)
+      val specSym =
+        if (sym.isConstructor) {
+          val pspec = metadata.classSpecialization(specClass)
+          metadata.memberOverloads.get(sym).flatMap(_.get(pspec)).getOrElse(NoSymbol)
+        } else {
+          specClass.tpe.member(sym.name).filter(_.allOverriddenSymbols contains sym)
+        }
+
+      assert(!specSym.isOverloaded && (specSym != NoSymbol))
+      specSym
+    }
+
     def rewrite(tree: Tree): Result = {
       curTree = tree
 
@@ -147,8 +179,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
               for (specClassSym <- specClassSymbols) yield {
                 debuglog("Creating specialized class " + specClassSym.defString + " for " + specializedStemClassSym)
                 val classDef = atPos(specializedStemClassSym.pos)(classDefTreeFromSym(specClassSym))
+                val classDef2 = deriveClassDef(classDef)(templ => deriveTemplate(templ)(_ => impl.body.map(_.duplicate)))
                 // type check and transform the class before returning the tree
-                transform(localTyper.typed(classDef))
+                transform(localTyper.typed(classDef2))
               }
 
             baseTrait :: specClasses
@@ -160,43 +193,88 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           afterMiniboxInject(tree.symbol.enclClass.info)
           MethodBodiesCollector(tree)
 
+          abstract class State
+          case object SpecializedStem extends State
+          case object SpecializedVariant extends State
+          case object NotSpecialized extends State
+
           //  This is either a class that has nothing to do with miniboxing or that is the base
           //  class (now trait) for the specialization.
           //  Also collect the bodies of the methods that need to be copied and specialized.
-          val sym = tree.symbol.enclClass
-          val decls = afterMiniboxInject(sym.info).decls.toList
+          val cls = tree.symbol.enclClass
+          val decls = afterMiniboxInject(cls.info).decls.toList
+          val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false))
+          def memberVariants(mbr: Symbol): List[Tree] = {
+              // get all variants, obtained through specialization and/or normalization
+              val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
+              val normVariants = specVariants.flatMap(mbr => metadata.normalOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr)))
+              normVariants.map(createMemberTree)
+          }
+          val isStem = metadata.isClassStem(cls)
+          val isSpecialized = heuristics.isSpecializableClass(cls)
+          val state =
+            if (!isSpecialized)
+              NotSpecialized
+            else
+              if (isStem)
+                SpecializedStem
+              else
+                SpecializedVariant
+
+          var sideEffectWarning = true
+          def equivalentMemberTree(sym: Symbol) = createMemberTree(equivalentMemberInSpecializedClass(sym, cls))
 
           // members
-          val specMembers = createMethodTrees(sym) map (localTyper.typed)
           val bodyDefs =
-            if (metadata.isClassStem(sym)) {
-              var announce = true
-              body.map({
-                case dt: DefTree if decls.contains(dt.symbol) =>
-                  Some(dt)
-                case vd: ValDef if vd.symbol.isValue && !vd.symbol.isMethod =>
-                  None
-                case dd: DefDef if dd.symbol.isConstructor =>
-                  None
-                case _: DefTree =>
-                  None
-                // the following two cases are here to guard against the warning in the workaround for bug #64:
-                case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == sym && !metadata.memberHasOverloads(app.symbol) =>
-                  Some(app)
-                case app @ TypeApply(Apply(Select(ths: This, _), Nil), _) if !metadata.memberHasOverloads(app.symbol) && !metadata.memberHasNormalizations(app.symbol) =>
-                  Some(app)
-                case other if !other.isInstanceOf[DefTree] =>
-                  if (announce) {
-                    global.reporter.warning(other.pos,
-                        s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
-                            |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
-                    announce = false
+            body.map({
+              case dt: DefTree if (dt.symbol.isConstructor || (dt.symbol.isValue && !dt.symbol.isMethod)) =>
+                state match {
+                  case NotSpecialized => List(dt)
+                  case SpecializedStem => Nil
+                  case SpecializedVariant => List(equivalentMemberTree(dt.symbol))
+                }
+              case dd: DefDef =>
+                val dd2 =
+                  state match {
+                    case NotSpecialized => dd
+                    case SpecializedStem => dd
+                    case SpecializedVariant => equivalentMemberTree(dd.symbol)
                   }
-                  Some(other)
-              }).flatten
-            } else
-              body
-          val memberDefs = atOwner(currentOwner)(transformStats(bodyDefs ::: specMembers, sym))
+                dd2 :: memberVariants(dd2.symbol)
+              case dt: DefTree =>
+                state match {
+                  case NotSpecialized => List(dt)
+                  case SpecializedStem => List(dt)
+                  case SpecializedVariant => Nil
+                }
+              // the following two cases are here to guard against the warning in the workaround for bug #64:
+              case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == sym && !metadata.memberHasOverloads(app.symbol) =>
+                state match {
+                  case NotSpecialized => List(app)
+                  case SpecializedStem => List(app)
+                  case SpecializedVariant => Nil
+                }
+              case other if !other.isInstanceOf[DefTree] =>
+                state match {
+                  case NotSpecialized => List(other)
+                  case SpecializedStem =>
+                    if (sideEffectWarning) {
+                      global.reporter.warning(other.pos,
+                          s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
+                              |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
+                      sideEffectWarning = false
+                    }
+                    List(other)
+                  case SpecializedVariant => Nil
+                }
+            }).flatten
+          val tagMembers = tags.map(createMemberTree)
+          val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, sym))
+
+//          println(sym)
+//          println(s"specMembers: \n${specMembers.mkString("\n")}")
+//          println(s"bodyDefs: \n${bodyDefs.mkString("\n")}")
+//          println()
 
           // parents
           val parents1 = map2(sym.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
@@ -212,9 +290,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
           val res: Tree =
             memberSpecializationInfo.get(sym) match {
-              // trait methods => abstract :)
-              case _ if metadata.isClassStem(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && heuristics.specializableMethodInClass(sym.enclClass, sym) =>
-                localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
+//              // trait methods => abstract :)
+//              case _ if metadata.isClassStem(sym.enclClass) && sym.name != nme.MIXIN_CONSTRUCTOR && heuristics.specializableMethodInClass(sym.enclClass, sym) =>
+//                localTyper.typed(treeCopy.DefDef(ddef, mods, name, tparams, vparamss = List(vparams), tpt, EmptyTree))
 
               // Implement the getter or setter functionality
               case Some(FieldAccessor(field)) =>
@@ -255,7 +333,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 localTyper.typed(tree2)
 
               // abstract methods
-              case Some(Interface | _ : DeferredTypeTag) =>
+              case Some(Interface | _ : DeferredTypeTag | _: TypeTagParam) =>
                 tree
 
               // deferred type tag implementation
@@ -347,9 +425,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             if ((oldQualSym != newQualSym) &&
                 (metadata.getClassStem(newQualSym) == oldQualSym) &&
                 (oldMbrSym.name != nme.CONSTRUCTOR)) {
-              val updSym = newQualSym.tpe.member(oldMbrSym.name).filter(_.allOverriddenSymbols contains oldMbrSym)
-              assert(!updSym.isOverloaded && updSym != NoSymbol)
-              updSym
+              equivalentMemberInSpecializedClass(oldMbrSym, newQualSym)
             } else
               oldMbrSym
 
@@ -520,28 +596,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     def ltyped(tree: Tree): Tree =
       localTyper.typed(tree)
 
-    // Create bodies for methods in a tree. Important note: Normalized methods are created when encountering
-    // the base member (the one where the entire normalization started)
-    private def createMethodTrees(sClass: Symbol): List[Tree] = {
-      val mbrs = new ListBuffer[Tree]
-
-      // keep the order for constructors:
-      val decls        = sClass.info.decls.toList.filter(s => metadata.miniboxedMemberFlag(s))
-      val constructors = decls.filter(_.isConstructor)
-      val methods      = decls.filterNot(_.isConstructor).filter(s => metadata.getNormalStem(s).orElse(s) == s).sortBy(_.defString)
-
-      // create bodies
-      for (m <- constructors ::: methods) {
-        debuglog("creating empty tree for " + m.fullName)
-        if (m.isMethod) {
-          mbrs += atPos(m.pos)(DefDef(m, { (_: List[List[Symbol]]) => EmptyTree }))
-        } else if (m.isValue) {
-          mbrs += ValDef(m, EmptyTree).setType(NoType).setPos(m.pos)
-        }
-      }
-
-      mbrs.toList
-    }
 
     // We collect the bodies of the target methods in order to have them available
     // for copying inside the methods that are specialized implementations of them.
@@ -710,6 +764,23 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         res
       case _ =>
         false
+    }
+
+    // Create bodies for members in a tree
+    def createMemberTree(mbr: Symbol): Tree = {
+      debuglog("creating empty tree for " + mbr.fullName)
+      val tree =
+        if (mbr.isMethod)
+          DefDef(mbr, { (_: List[List[Symbol]]) => EmptyTree })
+        else if (mbr.isValue)
+          ValDef(mbr, EmptyTree).setType(NoType)
+        else {
+          reporter.error(mbr.pos, s"[miniboxing internal error] Unable to generate member: " + mbr.defString)
+          gen.mkMethodCall(Predef_???, Nil)
+        }
+      val tree2 = atPos(mbr.pos)(tree)
+      val tree3 = localTyper.typed(tree2)
+      tree3
     }
   }
 }

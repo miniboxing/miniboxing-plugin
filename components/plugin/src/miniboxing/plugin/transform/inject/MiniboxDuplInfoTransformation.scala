@@ -573,7 +573,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
             val tparamMiss = ovr.typeParams.filter(tparam =>
               tparam.isMiniboxAnnotated && !tparamMap(tparam).isMiniboxAnnotated).map(tparamMap)
             if (tparamMiss.nonEmpty)
-              currentUnit.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + ovr + " in " + ovr.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
+              reporter.error(sym.pos, "The " + sym + " in " + clazz + " overrides " + ovr + " in " + ovr.owner + " therefore needs to have the follwing type parameters marked with @miniboxed: " + tparamMiss.mkString(",") + ".")
           }
 
           // Check for specialized classes, that makes things more complex
@@ -625,27 +625,27 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
               // if sym is a forwarder to a more specialized member, let the overrider forward to
               // the the most specialized member, else we're losing optimality
               case Some(ForwardTo(moreSpec)) =>
-                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true).asOverride
 
               // if sym is a field accessor, the overrider will point to it, as there's no reason
               // for the field access to minibox and unbox back
               case Some(FieldAccessor(fld)) =>
                 memberSpecializationInfo(sym) = FieldAccessor(fld)
-                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true).asOverride
 
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
               case Some(SpecializedImplementationOf(parent)) =>
                 memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
-                memberSpecializationInfo(overrider) = SpecializedImplementationOf(parent)
+                memberSpecializationInfo(overrider) = SpecializedImplementationOf(parent).asOverride
 
               case None =>
                 memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
-                memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym)
+                memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym).asOverride
 
               case info =>
                 global.reporter.error(sym.pos, "Member override creation: unaccounted case " + info + " for " + sym.fullName + "(" + sym + ")")
-                memberSpecializationInfo(overrider) = Interface
+                memberSpecializationInfo(overrider) = Interface.asOverride
             }
             metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (globalPSpec -> overrider)
 
