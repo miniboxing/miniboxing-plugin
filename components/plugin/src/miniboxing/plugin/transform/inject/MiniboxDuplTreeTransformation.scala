@@ -229,13 +229,17 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case SpecializedVariant => Nil // TODO: Do we want the mixin constructor here?
                 }
               case dd: DefDef =>
-                val dd2 =
-                  state match {
-                    case NotSpecialized => dd
-                    case SpecializedStem => deriveDefDef(dd)(_ => EmptyTree)
-                    case SpecializedVariant => equivalentMemberTree(dd.symbol)
-                  }
-                dd2 :: memberVariants(dd2.symbol)
+                import heuristics.specializableMethodInClass
+                def withMemberVariants(dd: Tree) = dd :: memberVariants(dd.symbol)
+                lazy val spec = specializableMethodInClass(cls, dd.symbol) // only compute if necessary
+                val dd2 = state match {
+                  case NotSpecialized              => withMemberVariants(dd)
+                  case SpecializedStem    if !spec => List(dd)
+                  case SpecializedVariant if !spec => Nil
+                  case SpecializedStem             => withMemberVariants(deriveDefDef(dd)(_ => EmptyTree))
+                  case SpecializedVariant          => withMemberVariants(equivalentMemberTree(dd.symbol))
+                }
+                dd2
               case dt: DefTree =>
                 state match {
                   case NotSpecialized => List(dt)

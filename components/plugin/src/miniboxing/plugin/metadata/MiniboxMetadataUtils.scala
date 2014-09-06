@@ -265,12 +265,15 @@ trait MiniboxMetadataUtils {
       && !tp.typeSymbol.isPackageClass
     )
 
-    def specializableMethodInClass(clazz: Symbol, mbr: Symbol): Boolean = (
-         (!mbr.isMethod
-      || !mbr.isSynthetic)
-      && ((mbr.alias == NoSymbol)
-      || metadata.memberOverloads.isDefinedAt(mbr.alias))
-    )
+    def specializableMethodInClass(clazz: Symbol, mbr: Symbol): Boolean = {
+//      TODO: Make this invariant stand (it's violated by normalization)
+//      assert(clazz.isClass || clazz.isModule || clazz.isTrait, clazz.defString)
+
+      ((!mbr.isMethod ||
+        !mbr.isSynthetic) &&
+      ((mbr.alias == NoSymbol) ||
+        metadata.memberOverloads.isDefinedAt(mbr.alias)))
+    }
 
     def normalizableMethodInMethod(sym: Symbol): Boolean = (
          sym.isMethod
