@@ -409,6 +409,8 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
         })
 
       // Record the new mapping for type tags to the fields carrying them
+      for ((tag, tparam) <- typeTagMap)
+        memberSpecializationInfo(tag) = TypeTagParam(tparam)
       metadata.globalTypeTags.getOrElseUpdate(variantClass, HashMap()) ++= typeTagMap
 
       // step6: Copy the members of the stemClass to the specialized class.

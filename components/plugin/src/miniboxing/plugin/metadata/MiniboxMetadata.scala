@@ -91,32 +91,20 @@ trait MiniboxMetadata {
     /** For each method contains the stem method */
     protected val normalStem = new mutable.HashMap[Symbol, Symbol]
 
-    // Type tag map also marks the type tags with the correct metadata
-    trait TypeTagMarking extends mutable.Map[Symbol, mutable.Map[Symbol, Symbol]] {
-      def specInfo = memberSpecializationInfo
-      override def update(sym: Symbol, map: mutable.Map[Symbol, Symbol]) = {
-        for ((tag, tparam) <- map) {
-//          assert(!specInfo.isDefinedAt(tag) || specInfo(tag) == TypeTagParam(tparam),
-//              s"[miniboxing internal error] member specialization info already defined for tag ${tag.fullName}: ${specInfo(tag)}")
-          specInfo(tag) = TypeTagParam(tparam)
-        }
-        super.update(sym, map)
-      }
-    }
 
 
     // Type tags (local scope, inside a class/trait):
 
     /** Records for each of the specialized classes the tag field to type parameter
      *  correspondence. These are local type tags, used in all members. */
-    val globalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]] with TypeTagMarking
+    val globalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** Records for each of the specialized classes the tag field to type parameter
      *  correspondence. These are local type tags, used in each member. */
-    val localTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]] with TypeTagMarking
+    val localTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** Type tags for normalized methods */
-    val normalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]] with TypeTagMarking
+    val normalTypeTags = new mutable.HashMap[Symbol, mutable.Map[Symbol, Symbol]]
 
     /** A list of members that represent type tags *inherited* from traits -- unlike type tags in a class,
      *  which are fields, these are methods which the inheriting class overrides. */

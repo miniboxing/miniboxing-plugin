@@ -185,7 +185,7 @@ object MiniboxingBuild extends Build {
 
   val recursiveDeps = {
     val ver = "0.4-SNAPSHOT"
-    val bootstrap = true //false
+    val bootstrap = false
     if (bootstrap)
       Seq()
     else
