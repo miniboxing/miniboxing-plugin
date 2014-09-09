@@ -4,10 +4,11 @@
 package miniboxing.tests.compile {
   abstract trait Dist1[@miniboxed A] extends Object {
     def apply(a: A): A;
-    def iterateUntil(): miniboxing.tests.compile.Dist1[A];
-    def apply_J(A_TypeTag: Byte, a: Long): Long
+    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def iterateUntil(): miniboxing.tests.compile.Dist1[A]
   };
   abstract class Dist1_J[Asp] extends Object with miniboxing.tests.compile.Dist1[Asp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|Dist1_J|A_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|Dist1_J|A_TypeTag: Byte): miniboxing.tests.compile.Dist1_J[Asp] = {
       Dist1_J.super.<init>();
       ()
@@ -24,8 +25,7 @@ package miniboxing.tests.compile {
         override def apply_J(A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A_TypeTag)
       };
       new anonymous class $anon()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|Dist1_J|A_TypeTag: Byte = _
+    }
   };
   abstract class Dist1_L[Asp] extends Object with miniboxing.tests.compile.Dist1[Asp] {
     def <init>(): miniboxing.tests.compile.Dist1_L[Asp] = {

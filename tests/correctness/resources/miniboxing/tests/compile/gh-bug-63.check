@@ -5,23 +5,23 @@ package miniboxing.test.compile.bugs63 {
     <stable> <accessor> def t_J(T_TypeTag: Byte): Long
   };
   class C_J[Tsp] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
-    def <init>(miniboxing|test|compile|bugs63|C_J|T_TypeTag: Byte, t: Long): miniboxing.test.compile.bugs63.C_J[Tsp] = {
-      C_J.super.<init>();
-      ()
-    };
     <paramaccessor> private[this] val miniboxing|test|compile|bugs63|C_J|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
     <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](C_J.this.t_J(C_J.this.miniboxing|test|compile|bugs63|C_J|T_TypeTag), C_J.this.miniboxing|test|compile|bugs63|C_J|T_TypeTag);
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = C_J.this.t
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = C_J.this.t;
+    def <init>(miniboxing|test|compile|bugs63|C_J|T_TypeTag: Byte, t: Long): miniboxing.test.compile.bugs63.C_J[Tsp] = {
+      C_J.super.<init>();
+      ()
+    }
   };
   class C_L[Tsp] extends Object with miniboxing.test.compile.bugs63.C[Tsp] {
+    <paramaccessor> private[this] val t: Tsp = _;
+    <stable> <accessor> <paramaccessor> def t(): Tsp = C_L.this.t;
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](C_L.this.t(), T_TypeTag);
     def <init>(t: Tsp): miniboxing.test.compile.bugs63.C_L[Tsp] = {
       C_L.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val t: Tsp = _;
-    <stable> <accessor> <paramaccessor> def t(): Tsp = C_L.this.t;
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](C_L.this.t(), T_TypeTag)
+    }
   };
   object Test extends Object {
     def <init>(): miniboxing.test.compile.bugs63.Test.type = {

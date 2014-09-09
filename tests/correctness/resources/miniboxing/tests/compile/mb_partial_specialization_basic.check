@@ -9,7 +9,7 @@ Specializing class UhOh1...
     def <init>(val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh1_J[Xsp,Ysp] // is a specialized implementation of constructor UhOh1
     def foo(x: Xsp,y: Ysp): Xsp                                            // is a forwarder to the specialized member
     def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a specialized implementation of method foo
-    private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte     // no info
+    private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte     // is a type tag
   }
   // specialized class:
   class UhOh1_L[Xsp, Ysp] extends UhOh1[Xsp,Ysp] {
@@ -26,13 +26,13 @@ package miniboxing.tests.compile {
     def foo_J(X_TypeTag: Byte, x: Long, y: Y): Long
   };
   class UhOh1_J[Xsp, Ysp] extends Object with miniboxing.tests.compile.UhOh1[Xsp,Ysp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte): miniboxing.tests.compile.UhOh1_J[Xsp,Ysp] = {
       UhOh1_J.super.<init>();
       ()
     };
     def foo(x: Xsp, y: Ysp): Xsp = MiniboxConversions.this.minibox2box[Xsp](UhOh1_J.this.foo_J(UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag, MiniboxConversions.this.box2minibox_tt[Xsp](x, UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag), y), UhOh1_J.this.miniboxing|tests|compile|UhOh1_J|X_TypeTag);
-    def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = UhOh1_J.this.foo_J(X_TypeTag, x, y);
-    <paramaccessor> private[this] val miniboxing|tests|compile|UhOh1_J|X_TypeTag: Byte = _
+    def foo_J(X_TypeTag: Byte, x: Long, y: Ysp): Long = UhOh1_J.this.foo_J(X_TypeTag, x, y)
   };
   class UhOh1_L[Xsp, Ysp] extends Object with miniboxing.tests.compile.UhOh1[Xsp,Ysp] {
     def <init>(): miniboxing.tests.compile.UhOh1_L[Xsp,Ysp] = {

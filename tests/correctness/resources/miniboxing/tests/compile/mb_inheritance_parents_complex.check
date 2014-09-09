@@ -47,26 +47,26 @@ Specializing class Derived1...
   // specialized class:
   class Derived1_JJ[D11sp, D12sp] extends Base1_JJ[D11sp,D12sp] with Base2_J[D11sp,D12sp] with Base3_J[D11sp,D12sp] with Base4[D11sp,D12sp] with Derived1[D11sp,D12sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte,val miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_JJ[D11sp,D12sp] // is a specialized implementation of constructor Derived1
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte // no info
-    private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte // is a type tag
+    private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived1_LJ[D11sp, D12sp] extends Base1_LJ[D11sp,D12sp] with Base2_J[D11sp,D12sp] with Base3_L[D11sp,D12sp] with Base4[D11sp,D12sp] with Derived1[D11sp,D12sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_LJ[D11sp,D12sp] // is a specialized implementation of constructor Derived1
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived1_JL[D11sp, D12sp] extends Base1_JL[D11sp,D12sp] with Base2_L[D11sp,D12sp] with Base3_J[D11sp,D12sp] with Base4[D11sp,D12sp] with Derived1[D11sp,D12sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_JL[D11sp,D12sp] // is a specialized implementation of constructor Derived1
-    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived1_LL[D11sp, D12sp] extends Base1_LL[D11sp,D12sp] with Base2_L[D11sp,D12sp] with Base3_L[D11sp,D12sp] with Base4[D11sp,D12sp] with Derived1[D11sp,D12sp] {
@@ -79,9 +79,9 @@ Specializing class Derived2...
   // specialized class:
   class Derived2_J[D21sp, D22sp] extends Base1_LJ[D21sp,D22sp] with Base2_J[D21sp,D22sp] with Base3_L[D21sp,D22sp] with Base4[D21sp,D22sp] with Derived2[D21sp,D22sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived2_J[D21sp,D22sp] // is a specialized implementation of constructor Derived2
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived2_L[D21sp, D22sp] extends Base1_LL[D21sp,D22sp] with Base2_L[D21sp,D22sp] with Base3_L[D21sp,D22sp] with Base4[D21sp,D22sp] with Derived2[D21sp,D22sp] {
@@ -94,9 +94,9 @@ Specializing class Derived3...
   // specialized class:
   class Derived3_J[D31sp, D32sp] extends Base1_JL[D31sp,D32sp] with Base2_L[D31sp,D32sp] with Base3_J[D31sp,D32sp] with Base4[D31sp,D32sp] with Derived3[D31sp,D32sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived3_J[D31sp,D32sp] // is a specialized implementation of constructor Derived3
-    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived3_L[D31sp, D32sp] extends Base1_LL[D31sp,D32sp] with Base2_L[D31sp,D32sp] with Base3_L[D31sp,D32sp] with Base4[D31sp,D32sp] with Derived3[D31sp,D32sp] {
@@ -109,17 +109,17 @@ Specializing class Derived6...
   // specialized class:
   class Derived6_J[D61sp] extends Base1_JJ[D61sp,Int] with Base2_J[D61sp,Int] with Base3_J[D61sp,Int] with Base4[D61sp,Int] with Derived6[D61sp] {
     def <init>(val miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived6_J[D61sp] // is a specialized implementation of constructor Derived6
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is a type tag from an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte // no info
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte   // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class Derived6_L[D61sp] extends Base1_LJ[D61sp,Int] with Base2_J[D61sp,Int] with Base3_L[D61sp,Int] with Base4[D61sp,Int] with Derived6[D61sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived6_L[D61sp]   // is a specialized implementation of constructor Derived6
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is a type tag from an inherited trait
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is a type tag from an inherited trait
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte  // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte   // is the type tag of an inherited trait
   }
 [Now checking: minibox-inject]
 [Not checkable: minibox-coerce]
@@ -150,34 +150,34 @@ package miniboxing.tests.compile.inheritance {
   abstract trait Base4[B41, B42] extends Object;
   abstract trait Derived1[@miniboxed D11, @miniboxed D12] extends Object with miniboxing.tests.compile.inheritance.Base1[D11,D12] with miniboxing.tests.compile.inheritance.Base2[D11,D12] with miniboxing.tests.compile.inheritance.Base3[D11,D12] with miniboxing.tests.compile.inheritance.Base4[D11,D12];
   class Derived1_JJ[D11sp, D12sp] extends Object with miniboxing.tests.compile.inheritance.Base1_JJ[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte, miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_JJ[D11sp,D12sp] = {
       Derived1_JJ.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived1_JJ.this.miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D11_TypeTag: Byte = _;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JJ|D12_TypeTag: Byte = _
+    }
   };
   class Derived1_JL[D11sp, D12sp] extends Object with miniboxing.tests.compile.inheritance.Base1_JL[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived1_JL.this.miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte = Derived1_JL.this.miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_JL[D11sp,D12sp] = {
       Derived1_JL.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte = Derived1_JL.this.miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived1_JL.this.miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_JL|D11_TypeTag: Byte = _
+    }
   };
   class Derived1_LJ[D11sp, D12sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_J[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = Derived1_LJ.this.miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived1_LJ.this.miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived1_LJ[D11sp,D12sp] = {
       Derived1_LJ.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = Derived1_LJ.this.miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived1_LJ.this.miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived1_LJ|D12_TypeTag: Byte = _
+    }
   };
   class Derived1_LL[D11sp, D12sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base2_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base3_L[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Base4[D11sp,D12sp] with miniboxing.tests.compile.inheritance.Derived1[D11sp,D12sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived1_LL[D11sp,D12sp] = {
@@ -187,13 +187,13 @@ package miniboxing.tests.compile.inheritance {
   };
   abstract trait Derived2[D21, @miniboxed D22] extends Object with miniboxing.tests.compile.inheritance.Base1[D21,D22] with miniboxing.tests.compile.inheritance.Base2[D21,D22] with miniboxing.tests.compile.inheritance.Base3[D21,D22] with miniboxing.tests.compile.inheritance.Base4[D21,D22];
   class Derived2_J[D21sp, D22sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base2_J[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base3_L[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base4[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Derived2[D21sp,D22sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = Derived2_J.this.miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived2_J.this.miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived2_J[D21sp,D22sp] = {
       Derived2_J.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = Derived2_J.this.miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = Derived2_J.this.miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived2_J|D22_TypeTag: Byte = _
+    }
   };
   class Derived2_L[D21sp, D22sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base2_L[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base3_L[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Base4[D21sp,D22sp] with miniboxing.tests.compile.inheritance.Derived2[D21sp,D22sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived2_L[D21sp,D22sp] = {
@@ -203,13 +203,13 @@ package miniboxing.tests.compile.inheritance {
   };
   abstract trait Derived3[@miniboxed D31, D32] extends Object with miniboxing.tests.compile.inheritance.Base1[D31,D32] with miniboxing.tests.compile.inheritance.Base2[D31,D32] with miniboxing.tests.compile.inheritance.Base3[D31,D32] with miniboxing.tests.compile.inheritance.Base4[D31,D32];
   class Derived3_J[D31sp, D32sp] extends Object with miniboxing.tests.compile.inheritance.Base1_JL[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base2_L[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base3_J[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base4[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Derived3[D31sp,D32sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived3_J.this.miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte = Derived3_J.this.miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived3_J[D31sp,D32sp] = {
       Derived3_J.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_JL|B11_TypeTag(): Byte = Derived3_J.this.miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived3_J.this.miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived3_J|D31_TypeTag: Byte = _
+    }
   };
   class Derived3_L[D31sp, D32sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LL[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base2_L[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base3_L[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Base4[D31sp,D32sp] with miniboxing.tests.compile.inheritance.Derived3[D31sp,D32sp] {
     def <init>(): miniboxing.tests.compile.inheritance.Derived3_L[D31sp,D32sp] = {
@@ -224,32 +224,32 @@ package miniboxing.tests.compile.inheritance {
     }
   };
   class Derived5[D51] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D51,Int] with miniboxing.tests.compile.inheritance.Base2_J[D51,Int] with miniboxing.tests.compile.inheritance.Base3_L[D51,Int] with miniboxing.tests.compile.inheritance.Base4[D51,Int] {
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5;
     def <init>(): miniboxing.tests.compile.inheritance.Derived5[D51] = {
       Derived5.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5
+    }
   };
   abstract trait Derived6[@miniboxed D61] extends Object with miniboxing.tests.compile.inheritance.Base1[D61,Int] with miniboxing.tests.compile.inheritance.Base2[D61,Int] with miniboxing.tests.compile.inheritance.Base3[D61,Int] with miniboxing.tests.compile.inheritance.Base4[D61,Int];
   class Derived6_J[D61sp] extends Object with miniboxing.tests.compile.inheritance.Base1_JJ[D61sp,Int] with miniboxing.tests.compile.inheritance.Base2_J[D61sp,Int] with miniboxing.tests.compile.inheritance.Base3_J[D61sp,Int] with miniboxing.tests.compile.inheritance.Base4[D61sp,Int] with miniboxing.tests.compile.inheritance.Derived6[D61sp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte = _;
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte = Derived6_J.this.miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived6_J.this.miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag;
     def <init>(miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte): miniboxing.tests.compile.inheritance.Derived6_J[D61sp] = {
       Derived6_J.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B11_TypeTag(): Byte = Derived6_J.this.miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag;
-    def miniboxing|tests|compile|inheritance|Base1_JJ|B12_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|inheritance|Base3_J|B31_TypeTag(): Byte = Derived6_J.this.miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|Derived6_J|D61_TypeTag: Byte = _
+    }
   };
   class Derived6_L[D61sp] extends Object with miniboxing.tests.compile.inheritance.Base1_LJ[D61sp,Int] with miniboxing.tests.compile.inheritance.Base2_J[D61sp,Int] with miniboxing.tests.compile.inheritance.Base3_L[D61sp,Int] with miniboxing.tests.compile.inheritance.Base4[D61sp,Int] with miniboxing.tests.compile.inheritance.Derived6[D61sp] {
+    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5;
     def <init>(): miniboxing.tests.compile.inheritance.Derived6_L[D61sp] = {
       Derived6_L.super.<init>();
       ()
-    };
-    def miniboxing|tests|compile|inheritance|Base1_LJ|B12_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|inheritance|Base2_J|B22_TypeTag(): Byte = 5
+    }
   }
 }
 [Now checking: minibox-commit]

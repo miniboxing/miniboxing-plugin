@@ -7,6 +7,7 @@ package miniboxing.tests.compile.erasure11 {
     def test_J(T_TypeTag: Byte, c: Long): String
   };
   class CCCCC_J[Tsp] extends Object with miniboxing.tests.compile.erasure11.CCCCC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag: Byte): miniboxing.tests.compile.erasure11.CCCCC_J[Tsp] = {
       CCCCC_J.super.<init>();
       ()
@@ -15,8 +16,7 @@ package miniboxing.tests.compile.erasure11 {
     def test_J(T_TypeTag: Byte, c: Long): String = if (MiniboxDispatch.this.mboxed_hashCode(c, T_TypeTag).==(0))
   MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag)
 else
-  scala.this.Predef.???().toString();
-    <paramaccessor> private[this] val miniboxing|tests|compile|erasure11|CCCCC_J|T_TypeTag: Byte = _
+  scala.this.Predef.???().toString()
   };
   class CCCCC_L[Tsp] extends Object with miniboxing.tests.compile.erasure11.CCCCC[Tsp] {
     def <init>(): miniboxing.tests.compile.erasure11.CCCCC_L[Tsp] = {

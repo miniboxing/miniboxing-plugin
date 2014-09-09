@@ -7,6 +7,7 @@ package miniboxing.tests.correctness.erasure.torture5 {
     def foo_J(T_TypeTag: Byte, c: Long): Any
   };
   class A_J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture5.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture5.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -18,8 +19,7 @@ package miniboxing.tests.correctness.erasure.torture5 {
       else
         c;
       MiniboxConversions.this.minibox2box[Tsp](foo_tail(c, true), T_TypeTag)
-    };
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag: Byte = _
+    }
   };
   class A_L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture5.A[Tsp] {
     def <init>(): miniboxing.tests.correctness.erasure.torture5.A_L[Tsp] = {

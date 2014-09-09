@@ -27,7 +27,7 @@ Specializing class ArrayOps...
     def qmax(ev: miniboxing.tests.compile.Order2[Asp]): Asp                // is a forwarder to the specialized member
     def qmax_J(val A_TypeTag: Byte,ev: miniboxing.tests.compile.Order2[Asp]): Asp @storage[Long] // is a specialized implementation of method qmax
     private[this] val arr: Array[Asp]                                      // is a specialized implementation of value arr
-    private[this] val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte  // no info
+    private[this] val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte  // is a type tag
   }
   // specialized class:
   final class ArrayOps_L[Asp] extends ArrayOps[Asp] {
@@ -45,9 +45,9 @@ package miniboxing.tests.compile {
     def max_J(A_TypeTag: Byte, x: Long, y: Long): Long
   };
   abstract trait Order2_J[Asp] extends Object with miniboxing.tests.compile.Order2[Asp] {
+    def miniboxing|tests|compile|Order2_J|A_TypeTag(): Byte;
     def max(x: Asp, y: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Order2_J.this.max_J(Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag(), MiniboxConversions.this.box2minibox_tt[Asp](x, Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag()), MiniboxConversions.this.box2minibox_tt[Asp](y, Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag())), Order2_J.this.miniboxing|tests|compile|Order2_J|A_TypeTag());
-    def max_J(A_TypeTag: Byte, x: Long, y: Long): Long;
-    def miniboxing|tests|compile|Order2_J|A_TypeTag(): Byte
+    def max_J(A_TypeTag: Byte, x: Long, y: Long): Long
   };
   abstract trait Order2_L[Asp] extends Object with miniboxing.tests.compile.Order2[Asp] {
     def max(x: Asp, y: Asp): Asp;
@@ -58,6 +58,8 @@ package miniboxing.tests.compile {
     def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[A]): Long
   };
   final class ArrayOps_J[Asp] extends Object with miniboxing.tests.compile.ArrayOps[Asp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte = _;
+    <paramaccessor> private[this] val arr: Array[Asp] = _;
     def <init>(miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte, arr: Array[Asp]): miniboxing.tests.compile.ArrayOps_J[Asp] = {
       ArrayOps_J.super.<init>();
       ()
@@ -66,11 +68,10 @@ package miniboxing.tests.compile {
     def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[Asp]): Long = {
       def f5(t: Long): Long = f5(ev.max_J(A_TypeTag, t, MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag)));
       f5(MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag))
-    };
-    <paramaccessor> private[this] val arr: Array[Asp] = _;
-    <paramaccessor> private[this] val miniboxing|tests|compile|ArrayOps_J|A_TypeTag: Byte = _
+    }
   };
   final class ArrayOps_L[Asp] extends Object with miniboxing.tests.compile.ArrayOps[Asp] {
+    <paramaccessor> private[this] val arr: Array[Asp] = _;
     def <init>(arr: Array[Asp]): miniboxing.tests.compile.ArrayOps_L[Asp] = {
       ArrayOps_L.super.<init>();
       ()
@@ -79,8 +80,7 @@ package miniboxing.tests.compile {
       def f5(t: Asp): Asp = f5(ev.max(t, ArrayOps_L.this.arr.apply(0)));
       f5(ArrayOps_L.this.arr.apply(0))
     };
-    def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[Asp]): Long = MiniboxConversions.this.box2minibox_tt[Asp](ArrayOps_L.this.qmax(ev), A_TypeTag);
-    <paramaccessor> private[this] val arr: Array[Asp] = _
+    def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[Asp]): Long = MiniboxConversions.this.box2minibox_tt[Asp](ArrayOps_L.this.qmax(ev), A_TypeTag)
   }
 }
 [Now checking: minibox-commit]

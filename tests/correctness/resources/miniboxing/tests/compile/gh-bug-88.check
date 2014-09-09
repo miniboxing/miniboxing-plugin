@@ -2,51 +2,51 @@
 package miniboxing.tests.compile.bug88 {
   abstract trait CCC[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def c(): T;
+    <stable> <accessor> def c_J(T_TypeTag: Byte): T @storage[Long];
     abstract trait DDD[@miniboxed U] extends Object {
       <stable> <accessor> <paramaccessor> def d(): U;
-      def foo(): Unit;
-      <stable> <accessor> def d_J(U_TypeTag: Byte): U @storage[Long]
+      <stable> <accessor> def d_J(U_TypeTag: Byte): U @storage[Long];
+      def foo(): Unit
     };
     class DDD_J[Usp] extends Object with CCC.this.DDD[Usp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte = _;
+      <paramaccessor> private[this] val d: Usp @storage[Long] = _;
+      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag);
+      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage[Long] = DDD_J.this.d;
       def <init>(miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte, d: Usp @storage[Long]): CCC.this.DDD_J[Usp] = {
         DDD_J.super.<init>();
         ()
       };
-      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag)));
-      <paramaccessor> private[this] val d: Usp @storage[Long] = _;
-      <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag: Byte = _;
-      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag);
-      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage[Long] = DDD_J.this.d
+      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_J.this.d_J(DDD_J.this.miniboxing|tests|compile|bug88|CCC|DDD_J|U_TypeTag)))
     };
     class DDD_L[Usp] extends Object with CCC.this.DDD[Usp] {
+      <paramaccessor> private[this] val d: Usp = _;
+      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_L.this.d;
+      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage[Long] = DDD_L.this.d();
       def <init>(d: Usp): CCC.this.DDD_L[Usp] = {
         DDD_L.super.<init>();
         ()
       };
-      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_L.this.d()));
-      <paramaccessor> private[this] val d: Usp = _;
-      <stable> <accessor> <paramaccessor> def d(): Usp = DDD_L.this.d;
-      <stable> <accessor> def d_J(U_TypeTag: Byte): Usp @storage[Long] = DDD_L.this.d()
-    };
-    <stable> <accessor> def c_J(T_TypeTag: Byte): T @storage[Long]
+      def foo(): Unit = scala.this.Predef.println(CCC.this.c().==(DDD_L.this.d()))
+    }
   };
   class CCC_J[Tsp] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val c: Tsp @storage[Long] = _;
+    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_J.this.c_J(CCC_J.this.miniboxing|tests|compile|bug88|CCC_J|T_TypeTag);
+    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage[Long] = CCC_J.this.c;
     def <init>(miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte, c: Tsp @storage[Long]): miniboxing.tests.compile.bug88.CCC_J[Tsp] = {
       CCC_J.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val c: Tsp @storage[Long] = _;
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug88|CCC_J|T_TypeTag: Byte = _;
-    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_J.this.c_J(CCC_J.this.miniboxing|tests|compile|bug88|CCC_J|T_TypeTag);
-    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage[Long] = CCC_J.this.c
+    }
   };
   class CCC_L[Tsp] extends Object with miniboxing.tests.compile.bug88.CCC[Tsp] {
+    <paramaccessor> private[this] val c: Tsp = _;
+    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_L.this.c;
+    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage[Long] = CCC_L.this.c();
     def <init>(c: Tsp): miniboxing.tests.compile.bug88.CCC_L[Tsp] = {
       CCC_L.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val c: Tsp = _;
-    <stable> <accessor> <paramaccessor> def c(): Tsp = CCC_L.this.c;
-    <stable> <accessor> def c_J(T_TypeTag: Byte): Tsp @storage[Long] = CCC_L.this.c()
+    }
   }
 }

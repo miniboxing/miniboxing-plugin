@@ -25,7 +25,7 @@ Specializing class C...
     def y_J(val T_TypeTag: Byte,arg: Tsp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method y
     def z(arg1: Tsp,arg2: List[Tsp]): Tsp                                  // is a forwarder to the specialized member
     def z_J(val T_TypeTag: Byte,arg1: Tsp @storage[Long],arg2: List[Tsp]): Tsp @storage[Long] // is a specialized implementation of method z
-    private[this] val C_J|T_TypeTag: Byte                                  // no info
+    private[this] val C_J|T_TypeTag: Byte                                  // is a type tag
     private[this] var x: Tsp @storage[Long]                                // is a specialized implementation of variable x
   }
   // specialized class:

@@ -6,22 +6,22 @@ package miniboxing.tests.compile.bug993.partial {
     def bar_J(T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long]
   };
   class C_J[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C_J[Tsp] = {
       C_J.super.<init>();
       ()
     };
-    def bar(t: Tsp): Tsp = C_J.this.bar_J(C_J.this.miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag, t);
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = t;
     def foo(): Int = 3;
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _
+    def bar(t: Tsp): Tsp = C_J.this.bar_J(C_J.this.miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag, t);
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = t
   };
   class C_L[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
     def <init>(): miniboxing.tests.compile.bug993.partial.C_L[Tsp] = {
       C_L.super.<init>();
       ()
     };
+    def foo(): Int = 3;
     def bar(t: Tsp): Tsp = t;
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C_L.this.bar(t);
-    def foo(): Int = 3
+    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C_L.this.bar(t)
   }
 }

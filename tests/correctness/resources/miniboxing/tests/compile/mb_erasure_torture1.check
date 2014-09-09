@@ -2,12 +2,19 @@
 package miniboxing.tests.correctness.erasure.torture1 {
   abstract trait A[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def a(): T;
-    <stable> <accessor> <paramaccessor> def b(): T;
-    def foo(c: Boolean): Any;
     <stable> <accessor> def a_J(T_TypeTag: Byte): T @storage[Long];
-    <stable> <accessor> def b_J(T_TypeTag: Byte): T @storage[Long]
+    <stable> <accessor> <paramaccessor> def b(): T;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): T @storage[Long];
+    def foo(c: Boolean): Any
   };
   class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val a: Tsp @storage[Long] = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.a;
+    <paramaccessor> private[this] val b: Tsp @storage[Long] = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.b;
     def <init>(miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte, a: Tsp @storage[Long], b: Tsp @storage[Long]): miniboxing.tests.correctness.erasure.torture1.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -28,16 +35,15 @@ package miniboxing.tests.correctness.erasure.torture1 {
         A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag)
       else
         y
-    };
-    <paramaccessor> private[this] val a: Tsp @storage[Long] = _;
-    <paramaccessor> private[this] val b: Tsp @storage[Long] = _;
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.a;
-    <stable> <accessor> <paramaccessor> def b(): Tsp = A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.b
+    }
   };
   class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val a: Tsp = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_L.this.a();
+    <paramaccessor> private[this] val b: Tsp = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_L.this.b();
     def <init>(a: Tsp, b: Tsp): miniboxing.tests.correctness.erasure.torture1.A_L[Tsp] = {
       A_L.super.<init>();
       ()
@@ -58,13 +64,7 @@ package miniboxing.tests.correctness.erasure.torture1 {
         A_L.this.a()
       else
         y
-    };
-    <paramaccessor> private[this] val a: Tsp = _;
-    <paramaccessor> private[this] val b: Tsp = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_L.this.a();
-    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_L.this.b()
+    }
   }
 }
 [Now checking: minibox-inject]
@@ -72,12 +72,19 @@ package miniboxing.tests.correctness.erasure.torture1 {
 package miniboxing.tests.correctness.erasure.torture1 {
   abstract trait A[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def a(): T;
-    <stable> <accessor> <paramaccessor> def b(): T;
-    def foo(c: Boolean): Any;
     <stable> <accessor> def a_J(T_TypeTag: Byte): T @storage[Long];
-    <stable> <accessor> def b_J(T_TypeTag: Byte): T @storage[Long]
+    <stable> <accessor> <paramaccessor> def b(): T;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): T @storage[Long];
+    def foo(c: Boolean): Any
   };
   class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val a: Tsp @storage[Long] = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.a;
+    <paramaccessor> private[this] val b: Tsp @storage[Long] = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.b;
     def <init>(miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte, a: Tsp @storage[Long], b: Tsp @storage[Long]): miniboxing.tests.correctness.erasure.torture1.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -98,16 +105,15 @@ package miniboxing.tests.correctness.erasure.torture1 {
         marker_minibox2box[Tsp, Long](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag))
       else
         y
-    };
-    <paramaccessor> private[this] val a: Tsp @storage[Long] = _;
-    <paramaccessor> private[this] val b: Tsp @storage[Long] = _;
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.a;
-    <stable> <accessor> <paramaccessor> def b(): Tsp = marker_minibox2box[Tsp, Long](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag));
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = A_J.this.b
+    }
   };
   class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val a: Tsp = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.a());
+    <paramaccessor> private[this] val b: Tsp = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.b());
     def <init>(a: Tsp, b: Tsp): miniboxing.tests.correctness.erasure.torture1.A_L[Tsp] = {
       A_L.super.<init>();
       ()
@@ -128,13 +134,7 @@ package miniboxing.tests.correctness.erasure.torture1 {
         A_L.this.a()
       else
         y
-    };
-    <paramaccessor> private[this] val a: Tsp = _;
-    <paramaccessor> private[this] val b: Tsp = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.a());
-    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Tsp @storage[Long] = marker_box2minibox[Tsp, Long](A_L.this.b())
+    }
   }
 }
 [Not checkable: minibox-coerce]
@@ -142,12 +142,19 @@ package miniboxing.tests.correctness.erasure.torture1 {
 package miniboxing.tests.correctness.erasure.torture1 {
   abstract trait A[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def a(): T;
-    <stable> <accessor> <paramaccessor> def b(): T;
-    def foo(c: Boolean): Any;
     <stable> <accessor> def a_J(T_TypeTag: Byte): Long;
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Long
+    <stable> <accessor> <paramaccessor> def b(): T;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Long;
+    def foo(c: Boolean): Any
   };
   class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val a: Long = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = MiniboxConversions.this.minibox2box[Tsp](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag), A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Long = A_J.this.a;
+    <paramaccessor> private[this] val b: Long = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = MiniboxConversions.this.minibox2box[Tsp](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag), A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Long = A_J.this.b;
     def <init>(miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte, a: Long, b: Long): miniboxing.tests.correctness.erasure.torture1.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -168,16 +175,15 @@ package miniboxing.tests.correctness.erasure.torture1 {
         MiniboxConversions.this.minibox2box[Tsp](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag), A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag)
       else
         y
-    };
-    <paramaccessor> private[this] val a: Long = _;
-    <paramaccessor> private[this] val b: Long = _;
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag: Byte = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = MiniboxConversions.this.minibox2box[Tsp](A_J.this.a_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag), A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Long = A_J.this.a;
-    <stable> <accessor> <paramaccessor> def b(): Tsp = MiniboxConversions.this.minibox2box[Tsp](A_J.this.b_J(A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag), A_J.this.miniboxing|tests|correctness|erasure|torture1|A_J|T_TypeTag);
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Long = A_J.this.b
+    }
   };
   class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture1.A[Tsp] {
+    <paramaccessor> private[this] val a: Tsp = _;
+    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
+    <stable> <accessor> def a_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](A_L.this.a(), T_TypeTag);
+    <paramaccessor> private[this] val b: Tsp = _;
+    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
+    <stable> <accessor> def b_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](A_L.this.b(), T_TypeTag);
     def <init>(a: Tsp, b: Tsp): miniboxing.tests.correctness.erasure.torture1.A_L[Tsp] = {
       A_L.super.<init>();
       ()
@@ -198,13 +204,7 @@ package miniboxing.tests.correctness.erasure.torture1 {
         A_L.this.a()
       else
         y
-    };
-    <paramaccessor> private[this] val a: Tsp = _;
-    <paramaccessor> private[this] val b: Tsp = _;
-    <stable> <accessor> <paramaccessor> def a(): Tsp = A_L.this.a;
-    <stable> <accessor> def a_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](A_L.this.a(), T_TypeTag);
-    <stable> <accessor> <paramaccessor> def b(): Tsp = A_L.this.b;
-    <stable> <accessor> def b_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](A_L.this.b(), T_TypeTag)
+    }
   }
 }
 [Now checking: minibox-commit]

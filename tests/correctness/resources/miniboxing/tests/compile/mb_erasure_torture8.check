@@ -10,6 +10,7 @@ package miniboxing.tests.correctness.erasure.torture8 {
     def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Any
   };
   class A_J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture8.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -20,8 +21,7 @@ package miniboxing.tests.correctness.erasure.torture8 {
       c;
       scala.this.Predef.println("world");
       MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag)
-    };
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte = _
+    }
   };
   class A_L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
     def <init>(): miniboxing.tests.correctness.erasure.torture8.A_L[Tsp] = {

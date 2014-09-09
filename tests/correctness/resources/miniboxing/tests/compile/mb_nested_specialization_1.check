@@ -2,26 +2,26 @@
 package miniboxing.tests.compile.nested_rewiring.test1 {
   abstract trait C[@miniboxed T, @miniboxed U] extends Object;
   class C_JJ[Tsp, Usp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.C[Tsp,Usp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JJ|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JJ|U_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|nested_rewiring|test1|C_JJ|T_TypeTag: Byte, miniboxing|tests|compile|nested_rewiring|test1|C_JJ|U_TypeTag: Byte): miniboxing.tests.compile.nested_rewiring.test1.C_JJ[Tsp,Usp] = {
       C_JJ.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JJ|T_TypeTag: Byte = _;
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JJ|U_TypeTag: Byte = _
+    }
   };
   class C_JL[Tsp, Usp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.C[Tsp,Usp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JL|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|nested_rewiring|test1|C_JL|T_TypeTag: Byte): miniboxing.tests.compile.nested_rewiring.test1.C_JL[Tsp,Usp] = {
       C_JL.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_JL|T_TypeTag: Byte = _
+    }
   };
   class C_LJ[Tsp, Usp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.C[Tsp,Usp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_LJ|U_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|nested_rewiring|test1|C_LJ|U_TypeTag: Byte): miniboxing.tests.compile.nested_rewiring.test1.C_LJ[Tsp,Usp] = {
       C_LJ.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|C_LJ|U_TypeTag: Byte = _
+    }
   };
   class C_LL[Tsp, Usp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.C[Tsp,Usp] {
     def <init>(): miniboxing.tests.compile.nested_rewiring.test1.C_LL[Tsp,Usp] = {
@@ -33,6 +33,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
     def bar(): Nothing
   };
   class D_J[Ssp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.D[Ssp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_J|S_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|nested_rewiring|test1|D_J|S_TypeTag: Byte): miniboxing.tests.compile.nested_rewiring.test1.D_J[Ssp] = {
       D_J.super.<init>();
       ()
@@ -43,6 +44,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
         def foo_J(T_TypeTag: Byte, t: T @storage[Long]): miniboxing.tests.compile.nested_rewiring.test1.C[Ssp,T]
       };
       class F_J[Tsp] extends Object with F[Tsp] {
+        <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_J|F_J|T_TypeTag: Byte = _;
         def <init>(miniboxing|tests|compile|nested_rewiring|test1|D_J|F_J|T_TypeTag: Byte): F_J[Tsp] = {
           F_J.super.<init>();
           ()
@@ -56,8 +58,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
             }
           };
           new Z()
-        };
-        <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_J|F_J|T_TypeTag: Byte = _
+        }
       };
       class F_L[Tsp] extends Object with F[Tsp] {
         def <init>(): F_L[Tsp] = {
@@ -76,8 +77,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
         def foo_J(T_TypeTag: Byte, t: Tsp @storage[Long]): miniboxing.tests.compile.nested_rewiring.test1.C[Ssp,Tsp] = F_L.this.foo(t)
       };
       scala.this.Predef.???()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_J|S_TypeTag: Byte = _
+    }
   };
   class D_L[Ssp] extends Object with miniboxing.tests.compile.nested_rewiring.test1.D[Ssp] {
     def <init>(): miniboxing.tests.compile.nested_rewiring.test1.D_L[Ssp] = {
@@ -90,6 +90,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
         def foo_J(T_TypeTag: Byte, t: T @storage[Long]): miniboxing.tests.compile.nested_rewiring.test1.C[Ssp,T]
       };
       class F_J[Tsp] extends Object with F[Tsp] {
+        <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_L|F_J|T_TypeTag: Byte = _;
         def <init>(miniboxing|tests|compile|nested_rewiring|test1|D_L|F_J|T_TypeTag: Byte): F_J[Tsp] = {
           F_J.super.<init>();
           ()
@@ -103,8 +104,7 @@ package miniboxing.tests.compile.nested_rewiring.test1 {
             }
           };
           new Z()
-        };
-        <paramaccessor> private[this] val miniboxing|tests|compile|nested_rewiring|test1|D_L|F_J|T_TypeTag: Byte = _
+        }
       };
       class F_L[Tsp] extends Object with F[Tsp] {
         def <init>(): F_L[Tsp] = {

@@ -137,7 +137,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
      *
      * Namely from (1) to (2), where sym points to `C`'s `foo` and specClass points to `C_J`
      */
-    def equivalentMemberInSpecializedClass(sym: Symbol, specClass: Symbol): Symbol = {
+    def equivalentMemberInSpecializedClass(sym: Symbol, specClass: Symbol): Option[Symbol] = {
       assert(metadata.isClassStem(sym.owner), sym.owner)
       assert(!metadata.isClassStem(specClass), specClass)
       val specSym =
@@ -145,15 +145,20 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val pspec = metadata.classSpecialization(specClass)
           val res = metadata.memberOverloads.get(sym).flatMap(_.get(pspec)).getOrElse(NoSymbol)
           res
-        } else {
-          var member = specClass.tpe.member(sym.name)
+        } else if (!sym.isMethod && sym.isValue) {
+          specClass.tpe.decl(sym.name)
+        }else {
+          var member = specClass.tpe.decl(sym.name)
           if (member.isOverloaded)
             member = member.filter(_.allOverriddenSymbols contains sym)
           member
         }
 
-      assert(!specSym.isOverloaded && (specSym != NoSymbol), s"[miniboxing internal error] Cannot find equivalent symbol of $sym (owner=${sym.owner}) in $specClass: ${specSym.defString}")
-      specSym
+      assert(!specSym.isOverloaded, s"[miniboxing internal error] Cannot find equivalent symbol of $sym (owner=${sym.owner}) in $specClass: ${specSym.defString}")
+      if (specSym == NoSymbol)
+        None
+      else
+        Some(specSym)
     }
 
     def rewrite(tree: Tree): Result = {
@@ -205,12 +210,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false))
           def memberVariants(mbr: Symbol): List[Tree] = {
             val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
-            specVariants.filter(_ != mbr).map(createMemberTree)
+            specVariants.filter(_ != mbr).flatMap(mbr => createMemberTree(Some(mbr)))
           }
           val state = metadata.getClassState(cls)
 
           var sideEffectWarning = true
-          def equivalentMemberTree(sym: Symbol) =
+          def equivalentMemberTree(sym: Symbol): Option[Tree] =
             createMemberTree(equivalentMemberInSpecializedClass(sym, cls))
 
           // members
@@ -220,7 +225,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 state match {
                   case NotSpecialized => List(dt)
                   case SpecializedStem => Nil
-                  case SpecializedVariant => List(equivalentMemberTree(dt.symbol))
+                  case SpecializedVariant => equivalentMemberTree(dt.symbol).toList
                 }
               case dd: DefDef if (dd.symbol.isMixinConstructor) =>
                 state match {
@@ -230,14 +235,19 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 }
               case dd: DefDef =>
                 import heuristics.specializableMethodInClass
-                def withMemberVariants(dd: Tree) = dd :: memberVariants(dd.symbol)
+                def withMemberVariants(dd0: Option[Tree]): List[Tree] =
+                  dd0.map(dd => dd :: memberVariants(dd.symbol)).getOrElse(Nil)
                 lazy val spec = specializableMethodInClass(cls, dd.symbol) // only compute if necessary
                 val dd2 = state match {
-                  case NotSpecialized              => withMemberVariants(dd)
+                  case NotSpecialized              => withMemberVariants(Some(dd))
                   case SpecializedStem    if !spec => List(dd)
                   case SpecializedVariant if !spec => Nil
-                  case SpecializedStem             => withMemberVariants(deriveDefDef(dd)(_ => EmptyTree))
-                  case SpecializedVariant          => withMemberVariants(equivalentMemberTree(dd.symbol))
+                  case SpecializedStem             => withMemberVariants(Some(deriveDefDef(dd)(_ => EmptyTree)))
+                  case SpecializedVariant          =>
+                    if (!decls.contains(dd.symbol))
+                      withMemberVariants(equivalentMemberTree(dd.symbol))
+                    else
+                      Nil
                 }
                 dd2
               case dt: DefTree =>
@@ -267,7 +277,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case SpecializedVariant => Nil
                 }
             }).flatten
-          val tagMembers = tags.map(createMemberTree)
+          val tagMembers = tags.flatMap(tag => createMemberTree(Some(tag)))
           val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, cls))
 
           // parents
@@ -417,7 +427,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             if ((oldQualSym != newQualSym) &&
                 (metadata.getClassStem(newQualSym) == oldQualSym) &&
                 (oldMbrSym.name != nme.CONSTRUCTOR)) {
-              equivalentMemberInSpecializedClass(oldMbrSym, newQualSym)
+              equivalentMemberInSpecializedClass(oldMbrSym, newQualSym).getOrElse(oldMbrSym)
             } else
               oldMbrSym
 
@@ -759,20 +769,21 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     }
 
     // Create bodies for members in a tree
-    def createMemberTree(mbr: Symbol): Tree = {
-      debuglog("creating empty tree for " + mbr.fullName)
-      val tree =
-        if (mbr.isMethod)
-          DefDef(mbr, { (_: List[List[Symbol]]) => EmptyTree })
-        else if (mbr.isValue)
-          ValDef(mbr, EmptyTree).setType(NoType)
-        else {
-          reporter.error(mbr.pos, s"[miniboxing internal error] Unable to generate member: " + mbr.defString)
-          gen.mkMethodCall(Predef_???, Nil)
-        }
-      val tree2 = atPos(mbr.pos)(tree)
-      val tree3 = localTyper.typed(tree2)
-      tree3
+    def createMemberTree(mbr0: Option[Symbol]): Option[Tree] = mbr0 map {
+      mbr =>
+        debuglog("creating empty tree for " + mbr.fullName)
+        val tree =
+          if (mbr.isMethod)
+            DefDef(mbr, { (_: List[List[Symbol]]) => EmptyTree })
+          else if (mbr.isValue)
+            ValDef(mbr, EmptyTree).setType(NoType)
+          else {
+            reporter.error(mbr.pos, s"[miniboxing internal error] Unable to generate member: " + mbr.defString)
+            gen.mkMethodCall(Predef_???, Nil)
+          }
+        val tree2 = atPos(mbr.pos)(tree)
+        val tree3 = localTyper.typed(tree2)
+        tree3
     }
   }
 }

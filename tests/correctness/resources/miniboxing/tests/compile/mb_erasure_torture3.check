@@ -7,6 +7,7 @@ package miniboxing.tests.correctness.erasure.torture3 {
     def foo_J(T_TypeTag: Byte, c: Long): Any
   };
   class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture3.A_J[Tsp] = {
       A_J.super.<init>();
       ()
@@ -18,8 +19,7 @@ package miniboxing.tests.correctness.erasure.torture3 {
       val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, T_TypeTag, 3);
       val ts: String = MiniboxDispatch.this.mboxed_toString(c, T_TypeTag);
       ()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte = _
+    }
   };
   class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
     def <init>(): miniboxing.tests.correctness.erasure.torture3.A_L[Tsp] = {

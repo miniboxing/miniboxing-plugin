@@ -5,7 +5,7 @@ Specializing class CC...
   // specialized class:
   class CC_J[Tsp] extends CC[Tsp] {
     def <init>(val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
-    private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte // no info
+    private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class CC_L[Tsp] extends CC[Tsp] {
@@ -17,11 +17,11 @@ Specializing class CC...
 package miniboxing.tests.compile.inheritance {
   abstract trait CC[@miniboxed T] extends Object;
   class CC_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
       CC_J.super.<init>();
       ()
-    };
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte = _
+    }
   };
   class CC_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
     def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {

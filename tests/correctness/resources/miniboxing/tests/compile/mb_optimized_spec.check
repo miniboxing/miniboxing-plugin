@@ -17,7 +17,7 @@ Specializing class OptMeee...
     def yfoo1_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a specialized implementation of method yfoo1
     def yfoo2(y: Ysp): Xsp                                                 // is a forwarder to the specialized member
     def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage[Long]            // is a specialized implementation of method yfoo2
-    private[this] val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte   // no info
+    private[this] val miniboxing|tests|compile|OptMeee_J|X_TypeTag: Byte   // is a type tag
   }
   // specialized class:
   class OptMeee_L[Xsp, Ysp] extends OptMeee[Xsp,Ysp] {

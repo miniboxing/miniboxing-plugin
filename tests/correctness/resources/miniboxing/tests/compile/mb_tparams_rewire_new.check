@@ -11,7 +11,7 @@ Specializing class TN...
     def <init>(val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte,t: Tsp @storage[Long]): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] // is a specialized implementation of constructor TN
     def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String]             // is a forwarder to the specialized member
     def foo_J(val T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] // is a specialized implementation of method foo
-    private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte // no info
+    private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte // is a type tag
     private[this] val t: Tsp @storage[Long]                                // is a specialized implementation of value t
     val t(): Tsp                                                           // is a forwarder to the specialized member
     val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a setter or getter for value t
@@ -31,32 +31,32 @@ Specializing class TN...
 package miniboxing.tests.compile.tparams {
   abstract trait TN[@miniboxed T, X] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long;
     def foo(): miniboxing.tests.compile.tparams.TN[T,String];
-    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String];
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long
+    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[T,String]
   };
   class TN_J[Tsp, Xsp] extends Object with miniboxing.tests.compile.tparams.TN[Tsp,Xsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val t: Long = _;
+    <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](TN_J.this.t_J(TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag), TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag);
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = TN_J.this.t;
     def <init>(miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.tparams.TN_J[Tsp,Xsp] = {
       TN_J.super.<init>();
       ()
     };
     def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String] = TN_J.this.foo_J(TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag);
-    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] = new miniboxing.tests.compile.tparams.TN_J[Tsp,String](T_TypeTag, TN_J.this.t_J(T_TypeTag));
-    <paramaccessor> private[this] val miniboxing|tests|compile|tparams|TN_J|T_TypeTag: Byte = _;
-    <paramaccessor> private[this] val t: Long = _;
-    <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](TN_J.this.t_J(TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag), TN_J.this.miniboxing|tests|compile|tparams|TN_J|T_TypeTag);
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = TN_J.this.t
+    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] = new miniboxing.tests.compile.tparams.TN_J[Tsp,String](T_TypeTag, TN_J.this.t_J(T_TypeTag))
   };
   class TN_L[Tsp, Xsp] extends Object with miniboxing.tests.compile.tparams.TN[Tsp,Xsp] {
+    <paramaccessor> private[this] val t: Tsp = _;
+    <stable> <accessor> <paramaccessor> def t(): Tsp = TN_L.this.t;
+    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TN_L.this.t(), T_TypeTag);
     def <init>(t: Tsp): miniboxing.tests.compile.tparams.TN_L[Tsp,Xsp] = {
       TN_L.super.<init>();
       ()
     };
     def foo(): miniboxing.tests.compile.tparams.TN[Tsp,String] = new miniboxing.tests.compile.tparams.TN_L[Tsp,String](TN_L.this.t());
-    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] = TN_L.this.foo();
-    <paramaccessor> private[this] val t: Tsp = _;
-    <stable> <accessor> <paramaccessor> def t(): Tsp = TN_L.this.t;
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TN_L.this.t(), T_TypeTag)
+    def foo_J(T_TypeTag: Byte): miniboxing.tests.compile.tparams.TN[Tsp,String] = TN_L.this.foo()
   };
   object TestNewRewire extends Object {
     def <init>(): miniboxing.tests.compile.tparams.TestNewRewire.type = {

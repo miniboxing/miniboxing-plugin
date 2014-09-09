@@ -22,9 +22,9 @@ package miniboxing.tests.compile.bug85.reduced {
     def foo_J(A_TypeTag: Byte, a: Long): Long
   };
   abstract trait MakeImplClass_J extends Object with miniboxing.tests.compile.bug85.reduced.MakeImplClass {
+    def miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(): Byte;
     def foo(a: Object): Object;
-    def foo_J(A_TypeTag: Byte, a: Long): Long;
-    def miniboxing|tests|compile|bug85|reduced|MakeImplClass_J|A_TypeTag(): Byte
+    def foo_J(A_TypeTag: Byte, a: Long): Long
   };
   abstract trait MakeImplClass_L extends Object with miniboxing.tests.compile.bug85.reduced.MakeImplClass {
     def foo(a: Object): Object;

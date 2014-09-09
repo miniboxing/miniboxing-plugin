@@ -5,41 +5,41 @@ package miniboxing.tests.compile {
   abstract trait Cplx[@miniboxed A] extends Object {
     def isZero(): Boolean;
     def abs(): A;
+    def abs_J(A_TypeTag: Byte): Long;
     def %(that: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
     def /~(that: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
-    def /%(that: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A];
-    def abs_J(A_TypeTag: Byte): Long
+    def /%(that: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A]
   };
   class Cplx_J[Asp] extends Object with miniboxing.tests.compile.Cplx[Asp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|Cplx_J|A_TypeTag: Byte = _;
+    <paramaccessor> private[this] val real: Long = _;
+    <paramaccessor> private[this] val imag: Long = _;
+    implicit <paramaccessor> private[this] val f: miniboxing.tests.compile.Fractional[Asp] = _;
     def <init>(miniboxing|tests|compile|Cplx_J|A_TypeTag: Byte, real: Long, imag: Long, f: miniboxing.tests.compile.Fractional[Asp]): miniboxing.tests.compile.Cplx_J[Asp] = {
       Cplx_J.super.<init>();
       ()
     };
-    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def isZero(): Boolean = scala.this.Predef.???();
     def abs(): Asp = MiniboxConversions.this.minibox2box[Asp](Cplx_J.this.abs_J(Cplx_J.this.miniboxing|tests|compile|Cplx_J|A_TypeTag), Cplx_J.this.miniboxing|tests|compile|Cplx_J|A_TypeTag);
     def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A_TypeTag);
-    def isZero(): Boolean = scala.this.Predef.???();
-    implicit <paramaccessor> private[this] val f: miniboxing.tests.compile.Fractional[Asp] = _;
-    <paramaccessor> private[this] val imag: Long = _;
-    <paramaccessor> private[this] val miniboxing|tests|compile|Cplx_J|A_TypeTag: Byte = _;
-    <paramaccessor> private[this] val real: Long = _
+    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???()
   };
   class Cplx_L[Asp] extends Object with miniboxing.tests.compile.Cplx[Asp] {
+    <paramaccessor> private[this] val real: Asp = _;
+    <paramaccessor> private[this] val imag: Asp = _;
+    implicit <paramaccessor> private[this] val f: miniboxing.tests.compile.Fractional[Asp] = _;
     def <init>(real: Asp, imag: Asp, f: miniboxing.tests.compile.Fractional[Asp]): miniboxing.tests.compile.Cplx_L[Asp] = {
       Cplx_L.super.<init>();
       ()
     };
-    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
-    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def isZero(): Boolean = scala.this.Predef.???();
     def abs(): Asp = scala.this.Predef.???();
     def abs_J(A_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Asp](Cplx_L.this.abs(), A_TypeTag);
-    def isZero(): Boolean = scala.this.Predef.???();
-    implicit <paramaccessor> private[this] val f: miniboxing.tests.compile.Fractional[Asp] = _;
-    <paramaccessor> private[this] val imag: Asp = _;
-    <paramaccessor> private[this] val real: Asp = _
+    def %(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /~(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???();
+    def /%(that: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = scala.this.Predef.???()
   };
   object Cplx extends Object {
     def <init>(): miniboxing.tests.compile.Cplx.type = {
@@ -54,21 +54,21 @@ package miniboxing.tests.compile {
   };
   abstract trait CplxIsRing_J[Asp] extends Object with miniboxing.tests.compile.CplxIsRing[Asp] {
     def miniboxing|tests|compile|CplxIsRing_J|A_TypeTag(): Byte;
-    def one(): miniboxing.tests.compile.Cplx[Asp] = Cplx.one[Asp](CplxIsRing_J.this.f());
-    implicit def f(): miniboxing.tests.compile.Fractional[Asp]
+    implicit def f(): miniboxing.tests.compile.Fractional[Asp];
+    def one(): miniboxing.tests.compile.Cplx[Asp] = Cplx.one[Asp](CplxIsRing_J.this.f())
   };
   abstract trait CplxIsRing_L[Asp] extends Object with miniboxing.tests.compile.CplxIsRing[Asp] {
-    def one(): miniboxing.tests.compile.Cplx[Asp] = Cplx.one[Asp](CplxIsRing_L.this.f());
-    implicit def f(): miniboxing.tests.compile.Fractional[Asp]
+    implicit def f(): miniboxing.tests.compile.Fractional[Asp];
+    def one(): miniboxing.tests.compile.Cplx[Asp] = Cplx.one[Asp](CplxIsRing_L.this.f())
   };
   abstract trait Ord[@miniboxed A] extends Object {
     def lt(o1: A, o2: A): Boolean;
     def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean
   };
   abstract trait Ord_J[Asp] extends Object with miniboxing.tests.compile.Ord[Asp] {
+    def miniboxing|tests|compile|Ord_J|A_TypeTag(): Byte;
     def lt(o1: Asp, o2: Asp): Boolean = Ord_J.this.lt_J(Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag(), MiniboxConversions.this.box2minibox_tt[Asp](o1, Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag()), MiniboxConversions.this.box2minibox_tt[Asp](o2, Ord_J.this.miniboxing|tests|compile|Ord_J|A_TypeTag()));
-    def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean;
-    def miniboxing|tests|compile|Ord_J|A_TypeTag(): Byte
+    def lt_J(A_TypeTag: Byte, o1: Long, o2: Long): Boolean
   };
   abstract trait Ord_L[Asp] extends Object with miniboxing.tests.compile.Ord[Asp] {
     def lt(o1: Asp, o2: Asp): Boolean;
@@ -76,8 +76,8 @@ package miniboxing.tests.compile {
   };
   abstract trait Fractional[@miniboxed A] extends Object with miniboxing.tests.compile.Ord[A] {
     def one(): A;
-    def zero(): A;
     def one_J(A_TypeTag: Byte): Long;
+    def zero(): A;
     def zero_J(A_TypeTag: Byte): Long
   };
   abstract trait Fractional_J[Asp] extends Object with miniboxing.tests.compile.Ord_J[Asp] with miniboxing.tests.compile.Fractional[Asp] {
@@ -100,6 +100,10 @@ package miniboxing.tests.compile {
     def gcd(a: miniboxing.tests.compile.Cplx[A], b: miniboxing.tests.compile.Cplx[A]): miniboxing.tests.compile.Cplx[A]
   };
   abstract trait CplxIsEuclideanRing_J[Asp] extends Object with miniboxing.tests.compile.CplxIsRing_J[Asp] with miniboxing.tests.compile.CplxIsEuclideanRing[Asp] {
+    def miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag(): Byte;
+    def quot(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./~(b);
+    def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
+    def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b);
     def gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = {
       def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_J.this.f().lt_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag(), a.abs_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag()), CplxIsEuclideanRing_J.this.f().one_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag())))
         CplxIsEuclideanRing_J.this.one()
@@ -112,13 +116,12 @@ package miniboxing.tests.compile {
           else
             _gcd(b, a.%(b));
       _gcd(a, b)
-    };
-    def miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag(): Byte;
-    def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
-    def quot(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./~(b);
-    def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b)
+    }
   };
   abstract trait CplxIsEuclideanRing_L[Asp] extends Object with miniboxing.tests.compile.CplxIsRing_L[Asp] with miniboxing.tests.compile.CplxIsEuclideanRing[Asp] {
+    def quot(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./~(b);
+    def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
+    def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b);
     def gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = {
       def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_L.this.f().lt(a.abs(), CplxIsEuclideanRing_L.this.f().one()))
         CplxIsEuclideanRing_L.this.one()
@@ -131,10 +134,7 @@ package miniboxing.tests.compile {
           else
             _gcd(b, a.%(b));
       _gcd(a, b)
-    };
-    def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
-    def quot(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./~(b);
-    def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b)
+    }
   }
 }
 [Now checking: minibox-commit]
