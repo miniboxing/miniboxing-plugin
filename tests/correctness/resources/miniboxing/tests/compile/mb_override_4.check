@@ -100,8 +100,8 @@ package miniboxing.tests.compile {
     override def overrideMe_LJ(S_TypeTag: Byte, t1: T, t2: T, t3: T, s: Long): T
   };
   class Base43_JJ[Tsp, Ssp] extends miniboxing.tests.compile.Base42_J[Tsp,Ssp] with miniboxing.tests.compile.Base43[Tsp,Ssp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|Base43_JJ|S_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|Base43_JJ|T_TypeTag: Byte, miniboxing|tests|compile|Base43_JJ|S_TypeTag: Byte): miniboxing.tests.compile.Base43_JJ[Tsp,Ssp] = {
       Base43_JJ.super.<init>(miniboxing|tests|compile|Base43_JJ|T_TypeTag);
       ()

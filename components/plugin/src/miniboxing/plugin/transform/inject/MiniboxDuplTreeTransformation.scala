@@ -207,7 +207,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           //  Also collect the bodies of the methods that need to be copied and specialized.
           val cls = tree.symbol.enclClass
           val decls = afterMiniboxInject(cls.info).decls.toList
-          val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false))
+          val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false)).sortBy(_.nameString)
           def memberVariants(mbr: Symbol): List[Tree] = {
             val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
             specVariants.filter(_ != mbr).flatMap(mbr => createMemberTree(Some(mbr)))

@@ -62,7 +62,7 @@ class TestSuite extends ScalacVersion {
     val pluginFlag = pluginCompilerFlag()
     var UPDATE_CHECKFILE = false
     // use carefully:
-    UPDATE_CHECKFILE = true
+//    UPDATE_CHECKFILE = true
 
     sys.props("miniboxing.no-logo") = "true"
 

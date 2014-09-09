@@ -109,8 +109,8 @@ package miniboxing.tests.compile {
     def overrideMe_LJ(S_TypeTag: Byte, t: T, s: Long): T
   };
   abstract trait Base23_JJ[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte;
     def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte;
+    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte;
     def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23_JJ.this.overrideMe_JJ(Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag(), Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag()), MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag())), Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag());
     def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = t;
     def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = Base23_JJ.this.overrideMe_JJ(T_TypeTag, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag(), t, MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag()));
@@ -137,10 +137,10 @@ package miniboxing.tests.compile {
     def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = Base23_LL.this.overrideMe(t, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
   };
   class LongIsBase21Base22andBase23 extends Object with miniboxing.tests.compile.Base21_J[Long,Long] with miniboxing.tests.compile.Base22_J[Long,Long] with miniboxing.tests.compile.Base23_JJ[Long,Long] {
-    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte = 6;
-    def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte = 6;
-    def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte = 6;
     def miniboxing|tests|compile|Base21_J|T_TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte = 6;
     def <init>(): miniboxing.tests.compile.LongIsBase21Base22andBase23 = {
       LongIsBase21Base22andBase23.super.<init>();
       ()

@@ -28,8 +28,8 @@ Specializing class F1...
 package miniboxing.tests.compile.inheritance {
   abstract trait F1[@miniboxed T, @miniboxed R] extends Object;
   class F1_JJ[Tsp, Rsp] extends Object with miniboxing.tests.compile.inheritance.F1[Tsp,Rsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte = _;
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte = _;
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|inheritance|F1_JJ|T_TypeTag: Byte, miniboxing|tests|compile|inheritance|F1_JJ|R_TypeTag: Byte): miniboxing.tests.compile.inheritance.F1_JJ[Tsp,Rsp] = {
       F1_JJ.super.<init>();
       ()

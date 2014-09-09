@@ -285,8 +285,8 @@ package miniboxing.runtime {
       val _f_cast: Int => Float = _f.asInstanceOf[Int => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JD[Int,Float] {
-          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction1_JD|R_TypeTag(): Byte = 7;
+          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -302,8 +302,8 @@ package miniboxing.runtime {
       val _f_cast: Int => Double = _f.asInstanceOf[Int => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JD[Int,Double] {
-          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction1_JD|R_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -319,8 +319,8 @@ package miniboxing.runtime {
       val _f_cast: Long => Float = _f.asInstanceOf[Long => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JD[Long,Float] {
-          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction1_JD|R_TypeTag(): Byte = 7;
+          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -336,8 +336,8 @@ package miniboxing.runtime {
       val _f_cast: Long => Double = _f.asInstanceOf[Long => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JD[Long,Double] {
-          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction1_JD|R_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction1_JD|T1_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -433,8 +433,8 @@ package miniboxing.runtime {
       val _f_cast: (Int, Int) => Int = _f.asInstanceOf[(Int, Int) => Int]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Int,Int] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -451,8 +451,8 @@ package miniboxing.runtime {
       val _f_cast: (Int, Int) => Long = _f.asInstanceOf[(Int, Int) => Long]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Int,Long] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -469,8 +469,8 @@ package miniboxing.runtime {
       val _f_cast: (Int, Long) => Int = _f.asInstanceOf[(Int, Long) => Int]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Long,Int] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -487,8 +487,8 @@ package miniboxing.runtime {
       val _f_cast: (Int, Long) => Long = _f.asInstanceOf[(Int, Long) => Long]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Long,Long] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -505,8 +505,8 @@ package miniboxing.runtime {
       val _f_cast: (Long, Int) => Int = _f.asInstanceOf[(Long, Int) => Int]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Int,Int] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -523,8 +523,8 @@ package miniboxing.runtime {
       val _f_cast: (Long, Int) => Long = _f.asInstanceOf[(Long, Int) => Long]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Int,Long] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -541,8 +541,8 @@ package miniboxing.runtime {
       val _f_cast: (Long, Long) => Int = _f.asInstanceOf[(Long, Long) => Int]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Long,Int] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -559,8 +559,8 @@ package miniboxing.runtime {
       val _f_cast: (Long, Long) => Long = _f.asInstanceOf[(Long, Long) => Long]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Long,Long] {
-          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
@@ -740,8 +740,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDJ[Double,Double,Int] {
           def miniboxing|runtime|MiniboxedFunction2_DDJ|R_TypeTag(): Byte = 5;
-          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DDJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -758,8 +758,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDJ[Double,Double,Long] {
           def miniboxing|runtime|MiniboxedFunction2_DDJ|R_TypeTag(): Byte = 6;
-          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DDJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -782,8 +782,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Int,Int,Float] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 7;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -800,8 +800,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Int,Int,Double] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -818,8 +818,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Int,Long,Float] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 7;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -836,8 +836,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Int,Long,Double] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -854,8 +854,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Long,Int,Float] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 7;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -872,8 +872,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Long,Int,Double] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 5;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -890,8 +890,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Long,Long,Float] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 7;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -908,8 +908,8 @@ package miniboxing.runtime {
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJD[Long,Long,Double] {
           def miniboxing|runtime|MiniboxedFunction2_JJD|R_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def miniboxing|runtime|MiniboxedFunction2_JJD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJD|T2_TypeTag(): Byte = 6;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -931,9 +931,9 @@ package miniboxing.runtime {
       val _f_cast: (Int, Double) => Float = _f.asInstanceOf[(Int, Double) => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDD[Int,Double,Float] {
-          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|R_TypeTag(): Byte = 7;
           def miniboxing|runtime|MiniboxedFunction2_JDD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -949,9 +949,9 @@ package miniboxing.runtime {
       val _f_cast: (Int, Double) => Double = _f.asInstanceOf[(Int, Double) => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDD[Int,Double,Double] {
-          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|R_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -967,9 +967,9 @@ package miniboxing.runtime {
       val _f_cast: (Long, Double) => Float = _f.asInstanceOf[(Long, Double) => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDD[Long,Double,Float] {
-          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|R_TypeTag(): Byte = 7;
           def miniboxing|runtime|MiniboxedFunction2_JDD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -985,9 +985,9 @@ package miniboxing.runtime {
       val _f_cast: (Long, Double) => Double = _f.asInstanceOf[(Long, Double) => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDD[Long,Double,Double] {
-          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|R_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_JDD|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JDD|T2_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1009,9 +1009,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Int) => Float = _f.asInstanceOf[(Double, Int) => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJD[Double,Int,Float] {
+          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 7;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T2_TypeTag(): Byte = 5;
-          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 7;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1027,9 +1027,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Int) => Double = _f.asInstanceOf[(Double, Int) => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJD[Double,Int,Double] {
+          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T2_TypeTag(): Byte = 5;
-          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1045,9 +1045,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Long) => Float = _f.asInstanceOf[(Double, Long) => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJD[Double,Long,Float] {
+          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 7;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T2_TypeTag(): Byte = 6;
-          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 7;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1063,9 +1063,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Long) => Double = _f.asInstanceOf[(Double, Long) => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJD[Double,Long,Double] {
+          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DJD|T2_TypeTag(): Byte = 6;
-          def miniboxing|runtime|MiniboxedFunction2_DJD|R_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1087,9 +1087,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Double) => Float = _f.asInstanceOf[(Double, Double) => Float]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDD[Double,Double,Float] {
+          def miniboxing|runtime|MiniboxedFunction2_DDD|R_TypeTag(): Byte = 7;
           def miniboxing|runtime|MiniboxedFunction2_DDD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DDD|T2_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_DDD|R_TypeTag(): Byte = 7;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
@@ -1105,9 +1105,9 @@ package miniboxing.runtime {
       val _f_cast: (Double, Double) => Double = _f.asInstanceOf[(Double, Double) => Double]();
       {
         final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDD[Double,Double,Double] {
+          def miniboxing|runtime|MiniboxedFunction2_DDD|R_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DDD|T1_TypeTag(): Byte = 8;
           def miniboxing|runtime|MiniboxedFunction2_DDD|T2_TypeTag(): Byte = 8;
-          def miniboxing|runtime|MiniboxedFunction2_DDD|R_TypeTag(): Byte = 8;
           def <init>(): anonymous class $anon = {
             $anon.super.<init>();
             ()
