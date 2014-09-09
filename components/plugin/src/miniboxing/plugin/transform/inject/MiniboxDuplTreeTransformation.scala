@@ -213,70 +213,60 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             specVariants.filter(_ != mbr).flatMap(mbr => createMemberTree(Some(mbr)))
           }
           val state = metadata.getClassState(cls)
+          def isConstructorOrField(sym: Symbol) = (
+            sym.isConstructor ||
+            sym.isMixinConstructor ||
+            (sym.isValue && !sym.isMethod))
 
-          var sideEffectWarning = true
-          def equivalentMemberTree(sym: Symbol): Option[Tree] =
-            createMemberTree(equivalentMemberInSpecializedClass(sym, cls))
-
-          // members
           val bodyDefs =
-            body.map({
-              case dt: DefTree if ((dt.symbol.isConstructor && !dt.symbol.isMixinConstructor) || (dt.symbol.isValue && !dt.symbol.isMethod)) =>
-                state match {
-                  case NotSpecialized => List(dt)
-                  case SpecializedStem => Nil
-                  case SpecializedVariant => equivalentMemberTree(dt.symbol).toList
-                }
-              case dd: DefDef if (dd.symbol.isMixinConstructor) =>
-                state match {
-                  case NotSpecialized => List(dd)
-                  case SpecializedStem => Nil    // TODO: Do we want the mixin constructor here?
-                  case SpecializedVariant => Nil // TODO: Do we want the mixin constructor here?
-                }
-              case dd: DefDef =>
-                import heuristics.specializableMethodInClass
-                def withMemberVariants(dd0: Option[Tree]): List[Tree] =
-                  dd0.map(dd => dd :: memberVariants(dd.symbol)).getOrElse(Nil)
-                lazy val spec = specializableMethodInClass(cls, dd.symbol) // only compute if necessary
-                val dd2 = state match {
-                  case NotSpecialized              => withMemberVariants(Some(dd))
-                  case SpecializedStem    if !spec => List(dd)
-                  case SpecializedVariant if !spec => Nil
-                  case SpecializedStem             => withMemberVariants(Some(deriveDefDef(dd)(_ => EmptyTree)))
-                  case SpecializedVariant          =>
-                    if (!decls.contains(dd.symbol))
-                      withMemberVariants(equivalentMemberTree(dd.symbol))
-                    else
-                      Nil
-                }
-                dd2
-              case dt: DefTree =>
-                state match {
-                  case NotSpecialized => List(dt)
-                  case SpecializedStem => List(dt)
-                  case SpecializedVariant => Nil
-                }
-              // the following two cases are here to guard against the warning in the workaround for bug #64:
-              case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) =>
-                state match {
-                  case NotSpecialized => List(app)
-                  case SpecializedStem => List(app)
-                  case SpecializedVariant => Nil
-                }
-              case other if !other.isInstanceOf[DefTree] =>
-                state match {
-                  case NotSpecialized => List(other)
-                  case SpecializedStem =>
-                    if (sideEffectWarning) {
+            state match {
+
+              case NotSpecialized =>
+                body.flatMap({
+                  case dd: DefDef =>
+                    dd :: memberVariants(dd.symbol)
+                  case other =>
+                    List(other)
+                })
+
+              case SpecializedStem =>
+                var sideEffectWarning = true
+                body.flatMap({
+                  case dt: DefTree if isConstructorOrField(dt.symbol) =>
+                    Nil
+                  case dd: DefDef if heuristics.specializableMethodInClass(cls, dd.symbol) =>
+                    deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
+                  case dt: DefTree =>
+                    List(dt)
+                  case other =>
+                    val isInitFromBug64 =
+                      other match {
+                        case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) => true
+                        case _ => false
+                      }
+                    if (sideEffectWarning && !isInitFromBug64) {
                       global.reporter.warning(other.pos,
                           s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
                               |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
                       sideEffectWarning = false
                     }
                     List(other)
-                  case SpecializedVariant => Nil
-                }
-            }).flatten
+                })
+
+              case SpecializedVariant =>
+                def equivalentMemberTree(sym: Symbol): Option[Tree] = createMemberTree(equivalentMemberInSpecializedClass(sym, cls))
+                body.flatMap({
+                  case dt: DefTree if isConstructorOrField(dt.symbol) =>
+                    equivalentMemberTree(dt.symbol).toList
+                  case dd: DefDef =>
+                    val equiv = equivalentMemberTree(dd.symbol)
+                    equiv.map(dd => dd :: memberVariants(dd.symbol)).getOrElse(Nil)
+                  case other =>
+                    Nil
+                })
+            }
+
+          // members
           val tagMembers = tags.flatMap(tag => createMemberTree(Some(tag)))
           val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, cls))
 
