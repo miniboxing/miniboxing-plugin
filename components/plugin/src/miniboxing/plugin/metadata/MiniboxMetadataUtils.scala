@@ -269,10 +269,8 @@ trait MiniboxMetadataUtils {
 //      TODO: Make this invariant stand (it's violated by normalization)
 //      assert(clazz.isClass || clazz.isModule || clazz.isTrait, clazz.defString)
 
-      ((!mbr.isMethod ||
-        !mbr.isSynthetic) &&
       ((mbr.alias == NoSymbol) ||
-        metadata.memberOverloads.isDefinedAt(mbr.alias)))
+        metadata.memberOverloads.isDefinedAt(mbr.alias))
     }
 
     def normalizableMethodInMethod(sym: Symbol): Boolean = (
