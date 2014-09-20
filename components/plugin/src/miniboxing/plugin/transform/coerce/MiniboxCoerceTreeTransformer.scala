@@ -21,7 +21,7 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.util.DynamicVariable
 import scala.collection.immutable.ListMap
 
-trait MiniboxCoerceTreeTransformer extends TypingTransformers {
+trait MiniboxCoerceTreeTransformer extends TypingTransformers with ScalacCrossCompilingLayer {
   self: MiniboxCoerceComponent =>
 
   import minibox._
@@ -78,9 +78,9 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
     }
   }
 
-  class TreeAdapters extends Analyzer {
+  class TreeAdapters extends TweakedAnalyzer {
     var indent = 0
-    lazy val global: self.global.type = self.global
+    override lazy val global: self.global.type = self.global
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
@@ -97,7 +97,8 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers {
 //       println("  " * ind + msg)
     }
 
-    class TreeAdapter(context0: Context) extends Typer(context0) {
+    class TreeAdapter(context0: Context) extends TweakedTyper(context0) {
+
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 

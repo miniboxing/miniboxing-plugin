@@ -18,7 +18,7 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.Phase
 import scala.tools.nsc.typechecker.Analyzer
 
-trait PrepareTreeTransformer extends TypingTransformers {
+trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilingLayer {
   self: PrepareComponent =>
 
   import global._
@@ -32,9 +32,9 @@ trait PrepareTreeTransformer extends TypingTransformers {
     }
   }
 
-  class PrepareAdapter extends Analyzer {
+  class PrepareAdapter extends TweakedAnalyzer {
     var indent = 0
-    lazy val global: self.global.type = self.global
+    override lazy val global: self.global.type = self.global
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
@@ -47,7 +47,7 @@ trait PrepareTreeTransformer extends TypingTransformers {
     override def newTyper(context: Context): Typer =
       new TreeAdapter(context)
 
-    class TreeAdapter(context0: Context) extends Typer(context0) {
+    class TreeAdapter(context0: Context) extends TweakedTyper(context0) {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 

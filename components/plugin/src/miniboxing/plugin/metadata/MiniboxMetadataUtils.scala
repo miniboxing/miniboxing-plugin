@@ -299,8 +299,8 @@ trait MiniboxMetadataUtils {
       //    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[miniboxing.tests.compile.bug129.D[_]]()
       //
       // For more details see bugs #129 and #130, which give the entire context
-      val isCanEqual = (mbr.name.toString == "canEqual") && mbr.isMethod && clazz.isCase && mbr.isSynthetic && mbr.isSynthetic
-
+      val isCanEqual = (mbr.name.toString == "canEqual") && mbr.isMethod && clazz.isCase && mbr.isSynthetic
+                     // mbr.isMethod && mbr.isSynthetic
       specializedAlias && !isCanEqual
     }
 

@@ -21,7 +21,7 @@ import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.typechecker.Analyzer
 
-trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers {
+trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers with ScalacCrossCompilingLayer {
   self: InteropCoerceComponent =>
 
   import global._
@@ -44,9 +44,9 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
     }
   }
 
-  class TreeAdapters extends Analyzer {
+  class TreeAdapters extends TweakedAnalyzer {
     var indent = 0
-    lazy val global: self.global.type = self.global
+    override lazy val global: self.global.type = self.global
 
     def adapt(unit: CompilationUnit): Tree = {
       val context = rootContext(unit)
@@ -63,7 +63,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
 //       println("  " * ind + msg)
     }
 
-    class TreeAdapter(context0: Context) extends Typer(context0) {
+    class TreeAdapter(context0: Context) extends TweakedTyper(context0) {
       override protected def finishMethodSynthesis(templ: Template, clazz: Symbol, context: Context): Template =
         templ
 
