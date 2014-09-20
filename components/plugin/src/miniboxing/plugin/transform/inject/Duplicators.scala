@@ -23,7 +23,7 @@ import scala.collection.mutable
  *
  *  @version miniboxing
  */
-abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer {
+abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with ScalacVersion {
   import global._
   import definitions.{ AnyRefClass, AnyValClass, AnyTpe }
 
@@ -229,7 +229,13 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer {
       //    at scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5665)
       //    at miniboxing.plugin.Duplicators.retyped(Duplicators.scala:42)
       val tpe3 = try {
-        if (newClassOwner ne null)
+          val existentialOn210 = // ^^^ fixing that
+            (scalaBinaryVersion == "2.10") &&
+            (tpe2 match {
+              case ExistentialType(tpes, TypeRef(_, oldClass, _)) if oldClass == oldClassOwner => true
+              case _ => false
+            })
+        if ((newClassOwner ne null) && !existentialOn210)
           tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
         else tpe2
       } catch { case e: Throwable => tpe2}
