@@ -1,0 +1,241 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package minboxing.tests.compile.bug131 {
+  case class C[@miniboxed T] extends Object with Product with Serializable {
+    def <init>(): minboxing.tests.compile.bug131.C[T] = {
+      C.super.<init>();
+      ()
+    };
+    <synthetic> def copy[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C[T]();
+    override <synthetic> def productPrefix(): String = "C";
+    <synthetic> def productArity(): Int = 0;
+    <synthetic> def productElement(x$1: Int): Any = {
+      case <synthetic> val x1: Int = x$1;
+      case4(){
+        matchEnd3(throw new IndexOutOfBoundsException(x$1.toString()))
+      };
+      matchEnd3(x: Any){
+        x
+      }
+    };
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](C.this);
+    <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[minboxing.tests.compile.bug131.C[_]]();
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(C.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(C.this);
+    override <synthetic> def equals(x$1: Any): Boolean = {
+  case <synthetic> val x1: Any = x$1;
+  case5(){
+    if (x1.isInstanceOf[minboxing.tests.compile.bug131.C[T]]())
+      matchEnd4(true)
+    else
+      case6()
+  };
+  case6(){
+    matchEnd4(false)
+  };
+  matchEnd4(x: Boolean){
+    x
+  }
+}.&&(x$1.asInstanceOf[minboxing.tests.compile.bug131.C[T]]().canEqual(C.this))
+  };
+  <synthetic> object C extends Object with Serializable {
+    def <init>(): minboxing.tests.compile.bug131.C.type = {
+      C.super.<init>();
+      ()
+    };
+    final override <synthetic> def toString(): String = "C";
+    case <synthetic> def apply[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C[T]();
+    case <synthetic> def unapply[@miniboxed T](x$0: minboxing.tests.compile.bug131.C[T]): Boolean = if (x$0.==(null))
+      false
+    else
+      true;
+    <synthetic> private def readResolve(): Object = bug131.this.C
+  };
+  class D[@miniboxed T] extends Object {
+    def <init>(): minboxing.tests.compile.bug131.D[T] = {
+      D.super.<init>();
+      ()
+    };
+    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[minboxing.tests.compile.bug131.D[_]]()
+  }
+}
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package minboxing.tests.compile.bug131 {
+  abstract trait C[@miniboxed T] extends Object with Product with Serializable {
+    <synthetic> def copy[@miniboxed T](): minboxing.tests.compile.bug131.C[T];
+    <synthetic> def copy_n_D[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T];
+    <synthetic> def copy_n_J[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T];
+    override <synthetic> def productPrefix(): String;
+    <synthetic> def productArity(): Int;
+    <synthetic> def productElement(x$1: Int): Any;
+    override <synthetic> def productIterator(): Iterator[Any];
+    <synthetic> def canEqual(x$1: Any): Boolean;
+    override <synthetic> def hashCode(): Int;
+    override <synthetic> def toString(): String;
+    override <synthetic> def equals(x$1: Any): Boolean
+  };
+  case class C_D[Tsp] extends Object with Product with Serializable with minboxing.tests.compile.bug131.C[Tsp] {
+    <paramaccessor> private[this] val minboxing|tests|compile|bug131|C_D|T_TypeTag: Byte = _;
+    def <init>(minboxing|tests|compile|bug131|C_D|T_TypeTag: Byte): minboxing.tests.compile.bug131.C_D[Tsp] = {
+      C_D.super.<init>();
+      ()
+    };
+    <synthetic> def copy[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_L[T]();
+    <synthetic> def copy_n_D[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_D[T](T_TypeTag);
+    <synthetic> def copy_n_J[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_J[T](T_TypeTag);
+    override <synthetic> def productPrefix(): String = "C";
+    <synthetic> def productArity(): Int = 0;
+    <synthetic> def productElement(x$1: Int): Any = {
+      case <synthetic> val x1: Int = x$1;
+      case4(){
+        matchEnd3(throw new IndexOutOfBoundsException(x$1.toString()))
+      };
+      matchEnd3(x: Any){
+        x
+      }
+    };
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](C_D.this);
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(C_D.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(C_D.this);
+    override <synthetic> def equals(x$1: Any): Boolean = {
+  case <synthetic> val x1: Any = x$1;
+  case5(){
+    if (x1.isInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]())
+      matchEnd4(true)
+    else
+      case6()
+  };
+  case6(){
+    matchEnd4(false)
+  };
+  matchEnd4(x: Boolean){
+    x
+  }
+}.&&(x$1.asInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]().canEqual(C_D.this))
+  };
+  case class C_J[Tsp] extends Object with Product with Serializable with minboxing.tests.compile.bug131.C[Tsp] {
+    <paramaccessor> private[this] val minboxing|tests|compile|bug131|C_J|T_TypeTag: Byte = _;
+    def <init>(minboxing|tests|compile|bug131|C_J|T_TypeTag: Byte): minboxing.tests.compile.bug131.C_J[Tsp] = {
+      C_J.super.<init>();
+      ()
+    };
+    <synthetic> def copy[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_L[T]();
+    <synthetic> def copy_n_D[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_D[T](T_TypeTag);
+    <synthetic> def copy_n_J[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_J[T](T_TypeTag);
+    override <synthetic> def productPrefix(): String = "C";
+    <synthetic> def productArity(): Int = 0;
+    <synthetic> def productElement(x$1: Int): Any = {
+      case <synthetic> val x1: Int = x$1;
+      case4(){
+        matchEnd3(throw new IndexOutOfBoundsException(x$1.toString()))
+      };
+      matchEnd3(x: Any){
+        x
+      }
+    };
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](C_J.this);
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(C_J.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(C_J.this);
+    override <synthetic> def equals(x$1: Any): Boolean = {
+  case <synthetic> val x1: Any = x$1;
+  case5(){
+    if (x1.isInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]())
+      matchEnd4(true)
+    else
+      case6()
+  };
+  case6(){
+    matchEnd4(false)
+  };
+  matchEnd4(x: Boolean){
+    x
+  }
+}.&&(x$1.asInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]().canEqual(C_J.this))
+  };
+  case class C_L[Tsp] extends Object with Product with Serializable with minboxing.tests.compile.bug131.C[Tsp] {
+    def <init>(): minboxing.tests.compile.bug131.C_L[Tsp] = {
+      C_L.super.<init>();
+      ()
+    };
+    <synthetic> def copy[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_L[T]();
+    <synthetic> def copy_n_D[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_D[T](T_TypeTag);
+    <synthetic> def copy_n_J[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_J[T](T_TypeTag);
+    override <synthetic> def productPrefix(): String = "C";
+    <synthetic> def productArity(): Int = 0;
+    <synthetic> def productElement(x$1: Int): Any = {
+      case <synthetic> val x1: Int = x$1;
+      case4(){
+        matchEnd3(throw new IndexOutOfBoundsException(x$1.toString()))
+      };
+      matchEnd3(x: Any){
+        x
+      }
+    };
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](C_L.this);
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(C_L.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(C_L.this);
+    override <synthetic> def equals(x$1: Any): Boolean = {
+  case <synthetic> val x1: Any = x$1;
+  case5(){
+    if (x1.isInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]())
+      matchEnd4(true)
+    else
+      case6()
+  };
+  case6(){
+    matchEnd4(false)
+  };
+  matchEnd4(x: Boolean){
+    x
+  }
+}.&&(x$1.asInstanceOf[minboxing.tests.compile.bug131.C[Tsp]]().canEqual(C_L.this))
+  };
+  <synthetic> object C extends Object with Serializable {
+    def <init>(): minboxing.tests.compile.bug131.C.type = {
+      C.super.<init>();
+      ()
+    };
+    final override <synthetic> def toString(): String = "C";
+    case <synthetic> def apply[@miniboxed T](): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_L[T]();
+    case <synthetic> def apply_n_D[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_D[T](T_TypeTag);
+    case <synthetic> def apply_n_J[T](T_TypeTag: Byte): minboxing.tests.compile.bug131.C[T] = new minboxing.tests.compile.bug131.C_J[T](T_TypeTag);
+    case <synthetic> def unapply[@miniboxed T](x$0: minboxing.tests.compile.bug131.C[T]): Boolean = if (x$0.==(null))
+      false
+    else
+      true;
+    case <synthetic> def unapply_n_D[T](T_TypeTag: Byte, x$0: minboxing.tests.compile.bug131.C[T]): Boolean = if (x$0.==(null))
+      false
+    else
+      true;
+    case <synthetic> def unapply_n_J[T](T_TypeTag: Byte, x$0: minboxing.tests.compile.bug131.C[T]): Boolean = if (x$0.==(null))
+      false
+    else
+      true;
+    <synthetic> private def readResolve(): Object = bug131.this.C
+  };
+  abstract trait D[@miniboxed T] extends Object {
+    def canEqual(x$1: Any): Boolean
+  };
+  class D_D[Tsp] extends Object with minboxing.tests.compile.bug131.D[Tsp] {
+    <paramaccessor> private[this] val minboxing|tests|compile|bug131|D_D|T_TypeTag: Byte = _;
+    def <init>(minboxing|tests|compile|bug131|D_D|T_TypeTag: Byte): minboxing.tests.compile.bug131.D_D[Tsp] = {
+      D_D.super.<init>();
+      ()
+    };
+    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[minboxing.tests.compile.bug131.D[_]]()
+  };
+  class D_J[Tsp] extends Object with minboxing.tests.compile.bug131.D[Tsp] {
+    <paramaccessor> private[this] val minboxing|tests|compile|bug131|D_J|T_TypeTag: Byte = _;
+    def <init>(minboxing|tests|compile|bug131|D_J|T_TypeTag: Byte): minboxing.tests.compile.bug131.D_J[Tsp] = {
+      D_J.super.<init>();
+      ()
+    };
+    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[minboxing.tests.compile.bug131.D[_]]()
+  };
+  class D_L[Tsp] extends Object with minboxing.tests.compile.bug131.D[Tsp] {
+    def <init>(): minboxing.tests.compile.bug131.D_L[Tsp] = {
+      D_L.super.<init>();
+      ()
+    };
+    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[minboxing.tests.compile.bug131.D[_]]()
+  }
+}

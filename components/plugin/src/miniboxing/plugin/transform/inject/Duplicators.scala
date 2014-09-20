@@ -150,95 +150,25 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     /** Fix the given type by replacing invalid symbols with the new ones. */
     def fixType(tpe: Type, deep: Boolean = false): Type = {
       val tpe1 = if (deep) envDeepSubst(tpe) else envSubstitution(tpe)
-      val tpe2: Type =
+      val tpe2 =
         try {
-          (new FixInvalidSyms)(tpe1)
+          if (newClassOwner ne null)
+            tpe1.asSeenFrom(newClassOwner.thisType, oldClassOwner)
+          else
+            tpe1
         } catch {
-          case NoSymbolUpdateException =>
-            global.reporter.warning(oldClassOwner.pos, "[miniboxing-plugin] Recovered from a specialization error. Please report this as a bug!")
+          case e: Throwable =>
+            global.reporter.warning(oldClassOwner.pos, "[miniboxing-plugin] Recovered from a specialization error. Please report this as a bug! (tpe2)")
             tpe1
         }
-      // known problem: asSeenFrom on an abstract type produced by creating new syms
-      // from symbols bound in existential types crashes the AsSeenFromMap
-      //  error: T#24681 in trait Complex#7190 cannot be instantiated from miniboxing#27.tests#7186.compile#7188.Complex_J#23156[Tsp#23157]
-      //  unhandled exception while transforming mb_spire_2.scala
-      //  error: uncaught exception during compilation: scala.reflect.internal.FatalError
-      //  error: scala.reflect.internal.FatalError:
-      //         while compiling: mb_spire_2.scala
-      //            during phase: minibox
-      //         library version: version 2.10.3-20130708-144415-62405227dd
-      //        compiler version: version 2.10.3-20130708-163611-504b5f3b15
-      //      reconstructed args: -no-specialization -Xprint:minibox -uniqid -Ycheck:minibox -bootclasspath /home/sun/workspace/dev/miniboxing-plugin//components/runtime/target/scala-2.10/miniboxing-runtime_2.10-0.1-SNAPSHOT.jar:/home/sun/workspace/dev/miniboxing-plugin//components/plugin/target/scala-2.10/miniboxing-plugin_2.10-0.1-SNAPSHOT.jar -Xplugin:/home/sun/workspace/dev/miniboxing-plugin//components/plugin/target/scala-2.10/miniboxing-plugin_2.10-0.1-SNAPSHOT.jar -P:minibox:hijack -P:minibox:log
-      //
-      //      last tree to typer: term canEqual
-      //                  symbol: method canEqual#23178 in class Complex_J#23156 (flags: <method> <synthetic> <triedcooking>)
-      //   symbol definition: def canEqual#23178(x$1#23179: Any#3411): Boolean#1396
-      //       symbol owners: method canEqual#23178 -> class Complex_J#23156 -> package compile#7188
-      //      context owners: method canEqual#23178 -> class Complex_J#23156 -> package compile#7188
-      //
-      //  == Enclosing template or block ==
-      //
-      //  Apply( // final def $isInstanceOf#5273[T0#5274](): Boolean#1396 in class Object#1737
-      //    TypeApply( // final def $isInstanceOf#5273[T0#5274](): Boolean#1396 in class Object#1737
-      //      "x$1"."$isInstanceOf" // final def $isInstanceOf#5273[T0#5274](): Boolean#1396 in class Object#1737, tree.tpe=[T0#5274]()Boolean#1396
-      //      <tpt> // tree.tpe=miniboxing#27.tests#7186.compile#7188.Complex#7190[_]
-      //    )
-      //    Nil
-      //  )
-      //
-      //  T#24681 in trait Complex#7190 cannot be instantiated from miniboxing#27.tests#7186.compile#7188.Complex_J#23156[Tsp#23157]
-      //    at scala.reflect.internal.SymbolTable.abort(SymbolTable.scala:49)
-      //    at scala.tools.nsc.Global.abort(Global.scala:254)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.throwError$1(Types.scala:4579)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.instParam$1(Types.scala:4599)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.toInstance$1(Types.scala:4619)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.apply(Types.scala:4637)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.apply(Types.scala:4501)
-      //    at scala.collection.immutable.List.loop$1(List.scala:170)
-      //    at scala.collection.immutable.List.mapConserve(List.scala:186)
-      //    at scala.reflect.internal.Types$TypeMap.mapOver(Types.scala:4185)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.apply(Types.scala:4639)
-      //    at scala.reflect.internal.Types$TypeMap.mapOver(Types.scala:4233)
-      //    at scala.reflect.internal.Types$AsSeenFromMap.apply(Types.scala:4639)
-      //    at scala.reflect.internal.Types$Type.asSeenFrom(Types.scala:754)
-      //    at miniboxing.plugin.Duplicators$BodyDuplicator.fixType(Duplicators.scala:143)
-      //    at miniboxing.plugin.Duplicators$BodyDuplicator.typed(Duplicators.scala:241)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typedType(Typers.scala:5730)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typedHigherKindedType(Typers.scala:5737)
-      //    at scala.tools.nsc.typechecker.Typers$Typer$$anonfun$112.apply(Typers.scala:5429)
-      //    at scala.tools.nsc.typechecker.Typers$Typer$$anonfun$112.apply(Typers.scala:5429)
-      //    at scala.reflect.internal.Types$class.map2Conserve(Types.scala:6416)
-      //    at scala.reflect.internal.SymbolTable.map2Conserve(SymbolTable.scala:13)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typedTypeApply$1(Typers.scala:5427)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5533)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5603)
-      //    at miniboxing.plugin.Duplicators$BodyDuplicator.typed(Duplicators.scala:400)
-      //    at scala.tools.nsc.typechecker.Typers$Typer$$anonfun$92.apply(Typers.scala:4569)
-      //    at scala.tools.nsc.typechecker.Typers$Typer$$anonfun$92.apply(Typers.scala:4569)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.silent(Typers.scala:727)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.normalTypedApply$1(Typers.scala:4569)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typedApply$1(Typers.scala:4620)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5525)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5603)
-      //    at miniboxing.plugin.Duplicators$BodyDuplicator.typed(Duplicators.scala:400)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.transformedOrTyped(Typers.scala:5806)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typedDefDef(Typers.scala:2254)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed1(Typers.scala:5530)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5603)
-      //    at miniboxing.plugin.Duplicators$BodyDuplicator.typed(Duplicators.scala:261)
-      //    at scala.tools.nsc.typechecker.Typers$Typer.typed(Typers.scala:5665)
-      //    at miniboxing.plugin.Duplicators.retyped(Duplicators.scala:42)
-      val tpe3 = try {
-          val existentialOn210 = // ^^^ fixing that
-            (scalaBinaryVersion == "2.10") &&
-            (tpe2 match {
-              case ExistentialType(tpes, TypeRef(_, oldClass, _)) if oldClass == oldClassOwner => true
-              case _ => false
-            })
-        if ((newClassOwner ne null) && !existentialOn210)
-          tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
-        else tpe2
-      } catch { case e: Throwable => tpe2}
+      val tpe3: Type =
+        try {
+          (new FixInvalidSyms)(tpe2)
+        } catch {
+          case NoSymbolUpdateException =>
+            global.reporter.warning(oldClassOwner.pos, "[miniboxing-plugin] Recovered from a specialization error. Please report this as a bug! (tpe3)")
+            tpe2
+        }
       // println(s"fixTpe: $tpe ==> $tpe1 (${showRaw(tpe1)}) ==> $tpe2 ==> $tpe3 (deep=$deep)")
       tpe3
     }

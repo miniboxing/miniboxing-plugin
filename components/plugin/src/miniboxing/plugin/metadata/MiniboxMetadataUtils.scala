@@ -266,11 +266,42 @@ trait MiniboxMetadataUtils {
     )
 
     def specializableMethodInClass(clazz: Symbol, mbr: Symbol): Boolean = {
-//      TODO: Make this invariant stand (it's violated by normalization)
-//      assert(clazz.isClass || clazz.isModule || clazz.isTrait, clazz.defString)
+      // TODO: Make this invariant stand (it's violated by normalization)
+      // assert(clazz.isClass || clazz.isModule || clazz.isTrait, clazz.defString)
 
-      ((mbr.alias == NoSymbol) ||
-        metadata.memberOverloads.isDefinedAt(mbr.alias))
+      // Make sure the alias symbol is either undefined (not a trait) or is specialized as well, else we crash in the
+      // mixin phase when searching for an alias for the specialized member
+      val specializedAlias = (mbr.alias == NoSymbol) || metadata.memberOverloads.isDefinedAt(mbr.alias)
+
+      // The synthetic canEqual method generated for case classes is incorrect, as the existential type
+      // is not correctly transformed by the asSeenFrom TypeMap:
+      //
+      //  $ cat gh-bug-130.scala
+      //  package minboxing.tests.compile.bug130
+      //
+      //  case class C[@miniboxed T]()
+      //
+      //  class D[@miniboxed T] {
+      //    def canEqual(`x$1`: Any): Boolean = `x$1`.`$isInstanceOf`[D[_]]
+      //  }
+      //
+      //  $ ../mb-scalac gh-bug-129.scala -Xprint:interop-commit,minibox-commit 2>&1 | grep "def canEqual"
+      //     <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[miniboxing.tests.compile.bug129.C[_]]();
+      //    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[miniboxing.tests.compile.bug129.D[_]]()
+      //
+      //    <synthetic> def canEqual(x$1: Any): Boolean;
+      //    <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[miniboxing.tests.compile.bug129.C[Tsp]]();
+      //    <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[miniboxing.tests.compile.bug129.C[Tsp]]();
+      //    <synthetic> def canEqual(x$1: Any): Boolean = x$1.$isInstanceOf[miniboxing.tests.compile.bug129.C[Tsp]]();
+      //    def canEqual(x$1: Any): Boolean
+      //    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[miniboxing.tests.compile.bug129.D[_]]()
+      //    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[miniboxing.tests.compile.bug129.D[_]]()
+      //    def canEqual(x$1: Any): Boolean = x$1.isInstanceOf[miniboxing.tests.compile.bug129.D[_]]()
+      //
+      // For more details see bugs #129 and #130, which give the entire context
+      val isCanEqual = (mbr.name.toString == "canEqual") && mbr.isMethod && clazz.isCase && mbr.isSynthetic && mbr.isSynthetic
+
+      specializedAlias && !isCanEqual
     }
 
     def normalizableMethodInMethod(sym: Symbol): Boolean = (
@@ -278,6 +309,5 @@ trait MiniboxMetadataUtils {
       && sym.hasMiniboxedTypeParameters
       && sym.owner.isMethod
     )
-
   }
 }
