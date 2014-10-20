@@ -122,6 +122,9 @@ trait MiniboxMetadata {
     /** A list of dummy constructors necessary to satisfy the duplicator */
     val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
 
+    /** The stem class constructors that are eliminated by the miniboxing inject phase */
+    val stemConstructors = mutable.Set[/* stem class constructors */ Symbol]()
+
     /** The set of members that provide the template to copy and specialize by the specialized overloads */
     val templateMembers = mutable.Set[Symbol]()
 

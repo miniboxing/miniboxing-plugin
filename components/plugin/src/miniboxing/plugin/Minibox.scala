@@ -167,7 +167,7 @@ trait PreTyperComponent extends
   with TypingTransformers
   with ScalacCrossCompilingLayer {
 
-  val miniboxing: MiniboxInjectComponent { val global: PreTyperComponent.this.global.type }
+  val minibox: MiniboxInjectComponent { val global: PreTyperComponent.this.global.type }
 }
 
 trait PostTyperComponent extends
@@ -177,7 +177,7 @@ trait PostTyperComponent extends
 
   import global._
   import global.Flag._
-  val miniboxing: MiniboxInjectComponent { val global: PostTyperComponent.this.global.type }
+  val minibox: MiniboxInjectComponent { val global: PostTyperComponent.this.global.type }
 }
 
 /** Main miniboxing class */
@@ -424,7 +424,7 @@ class Minibox(val global: Global) extends Plugin {
   }
 
   private object PreTyperPhase extends {
-    val miniboxing: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List()
@@ -436,17 +436,28 @@ class Minibox(val global: Global) extends Plugin {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- miniboxing.metadata.allStemClasses)
-          if (miniboxing.metadata.classStemTraitFlag(sym))
+        for (sym <- minibox.metadata.allStemClasses)
+          if (minibox.metadata.classStemTraitFlag(sym))
             sym.resetFlag(ABSTRACT)
           else
             sym.resetFlag(ABSTRACT | TRAIT)
+
+        // add the dummy constructors
+        for (ctor <- minibox.metadata.stemConstructors) {
+          ctor.owner.info.decls enter ctor
+          ctor.resetFlag(DEFERRED)
+        }
+
+        // remove deferred flag from values
+        for (sym <- minibox.metadata.allStemClasses)
+          for (mbr <- sym.info.decls if minibox.metadata.memberHasOverloads(mbr))
+            mbr.resetFlag(DEFERRED)
       }
     }
   }
 
   private object PostTyperPhase extends {
-    val miniboxing: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List("typer")
@@ -458,8 +469,12 @@ class Minibox(val global: Global) extends Plugin {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- miniboxing.metadata.allStemClasses)
+        for (sym <- minibox.metadata.allStemClasses)
           sym.setFlag(ABSTRACT | TRAIT)
+
+        // remove the dummy constructors
+        for (ctor <- minibox.metadata.stemConstructors)
+          ctor.owner.info.decls unlink ctor
       }
     }
   }

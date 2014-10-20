@@ -688,8 +688,10 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       val decls = stemClassDecls.cloneScope
       for (mbr <- decls) {
         if (mbr.isMethod) mbr.setFlag(DEFERRED)
-        if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor))
+        if ((mbr.isTerm && !mbr.isMethod) || (mbr.isConstructor)) {
+          if (mbr.isConstructor) metadata.stemConstructors += mbr
           decls unlink mbr
+        }
       }
       // Remove the tailcall notation from members
       decls.foreach(_.removeAnnotation(TailrecClass))
