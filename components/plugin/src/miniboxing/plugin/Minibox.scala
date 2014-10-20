@@ -359,7 +359,7 @@ class Minibox(val global: Global) extends Plugin {
   private object MiniboxInjectPhase extends MiniboxInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(PreparePhase.phaseName)
-    override val runsRightAfter = Some(PreparePhase.phaseName)
+//    override val runsRightAfter = Some(PostTyperPhase.phaseName)
     val phaseName = Minibox.this.name + "-inject"
 
     def flag_log = Minibox.this.flag_log
@@ -429,7 +429,7 @@ class Minibox(val global: Global) extends Plugin {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List()
     override val runsRightAfter = Some("parser")
-    val phaseName = "mb-ext-pretyper"
+    val phaseName = "mb-ext-pre-tpe"
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PreTyperPhase.phaseName
@@ -460,9 +460,9 @@ class Minibox(val global: Global) extends Plugin {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("typer")
-    //override val runsRightAfter = Some("typer")
-    val phaseName = "mb-ext-posttyper"
+    val runsAfter = List(PreparePhase.phaseName)
+    override val runsRightAfter = Some(PreparePhase.phaseName)
+    val phaseName = "mb-ext-post-tpe"
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
       override def name = PostTyperPhase.phaseName
