@@ -90,7 +90,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     def miniboxQualifier(pos: Position, tpe: Type): Type = {
       val oldClass = tpe.typeSymbol
       val newClass =
-        extractSpec(tpe, currentOwner) match {
+        extractSpec(pos, tpe, currentOwner) match {
           case Some(pspec) =>
             metadata.classOverloads(oldClass)(pspec)
           case None =>
@@ -337,7 +337,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 sys.error("Unknown info type: " + info)
 
               case None =>
-                localTyper.typed(deriveDefDef(tree)(rhs => transform(rhs)))
+                localTyper.typed(deriveDefDef(tree)(rhs => atOwner(tree.symbol)(transform(rhs))))
             }
 
           // force the normalized members
@@ -408,7 +408,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 (nqual, ntpe, ntpe.typeSymbol)
             }
 
-          val spec = extractSpec(oldQual.tpe, currentOwner)
+          val spec = extractSpec(oldQual.pos, oldQual.tpe, currentOwner)
 
           // patching for the corresponding symbol in the new receiver
           // new C[Int].foo => new C_J[Int].foo
@@ -425,7 +425,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           // new C[Int].foo_J => new C_J[Int].foo_J
           val specMbrSym = {
             val tpe1 = newQualTpe baseType (newMbrSym.owner)
-            extractSpec(tpe1, currentOwner) match { // Get the partial specialization
+            extractSpec(tree.pos, tpe1, currentOwner) match { // Get the partial specialization
               case Some(pspec) if metadata.memberOverloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
                 val newMethodSym = metadata.memberOverloads(newMbrSym)(pspec)
                 newMethodSym
@@ -449,7 +449,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
           // find the normalized member
           val normSym =
-            extractNormSpec(targs.map(_.tpe), newFun.symbol, currentOwner) match {
+            extractNormSpec(tree.pos, targs.map(_.tpe), newFun.symbol, currentOwner) match {
               case Some(newSym) => newSym
               case None => newFun.symbol
             }
@@ -549,17 +549,17 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       }
     }
 
-    def extractNormSpec(targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
+    def extractNormSpec(pos: Position, targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
       if (metadata.getNormalStem(target) != NoSymbol) {
         val tparams = afterMiniboxInject(target.info).typeParams
         assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
-        val spec = PartialSpec.fromTargs(tparams, targs, currentOwner)
+        val spec = PartialSpec.fromTargs(pos, tparams, targs, currentOwner)
         metadata.normalOverloads.get(target).flatMap(_.get(spec))
       } else
         None
     }
 
-    def extractSpec(qualTpe: Type, owner: Symbol = currentOwner): Option[PartialSpec] = {
+    def extractSpec(pos: Position, qualTpe: Type, owner: Symbol = currentOwner): Option[PartialSpec] = {
       val res = qualTpe match {
         case ThisType(cls) if metadata.isClassStem(cls) =>
           metadata.classSpecialization.get(cls)
@@ -569,12 +569,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 //          else
 //            extractSpec(thatTpe, owner)
         case SingleType(pre, x) =>
-          extractSpec(qualTpe.widen, owner)
+          extractSpec(pos, qualTpe.widen, owner)
         case PolyType(tparams, rest) =>
-          extractSpec(rest, owner)
+          extractSpec(pos, rest, owner)
         case TypeRef(pre, clazz, targs) =>
           val tparams = afterMiniboxInject(metadata.getClassStem(clazz).orElse(clazz).info).typeParams
-          Some(PartialSpec.fromTargs(tparams, targs, owner))
+          Some(PartialSpec.fromTargs(pos, tparams, targs, owner))
         case _ =>
           // unknown
           None

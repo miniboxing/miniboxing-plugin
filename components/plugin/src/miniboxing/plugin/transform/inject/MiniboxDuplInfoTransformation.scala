@@ -196,7 +196,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
         // step1: add specialized overrides
         val scope0 = stemClassTpe.decls.cloneScope
-        val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass)
+        val specializeTypeMap = parentClasses.specializeParentsTypeMapForGeneric(stemClass.pos, stemClass)
 
         val parents1 = stemClassTpe.parents map specializeTypeMap
 
@@ -315,7 +315,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
             if (alias != NoSymbol) {
               // Find the correct alias in a rewired class
               val baseTpe = stemClass.info.baseType(alias.owner)
-              val spec2 = PartialSpec.fromTargs(baseTpe.typeSymbol.typeParams, baseTpe.typeArgs, stemClass.owner, spec)
+              val spec2 = PartialSpec.fromTargs(variantMethod.pos, baseTpe.typeSymbol.typeParams, baseTpe.typeArgs, stemClass.owner, spec)
               if (metadata.memberOverloads.isDefinedAt(alias) &&
                   metadata.memberOverloads(alias).isDefinedAt(spec2)) {
                 variantMethod.asInstanceOf[TermSymbol].referenced = metadata.memberOverloads(alias)(spec2)
@@ -381,7 +381,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       // step5: Create the class info
       val variantClassScope = newScope
 
-      val specializeParents = parentClasses.specializeParentsTypeMapForSpec(variantClass, stemClass, localSpec)
+      val specializeParents = parentClasses.specializeParentsTypeMapForSpec(stemClass.pos, variantClass, stemClass, localSpec)
       val specializedInfoType: Type = {
         val sParents = (stemClass.info.parents ::: List(stemClass.tpe)) map {
           t => specializedTypeMapOuter(t)
@@ -596,7 +596,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
           // TODO: Inject owner chain specialization information here!
           val baseParent = ovr.owner
           val baseParentTpe = clazz.info.baseType(baseParent)
-          val baseSpec = PartialSpec.fromTargs(baseParent.info.typeParams, baseParentTpe.typeArgs, clazz.owner, globalPSpec)
+          val baseSpec = PartialSpec.fromTargs(NoPosition, baseParent.info.typeParams, baseParentTpe.typeArgs, clazz.owner, globalPSpec)
 
           val localOverload = metadata.memberOverloads.get(ovr).flatMap(_.get(baseSpec)).getOrElse(NoSymbol)
           // only generate the override if we don't have an overload which matches the current symbol:

@@ -19,6 +19,10 @@ trait MiniboxLogging {
 
   import global._
 
+  def warn(pos: Position, msg: String) =
+    if (flag_strict_warnings && (pos != NoPosition))
+      global.reporter.warning(pos, msg)
+
   def global_log(msg: => String) = if (settings.log.value.contains(phaseName)) global.log(msg)
   def log(msg: => Any) = if (flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
   def mblog(msg: => Any) = log(msg)

@@ -76,18 +76,20 @@ trait MiniboxMetadataUtils {
 
     def allAnyRefPSpec(clazz: Symbol): PartialSpec = clazz.typeParams.filter(_.isMiniboxAnnotated).map(t => (t, Boxed)).toMap
 
-    def fromType(tpe: TypeRef, owner: Symbol): PartialSpec = fromType(tpe, owner, Map.empty)
-    def fromType(tpe: TypeRef, owner: Symbol, pspec: PartialSpec): PartialSpec =
+    def fromType(pos: Position, tpe: TypeRef, owner: Symbol): PartialSpec = fromType(pos, tpe, owner, Map.empty)
+    def fromType(pos: Position, tpe: TypeRef, owner: Symbol, pspec: PartialSpec): PartialSpec =
       tpe match {
         case TypeRef(pre, sym, targs) =>
           val tparams = sym.info.typeParams
-          fromTargs(tparams, targs, owner, pspec)
+          fromTargs(pos, tparams, targs, owner, pspec)
       }
 
-    def fromTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec =
-      fromTargsAllTargs(tparams, targs, currentOwner, pspec).collect({ case (tparam, spec) if metadata.miniboxedTParamFlag(tparam) => (tparam, spec) })
+    def fromTargs(pos: Position, tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
+      val instantiation = (tparams zip targs).collect({ case (tparam, targ) if metadata.miniboxedTParamFlag(tparam) => (tparam, targ) })
+      fromTargsAllTargs(pos, instantiation, currentOwner, pspec)
+    }
 
-    def fromTargsAllTargs(tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
+    def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
 
       def typeParametersFromOwnerChain(owner: Symbol = currentOwner): List[(Symbol, SpecInfo)] =
         owner.ownerChain flatMap { sym =>
@@ -99,33 +101,36 @@ trait MiniboxMetadataUtils {
             // assumption that a class' specialization is the one that dominates, else we
             // would be messing up forwarders.
             val localPSpec = metadata.getNormalLocalSpecialization(sym)
-            localPSpec.collect({ case (tp, spec) if spec != Boxed => (tp, spec)})
+            localPSpec
           } else if (sym.isClass || sym.isTrait) {
             val localPSpec = metadata.getClassLocalSpecialization(sym)
-            localPSpec.collect({ case (tp, spec) if spec != Boxed => (tp, spec)})
+            localPSpec
           } else
             Nil
         }
 
       val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
-      val spec = (tparams zip targs) flatMap { (pair: (Symbol, Type)) =>
+      val spec = instantiation map { (pair: (Symbol, Type)) =>
         val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
-          // case (2.3)
-          case (p, `CharTpe`)    => Some((p, Miniboxed(LongClass)))
-          case (p, `IntTpe`)     => Some((p, Miniboxed(LongClass)))
-          case (p, `LongTpe`)    => Some((p, Miniboxed(LongClass)))
-          case (p, `FloatTpe`)   => Some((p, Miniboxed(FloatRepr)))
-          case (p, `DoubleTpe`)  => Some((p, Miniboxed(FloatRepr)))
-          // case (2.1)
-          // case (2.2)
-          // case (2.4)
-          case (p, TypeRef(_, tpar, _)) =>
+          case (p, `CharTpe`)    => (p, Miniboxed(LongClass))
+          case (p, `IntTpe`)     => (p, Miniboxed(LongClass))
+          case (p, `LongTpe`)    => (p, Miniboxed(LongClass))
+          case (p, `FloatTpe`)   => (p, Miniboxed(FloatRepr))
+          case (p, `DoubleTpe`)  => (p, Miniboxed(FloatRepr))
+          case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
             mboxedTpars.get(tpar.deSkolemize) match {
-              case Some(spec: SpecInfo) => Some((p, spec))
-              case None                 => Some((p, Boxed))
+              case Some(spec: SpecInfo) =>
+                (p, spec)
+              case None                 =>
+                warn(pos, s"The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner} would be marked as @miniboxed ${tpar.name}\n(it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.name})")
+                (p, Boxed)
             }
-          case _                 => None
+          case (p, tpe) if tpe <:< AnyRefTpe =>
+            (p, Boxed)
+          case (p, tpe)          =>
+            warn(pos, s"Using the type argument $tpe for the miniboxed type parameter ${p.name} of ${p.owner} is not specific enough, since it could mean either a primitive or a reference-based value.")
+            (p, Boxed)
         }
       }
       spec.toMap
@@ -180,11 +185,11 @@ trait MiniboxMetadataUtils {
   }
 
   object parentClasses {
-    class SpecializeTypeMap(current: Symbol) extends TypeMap {
+    class SpecializeTypeMap(pos: Position, current: Symbol) extends TypeMap {
       import metadata._
 
       // TODO: Take owneship chain into account!
-      def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref, current.owner)
+      def extractPSpec(tref: TypeRef) = PartialSpec.fromType(pos, tref, current.owner)
 
       override def apply(tp: Type): Type = tp match {
         case tref@TypeRef(pre, sym, args) if args.nonEmpty && classOverloads.isDefinedAt(sym)=>
@@ -203,10 +208,10 @@ trait MiniboxMetadataUtils {
       }
     }
 
-    def specializeParentsTypeMapForGeneric(current: Symbol) = new SpecializeTypeMap(current)
+    def specializeParentsTypeMapForGeneric(pos: Position, current: Symbol) = new SpecializeTypeMap(pos, current)
 
-    def specializeParentsTypeMapForSpec(spec: Symbol, origin: Symbol, pspec: PartialSpec) = new SpecializeTypeMap(spec) {
-      override def extractPSpec(tref: TypeRef) = PartialSpec.fromType(tref, spec.owner, pspec)
+    def specializeParentsTypeMapForSpec(pos: Position, spec: Symbol, origin: Symbol, pspec: PartialSpec) = new SpecializeTypeMap(pos, spec) {
+      override def extractPSpec(tref: TypeRef) = PartialSpec.fromType(pos, tref, spec.owner, pspec)
       override def apply(tp: Type): Type = tp match {
         case tref@TypeRef(pre, sym, args) if sym == origin =>
           tref

@@ -1,0 +1,3 @@
+newSource1.scala:11: warning: Using the type argument T forSome { type T <: Int } for the miniboxed type parameter T of trait C is not specific enough, since it could mean either a primitive or a reference-based value.
+  new C[T forSome { type T <: Int }] // => unspecialized C_L
+  ^

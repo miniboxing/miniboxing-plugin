@@ -219,11 +219,10 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val targs = _targs.map(transform(_).tpe)
             val args  = _args.map(transform)
             val bridge = conv.symbol
-            val pspec = PartialSpec.fromTargsAllTargs(conv.symbol.typeParams, targs, currentOwner)
+            val pspec = PartialSpec.fromTargsAllTargs(NoPosition, conv.symbol.typeParams zip targs, currentOwner)
             val allTparsAreMboxed = !pspec.exists(_._2 == minibox.Boxed)
             if (allTparsAreMboxed) {
               val reprs = pspec.map({ case (tpar, minibox.Miniboxed(repr)) => repr; case _ => ??? }).toList
-
               interop.function_bridge_optimized.get(bridge).flatMap(_.get(reprs)) match {
                 case Some(bridge_opt) =>
                   val tags = minibox.typeTagTrees(currentOwner)
@@ -232,7 +231,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                   if (tag_opts.exists(_ == None)) {
                     global.reporter.error(tree0.pos,
                         s"""[miniboxing plugin internal error] Cannot find tag when rewriting function to miniboxed function bridge.
-                           |Diagnostics:stripPrefix
+                           |Diagnostics:
                            |  tree:  ${tree0}
                            |  pspec: $pspec
                            |  tags:  $tags
@@ -244,7 +243,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 case None =>
                   global.reporter.error(tree0.pos,
                       s"""[miniboxing plugin internal error] Cannot find tag when rewriting function to miniboxed function bridge.
-                         |Diagnostics:stripPrefix
+                         |Diagnostics:
                          |  tree:  ${tree0}
                          |  pspec: $pspec
                          |  tags:  ${conv.symbol}

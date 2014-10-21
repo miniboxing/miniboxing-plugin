@@ -121,6 +121,7 @@ trait MiniboxInjectComponent extends
   def flag_spec_no_opt: Boolean
   def flag_loader_friendly: Boolean
   def flag_two_way: Boolean
+  def flag_strict_warnings: Boolean
 }
 
 /** Introduces explicit Coerceations from `T` to `@storage T` and back */
@@ -232,6 +233,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_rewire_functionX_bridges = true
   var flag_mark_all = false // type parameters as @miniboxed
   var flag_strict_typechecking = false
+  var flag_strict_warnings = false
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -249,6 +251,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_loader_friendly = true
       else if (option.toLowerCase() == "no-logo")
         flag_no_logo = true
+      else if (option.toLowerCase() == "warn")
+        flag_strict_warnings  = true
       else if (option.toLowerCase() == "yone-way")   // Undocumented flag, only used for running the test suite,
         flag_two_way = false                         // where the tests required the one-way translation
       else if (option.toLowerCase() == "ygen-brdgs") // Undocumented flag, only used for running the test suite
@@ -269,15 +273,10 @@ class Minibox(val global: Global) extends Plugin {
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
-    s"  -P:${name}:log                 log miniboxing signature transformations",
-    s"  -P:${name}:stats               log miniboxing tree transformations (verbose logging)",
-    s"  -P:${name}:debug               debug logging for the miniboxing plugin (rarely used)",
+    s"  -P:${name}:warn                warn when missing out specialization opportunities (will become default in the future)",
     s"  -P:${name}:hijack              hijack the @specialized(...) notation for miniboxing",
-    s"  -P:${name}:spec-no-opt         don't optimize method specialization, do create useless specializations\n",
-    s"  -P:${name}:loader              generate classloader-friendly code (but more verbose)",
-    s"  -P:${name}:no-logo             skip the miniboxing logo display",
-    s"  -P:${name}:library-functions   do not rewrite scala.FunctionX to the optimized MiniboxedFunctionX (X=1,2,3)",
-    s"  -P:${name}:mark-all            implicitly add @miniboxed annotations to all type parameters").mkString("\n"))
+    s"  -P:${name}:mark-all            implicitly add @miniboxed annotations to all type parameters",
+    s"  -P:${name}:log                 log miniboxing signature transformations").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -368,6 +367,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
     def flag_loader_friendly = Minibox.this.flag_loader_friendly
     def flag_two_way = Minibox.this.flag_two_way
+    def flag_strict_warnings = Minibox.this.flag_strict_warnings
 
     var mboxInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
