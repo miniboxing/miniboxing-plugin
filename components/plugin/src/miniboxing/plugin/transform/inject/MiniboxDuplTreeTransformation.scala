@@ -246,8 +246,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                       }
                     if (sideEffectWarning && !isInitFromBug64) {
                       global.reporter.warning(other.pos,
-                          s"""|Side-effecting constructor statement will not be specializedin miniboxed class/trait ${tree.symbol.enclClass.name}.
-                              |This is a technical limitation that can be worked around: https://github.com/miniboxing/miniboxing-plugin/issues/64""".stripMargin)
+                          s"The following constructor statement will not be specialized in the miniboxed ${tree.symbol.enclClass}. " +
+                          s"This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)")
                       sideEffectWarning = false
                     }
                     List(other)
@@ -371,9 +371,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         // Error on accessing non-existing fields
         case sel@Select(ths, field) if isMiniboxedFieldInStem(sel) =>
           global.reporter.error(sel.pos,
-              s"""|The program is accessing field ${sel.symbol.name} of miniboxed class/trait ${ths.symbol.name}, a pattern which becomes invalid after the
-                  |miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier:
-                  |  ${(if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\"."}""".stripMargin)
+              s"The following code is accessing field ${sel.symbol.name} of miniboxed class/trait ${ths.symbol.name}, a pattern which becomes invalid after the " +
+              s"""miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier: """ +
+              s"""${(if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\"."}""")
           localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         // rewiring new class construction
