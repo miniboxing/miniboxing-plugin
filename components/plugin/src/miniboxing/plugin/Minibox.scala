@@ -450,7 +450,7 @@ class Minibox(val global: Global) extends Plugin {
 
         // remove deferred flag from values
         for (sym <- minibox.metadata.allStemClasses)
-          for (mbr <- sym.info.decls if minibox.metadata.memberHasOverloads(mbr))
+          for (mbr <- sym.info.decls if !minibox.metadata.deferredMembers(mbr))
             mbr.resetFlag(DEFERRED)
       }
     }

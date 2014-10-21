@@ -125,7 +125,10 @@ trait MiniboxMetadata {
     /** The stem class constructors that are eliminated by the miniboxing inject phase */
     val stemConstructors = mutable.Set[/* stem class constructors */ Symbol]()
 
-    /** The set of members that provide the template to copy and specialize by the specialized overloads */
+    /** A list of members that are deferred in the original stem classes */
+    val deferredMembers = mutable.Set[/* dummy constructor */ Symbol]()
+
+    /** Those members that will be duplicated and specialized to produce the muliple overloads */
     val templateMembers = mutable.Set[Symbol]()
 
     // Accessors:

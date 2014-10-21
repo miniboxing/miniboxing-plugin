@@ -241,6 +241,9 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       val setters = members.filter(_.isSetter)
       val fields = members.filter(m => m.isTerm && !m.isMethod)
 
+      // mark the members that are actually deferred
+      metadata.deferredMembers ++= members.filter(_.isDeferred)
+
       var newMembers = List[Symbol]()
 
       // we make specialized specializedMembers for every member of the stemClassal class
