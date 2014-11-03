@@ -1,0 +1,12 @@
+newSource1.scala:5: error: You can't mix @specialized and @miniboxed in the same method. Use only @miniboxing!
+  def foo[@specialized T, @miniboxed U](t: T, u: U) = ???
+      ^
+newSource1.scala:4: error: You can't mix @specialized and @miniboxed in the same class. Use only @miniboxing!
+  class C[@specialized T, @miniboxed U](t: T, u: U)
+        ^
+newSource1.scala:7: error: You can't mix @specialized and @miniboxed in the same class. Use only @miniboxing!
+    class C[@specialized T, @miniboxed U](t: T, u: U)
+          ^
+newSource1.scala:8: error: You can't mix @specialized and @miniboxed in the same method. Use only @miniboxing!
+    def foo[@specialized T, @miniboxed U](t: T, u: U) = ???
+        ^

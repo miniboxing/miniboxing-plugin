@@ -24,8 +24,16 @@ trait MiniboxMetadataAddons {
   implicit class RichSym(sym: Symbol) {
     def getMiniboxedTypeParameters: List[Symbol] =
       sym.typeParams.filter((s: Symbol) => s.isMiniboxAnnotated)
-    def hasMiniboxedTypeParameters: Boolean =
-      sym.typeParams.exists((s: Symbol) => s.isMiniboxAnnotated)
+    def hasMiniboxedTypeParameters: Boolean = {
+      val existsMbox = sym.typeParams.exists((s: Symbol) => s.isMiniboxAnnotated)
+      val existsSpec = sym.typeParams.exists((s: Symbol) => s hasAnnotation SpecializedClass)
+
+      // #117: you can't mix @specialized and @miniboxed!
+      if (existsMbox && existsSpec)
+        global.reporter.error(sym.pos, s"You can't mix @specialized and @miniboxed in the same ${sym.kindString}. Use only @miniboxing!")
+
+      existsMbox && !existsSpec
+    }
     def isMiniboxAnnotated: Boolean = {
       beforeMiniboxInject(sym.info) // make sure the annotation hijacker updated it
       sym hasAnnotation MinispecClass

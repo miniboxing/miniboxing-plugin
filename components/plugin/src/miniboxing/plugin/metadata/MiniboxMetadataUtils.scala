@@ -122,7 +122,7 @@ trait MiniboxMetadataUtils {
             mboxedTpars.get(tpar.deSkolemize) match {
               case Some(spec: SpecInfo) =>
                 (p, spec)
-              case None if metadata.miniboxedTParamFlag(p) =>
+              case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) =>
                 warn(pos, s"""The following code could benefit from miniboxing specialization due to technical limitations.""")
                 (p, Boxed)
               case None                 =>
@@ -263,8 +263,8 @@ trait MiniboxMetadataUtils {
      */
     def isSpecializableClass(clazz: Symbol) =
       clazz.isClass &&
-      !clazz.typeParams.isEmpty &&
-      clazz.typeParams.exists(s => new RichSym(s).isMiniboxAnnotated)
+      clazz.hasMiniboxedTypeParameters &&
+      !clazz.typeParams.isEmpty
 
     // shamelessly stolen from specialization
     def specializableClass(tp: Type): Boolean = (
