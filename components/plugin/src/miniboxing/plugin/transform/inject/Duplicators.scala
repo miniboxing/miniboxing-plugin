@@ -186,8 +186,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     private def updateInvalidSym(t1: Tree, t2: Tree): Unit = {
       invalidSyms.find({case (sym, tree) => tree == t1}) match {
         case Some((sym, _)) => invalidSyms(sym) = t2
-//          println(s"upating symbol for $sym from ${t1.symbol} to ${t2.symbol}")
-        case None           => global.warning(t1.pos, "[internal miniboxing plugin error] could not update symbol for definition: " + t1)
+        case None           => global.reporter.warning(t1.pos, "[internal miniboxing plugin error] could not update symbol for definition: " + t1)
       }
     }
 
