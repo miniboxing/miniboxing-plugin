@@ -183,7 +183,15 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
       res
     }
 
-    private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
+    private def updateInvalidSym(t1: Tree, t2: Tree): Unit = {
+      invalidSyms.find({case (sym, tree) => tree == t1}) match {
+        case Some((sym, _)) => invalidSyms(sym) = t2
+//          println(s"upating symbol for $sym from ${t1.symbol} to ${t2.symbol}")
+        case None           => global.warning(t1.pos, "[internal miniboxing plugin error] could not update symbol for definition: " + t1)
+      }
+    }
+
+    private def invalidate(tree: Tree, owner: Symbol = NoSymbol): List[Tree] = {
       debuglog("attempting to invalidate " + tree.symbol)
       if (tree.isDef && tree.symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
@@ -198,6 +206,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             newsym.setInfo(fixType(ldef.symbol.info.cloneInfo(newsym)))
             ldef.symbol = newsym
             debuglog("newsym: " + newsym + " info: " + newsym.info)
+            List(ldef)
 
           case vdef @ ValDef(mods, name, _, rhs) if mods.hasFlag(Flags.LAZY) =>
             debuglog("ValDef " + name + " sym.info: " + vdef.symbol.info)
@@ -208,6 +217,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             vdef.symbol = newsym
             debuglog("newsym: " + newsym + " info: " + newsym.info + ", owner: " + newsym.owner + ", " + newsym.owner.isClass)
             if (newsym.owner.isClass) newsym.owner.info.decls enter newsym
+            List(vdef)
 
           case vdef @ ValDef(mods, name, tpt, rhs) =>
             tpt.setType(
@@ -217,19 +227,23 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
                 envSubstitution(tpt.tpe)
             )
             vdef.symbol = NoSymbol
+            List(vdef)
 
           case DefDef(_, name, tparams, vparamss, tpt, rhs) =>
             // invalidate parameters
             debuglog("invalidate defdef: " + tree.symbol + "  " + tree.symbol.allOverriddenSymbols + "   " + tree.symbol.owner)
             if (tree.symbol.allOverriddenSymbols.isEmpty) {
+              // TODO: Fix this side-effecting call:
               invalidateAll(tparams ::: vparamss.flatten)
               tpt.setType(envSubstitution(tpt.tpe))
             } else {
+              // TODO: Fix this side-effecting calls:
               withDeepSubst(invalidateAll(tparams))
               withDeepSubst(invalidateAll(vparamss.flatten))
               tpt.setType(envDeepSubst(tpt.tpe))
             }
             tree.symbol = NoSymbol
+            List(tree)
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
             if (!tdef.symbol.annotations.isEmpty) {
@@ -237,16 +251,22 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
                tdef.setAttachments(newAtt)
             }
             tdef.symbol = NoSymbol
+            // TODO: Fix this side-effecting call:
             invalidateAll(tparams)
+            List(tdef)
 
           case cdef @ ClassDef(_, _, tparams, impl) =>
             cdef.symbol = NoSymbol
+            // TODO: Fix this side-effecting call:
             invalidateAll(tparams)
+            List(cdef)
 
           case _ =>
             tree.symbol = NoSymbol
+            List(tree)
         }
-      }
+      } else
+        List(tree)
     }
 
     override def typedTypeDef(td: TypeDef): TypeDef = {
@@ -260,8 +280,8 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
       res
     }
 
-    private def invalidateAll(stats: List[Tree], owner: Symbol = NoSymbol) {
-      stats.foreach(invalidate(_, owner))
+    private def invalidateAll(stats: List[Tree], owner: Symbol = NoSymbol): List[Tree] = {
+      stats.flatMap(invalidate(_, owner))
     }
 
     private def inspectTpe(tpe: Type) = {
@@ -285,6 +305,13 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     }
 
     var rewireThis = new scala.util.DynamicVariable(true)
+
+    private def allAndLast(list: List[Tree]): (List[Tree], Tree) =
+      list match {
+        case Nil => ???
+        case List(sth) => (Nil, sth)
+        case other => (other.take(other.length-1), other.last)
+      }
 
     /** Special typer method for re-type checking trees. It expects a typed tree.
      *  Returns a typed tree that has fresh symbols for all definitions in the original tree.
@@ -343,18 +370,18 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
 
           case Block(stats, res) =>
             debuglog("invalidating block")
-            invalidateAll(stats)
-            invalidate(res)
+            val (stats2, res2) = allAndLast(invalidateAll(stats) ::: invalidate(res))
             dupldbg(ind, " after invalidation: " + tree)
-            tree.setType(null)
-            super.typed(tree, mode, pt)
+            super.typed(Block(stats2, res2), mode, pt)
 
-          case ClassDef(_, _, _, tmpl @ Template(parents, _, stats)) =>
+          case ClassDef(mods, name, targs, tmpl @ Template(parents, self, stats)) =>
             // log("invalidating classdef " + tree)
             tmpl.symbol = tree.symbol.newLocalDummy(tree.pos)
-            invalidateAll(stats, tree.symbol)
-            tree.setType(null)
-            super.typed(tree, mode, pt)
+            val stats2 = invalidateAll(stats, tree.symbol)
+            val tree2 = treeCopy.ClassDef(tree, mods, name, targs, treeCopy.Template(tmpl, parents, self, stats2).setSymbol(tmpl.symbol)).setSymbol(tree.symbol)
+            tree2.setType(null)
+            updateInvalidSym(tree, tree2)
+            super.typed(tree2, mode, pt)
 
           case ddef @ DefDef(_, _, vparamss, _, tpt, rhs) =>
             ddef.setType(null)
@@ -374,7 +401,10 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
           case ldef @ LabelDef(name, params, rhs) =>
             // log("label def: " + ldef)
             // in case the rhs contains any definitions -- TODO: is this necessary?
-            invalidate(rhs)
+            val rhs1 = allAndLast(invalidate(rhs)) match {
+                case (Nil, last) => last
+                case (all, last) => Block(all, last)
+              }
             ldef.setType(null)
 
             // is this LabelDef generated by tailcalls?
@@ -393,16 +423,12 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
               }
 
             val params1 = params map newParam
-            val rhs1 = (new TreeSubstituter(params map (_.symbol), params1) transform rhs) // TODO: duplicate?
+            val rhs2 = (new TreeSubstituter(params map (_.symbol), params1) transform rhs1) // TODO: duplicate?
             rhs.setType(null)
 
-            super.typed(treeCopy.LabelDef(tree, name, params1, rhs1), mode, pt)
-
-          case Bind(name, _) =>
-            // log("bind: " + tree)
-            invalidate(tree)
-            tree.setType(null)
-            super.typed(tree, mode, pt)
+            val ldef2 = treeCopy.LabelDef(tree, name, params1, rhs2)
+            updateInvalidSym(ldef, ldef2)
+            super.typed(ldef2, mode, pt)
 
           case Ident(_) if tree.symbol.isLabel =>
             debuglog("Ident to labeldef " + tree + " switched to ")
