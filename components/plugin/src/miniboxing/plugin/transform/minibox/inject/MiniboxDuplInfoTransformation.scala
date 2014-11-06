@@ -13,11 +13,13 @@
 //
 package miniboxing.plugin
 package transform
+package minibox
 package inject
 
 import scala.tools.nsc.transform.InfoTransform
 import scala.reflect.internal.Flags._
 import scala.collection.mutable.HashMap
+import infrastructure._
 
 trait MiniboxInjectInfoTransformation extends InfoTransform {
   self: MiniboxInjectComponent =>

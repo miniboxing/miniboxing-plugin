@@ -13,6 +13,7 @@
 //
 package miniboxing.plugin
 package transform
+package minibox
 package coerce
 
 import scala.tools.nsc._

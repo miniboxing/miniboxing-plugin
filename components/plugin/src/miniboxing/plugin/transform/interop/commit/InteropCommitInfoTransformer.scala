@@ -17,7 +17,7 @@ package interop
 package commit
 
 import scala.tools.nsc.transform.InfoTransform
-import miniboxing.runtime.MiniboxedFunction0
+import runtime.MiniboxedFunction0
 
 trait InteropCommitInfoTransformer extends InfoTransform {
   self: InteropCommitComponent =>

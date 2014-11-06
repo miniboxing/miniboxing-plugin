@@ -13,9 +13,9 @@
 //
 package miniboxing.plugin
 package transform
-package inject
+package infrastructure
 
-import scala.language.implicitConversions
+import language.implicitConversions
 
 trait TreeRewriters {
   this: MiniboxInjectComponent =>

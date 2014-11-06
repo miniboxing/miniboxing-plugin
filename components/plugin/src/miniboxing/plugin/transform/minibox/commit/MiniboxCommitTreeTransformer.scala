@@ -12,6 +12,7 @@
 //
 package miniboxing.plugin
 package transform
+package minibox
 package commit
 
 import scala.tools.nsc.transform.TypingTransformers

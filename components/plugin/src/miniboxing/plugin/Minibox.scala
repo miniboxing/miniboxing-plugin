@@ -15,15 +15,17 @@ import scala.tools.nsc.plugins._
 import scala.tools.nsc.transform._
 import metadata._
 import transform._
-import inject._
-import coerce._
-import commit._
-import hijack._
+import minibox.inject._
+import minibox.coerce._
+import minibox.commit._
 import interop.inject._
-import interop.coerce._
 import interop.commit._
+import interop.coerce._
+import hijack._
+import prepare._
+import infrastructure._
 
-/** Specialization hijacking component `@specialized T -> @miniboxed T` */
+/** Specialization hijacking component `@specialized T` -> `@miniboxed T` */
 trait HijackComponent extends
     PluginComponent
     with MiniboxInfoHijack

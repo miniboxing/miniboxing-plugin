@@ -13,6 +13,7 @@
 //
 package miniboxing.plugin
 package transform
+package minibox
 package inject
 
 import scala.tools.nsc.transform.TypingTransformers
@@ -70,7 +71,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val global: MiniboxInjectTreeTransformation.this.global.type = MiniboxInjectTreeTransformation.this.global
       val miniboxing: MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type } =
         MiniboxInjectTreeTransformation.this.asInstanceOf[MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type }]
-    } with miniboxing.plugin.transform.inject.Duplicators {
+    } with miniboxing.plugin.transform.minibox.inject.Duplicators {
       private val (castfrom, castto) = casts.unzip
       private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
 

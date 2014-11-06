@@ -5,6 +5,7 @@
 
 package miniboxing.plugin
 package transform
+package minibox
 package inject
 
 import scala.tools.nsc._

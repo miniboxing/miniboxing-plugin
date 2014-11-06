@@ -15,7 +15,6 @@ package transform
 package hijack
 
 import scala.tools.nsc.transform.InfoTransform
-import miniboxing.plugin.HijackComponent
 import scala.reflect.internal.Flags.SPECIALIZED
 
 trait MiniboxInfoHijack extends InfoTransform {
