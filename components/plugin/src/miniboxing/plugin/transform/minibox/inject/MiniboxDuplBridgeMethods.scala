@@ -61,15 +61,16 @@ trait MiniboxDuplBridgeMethods extends TypingTransformers with ScalacCrossCompil
 
           // adding it to the new class:
           if (decls != EmptyScope) {
-            decls unlink local
+//            decls unlink local
             decls enter bridge
           }
 
           local.name = localMethodName(local)
 
           // bridge tree:
-          val bridgeRhs = atOwner(bridge)(beforeMiniboxInject(localTyper.typed(Apply(Ident(local), bridge.info.params.map(Ident)))))
-          val bridgeDef = newDefDef(bridge, bridgeRhs)() setType NoType
+          val bridgeRhs0 = gen.mkMethodCall(gen.mkAttributedIdent(local), bridge.typeParams.map(_.tpeHK), bridge.info.params.map(Ident))
+          val bridgeRhs1 = atOwner(bridge)(localTyper.typed(bridgeRhs0))
+          val bridgeDef = newDefDef(bridge, bridgeRhs1)() setType NoType
           mmap(bridgeDef.vparamss)(_ setType NoType)
 
           // transform RHS of the defdef + typecheck
