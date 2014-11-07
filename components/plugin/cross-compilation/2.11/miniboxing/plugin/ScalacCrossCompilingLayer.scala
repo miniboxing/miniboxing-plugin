@@ -25,7 +25,7 @@ trait ScalacCrossCompilingLayer {
   def turnOffErrorReporting(analyzer: Analyzer)(context: analyzer.Context) = {
     // copy pasted from the impl
     import scala.tools.nsc.typechecker.ContextMode
-    context.set(disable = ContextMode.ReportErrors)
+    // context.set(disable = ContextMode.ReportErrors)
   }
 
   class TweakedAnalyzer extends scala.tools.nsc.typechecker.Analyzer {

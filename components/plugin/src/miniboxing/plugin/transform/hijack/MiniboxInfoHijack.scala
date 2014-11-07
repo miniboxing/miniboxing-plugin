@@ -31,6 +31,8 @@ trait MiniboxInfoHijack extends InfoTransform {
       sym.resetFlag(SPECIALIZED)
       sym.addAnnotation(MinispecClass)
     }
+    if (flag_strip_miniboxed)
+      sym.removeAnnotation(MinispecClass)
     tpe
   }
 }

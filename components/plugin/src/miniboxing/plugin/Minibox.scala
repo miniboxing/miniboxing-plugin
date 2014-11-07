@@ -34,6 +34,7 @@ trait HijackComponent extends
 
   def flag_hijack_spec: Boolean
   def flag_mark_all: Boolean
+  def flag_strip_miniboxed: Boolean
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -236,6 +237,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_mark_all = false // type parameters as @miniboxed
   var flag_strict_typechecking = false
   var flag_strict_warnings = false
+  var flag_strip_miniboxed = false
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -261,6 +263,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_rewire_functionX_bridges = false        // while avoiding func. to miniboxed func. bridge optimization
       else if (option.toLowerCase() == "ystrict-typechecking") // Undocumented flag
         flag_strict_typechecking = true
+      else if (option.toLowerCase() == "ystrip-miniboxed") // Undocumented flag
+        flag_strip_miniboxed = true
       else if (option.toLowerCase() == "library-functions")
         flag_rewire_functionX  = false
       else if (option.toLowerCase() == "two-way")
@@ -289,6 +293,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_two_way = Minibox.this.flag_two_way
     def flag_mark_all = Minibox.this.flag_mark_all
+    def flag_strip_miniboxed = Minibox.this.flag_strip_miniboxed
 
     // no change
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
