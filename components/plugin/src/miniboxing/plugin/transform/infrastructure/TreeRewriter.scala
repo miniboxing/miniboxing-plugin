@@ -16,9 +16,10 @@ package transform
 package infrastructure
 
 import language.implicitConversions
+import scala.tools.nsc.plugins.PluginComponent
+import scala.tools.nsc.transform.TypingTransformers
 
-trait TreeRewriters {
-  this: MiniboxInjectComponent =>
+trait TreeRewriters extends TypingTransformers {
 
   import global._
 
@@ -49,7 +50,7 @@ trait TreeRewriters {
       }
     }
 
-    def rewrite(tree: Tree): Result
+    protected def rewrite(tree: Tree): Result
   }
 
   def classDefTreeFromSym(classSym: Symbol): Tree = {

@@ -28,20 +28,6 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers with ScalacCrossCo
   import minibox._
   import global._
 
-  implicit class RichType(tpe: Type) {
-    def getStorageRepr: Symbol = tpe.dealiasWiden.annotations.filter(_.tpe.typeSymbol == StorageClass) match {
-      case Nil         => assert(false, "No storage type detected?!?"); ???
-      case List(annot) => annot.tpe.typeArgs(0).typeSymbol
-    }
-    def isStorage: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == StorageClass)
-    def withStorage(store: Type): Type = tpe.withAnnotations(List(Annotation.apply(appliedType(StorageClass.tpe, List(store)), Nil, ListMap.empty)))
-    def withoutStorage: Type = tpe.filterAnnotations(_.tpe.typeSymbol != StorageClass)
-  }
-
-  implicit class RichTree(tree: Tree) {
-    def isStorage: Boolean = tree.tpe.isStorage
-  }
-
   class CoercePhase(prev: Phase) extends StdPhase(prev) {
     override def name = MiniboxCoerceTreeTransformer.this.phaseName
     override def checkable = false

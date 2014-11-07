@@ -21,9 +21,11 @@ package miniboxing.tests.compile {
           $anon.super.<init>(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
           ()
         };
-        protected def loop(a: Long): Long = a;
+        protected def miniboxing|tests|compile|Dist2_J|$anon|loop(a: Long): Long = a;
+        protected def loop(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](miniboxing|tests|compile|Dist2_J|$anon|loop(MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
+        def miniboxing|tests|compile|Dist2_J|$anon|apply(a: Long): Long = $anon.this.miniboxing|tests|compile|Dist2_J|$anon|loop(a);
         def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply_J(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
-        override protected def apply_J(A_TypeTag: Byte, a: Long): Long = $anon.this.loop(a)
+        override protected def apply_J(A_TypeTag: Byte, a: Long): Long = miniboxing|tests|compile|Dist2_J|$anon|apply(a)
       };
       new anonymous class $anon()
     }

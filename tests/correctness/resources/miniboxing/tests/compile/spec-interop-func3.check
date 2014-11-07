@@ -31,7 +31,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Double): Double = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -41,7 +42,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Double): Double = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -51,7 +53,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Double): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -71,7 +74,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Int): Double = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -81,7 +85,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Double, y: Double): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -91,7 +96,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(x: Double, y: Double): Double = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_double_double[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -121,7 +127,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Double): Double = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -131,7 +138,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Double): Long = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -141,7 +149,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Double): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -161,7 +170,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Int): Long = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -171,7 +181,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Double, y: Long): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -181,7 +192,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(x: Double, y: Long): Long = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DJ|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_long_long[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -210,7 +222,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(x: Double): Double = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -220,7 +233,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = b
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(x: Double): Bsp = b;
+            final def apply(x: Asp): Bsp = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -230,7 +244,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(x: Double): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -260,7 +275,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(x: Double, y: Bsp): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), y)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -270,7 +286,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(x: Double, y: Bsp): Bsp = y;
+            final def apply(x: Asp, y: Bsp): Bsp = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DL|$anonfun|apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, A_TypeTag), y)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -300,7 +317,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Long): Long = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -310,7 +328,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Long): Double = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -320,7 +339,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Long): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -340,7 +360,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Int): Double = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -350,7 +371,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Long, y: Double): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -360,7 +382,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(x: Long, y: Double): Double = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_double_double[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -390,7 +413,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Long): Long = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -400,7 +424,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Long): Long = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -410,7 +435,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Long): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -430,7 +456,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Int): Long = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -440,7 +467,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Long, y: Long): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -450,7 +478,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(x: Long, y: Long): Long = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JJ|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_long_long[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -479,7 +508,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Asp = x
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(x: Long): Long = x;
+            final def apply(x: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag)), A_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -489,7 +519,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = b
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(x: Long): Bsp = b;
+            final def apply(x: Asp): Bsp = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -499,7 +530,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(x: Long): Int = 3;
+            final def apply(x: Asp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag))
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -529,7 +561,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(x: Long, y: Bsp): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), y)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -539,7 +572,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(x: Long, y: Bsp): Bsp = y;
+            final def apply(x: Asp, y: Bsp): Bsp = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JL|$anonfun|apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](x, A_TypeTag), y)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -578,7 +612,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x: Asp): Double = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -608,7 +643,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x: Int): Double = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -618,7 +654,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x: Asp, y: Double): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -628,7 +665,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x: Asp, y: Double): Double = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|$anonfun|apply(x, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -667,7 +705,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x: Asp): Long = b;
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -697,7 +736,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x: Int): Long = b;
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -707,7 +747,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Int = 3
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x: Asp, y: Long): Int = 3;
+            final def apply(x: Asp, y: Bsp): Int = miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x, MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag))
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -717,7 +758,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Bsp): Bsp = y
+            final def miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x: Asp, y: Long): Long = y;
+            final def apply(x: Asp, y: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LJ|$anonfun|apply(x, MiniboxConversionsLong.this.box2minibox_tt[Bsp](y, B_TypeTag)), B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };

@@ -30,10 +30,10 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
 
   case class AnnotationAttachment(annots: List[AnnotationInfo])
 
-  def retyped(context: Context, tree: Tree): Tree = {
-    resetClassOwners
-    (newBodyDuplicator(context)).typed(tree)
-  }
+//  def retyped(context: Context, tree: Tree): Tree = {
+//    resetClassOwners
+//    (newBodyDuplicator(context)).typed(tree)
+//  }
 
   /** Retype the given tree in the given context. Use this method when retyping
    *  a method in a different class. The typer will replace references to the this of
@@ -49,8 +49,11 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     envSubstitution = _subst
     envDeepSubst = _deepSubst
 
-    newBodyDuplicator(context).typed(tree)
+    val owner = context.owner
+    postTransform(owner, newBodyDuplicator(context).typed(tree))
   }
+
+  def postTransform(onwer: Symbol, tree: Tree): Tree
 
   protected def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
 
@@ -71,6 +74,8 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
   private var envDeepSubst: TypeMap = _
 
   private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches.newMap[Symbol, Tree]()
+
+  def flag_create_local_specs: Boolean
 
   /** A typer that creates new symbols for all definitions in the given tree
    *  and updates references to them while re-typechecking. All types in the
@@ -230,19 +235,18 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             List(vdef)
 
           case DefDef(_, name, tparams, vparamss, tpt, rhs) =>
-            // invalidate parameters
-            debuglog("invalidate defdef: " + tree.symbol + "  " + tree.symbol.allOverriddenSymbols + "   " + tree.symbol.owner)
-            if (tree.symbol.allOverriddenSymbols.isEmpty) {
-              // TODO: Fix this side-effecting call:
+
+            // TODO: Fix this side-effecting call:
+            if (flag_create_local_specs) {
               invalidateAll(tparams ::: vparamss.flatten)
               tpt.setType(envSubstitution(tpt.tpe))
             } else {
-              // TODO: Fix this side-effecting calls:
-              withDeepSubst(invalidateAll(tparams))
-              withDeepSubst(invalidateAll(vparamss.flatten))
+              withDeepSubst(invalidateAll(tparams ::: vparamss.flatten))
               tpt.setType(envDeepSubst(tpt.tpe))
             }
+
             tree.symbol = NoSymbol
+
             List(tree)
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
@@ -294,11 +298,6 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
         case _ =>
       }
     }
-
-    /** Optionally cast this tree into some other type, if required.
-     *  Unless overridden, just returns the tree.
-     */
-    def castType(tree: Tree, pt: Type): Tree = tree
 
     def dupldbg(ind: Int, msg: => String): Unit = {
       // println("  " * ind + msg)
@@ -482,8 +481,8 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
           case This(_) =>
             debuglog("selection on this, plain: " + tree)
             tree.symbol = updateSym(tree.symbol)
-            val ntree = castType(tree, pt)
-            val tree1 = super.typed(ntree, mode, pt)
+            tree.setType(null)
+            val tree1 = super.typed(tree, mode, pt)
             // log("plain this typed to: " + tree1)
             tree1
 
@@ -497,9 +496,9 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             if (tree.hasSymbolField && tree.symbol != NoSymbol && (tree.symbol.owner == definitions.AnyClass)) {
               tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
             }
-            val ntree = castType(tree, pt)
+            tree.setType(null)
             //println("dupl: " + ntree + ":" + tree.tpe + "  " + pt)
-            val res = super.typed(ntree, mode, pt)
+            val res = super.typed(tree, mode, pt)
             //println(res + " ==> " + res.tpe + "  (" + pt + ")")
             res
         }

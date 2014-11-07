@@ -72,17 +72,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val miniboxing: MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type } =
         MiniboxInjectTreeTransformation.this.asInstanceOf[MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type }]
     } with miniboxing.plugin.transform.minibox.inject.Duplicators {
-      private val (castfrom, castto) = casts.unzip
-      private object CastMap extends SubstTypeMap(castfrom.toList, castto.toList)
 
-      class BodyDuplicator(_context: Context) extends super.BodyDuplicator(_context) {
-        override def castType(tree: Tree, pt: Type): Tree = {
-          tree.setType(null)
-          tree
-        }
+      def flag_create_local_specs = MiniboxInjectTreeTransformation.this.flag_create_local_specs
+      override def postTransform(owner: Symbol, tree: Tree): Tree = {
+        val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
+        tree1
       }
-
-      protected override def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
     }
 
     def typeTagTrees(member: Symbol = currentOwner) =

@@ -1,0 +1,108 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug138 {
+  abstract trait Mb[@miniboxed T] extends Object {
+    class Fun1[R] extends Object {
+      def <init>(): Mb.this.Fun1[R] = {
+        Fun1.super.<init>();
+        ()
+      };
+      def apply(t: T): R = scala.this.Predef.???()
+    };
+    def foo(t: T): Unit;
+    def foo_D(T_TypeTag: Byte, t: Double): Unit;
+    def foo_J(T_TypeTag: Byte, t: Long): Unit
+  };
+  class Mb_D[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_D[Tsp] = {
+      Mb_D.super.<init>();
+      ()
+    };
+    def foo(t: Tsp): Unit = Mb_D.this.foo_D(Mb_D.this.miniboxing|tests|compile|bug138|Mb_D|T_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Tsp](t, Mb_D.this.miniboxing|tests|compile|bug138|Mb_D|T_TypeTag));
+    def foo_D(T_TypeTag: Byte, t: Double): Unit = {
+      def bar(): Unit = {
+        class Fun2 extends Mb_D.this.Fun1[Tsp] {
+          def <init>(): Fun2 = {
+            Fun2.super.<init>();
+            ()
+          };
+          override def miniboxing|tests|compile|bug138|Mb_D|Fun2|apply(t: Double): Double = t;
+          override def apply(t: Tsp): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](miniboxing|tests|compile|bug138|Mb_D|Fun2|apply(MiniboxConversionsDouble.this.box2minibox_tt[Tsp](t, T_TypeTag)), T_TypeTag)
+        };
+        val f2: Fun2 = new Fun2();
+        val f1: Mb_D.this.Fun1[Tsp] = f2;
+        scala.this.Predef.println(MiniboxConversionsDouble.this.minibox2box[Tsp](f2.miniboxing|tests|compile|bug138|Mb_D|Fun2|apply(t), T_TypeTag));
+        scala.this.Predef.println(f1.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag)))
+      };
+      bar()
+    };
+    def foo_J(T_TypeTag: Byte, t: Long): Unit = Mb_D.this.foo_D(T_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double"))
+  };
+  class Mb_J[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_J[Tsp] = {
+      Mb_J.super.<init>();
+      ()
+    };
+    def foo(t: Tsp): Unit = Mb_J.this.foo_J(Mb_J.this.miniboxing|tests|compile|bug138|Mb_J|T_TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Tsp](t, Mb_J.this.miniboxing|tests|compile|bug138|Mb_J|T_TypeTag));
+    def foo_D(T_TypeTag: Byte, t: Double): Unit = Mb_J.this.foo_J(T_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
+    def foo_J(T_TypeTag: Byte, t: Long): Unit = {
+      def bar(): Unit = {
+        class Fun2 extends Mb_J.this.Fun1[Tsp] {
+          def <init>(): Fun2 = {
+            Fun2.super.<init>();
+            ()
+          };
+          override def miniboxing|tests|compile|bug138|Mb_J|Fun2|apply(t: Long): Long = t;
+          override def apply(t: Tsp): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](miniboxing|tests|compile|bug138|Mb_J|Fun2|apply(MiniboxConversionsLong.this.box2minibox_tt[Tsp](t, T_TypeTag)), T_TypeTag)
+        };
+        val f2: Fun2 = new Fun2();
+        val f1: Mb_J.this.Fun1[Tsp] = f2;
+        scala.this.Predef.println(MiniboxConversionsLong.this.minibox2box[Tsp](f2.miniboxing|tests|compile|bug138|Mb_J|Fun2|apply(t), T_TypeTag));
+        scala.this.Predef.println(f1.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag)))
+      };
+      bar()
+    }
+  };
+  class Mb_L[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    def <init>(): miniboxing.tests.compile.bug138.Mb_L[Tsp] = {
+      Mb_L.super.<init>();
+      ()
+    };
+    def foo(t: Tsp): Unit = {
+      def bar(): Unit = {
+        class Fun2 extends Mb_L.this.Fun1[Tsp] {
+          def <init>(): Fun2 = {
+            Fun2.super.<init>();
+            ()
+          };
+          override def apply(t: Tsp): Tsp = t
+        };
+        val f2: Fun2 = new Fun2();
+        val f1: Mb_L.this.Fun1[Tsp] = f2;
+        scala.this.Predef.println(f2.apply(t));
+        scala.this.Predef.println(f1.apply(t))
+      };
+      bar()
+    };
+    def foo_D(T_TypeTag: Byte, t: Double): Unit = Mb_L.this.foo(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag));
+    def foo_J(T_TypeTag: Byte, t: Long): Unit = Mb_L.this.foo(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag))
+  };
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug138.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def main(args: Array[String]): Unit = {
+      new miniboxing.tests.compile.bug138.Mb_J[Int](5).foo_J(5, MiniboxConversions.this.int2minibox(4));
+      new miniboxing.tests.compile.bug138.Mb_L[String]().foo("x");
+      new miniboxing.tests.compile.bug138.Mb_D[Double](8).foo_D(8, MiniboxConversionsDouble.this.double2minibox(3.0))
+    }
+  }
+}
+4
+4
+x
+x
+3.0
+3.0

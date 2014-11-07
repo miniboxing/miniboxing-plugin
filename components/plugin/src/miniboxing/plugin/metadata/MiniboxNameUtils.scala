@@ -54,4 +54,6 @@ trait MiniboxNameUtils {
     field.name.endsWith("_TypeTag")
   }
 
+  def localMethodName(local: Symbol) =
+    newTermName(local.owner.fullName('|') + "|" + local.name)
 }

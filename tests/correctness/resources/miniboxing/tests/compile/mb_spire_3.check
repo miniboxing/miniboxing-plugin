@@ -66,8 +66,9 @@ package miniboxing.tests.compile {
     };
     def qmax(ev: miniboxing.tests.compile.Order2[Asp]): Asp = MiniboxConversions.this.minibox2box[Asp](ArrayOps_J.this.qmax_J(ArrayOps_J.this.miniboxing|tests|compile|ArrayOps_J|A_TypeTag, ev), ArrayOps_J.this.miniboxing|tests|compile|ArrayOps_J|A_TypeTag);
     def qmax_J(A_TypeTag: Byte, ev: miniboxing.tests.compile.Order2[Asp]): Long = {
-      def f5(t: Long): Long = f5(ev.max_J(A_TypeTag, t, MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag)));
-      f5(MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag))
+      def miniboxing|tests|compile|ArrayOps_J|qmax_J|f5(t: Long): Long = miniboxing|tests|compile|ArrayOps_J|qmax_J|f5(ev.max_J(A_TypeTag, t, MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag)));
+      def f5(t: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](miniboxing|tests|compile|ArrayOps_J|qmax_J|f5(MiniboxConversions.this.box2minibox_tt[Asp](t, A_TypeTag)), A_TypeTag);
+      miniboxing|tests|compile|ArrayOps_J|qmax_J|f5(MiniboxArray.this.mbarray_apply_minibox(ArrayOps_J.this.arr, 0, A_TypeTag))
     }
   };
   final class ArrayOps_L[Asp] extends Object with miniboxing.tests.compile.ArrayOps[Asp] {

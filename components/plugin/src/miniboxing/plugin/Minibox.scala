@@ -110,6 +110,7 @@ trait MiniboxInjectComponent extends
     with MiniboxMethodInfo
     with MiniboxInjectInfoTransformation
     with MiniboxInjectTreeTransformation
+    with MiniboxDuplBridgeMethods
     with TreeRewriters
     with ScalacCrossCompilingLayer {
 
@@ -125,6 +126,7 @@ trait MiniboxInjectComponent extends
   def flag_loader_friendly: Boolean
   def flag_two_way: Boolean
   def flag_strict_warnings: Boolean
+  def flag_create_local_specs: Boolean
 }
 
 /** Introduces explicit Coerceations from `T` to `@storage T` and back */
@@ -238,6 +240,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_strict_typechecking = false
   var flag_strict_warnings = false
   var flag_strip_miniboxed = false
+  var flag_create_local_specs = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -265,6 +268,8 @@ class Minibox(val global: Global) extends Plugin {
         flag_strict_typechecking = true
       else if (option.toLowerCase() == "ystrip-miniboxed") // Undocumented flag
         flag_strip_miniboxed = true
+      else if (option.toLowerCase() == "yno-local-specs") // Undocumented flag
+        flag_create_local_specs = false
       else if (option.toLowerCase() == "library-functions")
         flag_rewire_functionX  = false
       else if (option.toLowerCase() == "two-way")
@@ -375,6 +380,7 @@ class Minibox(val global: Global) extends Plugin {
     def flag_loader_friendly = Minibox.this.flag_loader_friendly
     def flag_two_way = Minibox.this.flag_two_way
     def flag_strict_warnings = Minibox.this.flag_strict_warnings
+    def flag_create_local_specs = Minibox.this.flag_create_local_specs
 
     var mboxInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

@@ -21,8 +21,9 @@ package miniboxing.tests.compile {
           $anon.super.<init>(Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
           ()
         };
+        def miniboxing|tests|compile|Dist1_J|$anon|apply(a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
         def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply_J(Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag)), Dist1_J.this.miniboxing|tests|compile|Dist1_J|A_TypeTag);
-        override def apply_J(A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A_TypeTag)
+        override def apply_J(A_TypeTag: Byte, a: Long): Long = miniboxing|tests|compile|Dist1_J|$anon|apply(a)
       };
       new anonymous class $anon()
     }
