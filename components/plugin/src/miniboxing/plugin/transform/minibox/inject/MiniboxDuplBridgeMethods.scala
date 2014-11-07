@@ -18,7 +18,7 @@ package inject
 
 import scala.tools.nsc.transform.TypingTransformers
 
-trait MiniboxDuplBridgeMethods extends TypingTransformers {
+trait MiniboxDuplBridgeMethods extends TypingTransformers with ScalacCrossCompilingLayer {
   self: MiniboxInjectComponent =>
 
   import global._

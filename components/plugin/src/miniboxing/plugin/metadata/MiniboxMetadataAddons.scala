@@ -54,7 +54,7 @@ trait MiniboxMetadataAddons {
     def withoutStorageDeep: Type = (new TypeMap {
       def apply(tpe: Type): Type = mapOver(tpe)
       override def mapOver(tpe: Type): Type = tpe match {
-        case AnnotatedType(annots, tpe) if annots.exists(_.tpe.typeSymbol == StorageClass) =>
+        case ann: AnnotatedType if ann.annotations.exists(_.tpe.typeSymbol == StorageClass) =>
           tpe.filterAnnotations(_.tpe.typeSymbol != StorageClass)
         case _ =>
           super.mapOver(tpe)

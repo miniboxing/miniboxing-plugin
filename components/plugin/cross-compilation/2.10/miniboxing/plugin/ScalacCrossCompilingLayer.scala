@@ -55,6 +55,10 @@ trait ScalacCrossCompilingLayer {
       }
     }
   }
+
+  def newDefDef(sym: Symbol, rhs: Tree)(): DefDef = (
+    DefDef(sym, vparamss => rhs.substituteSymbols(sym.paramss.flatten, vparamss.flatten))
+  )
 }
 
 trait ScalacVersion {

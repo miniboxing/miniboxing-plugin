@@ -19,7 +19,7 @@ import language.implicitConversions
 import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.TypingTransformers
 
-trait TreeRewriters extends TypingTransformers {
+trait TreeRewriters extends TypingTransformers with ScalacCrossCompilingLayer {
 
   import global._
 
