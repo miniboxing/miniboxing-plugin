@@ -123,16 +123,16 @@ trait MiniboxMetadataUtils {
               case Some(spec: SpecInfo) =>
                 (p, spec)
               case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) =>
-                warn(pos, s"""The following code could benefit from miniboxing specialization due to technical limitations.""")
+                warn(pos, s"""The following code could benefit from miniboxing specialization since it was not specialized.""")
                 (p, Boxed)
               case None                 =>
-                warn(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.name})""")
+                warn(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""")
                 (p, Boxed)
             }
           case (p, tpe) if tpe <:< AnyRefTpe =>
             (p, Boxed)
           case (p, tpe)          =>
-            warn(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner} is miniboxed, it won't benefit from specialization:""")
+            warn(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner.tweakedToString} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner.tweakedToString} is miniboxed, it won't benefit from specialization:""")
             (p, Boxed)
         }
       }

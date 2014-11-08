@@ -232,6 +232,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     Nil
                   case dd: DefDef if heuristics.specializableMethodInClass(cls, dd.symbol) =>
                     deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
+                  case cd: ClassDef =>
+                    warn(cd.pos, s"The ${cd.symbol} will not be miniboxed based on type parameter(s) ${cls.typeParams.map(_.nameString).mkString(", ")} of miniboxed ${cls.tweakedToString}. To have it transformed, declare new type parameters marked with @miniboxed and instantiate it using the parameters from ${cls.tweakedToString}.")
+                    List(cd)
                   case dt: DefTree =>
                     List(dt)
                   case other =>

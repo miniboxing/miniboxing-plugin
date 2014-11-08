@@ -14,6 +14,7 @@ package miniboxing.plugin
 package metadata
 
 import scala.collection.immutable.ListMap
+import language.implicitConversions
 
 trait MiniboxMetadataAddons {
   self: MiniboxInjectComponent =>
@@ -22,8 +23,12 @@ trait MiniboxMetadataAddons {
   import definitions._
   import scala.collection.immutable
 
+  implicit def richSym(sym: Symbol) = new RichSym(sym)
+  implicit def richType(tpe: Type) = new RichType(tpe)
+  implicit def richTree(tree: Tree) = new RichTree(tree)
+
   // Thanks to @xeno-by :)
-  implicit class RichSym(sym: Symbol) {
+  class RichSym(sym: Symbol) {
     def getMiniboxedTypeParameters: List[Symbol] =
       sym.typeParams.filter((s: Symbol) => s.isMiniboxAnnotated)
     def hasMiniboxedTypeParameters: Boolean = {
@@ -41,9 +46,14 @@ trait MiniboxMetadataAddons {
       sym hasAnnotation MinispecClass
     }
     def isField = sym.isValue && !sym.isMethod
+    def tweakedToString: String = {
+      val kind = if (sym.isTrait) if (metadata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
+      val name = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString
+      kind + " " + name
+    }
   }
 
-  implicit class RichType(tpe: Type) {
+  class RichType(tpe: Type) {
     def getStorageRepr: Symbol = tpe.dealiasWiden.annotations.filter(_.tpe.typeSymbol == StorageClass) match {
       case Nil         => assert(false, "No storage type detected?!?"); ???
       case List(annot) => annot.tpe.typeArgs(0).typeSymbol
@@ -61,7 +71,7 @@ trait MiniboxMetadataAddons {
       }}).apply(tpe)
   }
 
-  implicit class RichTree(tree: Tree) {
+  class RichTree(tree: Tree) {
     def isStorage: Boolean = tree.tpe.isStorage
   }
 }
