@@ -432,7 +432,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
       // Update relationships
       for ((mbr, newMbr) <- newMembers if mbr.isMethod)
-        metadata.setMemberStem(newMbr, newMembers(mbr))
+        metadata.setMemberStem(newMbr, mbr)
 
       // Replace the info in the copied members to reflect their new class
       for ((m, newMbr) <- newMembers if !m.isConstructor) {

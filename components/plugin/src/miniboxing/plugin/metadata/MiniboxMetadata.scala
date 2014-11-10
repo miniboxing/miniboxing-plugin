@@ -215,6 +215,18 @@ trait MiniboxMetadata {
     def memberHasNormalizations(stem: Symbol): Boolean =
       normalOverloads.get(stem).map(_.size).getOrElse(1) > 1
 
+    // Resiliant ones:
+    def getStem(sym: Symbol) =
+      if (sym.isTrait || sym.isClass)
+        getClassStem(sym).orElse(sym)
+      else if (sym.isMethod) {
+        val sym0 = sym
+        val sym1 = getNormalStem(sym0).orElse(sym0) // normalized member => normalization stem member
+        val sym2 = getMemberStem(sym1).orElse(sym1) // member in specialized class => member is stem class
+        val sym3 = getMemberStem(sym2).orElse(sym2) // specialized member in stem => original member in stem
+        sym3
+      } else
+        sym
 
     // Class state
     def getClassState(cls: Symbol): ClassState = {

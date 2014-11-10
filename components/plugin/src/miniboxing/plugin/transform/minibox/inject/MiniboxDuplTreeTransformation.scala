@@ -87,6 +87,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val oldClass = tpe.typeSymbol
       val newClass =
         extractSpec(pos, tpe, currentOwner) match {
+          case _ if !metadata.isClassStem(oldClass)=>
+            oldClass
           case Some(pspec) =>
             metadata.classOverloads(oldClass)(pspec)
           case None =>
@@ -377,7 +379,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
         // rewiring new class construction
         // new C[Int] => new C_J[Int]
-        case New(cl) if metadata.isClassStem(cl.tpe.typeSymbol) =>
+        case New(cl) =>
           val newType = miniboxQualifier(tree.pos, cl.tpe)
           localTyper.typedOperator(New(TypeTree(newType)))
 
@@ -438,27 +440,32 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           assert(!metadata.dummyConstructors(ntree.symbol), "dummy constructor: " + ntree.symbol.defString + " left in tree " + tree)
           ntree
 
-        case tapply @ TypeApply(oldFun @ Select(qual, fn), targs) =>
+        case tapply @ TypeApply(oldFun, targs) =>
           afterMiniboxInject(oldFun.symbol.owner.info)
           val oldSym = oldFun.symbol
           val oldType = tapply.tpe
           val newFun = transform(oldFun)
-          val Select(newQual, _) = newFun
           val newSym = newFun.symbol
 
           // find the normalized member
           val normSym =
-            extractNormSpec(tree.pos, targs.map(_.tpe), newFun.symbol, currentOwner) match {
+            extractNormSpec(if (tree.pos != NoPosition) tree.pos else oldFun.pos, targs.map(_.tpe), newFun.symbol, currentOwner) match {
               case Some(newSym) => newSym
               case None => newFun.symbol
             }
 
           // replace the member by the normalized member
           val ntargs = targs.map(transform)
-          val tree1 = if (normSym != newSym)
-            TypeApply(Select(newQual, normSym), ntargs)
-          else
-            TypeApply(newFun, ntargs)
+          val tree1 =
+            if (normSym != newSym)
+              newFun match {
+                case Ident(_) =>
+                  TypeApply(Ident(newSym), ntargs)
+                case Select(newQual, _) =>
+                  TypeApply(Select(newQual, normSym), ntargs)
+              }
+            else
+              TypeApply(newFun, ntargs)
 
           val tree2 = localTyper.typedOperator(tree1)
           tree2
@@ -549,13 +556,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     }
 
     def extractNormSpec(pos: Position, targs: List[Type], target: Symbol, owner: Symbol = currentOwner): Option[Symbol] = {
-      if (metadata.getNormalStem(target) != NoSymbol) {
-        val tparams = afterMiniboxInject(target.info).typeParams
-        assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
-        val spec = PartialSpec.fromTargs(pos, tparams, targs, currentOwner)
-        metadata.normalOverloads.get(target).flatMap(_.get(spec))
-      } else
-        None
+      val tparams = afterMiniboxInject(target.info).typeParams
+      assert(tparams.length == targs.length, "Type parameters and args don't match for call to " + target.defString + " in " + owner.defString + ": " + targs.length)
+      val spec = PartialSpec.fromTargs(pos, tparams, targs, currentOwner)
+      metadata.normalOverloads.get(target).flatMap(_.get(spec))
     }
 
     def extractSpec(pos: Position, qualTpe: Type, owner: Symbol = currentOwner): Option[PartialSpec] = {

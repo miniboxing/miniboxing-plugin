@@ -85,8 +85,10 @@ trait MiniboxMetadataUtils {
       }
 
     def fromTargs(pos: Position, tparams: List[Symbol], targs: List[Type], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
-      val instantiation = (tparams zip targs).collect({ case (tparam, targ) if metadata.miniboxedTParamFlag(tparam) => (tparam, targ) })
-      fromTargsAllTargs(pos, instantiation, currentOwner, pspec)
+      val instantiation = tparams zip targs
+      fromTargsAllTargs(pos, instantiation, currentOwner, pspec) collect {
+        case (tparam, spec) if metadata.miniboxedTParamFlag(tparam) => (tparam, spec)
+      }
     }
 
     def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
@@ -109,30 +111,42 @@ trait MiniboxMetadataUtils {
             Nil
         }
 
+      def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
+        if (!metadata.miniboxedTParamFlag(p))
+          warn(pos, s"The ${p.owner.tweakedToString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.")
+        (p, spec)
+      }
+
+
       val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
       val spec = instantiation map { (pair: (Symbol, Type)) =>
         val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
-          case (p, `CharTpe`)    => (p, Miniboxed(LongClass))
-          case (p, `IntTpe`)     => (p, Miniboxed(LongClass))
-          case (p, `LongTpe`)    => (p, Miniboxed(LongClass))
-          case (p, `FloatTpe`)   => (p, Miniboxed(FloatRepr))
-          case (p, `DoubleTpe`)  => (p, Miniboxed(FloatRepr))
+          case (p, `CharTpe`)    => primitive(p, Miniboxed(LongClass))
+          case (p, `IntTpe`)     => primitive(p, Miniboxed(LongClass))
+          case (p, `LongTpe`)    => primitive(p, Miniboxed(LongClass))
+          case (p, `FloatTpe`)   => primitive(p, Miniboxed(FloatRepr))
+          case (p, `DoubleTpe`)  => primitive(p, Miniboxed(FloatRepr))
           case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
             mboxedTpars.get(tpar.deSkolemize) match {
               case Some(spec: SpecInfo) =>
+                if (!metadata.miniboxedTParamFlag(p) && spec != Boxed)
+                  warn(pos, s"The ${p.owner.tweakedToString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.")
                 (p, spec)
               case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) =>
-                warn(pos, s"""The following code could benefit from miniboxing specialization since it was not specialized.""")
+                if (metadata.miniboxedTParamFlag(p))
+                  warn(pos, s"""The following code could benefit from miniboxing specialization since it was not specialized.""")
                 (p, Boxed)
               case None                 =>
-                warn(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""")
+                if (metadata.miniboxedTParamFlag(p))
+                  warn(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""")
                 (p, Boxed)
             }
           case (p, tpe) if tpe <:< AnyRefTpe =>
             (p, Boxed)
           case (p, tpe)          =>
-            warn(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner.tweakedToString} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner.tweakedToString} is miniboxed, it won't benefit from specialization:""")
+            if (metadata.miniboxedTParamFlag(p))
+              warn(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner.tweakedToString} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner.tweakedToString} is miniboxed, it won't benefit from specialization:""")
             (p, Boxed)
         }
       }

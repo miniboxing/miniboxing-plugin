@@ -1,0 +1,30 @@
+newSource1.scala:10: warning: The method foo would benefit from miniboxing type parameter F, since it is instantiated by miniboxed type parameter T of class C.
+      foo[T](t)
+      ^
+newSource1.scala:12: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by miniboxed type parameter T of class C.
+      new A[T](t)
+      ^
+newSource1.scala:18: warning: The method foo would benefit from miniboxing type parameter F, since it is instantiated by miniboxed type parameter X of method baz.
+    foo(x)
+    ^
+newSource1.scala:19: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by miniboxed type parameter X of method baz.
+    new A(x)
+    ^
+newSource1.scala:25: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by miniboxed type parameter X of class D.
+       new A(x)
+       ^
+newSource1.scala:24: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by miniboxed type parameter Y of method buz.
+       new A(y)
+       ^
+newSource1.scala:29: warning: The method foo would benefit from miniboxing type parameter F, since it is instantiated by a primitive type.
+  foo(3)
+  ^
+newSource1.scala:30: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by a primitive type.
+  new A(3)
+  ^
+newSource1.scala:32: warning: The method foo would benefit from miniboxing type parameter F, since it is instantiated by a primitive type.
+  foo(3.0)
+  ^
+newSource1.scala:33: warning: The class A would benefit from miniboxing type parameter A, since it is instantiated by a primitive type.
+  new A(3.0)
+  ^
