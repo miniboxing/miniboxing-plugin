@@ -15,7 +15,6 @@ package metadata
 
 import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
-import sun.org.mozilla.javascript.internal.FunctionObject
 
 trait InteropDefinitions {
   this: PluginComponent =>
