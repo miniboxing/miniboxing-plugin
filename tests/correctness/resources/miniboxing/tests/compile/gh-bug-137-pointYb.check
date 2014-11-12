@@ -1,0 +1,3 @@
+newSource1.scala:4: warning: The method scala.collection.immutable.List.:: would benefit from miniboxing type parameter B, since it is instantiated by a primitive type.
+  3 :: Nil
+    ^

@@ -46,11 +46,12 @@ trait MiniboxMetadataAddons {
       sym hasAnnotation MinispecClass
     }
     def isField = sym.isValue && !sym.isMethod
-    def tweakedToString: String = {
-      val kind = if (sym.isTrait) if (metadata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
-      val name = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString
-      kind + " " + name
-    }
+
+    private def tweakedKind = if (sym.isTrait) if (metadata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
+    private def tweakedName = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString
+
+    def tweakedToString: String = tweakedKind + " " + tweakedName
+    def tweakedFullString: String = tweakedKind + " " + sym.fullNameString
   }
 
   class RichType(tpe: Type) {

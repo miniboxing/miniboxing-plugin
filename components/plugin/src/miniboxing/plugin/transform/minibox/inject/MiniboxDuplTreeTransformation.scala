@@ -448,8 +448,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val newSym = newFun.symbol
 
           // find the normalized member
+          val pos = if (tree.pos != NoPosition) tree.pos else oldFun.pos // infered arguments get NoPosition
           val normSym =
-            extractNormSpec(if (tree.pos != NoPosition) tree.pos else oldFun.pos, targs.map(_.tpe), newFun.symbol, currentOwner) match {
+            extractNormSpec(pos, targs.map(_.tpe), newFun.symbol, currentOwner) match {
               case Some(newSym) => newSym
               case None => newFun.symbol
             }

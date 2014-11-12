@@ -24,6 +24,7 @@ import interop.coerce._
 import hijack._
 import prepare._
 import infrastructure._
+import scala.tools.nsc.settings.ScalaVersion
 
 /** Specialization hijacking component `@specialized T` -> `@miniboxed T` */
 trait HijackComponent extends
@@ -126,6 +127,7 @@ trait MiniboxInjectComponent extends
   def flag_loader_friendly: Boolean
   def flag_two_way: Boolean
   def flag_strict_warnings: Boolean
+  def flag_strict_warnings_outside: Boolean
   def flag_create_local_specs: Boolean
 }
 
@@ -238,53 +240,60 @@ class Minibox(val global: Global) extends Plugin {
   var flag_rewire_functionX_bridges = true
   var flag_mark_all = false // type parameters as @miniboxed
   var flag_strict_typechecking = false
-  var flag_strict_warnings = false
   var flag_strip_miniboxed = false
   var flag_create_local_specs = true
+  var flag_strict_warnings = false
+  var flag_strict_warnings_outside = false
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
-      if (option.toLowerCase() == "log")
-        flag_log = true
-      else if (option.toLowerCase() == "debug")
-        flag_debug = true
-      else if (option.toLowerCase() == "stats")
-        flag_stats = true
-      else if (option.toLowerCase() == "hijack")
-        flag_hijack_spec = true
-      else if (option.toLowerCase() == "spec-no-opt")
-        flag_spec_no_opt = true
-      else if (option.toLowerCase() == "loader")
-        flag_loader_friendly = true
-      else if (option.toLowerCase() == "no-logo")
-        flag_no_logo = true
-      else if (option.toLowerCase() == "warn")
-        flag_strict_warnings  = true
-      else if (option.toLowerCase() == "yone-way")   // Undocumented flag, only used for running the test suite,
-        flag_two_way = false                         // where the tests required the one-way translation
-      else if (option.toLowerCase() == "ygen-brdgs") // Undocumented flag, only used for running the test suite
-        flag_rewire_functionX_bridges = false        // while avoiding func. to miniboxed func. bridge optimization
-      else if (option.toLowerCase() == "ystrict-typechecking") // Undocumented flag
-        flag_strict_typechecking = true
-      else if (option.toLowerCase() == "ystrip-miniboxed") // Undocumented flag
-        flag_strip_miniboxed = true
-      else if (option.toLowerCase() == "yno-local-specs") // Undocumented flag
-        flag_create_local_specs = false
-      else if (option.toLowerCase() == "library-functions")
-        flag_rewire_functionX  = false
-      else if (option.toLowerCase() == "two-way")
-        global.warning("The two-way transformation (with long and double as storage types) has become default in " +
-                       "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
-                       "command line")
-      else if (option.toLowerCase() == "mark-all")
-        flag_mark_all = true
-      else
-        error("Miniboxing: Option not understood: " + option)
+      option.toLowerCase() match {
+        case "log" =>
+          flag_log = true
+        case "debug" =>
+          flag_debug = true
+        case "stats" =>
+          flag_stats = true
+        case "hijack" =>
+          flag_hijack_spec = true
+        case "spec-no-opt" =>
+          flag_spec_no_opt = true
+        case "loader" =>
+          flag_loader_friendly = true
+        case "no-logo" =>
+          flag_no_logo = true
+        case "warn" =>
+          flag_strict_warnings  = true
+        case "warn-all" =>
+          flag_strict_warnings = true
+          flag_strict_warnings_outside = true
+        case "yone-way" =>                       // Undocumented flag, only used for running the test suite,
+          flag_two_way = false                   // where the tests required the one-way translation
+        case "ygen-brdgs" =>                     // Undocumented flag, only used for running the test suite
+          flag_rewire_functionX_bridges = false  // while avoiding func. to miniboxed func. bridge optimization
+        case "ystrict-typechecking" =>           // Undocumented flag
+          flag_strict_typechecking = true
+        case "ystrip-miniboxed" =>               // Undocumented flag
+          flag_strip_miniboxed = true
+        case "yno-local-specs" =>                // Undocumented flag
+          flag_create_local_specs = false
+        case "library-functions" =>
+          flag_rewire_functionX  = false
+        case "two-way" =>
+          global.warning("The two-way transformation (with long and double as storage types) has become default in " +
+                         "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
+                         "command line")
+        case "mark-all" =>
+          flag_mark_all = true
+        case _ =>
+          error("Miniboxing: Option not understood: " + option)
+      }
     }
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
     s"  -P:${name}:warn                warn when missing out specialization opportunities (will become default in the future)",
+    s"  -P:${name}:warn-all            same as above, but warn even for outside code, such as libraries that could be optimized",
     s"  -P:${name}:hijack              hijack the @specialized(...) notation for miniboxing",
     s"  -P:${name}:mark-all            implicitly add @miniboxed annotations to all type parameters",
     s"  -P:${name}:log                 log miniboxing signature transformations").mkString("\n"))
@@ -379,8 +388,9 @@ class Minibox(val global: Global) extends Plugin {
     def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
     def flag_loader_friendly = Minibox.this.flag_loader_friendly
     def flag_two_way = Minibox.this.flag_two_way
-    def flag_strict_warnings = Minibox.this.flag_strict_warnings
     def flag_create_local_specs = Minibox.this.flag_create_local_specs
+    def flag_strict_warnings = Minibox.this.flag_strict_warnings
+    def flag_strict_warnings_outside = Minibox.this.flag_strict_warnings_outside
 
     var mboxInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
@@ -471,7 +481,8 @@ class Minibox(val global: Global) extends Plugin {
 
   private object PostTyperPhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
-  } with PreTyperComponent {
+  } with PreTyperComponent
+    with ScalacVersion {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(PreparePhase.phaseName)
     override val runsRightAfter = Some(PreparePhase.phaseName)
@@ -482,6 +493,10 @@ class Minibox(val global: Global) extends Plugin {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
+
+        if (scalaVersion == "2.11.4")
+          return // see https://github.com/scala/scala/commit/24a0777219d647ec310a0b6da305f619f69950cd
+
         for (sym <- minibox.metadata.allStemClasses)
           sym.setFlag(ABSTRACT | TRAIT)
 

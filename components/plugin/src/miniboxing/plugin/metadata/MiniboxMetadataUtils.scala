@@ -113,7 +113,7 @@ trait MiniboxMetadataUtils {
 
       def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
         if (!metadata.miniboxedTParamFlag(p))
-          warn(pos, s"The ${p.owner.tweakedToString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.")
+          warn(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.", inLibrary = (p.sourceFile == null))
         (p, spec)
       }
 
@@ -131,13 +131,13 @@ trait MiniboxMetadataUtils {
             mboxedTpars.get(tpar.deSkolemize) match {
               case Some(spec: SpecInfo) =>
                 if (!metadata.miniboxedTParamFlag(p) && spec != Boxed)
-                  warn(pos, s"The ${p.owner.tweakedToString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.")
+                  warn(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.", inLibrary = (p.sourceFile == null))
                 (p, spec)
               case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) =>
                 if (metadata.miniboxedTParamFlag(p))
-                  warn(pos, s"""The following code could benefit from miniboxing specialization since it was not specialized.""")
+                  warn(pos, s"""The following code could benefit from miniboxing specialization (the reason was explained before).""")
                 (p, Boxed)
-              case None                 =>
+              case None =>
                 if (metadata.miniboxedTParamFlag(p))
                   warn(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""")
                 (p, Boxed)

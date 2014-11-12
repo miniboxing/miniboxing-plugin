@@ -19,9 +19,10 @@ trait MiniboxLogging {
 
   import global._
 
-  def warn(pos: Position, msg: String) =
+  def warn(pos: Position, msg: String, inLibrary: Boolean = false) =
     if (flag_strict_warnings && (pos != NoPosition))
-      global.reporter.warning(pos, msg)
+      if (!inLibrary || flag_strict_warnings_outside)
+        global.reporter.warning(pos, msg)
 
   def global_log(msg: => String) = if (settings.log.value.contains(phaseName)) global.log(msg)
   def log(msg: => Any) = if (flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
