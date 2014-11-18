@@ -381,7 +381,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         // new C[Int] => new C_J[Int]
         case New(cl) =>
           val newType = miniboxQualifier(tree.pos, cl.tpe)
-          localTyper.typedOperator(New(TypeTree(newType)))
+          localTyper.typedQualifier(New(TypeTree(newType)))
 
         // rewiring this calls
         // C.this.foo => C_J.this.foo
