@@ -31,6 +31,14 @@ public class MiniboxConversionsLong {
 
   private final static Object minibox2box_deep(long l, byte tag) {
     switch(tag) {
+      case MiniboxConstants.UNIT:
+        return scala.runtime.BoxedUnit.UNIT;
+      case MiniboxConstants.BOOLEAN:
+        return (l != 0)?true:false;
+      case MiniboxConstants.BYTE:
+        return (byte)l;
+      case MiniboxConstants.SHORT:
+        return (short)l;
       case MiniboxConstants.CHAR:
         return (char)l;
       case MiniboxConstants.INT:
@@ -50,6 +58,14 @@ public class MiniboxConversionsLong {
 
   public final static <T> long box2minibox_deep(T a, byte tag) {
     switch(tag) {
+      case MiniboxConstants.UNIT:
+        return 0;
+      case MiniboxConstants.BOOLEAN:
+        return ((java.lang.Boolean)a)?1:0;
+      case MiniboxConstants.BYTE:
+        return (java.lang.Byte)a;
+      case MiniboxConstants.SHORT:
+        return (java.lang.Short)a;
       case MiniboxConstants.CHAR:
         return (java.lang.Character)a;
       case MiniboxConstants.INT:

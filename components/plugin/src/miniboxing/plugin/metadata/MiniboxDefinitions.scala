@@ -146,13 +146,21 @@ trait MiniboxDefinitions {
   }
   def x2minibox_long: Map[Symbol, Symbol] =
     Map(
+//      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("unit2minibox")),
+      BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("boolean2minibox")),
+      ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("byte2minibox")),
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("char2minibox")),
+      ShortClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("short2minibox")),
       IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("int2minibox")),
       LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("long2minibox"))
     )
   def minibox2x_long: Map[Symbol, Symbol] =
     Map(
+//      UnitClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2unit")),
+      BooleanClass -> definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2boolean")),
+      ByteClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2byte")),
       CharClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2char")),
+      ShortClass ->   definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2short")),
       IntClass ->     definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2int")),
       LongClass ->    definitions.getMember(ConversionsObjectSymbol, newTermName("minibox2long"))
     )
@@ -198,12 +206,17 @@ trait MiniboxDefinitions {
   // direct conversions
 
   lazy val standardTypeTagTrees = Map(
+      UnitClass ->    Literal(Constant(UNIT)),
+      BooleanClass -> Literal(Constant(BOOLEAN)),
+      ByteClass ->    Literal(Constant(BYTE)),
       CharClass ->    Literal(Constant(CHAR)),
+      ShortClass ->   Literal(Constant(SHORT)),
       IntClass ->     Literal(Constant(INT)),
       LongClass ->    Literal(Constant(LONG)),
       DoubleClass ->  Literal(Constant(DOUBLE)),
       FloatClass ->   Literal(Constant(FLOAT)),
-      NothingClass -> Literal(Constant(REFERENCE))
+      NothingClass -> Literal(Constant(REFERENCE)),
+      NullClass ->    Literal(Constant(REFERENCE))
     )
 
   // Manifest's newArray

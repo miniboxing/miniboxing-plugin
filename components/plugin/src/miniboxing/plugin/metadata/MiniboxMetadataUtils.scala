@@ -122,7 +122,11 @@ trait MiniboxMetadataUtils {
       val spec = instantiation map { (pair: (Symbol, Type)) =>
         val FloatRepr = if (flag_two_way) DoubleClass else LongClass
         pair match {
+          case (p, `UnitTpe`)    => primitive(p, Miniboxed(LongClass))
+          case (p, `BooleanTpe`) => primitive(p, Miniboxed(LongClass))
+          case (p, `ByteTpe`)    => primitive(p, Miniboxed(LongClass))
           case (p, `CharTpe`)    => primitive(p, Miniboxed(LongClass))
+          case (p, `ShortTpe`)   => primitive(p, Miniboxed(LongClass))
           case (p, `IntTpe`)     => primitive(p, Miniboxed(LongClass))
           case (p, `LongTpe`)    => primitive(p, Miniboxed(LongClass))
           case (p, `FloatTpe`)   => primitive(p, Miniboxed(FloatRepr))

@@ -18,6 +18,14 @@ public class MiniboxDispatchLong {
 
   public final static String mboxed_toString(long x, byte tag) {
     switch(tag) {
+      case MiniboxConstants.UNIT:
+        return scala.runtime.BoxedUnit.UNIT.toString();
+      case MiniboxConstants.BOOLEAN:
+        return Boolean.valueOf(x != 0).toString();
+      case MiniboxConstants.BYTE:
+        return Byte.valueOf((byte)x).toString();
+      case MiniboxConstants.SHORT:
+        return Short.valueOf((short)x).toString();
       case MiniboxConstants.CHAR:
         return Character.valueOf((char)x).toString();
       case MiniboxConstants.INT:
@@ -28,14 +36,14 @@ public class MiniboxDispatchLong {
   }
 
   public final static boolean mboxed_eqeq(long x, byte xtag, Object other) {
-    return MiniboxConversionsLong.minibox2box(x, xtag).equals(other);
+    return MiniboxConversions.minibox2box(x, xtag).equals(other);
   }
 
   public final static boolean mboxed_eqeq(long x, byte xtag, long y, byte ytag) {
     if (xtag == ytag)
       return (x == y);
     else
-      return MiniboxConversionsLong.minibox2box(x, xtag).equals(MiniboxConversionsLong.minibox2box(y, ytag));
+      return MiniboxConversions.minibox2box(x, xtag).equals(MiniboxConversions.minibox2box(y, ytag));
   }
 
   public final static boolean mboxed_eqeq(long x, long y) {
@@ -59,6 +67,14 @@ public class MiniboxDispatchLong {
 
   public final static int mboxed_hashCode(long x, byte tag) {
     switch(tag) {
+      case MiniboxConstants.UNIT:
+        return scala.runtime.BoxedUnit.UNIT.hashCode();
+      case MiniboxConstants.BOOLEAN:
+        return Boolean.valueOf(x != 0).hashCode();
+      case MiniboxConstants.BYTE:
+        return Byte.valueOf((byte)x).hashCode();
+      case MiniboxConstants.SHORT:
+        return Short.valueOf((short)x).hashCode();
       case MiniboxConstants.CHAR:
         return Character.valueOf((char)x).hashCode();
       case MiniboxConstants.INT:
