@@ -41,6 +41,86 @@ package miniboxing.runtime {
     def function0_opt_bridge_long[R](R_Tag: Byte, _f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
+    case 0 => {
+      val _f_cast: () => Unit = _f.asInstanceOf[() => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Unit] {
+          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 0;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => Unit = _f_cast;
+          def apply(): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_J(0), 0);
+          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcV$sp(), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 1 => {
+      val _f_cast: () => Boolean = _f.asInstanceOf[() => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Boolean] {
+          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 1;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => Boolean = _f_cast;
+          def apply(): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_J(1));
+          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZ$sp())
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 2 => {
+      val _f_cast: () => Byte = _f.asInstanceOf[() => Byte]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Byte] {
+          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 2;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => Byte = _f_cast;
+          def apply(): Byte = MiniboxConversions.this.minibox2byte($anon.this.apply_J(2));
+          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.byte2minibox(_f_cast.apply$mcB$sp())
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 3 => {
+      val _f_cast: () => Short = _f.asInstanceOf[() => Short]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Short] {
+          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 3;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => Short = _f_cast;
+          def apply(): Short = MiniboxConversions.this.minibox2short($anon.this.apply_J(3));
+          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.short2minibox(_f_cast.apply$mcS$sp())
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 4 => {
+      val _f_cast: () => Char = _f.asInstanceOf[() => Char]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Char] {
+          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 4;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => Char = _f_cast;
+          def apply(): Char = MiniboxConversions.this.minibox2char($anon.this.apply_J(4));
+          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.char2minibox(_f_cast.apply$mcC$sp())
+        };
+        new anonymous class $anon()
+      }
+    }
     case 5 => {
       val _f_cast: () => Int = _f.asInstanceOf[() => Int]();
       {
@@ -69,22 +149,6 @@ package miniboxing.runtime {
           def f(): () => Long = _f_cast;
           def apply(): Long = MiniboxConversions.this.minibox2long($anon.this.apply_J(6));
           override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJ$sp())
-        };
-        new anonymous class $anon()
-      }
-    }
-    case 4 => {
-      val _f_cast: () => Char = _f.asInstanceOf[() => Char]();
-      {
-        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_J[Char] {
-          def miniboxing|runtime|MiniboxedFunction0_J|R_TypeTag(): Byte = 4;
-          def <init>(): anonymous class $anon = {
-            $anon.super.<init>();
-            ()
-          };
-          def f(): () => Char = _f_cast;
-          def apply(): Char = MiniboxConversions.this.minibox2char($anon.this.apply_J(4));
-          override def apply_J(R_TypeTag: Byte): Long = MiniboxConversions.this.char2minibox(_f_cast.apply$mcC$sp())
         };
         new anonymous class $anon()
       }
@@ -133,6 +197,40 @@ package miniboxing.runtime {
     def function1_opt_bridge_long_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
+    case 5 => {
+      val _f_cast: Int => Unit = _f.asInstanceOf[Int => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JJ[Int,Unit] {
+          def miniboxing|runtime|MiniboxedFunction1_JJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction1_JJ|T1_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Int => Unit = _f_cast;
+          def apply(arg1: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJ(5, 0, MiniboxConversions.this.int2minibox(arg1)), 0);
+          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVI$sp(MiniboxConversions.this.minibox2int(t1)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 15 => {
+      val _f_cast: Int => Boolean = _f.asInstanceOf[Int => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JJ[Int,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction1_JJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction1_JJ|T1_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Int => Boolean = _f_cast;
+          def apply(arg1: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJ(5, 1, MiniboxConversions.this.int2minibox(arg1)));
+          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZI$sp(MiniboxConversions.this.minibox2int(t1)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 55 => {
       val _f_cast: Int => Int = _f.asInstanceOf[Int => Int]();
       {
@@ -163,6 +261,40 @@ package miniboxing.runtime {
           def f(): Int => Long = _f_cast;
           def apply(arg1: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply_JJ(5, 6, MiniboxConversions.this.int2minibox(arg1)));
           override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJI$sp(MiniboxConversions.this.minibox2int(t1)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 6 => {
+      val _f_cast: Long => Unit = _f.asInstanceOf[Long => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JJ[Long,Unit] {
+          def miniboxing|runtime|MiniboxedFunction1_JJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction1_JJ|T1_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Long => Unit = _f_cast;
+          def apply(arg1: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJ(6, 0, MiniboxConversions.this.long2minibox(arg1)), 0);
+          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJ$sp(MiniboxConversions.this.minibox2long(t1)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 16 => {
+      val _f_cast: Long => Boolean = _f.asInstanceOf[Long => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_JJ[Long,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction1_JJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction1_JJ|T1_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Long => Boolean = _f_cast;
+          def apply(arg1: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJ(6, 1, MiniboxConversions.this.long2minibox(arg1)));
+          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
       }
@@ -207,6 +339,40 @@ package miniboxing.runtime {
     def function1_opt_bridge_double_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
+    case 7 => {
+      val _f_cast: Float => Unit = _f.asInstanceOf[Float => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_DJ[Float,Unit] {
+          def miniboxing|runtime|MiniboxedFunction1_DJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction1_DJ|T1_TypeTag(): Byte = 7;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Float => Unit = _f_cast;
+          def apply(arg1: Float): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_DJ(7, 0, MiniboxConversionsDouble.this.float2minibox(arg1)), 0);
+          override def apply_DJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVF$sp(MiniboxConversionsDouble.this.minibox2float(t1)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 17 => {
+      val _f_cast: Float => Boolean = _f.asInstanceOf[Float => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_DJ[Float,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction1_DJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction1_DJ|T1_TypeTag(): Byte = 7;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Float => Boolean = _f_cast;
+          def apply(arg1: Float): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_DJ(7, 1, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          override def apply_DJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 57 => {
       val _f_cast: Float => Int = _f.asInstanceOf[Float => Int]();
       {
@@ -237,6 +403,40 @@ package miniboxing.runtime {
           def f(): Float => Long = _f_cast;
           def apply(arg1: Float): Long = MiniboxConversions.this.minibox2long($anon.this.apply_DJ(7, 6, MiniboxConversionsDouble.this.float2minibox(arg1)));
           override def apply_DJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 8 => {
+      val _f_cast: Double => Unit = _f.asInstanceOf[Double => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_DJ[Double,Unit] {
+          def miniboxing|runtime|MiniboxedFunction1_DJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction1_DJ|T1_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Double => Unit = _f_cast;
+          def apply(arg1: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_DJ(8, 0, MiniboxConversionsDouble.this.double2minibox(arg1)), 0);
+          override def apply_DJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVD$sp(MiniboxConversionsDouble.this.minibox2double(t1)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 18 => {
+      val _f_cast: Double => Boolean = _f.asInstanceOf[Double => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_DJ[Double,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction1_DJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction1_DJ|T1_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): Double => Boolean = _f_cast;
+          def apply(arg1: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_DJ(8, 1, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          override def apply_DJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZD$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
       }
@@ -429,6 +629,42 @@ package miniboxing.runtime {
     def function2_opt_bridge_long_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
   case <synthetic> val x1: Int = T1_Tag.+(T2_Tag.*(10)).+(R_Tag.*(10).*(10));
   x1 match {
+    case 55 => {
+      val _f_cast: (Int, Int) => Unit = _f.asInstanceOf[(Int, Int) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Int,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Int) => Unit = _f_cast;
+          def apply(arg1: Int, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJJ(5, 5, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 155 => {
+      val _f_cast: (Int, Int) => Boolean = _f.asInstanceOf[(Int, Int) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Int,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Int) => Boolean = _f_cast;
+          def apply(arg1: Int, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJJ(5, 5, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 555 => {
       val _f_cast: (Int, Int) => Int = _f.asInstanceOf[(Int, Int) => Int]();
       {
@@ -461,6 +697,42 @@ package miniboxing.runtime {
           def f(): (Int, Int) => Long = _f_cast;
           def apply(arg1: Int, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply_JJJ(5, 5, 6, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
           override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 65 => {
+      val _f_cast: (Int, Long) => Unit = _f.asInstanceOf[(Int, Long) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Long,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Long) => Unit = _f_cast;
+          def apply(arg1: Int, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJJ(5, 6, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 165 => {
+      val _f_cast: (Int, Long) => Boolean = _f.asInstanceOf[(Int, Long) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Int,Long,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Long) => Boolean = _f_cast;
+          def apply(arg1: Int, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJJ(5, 6, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
       }
@@ -501,6 +773,42 @@ package miniboxing.runtime {
         new anonymous class $anon()
       }
     }
+    case 56 => {
+      val _f_cast: (Long, Int) => Unit = _f.asInstanceOf[(Long, Int) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Int,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Int) => Unit = _f_cast;
+          def apply(arg1: Long, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJJ(6, 5, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 156 => {
+      val _f_cast: (Long, Int) => Boolean = _f.asInstanceOf[(Long, Int) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Int,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Int) => Boolean = _f_cast;
+          def apply(arg1: Long, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJJ(6, 5, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 556 => {
       val _f_cast: (Long, Int) => Int = _f.asInstanceOf[(Long, Int) => Int]();
       {
@@ -533,6 +841,42 @@ package miniboxing.runtime {
           def f(): (Long, Int) => Long = _f_cast;
           def apply(arg1: Long, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply_JJJ(6, 5, 6, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
           override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 66 => {
+      val _f_cast: (Long, Long) => Unit = _f.asInstanceOf[(Long, Long) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Long,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Long) => Unit = _f_cast;
+          def apply(arg1: Long, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JJJ(6, 6, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 166 => {
+      val _f_cast: (Long, Long) => Boolean = _f.asInstanceOf[(Long, Long) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JJJ[Long,Long,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Long) => Boolean = _f_cast;
+          def apply(arg1: Long, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JJJ(6, 6, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          override def apply_JJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
       }
@@ -579,6 +923,42 @@ package miniboxing.runtime {
     def function2_opt_bridge_long_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
   case <synthetic> val x1: Int = T1_Tag.+(R_Tag.*(10));
   x1 match {
+    case 5 => {
+      val _f_cast: (Int, Double) => Unit = _f.asInstanceOf[(Int, Double) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDJ[Int,Double,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Double) => Unit = _f_cast;
+          def apply(arg1: Int, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JDJ(5, 8, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          override def apply_JDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 15 => {
+      val _f_cast: (Int, Double) => Boolean = _f.asInstanceOf[(Int, Double) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDJ[Int,Double,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T1_TypeTag(): Byte = 5;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Int, Double) => Boolean = _f_cast;
+          def apply(arg1: Int, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JDJ(5, 8, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          override def apply_JDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 55 => {
       val _f_cast: (Int, Double) => Int = _f.asInstanceOf[(Int, Double) => Int]();
       {
@@ -611,6 +991,42 @@ package miniboxing.runtime {
           def f(): (Int, Double) => Long = _f_cast;
           def apply(arg1: Int, arg2: Double): Long = MiniboxConversions.this.minibox2long($anon.this.apply_JDJ(5, 8, 6, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
           override def apply_JDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 6 => {
+      val _f_cast: (Long, Double) => Unit = _f.asInstanceOf[(Long, Double) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDJ[Long,Double,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Double) => Unit = _f_cast;
+          def apply(arg1: Long, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_JDJ(6, 8, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          override def apply_JDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 16 => {
+      val _f_cast: (Long, Double) => Boolean = _f.asInstanceOf[(Long, Double) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_JDJ[Long,Double,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T1_TypeTag(): Byte = 6;
+          def miniboxing|runtime|MiniboxedFunction2_JDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Long, Double) => Boolean = _f_cast;
+          def apply(arg1: Long, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_JDJ(6, 8, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          override def apply_JDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
       }
@@ -657,6 +1073,42 @@ package miniboxing.runtime {
     def function2_opt_bridge_double_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
   case <synthetic> val x1: Int = T2_Tag.+(R_Tag.*(10));
   x1 match {
+    case 5 => {
+      val _f_cast: (Double, Int) => Unit = _f.asInstanceOf[(Double, Int) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJJ[Double,Int,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Int) => Unit = _f_cast;
+          def apply(arg1: Double, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_DJJ(8, 5, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          override def apply_DJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 15 => {
+      val _f_cast: (Double, Int) => Boolean = _f.asInstanceOf[(Double, Int) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJJ[Double,Int,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T2_TypeTag(): Byte = 5;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Int) => Boolean = _f_cast;
+          def apply(arg1: Double, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_DJJ(8, 5, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          override def apply_DJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 55 => {
       val _f_cast: (Double, Int) => Int = _f.asInstanceOf[(Double, Int) => Int]();
       {
@@ -689,6 +1141,42 @@ package miniboxing.runtime {
           def f(): (Double, Int) => Long = _f_cast;
           def apply(arg1: Double, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply_DJJ(8, 5, 6, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
           override def apply_DJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 6 => {
+      val _f_cast: (Double, Long) => Unit = _f.asInstanceOf[(Double, Long) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJJ[Double,Long,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Long) => Unit = _f_cast;
+          def apply(arg1: Double, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_DJJ(8, 6, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          override def apply_DJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 16 => {
+      val _f_cast: (Double, Long) => Boolean = _f.asInstanceOf[(Double, Long) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DJJ[Double,Long,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DJJ|T2_TypeTag(): Byte = 6;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Long) => Boolean = _f_cast;
+          def apply(arg1: Double, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_DJJ(8, 6, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          override def apply_DJJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
       }
@@ -735,6 +1223,42 @@ package miniboxing.runtime {
     def function2_opt_bridge_double_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
+    case 0 => {
+      val _f_cast: (Double, Double) => Unit = _f.asInstanceOf[(Double, Double) => Unit]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDJ[Double,Double,Unit] {
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|R_TypeTag(): Byte = 0;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Double) => Unit = _f_cast;
+          def apply(arg1: Double, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply_DDJ(8, 8, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          override def apply_DDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
+        };
+        new anonymous class $anon()
+      }
+    }
+    case 1 => {
+      val _f_cast: (Double, Double) => Boolean = _f.asInstanceOf[(Double, Double) => Boolean]();
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_DDJ[Double,Double,Boolean] {
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|R_TypeTag(): Byte = 1;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T1_TypeTag(): Byte = 8;
+          def miniboxing|runtime|MiniboxedFunction2_DDJ|T2_TypeTag(): Byte = 8;
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (Double, Double) => Boolean = _f_cast;
+          def apply(arg1: Double, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply_DDJ(8, 8, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          override def apply_DDJ(T1_TypeTag: Byte, T2_TypeTag: Byte, R_TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
+        };
+        new anonymous class $anon()
+      }
+    }
     case 5 => {
       val _f_cast: (Double, Double) => Int = _f.asInstanceOf[(Double, Double) => Int]();
       {
