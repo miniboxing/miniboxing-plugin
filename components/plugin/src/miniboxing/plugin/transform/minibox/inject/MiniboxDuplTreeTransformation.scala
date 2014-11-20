@@ -75,8 +75,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
       def flag_create_local_specs = MiniboxInjectTreeTransformation.this.flag_create_local_specs
       override def postTransform(owner: Symbol, tree: Tree): Tree = {
-        val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
-        tree1
+        //val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
+        tree
       }
     }
 

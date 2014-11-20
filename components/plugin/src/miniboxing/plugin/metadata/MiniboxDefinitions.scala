@@ -64,6 +64,16 @@ trait MiniboxDefinitions {
     StorageSym
   }
 
+//  lazy val MangledNameClass = {
+//    val AnnotationName = "scala.annotation.Annotation"
+//    val AnnotationTpe = rootMirror.getRequiredClass(AnnotationName).tpe
+//
+//    val MangledNameName = newTypeName("mangled")
+//    val MangledNameSym = ScalaPackageClass.newClassSymbol(MangledNameName, NoPosition, 0L)
+//    MangledNameSym setInfoAndEnter ClassInfoType(List(AnnotationTpe), newScope, MangledNameSym)
+//    MangledNameSym
+//  }
+
   // artificially created marker methods:
 
   def withStorage(tpar: Symbol, repr: Symbol) =

@@ -16,6 +16,7 @@ import scala.tools.nsc.transform._
 import metadata._
 import transform._
 import minibox.inject._
+import minibox.bridge._
 import minibox.coerce._
 import minibox.commit._
 import interop.inject._
@@ -111,7 +112,6 @@ trait MiniboxInjectComponent extends
     with MiniboxMethodInfo
     with MiniboxInjectInfoTransformation
     with MiniboxInjectTreeTransformation
-    with MiniboxDuplBridgeMethods
     with TreeRewriters
     with ScalacCrossCompilingLayer {
 
@@ -130,6 +130,23 @@ trait MiniboxInjectComponent extends
   def flag_strict_warnings_outside: Boolean
   def flag_create_local_specs: Boolean
 }
+
+/** Introduces explicit Coerceations from `T` to `@storage T` and back */
+trait MiniboxBridgeComponent extends
+    PluginComponent
+    with MiniboxBridgeTreeTransformer
+    with ScalacCrossCompilingLayer {
+
+  val minibox: MiniboxInjectComponent { val global: MiniboxBridgeComponent.this.global.type }
+
+  def mboxBridgePhase: StdPhase
+
+  def afterMiniboxBridge[T](op: => T): T = global.afterPhase(mboxBridgePhase)(op)
+  def beforeMiniboxBridge[T](op: => T): T = global.beforePhase(mboxBridgePhase)(op)
+  def afterMiniboxBridgeNext[T](op: => T): T = global.afterPhase(mboxBridgePhase.next)(op)
+  def beforeMiniboxBridgeNext[T](op: => T): T = global.beforePhase(mboxBridgePhase.next)(op)
+}
+
 
 /** Introduces explicit Coerceations from `T` to `@storage T` and back */
 trait MiniboxCoerceComponent extends
@@ -220,6 +237,7 @@ class Minibox(val global: Global) extends Plugin {
                           InteropCommitPhase,
                           HijackPhase,
                           MiniboxInjectPhase,
+                          MiniboxBridgePhase,
                           MiniboxCoercePhase,
                           MiniboxCommitPhase)
   }
@@ -408,19 +426,34 @@ class Minibox(val global: Global) extends Plugin {
     }
   }
 
+  private object MiniboxBridgePhase extends {
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+  } with MiniboxBridgeComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(MiniboxInjectPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxInjectPhase.phaseName)
+    val phaseName = Minibox.this.name + "-bridge"
+
+    var mboxBridgePhase : StdPhase = _
+    def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mboxBridgePhase = new BridgePhase(prev.asInstanceOf[minibox.Phase])
+      mboxBridgePhase
+    }
+  }
+
   private object MiniboxCoercePhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with MiniboxCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxInjectPhase.phaseName)
-    override val runsRightAfter = Some(MiniboxInjectPhase.phaseName)
+    val runsAfter = List(MiniboxBridgePhase.phaseName)
+    override val runsRightAfter = Some(MiniboxBridgePhase.phaseName)
     val phaseName = Minibox.this.name + "-coerce"
 
     def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
 
     var mboxCoercePhase : StdPhase = _
     def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mboxCoercePhase = new CoercePhase(prev.asInstanceOf[minibox.Phase])
+      mboxCoercePhase = new CoercePhase(prev.asInstanceOf[StdPhase])
       mboxCoercePhase
     }
   }

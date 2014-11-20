@@ -28,7 +28,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers with ScalacCrossCo
   import minibox._
   import global._
 
-  class CoercePhase(prev: Phase) extends StdPhase(prev) {
+  class CoercePhase(prev: StdPhase) extends StdPhase(prev) {
     override def name = MiniboxCoerceTreeTransformer.this.phaseName
     override def checkable = false
     def apply(unit: CompilationUnit): Unit = {
