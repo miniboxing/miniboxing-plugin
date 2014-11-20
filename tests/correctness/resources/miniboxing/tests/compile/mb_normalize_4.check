@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class SpCls4Tuple2...
   // interface:
   abstract trait SpCls4Tuple2[U, V] extends Object {
@@ -96,6 +97,7 @@ Specializing class SpCls4...
     def normalizeMe1_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): miniboxing.tests.correctness.SpCls4Tuple2[Ssp,T] // is a specialized implementation of method normalizeMe1
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.correctness {

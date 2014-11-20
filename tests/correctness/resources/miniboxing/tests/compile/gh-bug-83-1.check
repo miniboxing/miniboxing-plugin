@@ -1,7 +1,9 @@
+warning: 'minibox' selects 4 phases
 newSource1.scala:5: warning: The following constructor statement will not be specialized in the miniboxed trait C. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
   t = t2
     ^
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug83.alt1 {

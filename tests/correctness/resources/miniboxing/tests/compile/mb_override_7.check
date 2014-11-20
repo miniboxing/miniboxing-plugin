@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 newSource1.scala:9: error: The method overrideMe in class Base72 overrides method overrideMe in class Base71 therefore needs to have the follwing type parameters marked with @miniboxed: type B.
   override def overrideMe[@miniboxed A, B](a: A, b: B): A = ???
                ^

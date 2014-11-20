@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class TParams1...
   // interface:
   abstract trait TParams1[T] extends Object {
@@ -18,6 +19,7 @@ Specializing class TParams1...
     def foo_J[X](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X): Int      // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.tparams {

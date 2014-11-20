@@ -1,4 +1,6 @@
+warning: 'minibox' selects 4 phases
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [Now checking: minibox-commit]
 3

@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing trait C...
   // interface:
   abstract trait C[T] extends Object {
@@ -10,6 +11,7 @@ Specializing trait C...
   abstract trait C_L[Tsp] extends C[Tsp] {
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.inheritance.traits {

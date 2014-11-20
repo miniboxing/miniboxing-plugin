@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing trait CC...
   // interface:
   abstract trait CC[T] extends Object {
@@ -42,6 +43,7 @@ Specializing class EE...
     def <init>(): miniboxing.tests.compile.inheritance.traits.EE_L[Tsp]    // is a specialized implementation of constructor EE
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.inheritance.traits {

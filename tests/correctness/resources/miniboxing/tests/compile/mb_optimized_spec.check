@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class OptMeee...
   // interface:
   abstract trait OptMeee[X, Y] extends Object {
@@ -30,5 +31,6 @@ Specializing class OptMeee...
     def yfoo2_J(val X_TypeTag: Byte,y: Ysp): Xsp @storage[Long]            // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [Now checking: minibox-commit]

@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class UhOh1...
   // interface:
   abstract trait UhOh1[X, Y] extends Object {
@@ -18,6 +19,7 @@ Specializing class UhOh1...
     def foo_J(val X_TypeTag: Byte,x: Xsp @storage[Long],y: Ysp): Xsp @storage[Long] // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {

@@ -1,5 +1,7 @@
 warning: The two-way transformation (with long and double as storage types) has become default in version 0.4 version of the miniboxing plugin, so there is no need to specify it in the command line
+warning: 'minibox' selects 4 phases
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug51 {

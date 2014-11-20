@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class HijackMe...
   // interface:
   abstract trait HijackMe[T] extends Object {
@@ -12,6 +13,7 @@ Specializing class HijackMe...
     def <init>(): miniboxing.tests.compile.HijackMe_L[Tsp]                 // is a specialized implementation of constructor HijackMe
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {

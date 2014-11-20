@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class C...
   // interface:
   abstract trait C[T] extends Object {
@@ -44,5 +45,6 @@ Specializing class C...
     private[this] var x: Tsp                                               // is a specialized implementation of variable x
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [Now checking: minibox-commit]

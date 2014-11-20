@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class MyTuple2...
   // interface:
   abstract trait MyTuple2[T1, T2] extends Object {
@@ -71,5 +72,6 @@ Specializing class MyTuple2...
     val t2_LJ(val T2_TypeTag: Byte): T2sp @storage[Long]                   // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [Now checking: minibox-commit]

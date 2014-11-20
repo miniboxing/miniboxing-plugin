@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 [[syntax trees at end of            minibox-inject]] // newSource1.scala
 package miniboxing.tests.correctness.erasure.torture1 {
   abstract trait A[@miniboxed T] extends Object {
@@ -68,6 +69,8 @@ package miniboxing.tests.correctness.erasure.torture1 {
   }
 }
 [Now checking: minibox-inject]
+[[syntax trees at end of            minibox-bridge]] // newSource1.scala: tree is unchanged since minibox-inject
+[Now checking: minibox-bridge]
 [[syntax trees at end of            minibox-coerce]] // newSource1.scala
 package miniboxing.tests.correctness.erasure.torture1 {
   abstract trait A[@miniboxed T] extends Object {

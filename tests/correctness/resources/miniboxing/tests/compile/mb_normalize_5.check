@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class Sp5Tuple2...
   // interface:
   abstract trait Sp5Tuple2[U, V] extends Object {
@@ -31,6 +32,7 @@ Specializing class Sp5Tuple2...
     private[this] val v: Vsp                                               // is a specialized implementation of value v
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.correctness {

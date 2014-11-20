@@ -1,3 +1,4 @@
+warning: 'minibox' selects 4 phases
 Specializing class Base51...
   // interface:
   abstract trait Base51[T, S] extends Object {
@@ -62,6 +63,7 @@ Specializing class Base52...
     override def overrideMe_J(val T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
+[Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
