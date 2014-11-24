@@ -1,0 +1,75 @@
+[Now checking: minibox-inject]
+[Now checking: minibox-bridge]
+[Not checkable: minibox-coerce]
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.spec.interop.functions3 {
+  object Fuctions3 extends Object {
+    def <init>(): miniboxing.tests.compile.spec.interop.functions3.Fuctions3.type = {
+      Fuctions3.super.<init>();
+      ()
+    };
+    abstract trait F[@miniboxed A] extends Object {
+      def foo[B](b: B): Unit
+    };
+    class F_D[Asp] extends Object with miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F[Asp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag: Byte): miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F_D[Asp] = {
+        F_D.super.<init>();
+        ()
+      };
+      def foo[B](b: B): Unit = {
+        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
+          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anonfun = {
+              $anonfun.super.<init>();
+              ()
+            };
+            final def apply(x: Asp, y: B): B = y
+          };
+          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+        };
+        ()
+      }
+    };
+    class F_J[Asp] extends Object with miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F[Asp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag: Byte): miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F_J[Asp] = {
+        F_J.super.<init>();
+        ()
+      };
+      def foo[B](b: B): Unit = {
+        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
+          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anonfun = {
+              $anonfun.super.<init>();
+              ()
+            };
+            final def apply(x: Asp, y: B): B = y
+          };
+          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+        };
+        ()
+      }
+    };
+    class F_L[Asp] extends Object with miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F[Asp] {
+      def <init>(): miniboxing.tests.compile.spec.interop.functions3.Fuctions3.F_L[Asp] = {
+        F_L.super.<init>();
+        ()
+      };
+      def foo[B](b: B): Unit = {
+        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
+          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anonfun = {
+              $anonfun.super.<init>();
+              ()
+            };
+            final def apply(x: Asp, y: B): B = y
+          };
+          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+        };
+        ()
+      }
+    }
+  }
+}
+[Now checking: minibox-commit]

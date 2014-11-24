@@ -19,7 +19,7 @@ trait MiniboxLogging {
 
   import global._
 
-  def warn(pos: Position, msg: String, inLibrary: Boolean = false) =
+  def suboptimalCodeWarning(pos: Position, msg: String, inLibrary: Boolean = false) =
     if (flag_strict_warnings && (pos != NoPosition))
       if (!inLibrary || flag_strict_warnings_outside)
         global.reporter.warning(pos, msg)

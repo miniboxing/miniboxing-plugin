@@ -31,8 +31,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Double = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -42,8 +41,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Double = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag)), B_TypeTag)
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -53,8 +51,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -74,7 +71,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Double = b
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -84,8 +81,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -95,8 +91,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Double): Double = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_double_double[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -126,8 +121,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Double = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -137,8 +131,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Long = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag)), B_TypeTag)
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -148,8 +141,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -169,7 +161,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Long = b
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -179,8 +171,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -190,8 +181,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Long): Long = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_long_long[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -220,8 +210,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Double = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -231,8 +220,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Bsp = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Bsp = b
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -242,8 +230,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -273,8 +260,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Bsp): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), v2)
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -284,8 +270,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Double, y: Bsp): Bsp = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = apply(MiniboxConversionsDouble.this.box2minibox_tt[Asp](v1, A_TypeTag), v2)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -315,8 +300,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Long = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -326,8 +310,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Double = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag)), B_TypeTag)
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -337,8 +320,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -358,7 +340,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Double = b
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -368,8 +350,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -379,8 +360,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Double): Double = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_double_double[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -410,8 +390,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Long = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -421,8 +400,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Long = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag)), B_TypeTag)
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -432,8 +410,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -453,7 +430,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Long = b
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -463,8 +440,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -474,8 +450,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Long): Long = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_long_long[Asp, Bsp, Bsp](A_TypeTag, B_TypeTag, B_TypeTag, (new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -504,8 +479,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Long = x;
-            @scala.annotation.bridge final def apply(v1: Asp): Asp = MiniboxConversionsLong.this.minibox2box[Asp](apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag)), A_TypeTag)
+            final def apply(x: Asp): Asp = x
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anonfun(): Asp => Asp))
         };
@@ -515,8 +489,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Bsp = b;
-            @scala.annotation.bridge final def apply(v1: Asp): Bsp = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Bsp = b
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -526,8 +499,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag))
+            final def apply(x: Asp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anonfun(): Asp => Int))
         };
@@ -557,8 +529,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Bsp): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), v2)
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -568,8 +539,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Long, y: Bsp): Bsp = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = apply(MiniboxConversionsLong.this.box2minibox_tt[Asp](v1, A_TypeTag), v2)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -608,7 +578,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Double = b
+            final def apply(x: Asp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -638,7 +608,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Double = b
+            final def apply(x: Int): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -648,8 +618,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Double): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(v1, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -659,8 +628,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Double): Double = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsDouble.this.minibox2box[Bsp](apply(v1, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };
@@ -699,7 +667,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp): Long = b
+            final def apply(x: Asp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anonfun(): Asp => Bsp))
         };
@@ -729,7 +697,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Int): Long = b
+            final def apply(x: Int): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag)
           };
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anonfun(): Int => Bsp))
         };
@@ -739,8 +707,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Long): Int = 3./(0);
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Int = apply(v1, MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag))
+            final def apply(x: Asp, y: Bsp): Int = 3./(0)
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anonfun(): (Asp, Bsp) => Int))
         };
@@ -750,8 +717,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>();
               ()
             };
-            final def apply(x: Asp, y: Long): Long = y;
-            @scala.annotation.bridge final def apply(v1: Asp, v2: Bsp): Bsp = MiniboxConversionsLong.this.minibox2box[Bsp](apply(v1, MiniboxConversionsLong.this.box2minibox_tt[Bsp](v2, B_TypeTag)), B_TypeTag)
+            final def apply(x: Asp, y: Bsp): Bsp = y
           };
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Bsp]((new anonymous class $anonfun(): (Asp, Bsp) => Bsp))
         };

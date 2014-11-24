@@ -28,6 +28,10 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
   import global._
   import definitions.{ AnyRefClass, AnyValClass, AnyTpe }
 
+  def postTransform(onwer: Symbol, tree: Tree): Tree
+  def suboptimalCodeWarning(pos: Position, msg: String): Unit
+  def flag_create_local_specs: Boolean
+
   case class AnnotationAttachment(annots: List[AnnotationInfo])
 
 //  def retyped(context: Context, tree: Tree): Tree = {
@@ -53,7 +57,6 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     postTransform(owner, newBodyDuplicator(context).typed(tree))
   }
 
-  def postTransform(onwer: Symbol, tree: Tree): Tree
 
   protected def newBodyDuplicator(context: Context) = new BodyDuplicator(context)
 
@@ -75,7 +78,6 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
 
   private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches.newMap[Symbol, Tree]()
 
-  def flag_create_local_specs: Boolean
 
   /** A typer that creates new symbols for all definitions in the given tree
    *  and updates references to them while re-typechecking. All types in the
@@ -236,17 +238,68 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
 
           case DefDef(_, name, tparams, vparamss, tpt, rhs) =>
 
-            // TODO: Fix this side-effecting call:
-            if (flag_create_local_specs) {
+            def changeSignature = {
+              // TODO: Fix this side-effecting call:
               invalidateAll(tparams ::: vparamss.flatten)
               tpt.setType(envSubstitution(tpt.tpe))
-            } else {
+            }
+
+            def keepSignature = {
+              // TODO: Fix this side-effecting call:
               withDeepSubst(invalidateAll(tparams ::: vparamss.flatten))
               tpt.setType(envDeepSubst(tpt.tpe))
             }
 
-            tree.symbol = NoSymbol
+            // Bugs #138 and #148: Specializing nested methods and patching object-oriented
+            // behavior using bridges.
+            //
+            // The correct approach is to only modify a signature when there is no way the
+            // program can observe the signature update. Detection can be done in 4 ways:
+            //
+            //  1. the member overrides another member -- the modified signature doesn't
+            //     override the original signature anymore
+            //  2. the member can be overridden later (and called with super) -- the modified
+            //     signature can't be called using super, as its signature changed and can't
+            //     the new signature doesn't override anything
+            //  3. **using structural types** - we must make sure the member is not included
+            //     in a structural type, otherwise the promised structural type is not valid
+            //     anymore
+            //  4. through reflection or method handles: well, we might have a flag that says
+            //     preserve signatures intact, although we've ran this pedestrian over long
+            //     ago, when we decided to split up classes...
+            //
+            // Another way to say this is: "Hotul neprins, negustor cinstit"
+            // (translation from Romanian: "An uncaught scammer is an honest trader")
+            // that's our method with its signarture :D
+            val symbol = tree.symbol
+            val owner  = symbol.owner
+            val ownerIsClass = owner.isClass || owner.isTrait || owner.isModuleOrModuleClass
+            val cantBeOverridden = !ownerIsClass || owner.isAnonOrRefinementClass || symbol.isPrivate
+            val doesntOverrideOthers = !ownerIsClass || symbol.allOverriddenSymbols.isEmpty
+            val isStructuralRefinement = ownerIsClass && symbol.isStructuralRefinementMember
 
+            val tsyms = symbol.tpe.finalResultType.typeSymbol :: symbol.paramss.flatten.map(_.tpe.typeSymbol)
+            val tpes = tsyms.map(_.tpeHK)
+            val mod1 = tpes.map(envSubstitution)
+            val mod2 = tpes.map(envDeepSubst)
+            val shouldWarn =
+              (mod1 zip mod2) exists {
+                case (tp1, tp2) => tp1.annotations.map(_.symbol) != tp2.annotations.map(_.symbol)
+              }
+
+            if (flag_create_local_specs)
+              if (cantBeOverridden && doesntOverrideOthers && !isStructuralRefinement)
+                changeSignature
+              else {
+                keepSignature
+                if (shouldWarn)
+                  if (!cantBeOverridden || isStructuralRefinement)
+                    suboptimalCodeWarning(tree.pos, s"This member cannot have its signature minibox-transformed as it becomes part of a type, which allows outer code to call and/or override it. If you don't use it outside, you can allow miniboxing to transform the signature by making the member private${if (cantBeOverridden) " or protected." else "."}")
+              }
+            else
+              keepSignature
+
+            tree.symbol = NoSymbol
             List(tree)
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
@@ -385,9 +438,13 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
           case ddef @ DefDef(_, _, vparamss, _, tpt, rhs) =>
             ddef.setType(null)
             // workaround for SI-7662: https://issues.scala-lang.org/browse/SI-7662
+            // NOTE: Only works for Scala 2.11. For Scala 2.10, we need to override
+            // the structural type check and there we make the defs protected:
             if (ddef.symbol != null)
-              if (ddef.symbol.isStructuralRefinementMember)
+              if (ddef.symbol.isStructuralRefinementMember) {
                 ddef.symbol.setFlag(Flags.PROTECTED)
+                ddef.symbol.setFlag(Flags.notPROTECTED)
+              }
             super.typed(ddef, mode, pt)
 
           case vdef @ ValDef(mods, name, tpt, rhs) =>

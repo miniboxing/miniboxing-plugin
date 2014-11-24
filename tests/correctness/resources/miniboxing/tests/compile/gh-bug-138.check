@@ -26,8 +26,7 @@ package miniboxing.tests.compile.bug138 {
             Fun2.super.<init>();
             ()
           };
-          override def apply(t: Tsp @storage[Double]): Tsp @storage[Double] = t;
-          @scala.annotation.bridge override def apply(t: Tsp): Tsp = apply(t)
+          override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
         val f1: Mb_D.this.Fun1[Tsp] = f2;
@@ -53,8 +52,7 @@ package miniboxing.tests.compile.bug138 {
             Fun2.super.<init>();
             ()
           };
-          override def apply(t: Tsp @storage[Long]): Tsp @storage[Long] = t;
-          @scala.annotation.bridge override def apply(t: Tsp): Tsp = apply(t)
+          override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
         val f1: Mb_J.this.Fun1[Tsp] = f2;
@@ -128,12 +126,11 @@ package miniboxing.tests.compile.bug138 {
             Fun2.super.<init>();
             ()
           };
-          override def apply(t: Double): Double = t;
-          @scala.annotation.bridge override def apply(t: Tsp): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](apply(MiniboxConversionsDouble.this.box2minibox_tt[Tsp](t, T_TypeTag)), T_TypeTag)
+          override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
         val f1: Mb_D.this.Fun1[Tsp] = f2;
-        scala.this.Predef.println(MiniboxConversionsDouble.this.minibox2box[Tsp](f2.apply(t), T_TypeTag));
+        scala.this.Predef.println(f2.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag)));
         scala.this.Predef.println(f1.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag)))
       };
       bar()
@@ -155,12 +152,11 @@ package miniboxing.tests.compile.bug138 {
             Fun2.super.<init>();
             ()
           };
-          override def apply(t: Long): Long = t;
-          @scala.annotation.bridge override def apply(t: Tsp): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](apply(MiniboxConversionsLong.this.box2minibox_tt[Tsp](t, T_TypeTag)), T_TypeTag)
+          override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
         val f1: Mb_J.this.Fun1[Tsp] = f2;
-        scala.this.Predef.println(MiniboxConversionsLong.this.minibox2box[Tsp](f2.apply(t), T_TypeTag));
+        scala.this.Predef.println(f2.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag)));
         scala.this.Predef.println(f1.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag)))
       };
       bar()

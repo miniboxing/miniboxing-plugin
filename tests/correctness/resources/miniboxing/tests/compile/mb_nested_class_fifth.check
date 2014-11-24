@@ -42,13 +42,13 @@ package miniboxing.tests.compile.nested {
           ()
         };
         private[this] val x1: Long = CCCCC_J.this.c;
-        <stable> <accessor> def x1(): Long = DDDDD.this.x1;
+        <stable> <accessor> def x1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](DDDDD.this.x1, T_TypeTag);
         private[this] val x2: U = DDDDD.this.d;
         <stable> <accessor> def x2(): U = DDDDD.this.x2;
         def foo(): Unit = {
           val x3: Long = CCCCC_J.this.c;
           val x4: U = DDDDD.this.d;
-          scala.this.Predef.println(MiniboxDispatch.this.mboxed_eqeq_other(DDDDD.this.x1(), T_TypeTag, DDDDD.this.x2()));
+          scala.this.Predef.println(DDDDD.this.x1().==(DDDDD.this.x2()));
           scala.this.Predef.println(MiniboxDispatch.this.mboxed_eqeq_other(x3, T_TypeTag, x4))
         }
       };

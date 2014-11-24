@@ -14,7 +14,7 @@ class TestSuite extends ScalacVersion {
   val scalaPrinterCompatibility = List[(String, String)](
     " >: Nothing" -> "",
     " <: Any" -> "",
-    "warning: 'minibox' selects 3 phases\n" -> "",
+    "warning: 'minibox' selects 4 phases\n" -> "",
     "<\\$anon: .*?>" -> "anonymous class \\$anon",
     " @scala.annotation.unchecked.uncheckedVariance" -> "",
     "Int\\([0-9]*?\\)" -> "Int",
@@ -22,7 +22,7 @@ class TestSuite extends ScalacVersion {
     "\\+([A-Z])" -> "$1",
     "\\-([A-Z])" -> "$1",
     "warning: \\[check:" -> "\\[check:",
-    "\n(?s)Out of scope symbol reference.*?}\n" -> " symbol out of scope\n",
+    "\n(?s)Out of scope symbol reference.*?\n}\n" -> " symbol out of scope\n",
     "The symbol, tpe or info of tree.*?\n" -> "symbol out of scope\n",
     "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
     "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104

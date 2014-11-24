@@ -1,4 +1,3 @@
-warning: 'minibox' selects 4 phases
 Specializing trait Order2...
   // interface:
   abstract trait Order2[A] extends Object {
