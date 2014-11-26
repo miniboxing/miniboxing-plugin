@@ -16,6 +16,7 @@ class TestSuite extends ScalacVersion {
     " >: Nothing" -> "",
     " <: Any" -> "",
     "warning: 'minibox' selects 4 phases\n" -> "",
+    "warning: 'inject' selects 4 phases\n" -> "",
     "<\\$anon: .*?>" -> "anonymous class \\$anon",
     " @scala.annotation.unchecked.uncheckedVariance" -> "",
     "Int\\([0-9]*?\\)" -> "Int",
