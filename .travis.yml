@@ -1,8 +1,8 @@
 language: scala
 script:
   - sbt clean +update
-  - sbt +compile +test
-  - sbt +package +publish
+  - sbt +compile +package
+  - sbt +test +publish
 scala:
   - 2.10.4
 jdk:
