@@ -1,0 +1,44 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug150.warn6 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug150.warn6.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def test[@miniboxed X](t: X): Object{def foo(): X} = {
+      final class $anon extends Object {
+        def <init>(): <$anon: Object> = {
+          $anon.super.<init>();
+          ()
+        };
+        protected def foo(): X = t;
+        override def toString(): String = "anon class for ".+($anon.this.foo())
+      };
+      new <$anon: Object>()
+    };
+    def test_n_D[X](X_TypeTag: Byte, t: Double): Object{def foo(): Double} = {
+      final class $anon extends Object {
+        def <init>(): <$anon: Object> = {
+          $anon.super.<init>();
+          ()
+        };
+        protected def foo(): Double = t;
+        override def toString(): String = "anon class for ".+(MiniboxConversionsDouble.this.minibox2box[X]($anon.this.foo(), X_TypeTag))
+      };
+      new <$anon: Object>()
+    };
+    def test_n_J[X](X_TypeTag: Byte, t: Long): Object{def foo(): Long} = {
+      final class $anon extends Object {
+        def <init>(): <$anon: Object> = {
+          $anon.super.<init>();
+          ()
+        };
+        protected def foo(): Long = t;
+        override def toString(): String = "anon class for ".+(MiniboxConversionsLong.this.minibox2box[X]($anon.this.foo(), X_TypeTag))
+      };
+      new <$anon: Object>()
+    };
+    def main(args: Array[String]): Unit = scala.this.Predef.println(Test.this.test_n_J[Int](5, MiniboxConversions.this.int2minibox(3)).toString())
+  }
+}
+anon class for 3

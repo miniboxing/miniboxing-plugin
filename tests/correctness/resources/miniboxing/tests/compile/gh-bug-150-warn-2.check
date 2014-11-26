@@ -1,0 +1,77 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug150.warn2 {
+  abstract trait C[@miniboxed X] extends Object {
+    def foo(t: X): X;
+    def foo_D(X_TypeTag: Byte, t: Double): Double;
+    def foo_J(X_TypeTag: Byte, t: Long): Long
+  };
+  class C_D[Xsp] extends Object with miniboxing.tests.compile.bug150.warn2.C[Xsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug150|warn2|C_D|X_TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug150|warn2|C_D|X_TypeTag: Byte): miniboxing.tests.compile.bug150.warn2.C_D[Xsp] = {
+      C_D.super.<init>();
+      ()
+    };
+    def foo(t: Xsp): Xsp = MiniboxConversionsDouble.this.minibox2box[Xsp](C_D.this.foo_D(C_D.this.miniboxing|tests|compile|bug150|warn2|C_D|X_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Xsp](t, C_D.this.miniboxing|tests|compile|bug150|warn2|C_D|X_TypeTag)), C_D.this.miniboxing|tests|compile|bug150|warn2|C_D|X_TypeTag);
+    def foo_D(X_TypeTag: Byte, t: Double): Double = t;
+    def foo_J(X_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
+  };
+  class C_J[Xsp] extends Object with miniboxing.tests.compile.bug150.warn2.C[Xsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug150|warn2|C_J|X_TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug150|warn2|C_J|X_TypeTag: Byte): miniboxing.tests.compile.bug150.warn2.C_J[Xsp] = {
+      C_J.super.<init>();
+      ()
+    };
+    def foo(t: Xsp): Xsp = MiniboxConversionsLong.this.minibox2box[Xsp](C_J.this.foo_J(C_J.this.miniboxing|tests|compile|bug150|warn2|C_J|X_TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Xsp](t, C_J.this.miniboxing|tests|compile|bug150|warn2|C_J|X_TypeTag)), C_J.this.miniboxing|tests|compile|bug150|warn2|C_J|X_TypeTag);
+    def foo_D(X_TypeTag: Byte, t: Double): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    def foo_J(X_TypeTag: Byte, t: Long): Long = t
+  };
+  class C_L[Xsp] extends Object with miniboxing.tests.compile.bug150.warn2.C[Xsp] {
+    def <init>(): miniboxing.tests.compile.bug150.warn2.C_L[Xsp] = {
+      C_L.super.<init>();
+      ()
+    };
+    def foo(t: Xsp): Xsp = t;
+    def foo_D(X_TypeTag: Byte, t: Double): Double = MiniboxConversionsDouble.this.box2minibox_tt[Xsp](C_L.this.foo(MiniboxConversionsDouble.this.minibox2box[Xsp](t, X_TypeTag)), X_TypeTag);
+    def foo_J(X_TypeTag: Byte, t: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Xsp](C_L.this.foo(MiniboxConversionsLong.this.minibox2box[Xsp](t, X_TypeTag)), X_TypeTag)
+  };
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug150.warn2.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def test[@miniboxed X](t: X): miniboxing.tests.compile.bug150.warn2.C[X] = {
+      class D extends miniboxing.tests.compile.bug150.warn2.C_L[X] {
+        def <init>(): D = {
+          D.super.<init>();
+          ()
+        };
+        override def foo(x: X): X = t
+      };
+      new D()
+    };
+    def test_n_D[X](X_TypeTag: Byte, t: Double): miniboxing.tests.compile.bug150.warn2.C[X] = {
+      class D extends miniboxing.tests.compile.bug150.warn2.C_D[X] {
+        def <init>(): D = {
+          D.super.<init>(X_TypeTag);
+          ()
+        };
+        override def foo(x: X): X = MiniboxConversionsDouble.this.minibox2box[X](D.this.foo_D(X_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[X](x, X_TypeTag)), X_TypeTag);
+        override def foo_D(X_TypeTag: Byte, t: Double): Double = t
+      };
+      new D()
+    };
+    def test_n_J[X](X_TypeTag: Byte, t: Long): miniboxing.tests.compile.bug150.warn2.C[X] = {
+      class D extends miniboxing.tests.compile.bug150.warn2.C_J[X] {
+        def <init>(): D = {
+          D.super.<init>(X_TypeTag);
+          ()
+        };
+        override def foo(x: X): X = MiniboxConversionsLong.this.minibox2box[X](D.this.foo_J(X_TypeTag, MiniboxConversionsLong.this.box2minibox_tt[X](x, X_TypeTag)), X_TypeTag);
+        override def foo_J(X_TypeTag: Byte, t: Long): Long = t
+      };
+      new D()
+    };
+    def main(args: Array[String]): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(Test.this.test_n_J[Int](5, MiniboxConversions.this.int2minibox(3)).foo_J(5, MiniboxConversions.this.int2minibox(5))))
+  }
+}
+3

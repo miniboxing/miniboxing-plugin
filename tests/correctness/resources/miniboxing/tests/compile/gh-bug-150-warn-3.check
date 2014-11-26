@@ -1,0 +1,6 @@
+newSource1.scala:7: warning: The method foo cannot have its signature minibox-transformed as it becomes part of class D, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
+      def foo(x: X): X = t
+          ^
+newSource1.scala:8: warning: The method foo2 cannot have its signature minibox-transformed as it becomes part of class D, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
+      protected def foo2(x: X): X = t
+                    ^

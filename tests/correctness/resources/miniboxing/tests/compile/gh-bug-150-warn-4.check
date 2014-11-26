@@ -1,0 +1,44 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug150.warn4 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug150.warn4.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def test[@miniboxed X](t: X): Object = {
+      class D extends Object {
+        def <init>(): D = {
+          D.super.<init>();
+          ()
+        };
+        private def foo(): X = t;
+        override def toString(): String = "C with foo returning ".+(D.this.foo())
+      };
+      new D()
+    };
+    def test_n_D[X](X_TypeTag: Byte, t: Double): Object = {
+      class D extends Object {
+        def <init>(): D = {
+          D.super.<init>();
+          ()
+        };
+        private def foo(): Double = t;
+        override def toString(): String = "C with foo returning ".+(MiniboxConversionsDouble.this.minibox2box[X](D.this.foo(), X_TypeTag))
+      };
+      new D()
+    };
+    def test_n_J[X](X_TypeTag: Byte, t: Long): Object = {
+      class D extends Object {
+        def <init>(): D = {
+          D.super.<init>();
+          ()
+        };
+        private def foo(): Long = t;
+        override def toString(): String = "C with foo returning ".+(MiniboxConversionsLong.this.minibox2box[X](D.this.foo(), X_TypeTag))
+      };
+      new D()
+    };
+    def main(args: Array[String]): Unit = scala.this.Predef.println(Test.this.test_n_J[Int](5, MiniboxConversions.this.int2minibox(3)).toString())
+  }
+}
+C with foo returning 3

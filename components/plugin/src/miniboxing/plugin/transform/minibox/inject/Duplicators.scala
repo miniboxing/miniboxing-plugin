@@ -292,9 +292,31 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
                 changeSignature
               else {
                 keepSignature
-                if (shouldWarn)
-                  if (!cantBeOverridden || isStructuralRefinement)
-                    suboptimalCodeWarning(tree.pos, s"This member cannot have its signature minibox-transformed as it becomes part of a type, which allows outer code to call and/or override it. If you don't use it outside, you can allow miniboxing to transform the signature by making the member private${if (cantBeOverridden) " or protected." else "."}")
+                if (shouldWarn) {
+                  (doesntOverrideOthers, cantBeOverridden, isStructuralRefinement) match {
+                    case (false, _, _) =>
+//                      This error will appear later, when the class is extending something else:
+//                      suboptimalCodeWarning(tree.pos,
+//                          "This member cannot have its signature minibox-transformed since it overrides the following " +
+//                          "class/trait members: \n" +
+//                          symbol.allOverriddenSymbols.map(sym => " * " + sym.defString + " from " + sym.owner).mkString("\n") +
+//                          "\nTo benefit from a miniboxed version of the method, mark the type parameters of the above " +
+//                          "classes/traits with the @miniboxed annotation.")
+                    case (_, false, _) =>
+                      suboptimalCodeWarning(tree.pos,
+                          "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of " +
+                          symbol.owner + ", which allows outer code to call and/or override it. If you don't use it " +
+                          "outside this " + symbol.owner.kindString + ", you can make it private and miniboxing will " +
+                          "be allowed to specialize it:")
+                    case (_, _, true) =>
+                      suboptimalCodeWarning(tree.pos,
+                          "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of a type, " +
+                          "which allows outer code to call it. If you don't use it outside, you can allow miniboxing " +
+                          "to transform the signature by making the member protected or private:")
+                    case (_, _, _) =>
+                      // here just to satisfy exhaustivity, since the if condition protects us from getting here
+                  }
+                }
               }
             else
               keepSignature

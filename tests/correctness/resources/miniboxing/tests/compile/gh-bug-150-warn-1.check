@@ -1,0 +1,4 @@
+newSource1.scala:13: warning: The class miniboxing.tests.compile.bug150.warn1.C would benefit from miniboxing type parameter X, since it is instantiated by miniboxed type parameter X of method test.
+    class D extends C[X] {
+                    ^
+3
