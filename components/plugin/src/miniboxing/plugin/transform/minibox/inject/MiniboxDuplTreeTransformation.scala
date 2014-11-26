@@ -733,7 +733,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         parameters.flatten ::: origtparams,
         vparams.map(_.symbol) ::: newtparams)
 
-      val newBody = symSubstituter(body.duplicate)
+      // bug #149: the TreeSymSubstituter forces .info on classes that will be completely removed by the
+      // miniboxing transformation (after being duplicated + miniboxed), so we get spurious warnings that
+      // code could not be specialized. The fix is to execute the symbol substituter before inject:
+      val newBody = beforeMiniboxInject(symSubstituter(body.duplicate))
       tpt.setType(tpt.tpe.substSym(oldtparams, newtparams))
 
       val meth = copyDefDef(tree)(rhs = newBody)
