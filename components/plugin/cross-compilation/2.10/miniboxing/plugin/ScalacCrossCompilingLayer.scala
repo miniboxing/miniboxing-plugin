@@ -56,6 +56,11 @@ trait ScalacCrossCompilingLayer {
     }
   }
 
+  object delambdafySupport {
+    def isDelambdafyMethod(sym: Symbol): Boolean = false
+    def isDelambdafyEnabled: Boolean = false
+  }
+
   def newDefDef(sym: Symbol, rhs: Tree)(): DefDef = (
     DefDef(sym, vparamss => rhs.substituteSymbols(sym.paramss.flatten, vparamss.flatten))
   )

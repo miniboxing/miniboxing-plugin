@@ -25,9 +25,16 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
   import definitions._
 
   def newTransformer(unit: CompilationUnit) =
-    if (flag_rewire_functionX)
+    if (flag_rewire_functionX) {
+      if (delambdafySupport.isDelambdafyEnabled)
+        // NOTE: The delambdafy transformation is incompatible with MiniboxedFunctionX-es.
+        global.warning(unit.body.pos,
+            "To gain the maximum performance, the miniboxing plugin represents functions (and closures) " +
+            "as described at http://scala-miniboxing.org/example_functions.html. However, `-Ydelambdafy:method` " +
+            "uses a different, incompatible and suboptimal function representation. Your program will still compile " +
+            "but PLEASE DO NOT EXPECT THE BEST PEFORMANCE as long as you use delambdafication!")
       new InteropTreeInjector(unit)
-    else
+    } else
       new Transformer { def apply(tree: Tree) = tree }
 
   class InteropTreeInjector(unit: CompilationUnit) extends TypingTransformer(unit) {

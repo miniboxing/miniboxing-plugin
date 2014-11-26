@@ -7,11 +7,13 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.typechecker.Analyzer
+import scala.reflect.internal.Names
 
 trait ScalacCrossCompilingLayer {
   self =>
 
   val global: Global
+  import global._
 
   implicit class RichGlobal(glb: global.type) {
     def beforePhase[T](phase: Phase)(f: => T): T =
@@ -26,6 +28,11 @@ trait ScalacCrossCompilingLayer {
     // copy pasted from the impl
     import scala.tools.nsc.typechecker.ContextMode
     // context.set(disable = ContextMode.ReportErrors)
+  }
+
+  object delambdafySupport {
+    def isDelambdafyMethod(sym: Symbol): Boolean = sym.isMethod && sym.name.containsName(nme.ANON_FUN_NAME) && sym.isArtifact
+    def isDelambdafyEnabled: Boolean = !global.settings.Ydelambdafy.isDefault
   }
 
   class TweakedAnalyzer extends scala.tools.nsc.typechecker.Analyzer {
