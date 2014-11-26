@@ -172,12 +172,12 @@ object MiniboxingBuild extends Build {
       if (scalaVersion.value.startsWith("2.10")) {
         Seq(
           "org.scala-lang" % "scala-partest" % scalaVersion.value, 
-          "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
+          "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
         )
       } else {
         Seq(
           "org.scala-lang.modules" %% "scala-partest" % "1.0.0",
-          "com.googlecode.java-diff-utils" % "diffutils" % "1.2.1"
+          "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
         )
       }
     )

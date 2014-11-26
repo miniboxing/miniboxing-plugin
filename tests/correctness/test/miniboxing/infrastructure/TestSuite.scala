@@ -7,6 +7,7 @@ import java.io.FileNotFoundException
 import difflib._
 import java.io.PrintWriter
 import miniboxing.plugin.ScalacVersion
+import difflib.myers._
 
 /* Taken from: [[https://github.com/nicolasstucki/specialized/commit/f7ee90610d0052cb3607cef138051575db3c2eb9]] */
 class TestSuite extends ScalacVersion {
@@ -87,7 +88,15 @@ class TestSuite extends ScalacVersion {
       def stripTrailingWS(s: String) = s.replaceAll("\\s*$","")
       val output_lines = seqAsJavaList(output.split("\n").toList.map(stripTrailingWS)).filter(_ != "")
       val expect_lines = seqAsJavaList(expect.split("\n").toList.map(stripTrailingWS)).filter(_ != "")
-      val sdiff = DiffUtils.diff(expect_lines, output_lines)
+      val generator = new DiffRowGenerator.Builder().showInlineDiffs(true).ignoreWhiteSpaces(true).columnWidth(100).build()
+      val differ = new MyersDiff(new Equalizer[String] {
+        def equals(a: String, b: String): Boolean = {
+            val _a = a.trim.replaceAll("\\s+", " ")
+            val _b = b.trim.replaceAll("\\s+", " ")
+            return _a.equals(_b)
+        }
+      })
+      val sdiff = DiffUtils.diff(expect_lines, output_lines, differ)
       val udiff = DiffUtils.generateUnifiedDiff("output", "expected", expect_lines, sdiff, 2)
 
       if (sdiff.getDeltas().size() != 0) {
