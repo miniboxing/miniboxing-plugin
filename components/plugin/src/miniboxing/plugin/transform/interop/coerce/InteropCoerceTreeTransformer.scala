@@ -130,7 +130,7 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
             val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType).withTypedAnnot
 
-            if (qual2.isStorage) {
+            if (qual2.isMbFunction) {
               val tpe2 = if (qual2.tpe.hasAnnotation(mbFunctionClass)) qual2.tpe else qual2.tpe.widen
               val tpe3 = tpe2.removeAnnotation(mbFunctionClass)
               val qual3 =  gen.mkMethodCall(gen.mkAttributedRef(marker_mbfun2fun), List(tpe3), List(qual2))

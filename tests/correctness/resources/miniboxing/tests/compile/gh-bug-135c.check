@@ -1,0 +1,27 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug135c {
+  class C[U] extends Object {
+    def <init>(): miniboxing.tests.compile.bug135c.C[U] = {
+      C.super.<init>();
+      ()
+    };
+    def foo(): U = scala.this.Predef.???()
+  };
+  class D extends miniboxing.tests.compile.bug135c.C[Int => Int] {
+    def <init>(): miniboxing.tests.compile.bug135c.D = {
+      D.super.<init>();
+      ()
+    };
+    override def foo(): miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+        def <init>(): <$anon: Int => Int> = {
+          $anonfun.super.<init>();
+          ()
+        };
+        final def apply(x: Int): Int = x.+(1)
+      };
+      MiniboxedFunctionBridge.this.function1_bridge[Int, Int]((new <$anon: Int => Int>(): Int => Int))
+    };
+    @scala.annotation.bridge override def foo(): Int => Int = foo().f()
+  }
+}

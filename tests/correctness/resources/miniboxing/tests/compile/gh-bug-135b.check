@@ -1,0 +1,27 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug135b {
+  class C[U, V] extends Object {
+    def <init>(): miniboxing.tests.compile.bug135b.C[U,V] = {
+      C.super.<init>();
+      ()
+    };
+    def foo(u: U, v: V): Boolean = true
+  };
+  class D[U] extends miniboxing.tests.compile.bug135b.C[U,Int => Int] {
+    def <init>(): miniboxing.tests.compile.bug135b.D[U] = {
+      D.super.<init>();
+      ()
+    };
+    override def foo(u: U, v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = false;
+    @scala.annotation.bridge override def foo(u: U, v: Int => Int): Boolean = foo(u, MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
+  };
+  class E extends miniboxing.tests.compile.bug135b.D[String => String] {
+    def <init>(): miniboxing.tests.compile.bug135b.E = {
+      E.super.<init>();
+      ()
+    };
+    override def foo(u: miniboxing.runtime.MiniboxedFunction1[String,String], v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = true;
+    @scala.annotation.bridge override def foo(u: String => String, v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), v);
+    @scala.annotation.bridge override def foo(u: String => String, v: Int => Int): Boolean = foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
+  }
+}

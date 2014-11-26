@@ -90,6 +90,6 @@ trait InteropDefinitions {
   }
 
   implicit class RichTree(tree: Tree) {
-    def isStorage: Boolean = tree.tpe.isMbFunction
+    def isMbFunction: Boolean = tree.tpe.isMbFunction
   }
 }
