@@ -28,7 +28,8 @@ class TestSuite extends ScalacVersion {
     "The symbol, tpe or info of tree.*?\n" -> "symbol out of scope\n",
     "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
     "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104
-    "\\$anon .*?>" -> "\\$anonfun"
+    "\\$anon .*?>" -> "\\$anonfun",
+    "@SerialVersionUID(value = " -> "@SerialVersionUID("
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
@@ -68,7 +69,10 @@ class TestSuite extends ScalacVersion {
 
     sys.props("miniboxing.no-logo") = "true"
 
-    for (source <- files(List("resources", "miniboxing", "tests", "compile"), ".scala")) {
+    val tests = files(List("resources", "miniboxing", "tests", "compile"), ".scala").toList :::
+                files(List("resources", "miniboxing", "tests", "compile", scalaBinaryVersion), ".scala").toList
+
+    for (source <- tests) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
 
       totalTests += 1

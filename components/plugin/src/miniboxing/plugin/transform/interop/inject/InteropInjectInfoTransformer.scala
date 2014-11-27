@@ -25,10 +25,13 @@ trait InteropInjectInfoTransformer extends InfoTransform {
 
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
 
-    def isDelambdafyParam(sym: Symbol) = delambdafySupport.isDelambdafyEnabled && sym.owner.isAnonymousClass
+    def isDelambdafyParam(sym: Symbol) =
+      delambdafySupport.isDelambdafyEnabled &&
+      sym.isParameter
+      sym.owner.isAnonymousClass
 
     val res =
-      if (flag_rewire_functionX && currentRun.compiles(sym) && isDelambdafyParam(sym) ) {
+      if (flag_rewire_functionX && currentRun.compiles(sym) && !isDelambdafyParam(sym) ) {
         updatedType(tpe)
       } else
         tpe
