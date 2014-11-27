@@ -28,7 +28,7 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
     if (flag_rewire_functionX) {
       if (delambdafySupport.isDelambdafyEnabled)
         // NOTE: The delambdafy transformation is incompatible with MiniboxedFunctionX-es.
-        global.warning(unit.body.pos,
+        global.reporter.warning(unit.body.pos,
             "To gain the maximum performance, the miniboxing plugin represents functions (and closures) " +
             "as described at http://scala-miniboxing.org/example_functions.html. However, `-Ydelambdafy:method` " +
             "uses a different, incompatible and suboptimal function representation. Your program will still compile " +

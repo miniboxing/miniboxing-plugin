@@ -29,7 +29,7 @@ class TestSuite extends ScalacVersion {
     "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
     "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104
     "\\$anon .*?>" -> "\\$anonfun",
-    "@SerialVersionUID(value = " -> "@SerialVersionUID("
+    "@SerialVersionUID\\(value = " -> "@SerialVersionUID("
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
