@@ -98,6 +98,24 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
       val tree1 =
         tree0 match {
 
+          // update the type for transformed anonymous functions
+          case cdef@ClassDef(mods, name, tparams, tpl@Template(parents, self, body)) if { cdef.symbol.info; transformedAnonFunctions(cdef.symbol) } =>
+            val parents2 = cdef.symbol.info.parents.map(TypeTree(_))
+            val impl2 = treeCopy.Template(tpl, parents2, self, transformStats(body, cdef.symbol))
+            val cdef2 = treeCopy.ClassDef(cdef, mods, name, tparams, impl2)
+            localTyper.typed(cdef2)
+
+          // update the constructor for transformed anonymous functions
+          case FunToMbFun(Typed(ctor @ Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil), _), targ) if { tpt.symbol.info; transformedAnonFunctions(tpt.symbol) } =>
+            val ctor2 = Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil)
+            localTyper.typed(ctor2)
+
+          // update the super constructor
+          case Apply(Select(Super(qual, _), nme.CONSTRUCTOR), Nil) if transformedAnonFunctions(qual.symbol) =>
+            val sup2 = Apply(Select(Super(This(qual.symbol), tpnme.EMPTY), nme.CONSTRUCTOR), Nil)
+            val sup3 = localTyper.typed(sup2)
+            sup3
+
           case FunToMbFun(tree, targ) =>
             val (conversion, targs) =
               targ match {

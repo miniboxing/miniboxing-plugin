@@ -27,9 +27,22 @@ trait InteropCommitInfoTransformer extends InfoTransform {
   import interop._
 
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
-    val tpe2 = deepTransformation.transform(sym, tpe)
-//    if (!(tpe =:= tpe2))
-//      println(sym + "  old: " + tpe + "  new: " + tpe2)
+
+    import AnonymousFunctionSupport._
+
+    val tpe1 = deepTransformation.transform(sym, tpe)
+    val tpe2 =
+      tpe1 match {
+        case ClassInfoType(parents, decls, _) if sym.isAnonymousFunction && 
+                                                 isTypicalParentList(parents) && 
+                                                 isTypicalDeclarationList(decls.toList) =>
+          // Desugared anonymous 
+          val parents2 = tweakedParents(parents)
+          transformedAnonFunctions += sym
+          ClassInfoType(parents2, decls, sym)
+        case _ =>
+          tpe1
+      }
     tpe2
   }
 

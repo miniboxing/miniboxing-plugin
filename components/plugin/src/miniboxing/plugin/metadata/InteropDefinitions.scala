@@ -24,15 +24,31 @@ trait InteropDefinitions {
 
   lazy val mbFunctionClass = global.rootMirror.getRequiredClass("miniboxing.mbFunction")
 
+  lazy val Function0Class = global.definitions.FunctionClass(0)
+  lazy val Function1Class = global.definitions.FunctionClass(1)
+  lazy val Function2Class = global.definitions.FunctionClass(2)
+  lazy val AbstractFunction0Class = global.definitions.AbstractFunctionClass(0)
+  lazy val AbstractFunction1Class = global.definitions.AbstractFunctionClass(1)
+  lazy val AbstractFunction2Class = global.definitions.AbstractFunctionClass(2)
+  lazy val AbstractFunctions = List(AbstractFunction0Class, AbstractFunction1Class, AbstractFunction2Class)
+
   lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction0")
   lazy val MiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction1")
   lazy val MiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction2")
   lazy val MiniboxedFunction0PolyTpe = PolyType(MiniboxedFunction0Class.typeParams, MiniboxedFunction0Class.tpe)
   lazy val MiniboxedFunction1PolyTpe = PolyType(MiniboxedFunction1Class.typeParams, MiniboxedFunction1Class.tpe)
   lazy val MiniboxedFunction2PolyTpe = PolyType(MiniboxedFunction2Class.typeParams, MiniboxedFunction2Class.tpe)
-  lazy val Function0Class = global.definitions.FunctionClass(0)
-  lazy val Function1Class = global.definitions.FunctionClass(1)
-  lazy val Function2Class = global.definitions.FunctionClass(2)
+  lazy val AbstractMiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction0")
+  lazy val AbstractMiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction1")
+  lazy val AbstractMiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction2")
+  lazy val AbstractMiniboxedFunction0PolyTpe = PolyType(AbstractMiniboxedFunction0Class.typeParams, AbstractMiniboxedFunction0Class.tpe)
+  lazy val AbstractMiniboxedFunction1PolyTpe = PolyType(AbstractMiniboxedFunction1Class.typeParams, AbstractMiniboxedFunction1Class.tpe)
+  lazy val AbstractMiniboxedFunction2PolyTpe = PolyType(AbstractMiniboxedFunction2Class.typeParams, AbstractMiniboxedFunction2Class.tpe)
+
+  lazy val abstractFunctionToAbstractMiniboxedTpe =
+    Map(AbstractFunction0Class -> AbstractMiniboxedFunction0PolyTpe,
+        AbstractFunction1Class -> AbstractMiniboxedFunction1PolyTpe,
+        AbstractFunction2Class -> AbstractMiniboxedFunction2PolyTpe)
 
   lazy val FunctionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedFunctionBridge")
 
@@ -92,4 +108,32 @@ trait InteropDefinitions {
   implicit class RichTree(tree: Tree) {
     def isMbFunction: Boolean = tree.tpe.isMbFunction
   }
+
+
+  // Support for transforming anonymous function parents
+  object AnonymousFunctionSupport {
+    def isTypicalParentList(parents: List[Type]) =
+      if (parents.length == 2)
+        AbstractFunctions.contains(parents(0).typeSymbol) &&
+        parents(1).typeSymbol == SerializableClass
+      else
+        false
+
+    def isTypicalDeclarationList(decls: List[Symbol]) =
+      if (decls.length == 2)
+        decls.exists(_.name == nme.CONSTRUCTOR) &&
+        decls.exists(_.name == nme.apply)
+      else
+        false
+
+    def tweakedParents(parents: List[Type]) = {
+      assert(isTypicalParentList(parents))
+      appliedType(tycon = abstractFunctionToAbstractMiniboxedTpe(parents(0).typeSymbol),
+                  args  = parents(0).typeArgs) :: parents.tail
+    }
+  }
+
+  // Transformed anonymous functions
+  // TODO: Create InteropMetadata for this map
+  lazy val transformedAnonFunctions = perRunCaches.newSet[Symbol]()
 }

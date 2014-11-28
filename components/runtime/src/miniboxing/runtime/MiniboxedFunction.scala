@@ -49,3 +49,18 @@ trait MiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] {
 //        MiniboxedFunction2.this.apply(tup._1, tup._2)
 //    }
 }
+
+abstract class AbstractMiniboxedFunction0[@miniboxed +R] extends MiniboxedFunction0[R] {
+  def f: Function0[R] = () => apply()
+  def apply(): R
+}
+
+abstract class AbstractMiniboxedFunction1[@miniboxed -T1, @miniboxed +R] extends MiniboxedFunction1[T1, R] {
+  def f: Function1[T1, R] = (x: T1) => apply(x)
+  def apply(t1: T1): R
+}
+
+abstract class AbstractMiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] extends MiniboxedFunction2[T1, T2, R] {
+  def f: Function2[T1, T2, R] = (x1: T1, x2: T2) => apply(x1, x2)
+  def apply(t1: T1, t2: T2): R
+}
