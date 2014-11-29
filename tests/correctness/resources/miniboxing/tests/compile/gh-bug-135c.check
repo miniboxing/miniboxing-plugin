@@ -13,14 +13,14 @@ package miniboxing.tests.compile.bug135c {
       ()
     };
     override def foo(): miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
-        def <init>(): <$anon: Int => Int> = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[Int,Int] with Serializable {
+        def <init>(): anonymous class $anon = {
           $anonfun.super.<init>();
           ()
         };
         final def apply(x: Int): Int = x.+(1)
       };
-      MiniboxedFunctionBridge.this.function1_bridge[Int, Int]((new <$anon: Int => Int>(): Int => Int))
+      new anonymous class $anon()
     };
     @scala.annotation.bridge override def foo(): Int => Int = foo().f()
   }

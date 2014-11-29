@@ -22,42 +22,40 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   self: InteropInjectComponent =>
 
   import global._
+  import definitions.ByNameParamClass
 
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
 
     def isDelambdafyParam(sym: Symbol) =
       delambdafySupport.isDelambdafyEnabled &&
-      sym.isParameter
+      sym.isValueParameter
       sym.owner.isAnonymousClass
 
     val res =
-      if (flag_rewire_functionX && currentRun.compiles(sym) && !isDelambdafyParam(sym) ) {
-        updatedType(tpe)
+      if (flag_rewire_functionX_values && currentRun.compiles(sym) && !isDelambdafyParam(sym)) {
+        updatedType(NoPosition, tpe)
       } else
         tpe
-//
-//    if (res ne tpe)
-//      println(beforeInteropInject(sym.defString) + "  " + res)
-//    else if (sym.isMethod && currentRun.compiles(sym))
-//      println(beforeInteropInject(sym.defString) + "  : no change")
 
     res
   }
 
-  def updatedType(tpe: Type): Type =
+  def updatedType(pos: Position, tpe: Type): Type =
     (tpe.withoutAnnotations match {
       case TypeRef(_, Function0Class, _) => tpe.withMbFunction
       case TypeRef(_, Function1Class, _) => tpe.withMbFunction
       case TypeRef(_, Function2Class, _) => tpe.withMbFunction
+      case TypeRef(_, ByNameParamClass, _) => tpe.withMbFunction
       case NullaryMethodType(res)        =>
-        val nres = updatedType(res)
+        val nres = updatedType(pos, res)
         if (nres eq res) tpe else NullaryMethodType(nres)
       case MethodType(args, res)         =>
-        val nres = updatedType(res)
+        val nres = updatedType(pos, res)
         if (nres eq res) tpe else MethodType(args, nres)
       case PolyType(targs, res)          =>
-        val nres = updatedType(res)
-        if (nres eq res) tpe else PolyType(targs, updatedType(res))
-      case _ => tpe
+        val nres = updatedType(pos, res)
+        if (nres eq res) tpe else PolyType(targs, updatedType(pos, res))
+      case _ =>
+        tpe.withoutAnnotations
     }).withAnnotations(tpe.annotations)
 }

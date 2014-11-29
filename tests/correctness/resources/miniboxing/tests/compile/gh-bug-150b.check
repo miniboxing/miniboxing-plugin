@@ -19,14 +19,15 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
-            def <init>(): anonymous class $anonfun = {
-              $anonfun.super.<init>();
+          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_DLL[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anon = {
+              $anonfun.super.<init>(F_D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag);
               ()
             };
-            final def apply(x: Asp, y: B): B = y
+            final def apply(x: Asp, y: B): B = $anonfun.this.apply_DLL(F_D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, F_D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag), y);
+            override def apply_DLL(T1_TypeTag: Byte, t1: Double, t2: B): B = t2
           };
-          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+          new anonymous class $anon()
         };
         ()
       }
@@ -39,14 +40,15 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
-            def <init>(): anonymous class $anonfun = {
-              $anonfun.super.<init>();
+          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_JLL[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anon = {
+              $anonfun.super.<init>(F_J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag);
               ()
             };
-            final def apply(x: Asp, y: B): B = y
+            final def apply(x: Asp, y: B): B = $anonfun.this.apply_JLL(F_J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Asp](x, F_J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag), y);
+            override def apply_JLL(T1_TypeTag: Byte, t1: Long, t2: B): B = t2
           };
-          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+          new anonymous class $anon()
         };
         ()
       }
@@ -58,14 +60,14 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,B,B] with Serializable {
-            def <init>(): anonymous class $anonfun = {
+          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_LLL[Asp,B,B] with Serializable {
+            def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
             };
             final def apply(x: Asp, y: B): B = y
           };
-          MiniboxedFunctionBridge.this.function2_bridge[Asp, B, B]((new anonymous class $anonfun(): (Asp, B) => B))
+          new anonymous class $anon()
         };
         ()
       }

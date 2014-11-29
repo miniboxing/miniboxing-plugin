@@ -45,7 +45,7 @@ trait InteropDefinitions {
   lazy val AbstractMiniboxedFunction1PolyTpe = PolyType(AbstractMiniboxedFunction1Class.typeParams, AbstractMiniboxedFunction1Class.tpe)
   lazy val AbstractMiniboxedFunction2PolyTpe = PolyType(AbstractMiniboxedFunction2Class.typeParams, AbstractMiniboxedFunction2Class.tpe)
 
-  lazy val abstractFunctionToAbstractMiniboxedTpe =
+  lazy val abstractFunctionToAbstractMiniboxedTpe: Map[Symbol, Type] =
     Map(AbstractFunction0Class -> AbstractMiniboxedFunction0PolyTpe,
         AbstractFunction1Class -> AbstractMiniboxedFunction1PolyTpe,
         AbstractFunction2Class -> AbstractMiniboxedFunction2PolyTpe)
@@ -95,7 +95,9 @@ trait InteropDefinitions {
         )
     )
 
-  def flag_rewire_functionX: Boolean
+  def flag_rewire_functionX_values: Boolean
+  def flag_rewire_functionX_repres: Boolean
+  def flag_rewire_functionX_bridges: Boolean
 
   // Addons, not yet separated:
 

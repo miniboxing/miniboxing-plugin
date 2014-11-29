@@ -53,7 +53,8 @@ trait InteropInjectComponent extends
   def afterInteropInject[T](op: => T): T = global.afterPhase(interopInjectPhase)(op)
   def beforeInteropInject[T](op: => T): T = global.beforePhase(interopInjectPhase)(op)
 
-  def flag_rewire_functionX: Boolean
+  def flag_rewire_functionX_values: Boolean
+  def flag_rewire_functionX_repres: Boolean
   def flag_rewire_functionX_bridges: Boolean
 }
 
@@ -274,7 +275,8 @@ class Minibox(val global: Global) extends Plugin {
   var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
   var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
   var flag_two_way = true
-  var flag_rewire_functionX = true
+  var flag_rewire_functionX_values = true
+  var flag_rewire_functionX_repres = true
   var flag_rewire_functionX_bridges = true
   var flag_mark_all = false // type parameters as @miniboxed
   var flag_strict_typechecking = false
@@ -315,8 +317,11 @@ class Minibox(val global: Global) extends Plugin {
           flag_strip_miniboxed = true
         case "yno-local-specs" =>                // Undocumented flag
           flag_create_local_specs = false
-        case "library-functions" =>
-          flag_rewire_functionX  = false
+        case "ykeep-functionx-values" | "library-functions"=>
+          flag_rewire_functionX_values  = false
+          flag_rewire_functionX_repres = false
+        case "ykeep-functionx-repres" =>
+          flag_rewire_functionX_repres = false
         case "two-way" =>
           global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                          "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
@@ -359,7 +364,8 @@ class Minibox(val global: Global) extends Plugin {
     override val runsRightAfter = Some("patmat")
     val phaseName = "interop-inject"
 
-    def flag_rewire_functionX: Boolean = Minibox.this.flag_rewire_functionX
+    def flag_rewire_functionX_values: Boolean = Minibox.this.flag_rewire_functionX_values
+    def flag_rewire_functionX_repres: Boolean = Minibox.this.flag_rewire_functionX_repres
     def flag_rewire_functionX_bridges  = Minibox.this.flag_rewire_functionX_bridges
 
     var interopInjectPhase : StdPhase = _

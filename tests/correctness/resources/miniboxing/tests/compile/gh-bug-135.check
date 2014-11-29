@@ -7,13 +7,13 @@ package miniboxing.tests.compile.bug135 {
     };
     def main(args: Array[String]): Unit = {
       val next: PartialFunction[Int,Int] = ({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends scala.runtime.AbstractPartialFunction[Int,Int] with Serializable {
-          def <init>(): <$anon: Int => Int> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractPartialFunction[Int,Int] with Serializable {
+          def <init>(): anonymous class $anon Int> = {
             $anonfun.super.<init>();
             ()
           };
           final override def applyOrElse[A1 <: Int, B1 >: Int](x1: A1, default: miniboxing.runtime.MiniboxedFunction1[A1,B1]): B1 = {
-            case <synthetic> val x1: Int = ((x1.asInstanceOf[Int](): Int): Int @unchecked @unchecked);
+            case <synthetic> val x1: Int = ((x1.asInstanceOf[Int](): Int): Int @unchecked);
             x1 match {
               case 0 => 1
               case 1 => 2
@@ -23,7 +23,7 @@ package miniboxing.tests.compile.bug135 {
           };
           @scala.annotation.bridge final override def applyOrElse[A1 <: Int, B1 >: Int](x: A1, default: A1 => B1): B1 = applyOrElse[A1, B1](x, MiniboxedFunctionBridge.this.function1_bridge[A1, B1](default));
           final def isDefinedAt(x1: Int): Boolean = {
-            case <synthetic> val x1: Int = ((x1.asInstanceOf[Int](): Int): Int @unchecked @unchecked);
+            case <synthetic> val x1: Int = ((x1.asInstanceOf[Int](): Int): Int @unchecked);
             x1 match {
               case 0 => true
               case 1 => true
@@ -32,7 +32,7 @@ package miniboxing.tests.compile.bug135 {
             }
           }
         };
-        new <$anon: Int => Int>()
+        new anonymous class $anon Int>()
       }: PartialFunction[Int,Int]);
       scala.this.Predef.println(next.apply(0));
       scala.this.Predef.println(next.apply(1));

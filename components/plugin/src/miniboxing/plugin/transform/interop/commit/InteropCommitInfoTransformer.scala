@@ -33,10 +33,11 @@ trait InteropCommitInfoTransformer extends InfoTransform {
     val tpe1 = deepTransformation.transform(sym, tpe)
     val tpe2 =
       tpe1 match {
-        case ClassInfoType(parents, decls, _) if sym.isAnonymousFunction && 
-                                                 isTypicalParentList(parents) && 
-                                                 isTypicalDeclarationList(decls.toList) =>
-          // Desugared anonymous 
+        case ClassInfoType(parents, decls, _) if sym.isAnonymousFunction &&
+                                                 isTypicalParentList(parents) &&
+                                                 isTypicalDeclarationList(decls.toList) &&
+                                                 flag_rewire_functionX_repres =>
+          // Desugared anonymous
           val parents2 = tweakedParents(parents)
           transformedAnonFunctions += sym
           ClassInfoType(parents2, decls, sym)

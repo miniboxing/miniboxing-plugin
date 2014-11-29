@@ -75,6 +75,13 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
     def unapply(tree: Tree): Option[(Tree, Type)] = unapply(tree, marker_fun2mbfun).map({ case (tree, tpe) => (tree, tpe) })
   }
 
+  object MaybeTyped {
+    def unapply(tree: Tree): Option[Tree] = tree match {
+      case Typed(tree, tpe) => Some(tree)
+      case other: Tree      => Some(other)
+    }
+  }
+
   class InteropTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
     val applyUpdate =
@@ -105,13 +112,19 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             val cdef2 = treeCopy.ClassDef(cdef, mods, name, tparams, impl2)
             localTyper.typed(cdef2)
 
-          // update the constructor for transformed anonymous functions
+          // update the constructor for transformed anonymous functions, when represented as MiniboxedFunctionX
           case FunToMbFun(Typed(ctor @ Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil), _), targ) if { tpt.symbol.info; transformedAnonFunctions(tpt.symbol) } =>
             val ctor2 = Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil)
             localTyper.typed(ctor2)
 
+          // update the constructor for transformed anonymous functions, when represented as FunctionX
+          case Typed(ctor @ Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil), _) if { tpt.symbol.info; transformedAnonFunctions(tpt.symbol) } =>
+            val ctor2 = Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil)
+            val conv = gen.mkMethodCall(Select(ctor2, newTermName("f")), Nil)
+            localTyper.typed(conv)
+
           // update the super constructor
-          case Apply(Select(Super(qual, _), nme.CONSTRUCTOR), Nil) if transformedAnonFunctions(qual.symbol) =>
+          case MaybeTyped(Apply(Select(Super(qual, _), nme.CONSTRUCTOR), Nil)) if transformedAnonFunctions(qual.symbol) =>
             val sup2 = Apply(Select(Super(This(qual.symbol), tpnme.EMPTY), nme.CONSTRUCTOR), Nil)
             val sup3 = localTyper.typed(sup2)
             sup3

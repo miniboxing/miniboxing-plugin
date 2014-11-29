@@ -197,6 +197,8 @@ object MiniboxingBuild extends Build {
                                      "org.scala-miniboxing.plugins" %% "miniboxing-plugin" % ver from 
                                        s"https://oss.sonatype.org/content/repositories/snapshots/org/scala-miniboxing/plugins/miniboxing-plugin_$sVer/$ver/miniboxing-plugin_$sVer-$ver.jar")
                                  },
+          // after publishing the new version:
+          // scalacOptions ++= Seq("-P:minibox:Ykeep-functionX-repres") ++ (if (bootstrap == "stage2") Seq("-P:minibox:Ystrip-miniboxed") else Seq())
           scalacOptions ++= Seq("-P:minibox:library-functions") ++ (if (bootstrap == "stage2") Seq("-P:minibox:Ystrip-miniboxed") else Seq())
       )
     }

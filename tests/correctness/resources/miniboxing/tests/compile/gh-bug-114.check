@@ -1,0 +1,37 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package miniboxing.tests.correctness.bug114 {
+  class C[@miniboxed T] extends Object {
+    <paramaccessor> private[this] val t: T = _;
+    def <init>(t: T): miniboxing.tests.correctness.bug114.C[T] = {
+      C.super.<init>();
+      ()
+    };
+    def method(): T = {
+      val foo: miniboxing.runtime.MiniboxedFunction1[T,T] = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T,T] with Serializable {
+          def <init>(): anonymous class $anon = {
+            $anonfun.super.<init>();
+            ()
+          };
+          final def apply(x: T): T = x
+        };
+        new anonymous class $anon()
+      };
+      foo.apply(C.this.t)
+    }
+  };
+  object Test extends Object {
+    def <init>(): miniboxing.tests.correctness.bug114.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def main(args: Array[String]): Unit = {
+      scala.this.Predef.println(new miniboxing.tests.correctness.bug114.C[String]("3").method());
+      scala.this.Predef.println(new miniboxing.tests.correctness.bug114.C[Int](300).method());
+      scala.this.Predef.println(new miniboxing.tests.correctness.bug114.C[Double](3.0).method())
+    }
+  }
+}
+3
+300
+3.0

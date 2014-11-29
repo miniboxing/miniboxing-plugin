@@ -25,7 +25,7 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
   import definitions._
 
   def newTransformer(unit: CompilationUnit) =
-    if (flag_rewire_functionX) {
+    if (flag_rewire_functionX_values) {
       if (delambdafySupport.isDelambdafyEnabled)
         // NOTE: The delambdafy transformation is incompatible with MiniboxedFunctionX-es.
         global.reporter.warning(unit.body.pos,
@@ -44,7 +44,7 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
       case Template(parents, self, body) =>
          deriveTemplate(tree)(body => transformStats(body, currentOwner))
       case tree: TypeTree =>
-        val res = updatedType(tree.tpe)
+        val res = updatedType(tree.pos, tree.tpe)
         if (res eq tree.tpe)
           tree
         else

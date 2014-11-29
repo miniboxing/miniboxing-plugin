@@ -28,8 +28,9 @@ class TestSuite extends ScalacVersion {
     "The symbol, tpe or info of tree.*?\n" -> "symbol out of scope\n",
     "warning: TreeCheckers detected non-compliant trees in newSource1.scala" -> "",
     "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104
-    "\\$anon .*?>" -> "\\$anonfun",
-    "@SerialVersionUID\\(value = " -> "@SerialVersionUID("
+    "\\$anon .*?>" -> "\\$anon",
+    "@SerialVersionUID\\(value = " -> "@SerialVersionUID(",
+    "anonymous class \\$anonfun" -> "anonymous class \\$anon"
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
@@ -116,7 +117,7 @@ class TestSuite extends ScalacVersion {
             System.err.println(line)
             //System.err.println("\nCompiler output:\n" + output)
             //System.err.println("\nExpected output:\n" + expect)
-            System.err.println("\n\n")
+          System.err.println("\n\n")
           failed = true
           failedTests += 1
       } else
@@ -124,7 +125,7 @@ class TestSuite extends ScalacVersion {
     }
 
     if (failedTests != 0)
-      System.err.println(s"\n  $totalTests tests ran, $failedTests failed :(\n")
+      System.err.println(s"\n  $totalTests tests ran, $failedTests ${if (UPDATE_CHECKFILE) "updated" else "failed"} :(\n")
     else
       System.err.println(s"\n  $totalTests tests ran, all good :)\n")
 
