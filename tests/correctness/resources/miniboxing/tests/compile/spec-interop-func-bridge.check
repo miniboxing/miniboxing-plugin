@@ -5,40 +5,52 @@ package miniboxing.runtime {
       MiniboxedFunctionBridge.super.<init>();
       ()
     };
-    def function0_bridge[R](_f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = {
-      final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_L[R] {
-        def <init>(): anonymous class $anon = {
-          $anon.super.<init>();
-          ()
+    def function0_bridge[R](_f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction0[R]]()
+    else
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction0_L[R] {
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): () => R = _f;
+          def apply(): R = _f.apply()
         };
-        def f(): () => R = _f;
-        def apply(): R = _f.apply()
+        new anonymous class $anon()
       };
-      new anonymous class $anon()
-    };
-    def function1_bridge[T, R](_f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
-      final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_LL[T,R] {
-        def <init>(): anonymous class $anon = {
-          $anon.super.<init>();
-          ()
+    def function1_bridge[T1, R](_f: T1 => R): miniboxing.runtime.MiniboxedFunction1[T1,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T1,R]]()
+    else
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction1_LL[T1,R] {
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): T1 => R = _f;
+          def apply(t: T1): R = _f.apply(t)
         };
-        def f(): T => R = _f;
-        def apply(t: T): R = _f.apply(t)
+        new anonymous class $anon()
       };
-      new anonymous class $anon()
-    };
-    def function2_bridge[T1, T2, R](_f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
-      final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_LLL[T1,T2,R] {
-        def <init>(): anonymous class $anon = {
-          $anon.super.<init>();
-          ()
+    def function2_bridge[T1, T2, R](_f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
+        final class $anon extends Object with miniboxing.runtime.MiniboxedFunction2_LLL[T1,T2,R] {
+          def <init>(): anonymous class $anon = {
+            $anon.super.<init>();
+            ()
+          };
+          def f(): (T1, T2) => R = _f;
+          def apply(t1: T1, t2: T2): R = _f.apply(t1, t2)
         };
-        def f(): (T1, T2) => R = _f;
-        def apply(t1: T1, t2: T2): R = _f.apply(t1, t2)
+        new anonymous class $anon()
       };
-      new anonymous class $anon()
-    };
-    def function0_opt_bridge_long[R](R_Tag: Byte, _f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = {
+    def function0_opt_bridge_long[R](R_Tag: Byte, _f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction0[R]]()
+    else
+      {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
     case 0 => {
@@ -156,7 +168,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function0_bridge[R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction0[R]]();
-    def function0_opt_bridge_double[R](R_Tag: Byte, _f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = {
+    def function0_opt_bridge_double[R](R_Tag: Byte, _f: () => R): miniboxing.runtime.MiniboxedFunction0[R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction0Wrapper[_]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction0[R]]()
+    else
+      {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
     case 7 => {
@@ -194,7 +209,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function0_bridge[R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction0[R]]();
-    def function1_opt_bridge_long_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
+    def function1_opt_bridge_long_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
     case 5 => {
@@ -336,7 +354,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function1_bridge[T, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]();
-    def function1_opt_bridge_double_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
+    def function1_opt_bridge_double_long[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
     case 7 => {
@@ -478,7 +499,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function1_bridge[T, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]();
-    def function1_opt_bridge_long_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
+    def function1_opt_bridge_long_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
     case 75 => {
@@ -552,7 +576,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function1_bridge[T, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]();
-    def function1_opt_bridge_double_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = {
+    def function1_opt_bridge_double_double[T, R](T_Tag: Byte, R_Tag: Byte, _f: T => R): miniboxing.runtime.MiniboxedFunction1[T,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction1Wrapper[_, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T_Tag.+(R_Tag.*(10));
   x1 match {
     case 77 => {
@@ -626,7 +653,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function1_bridge[T, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction1[T,R]]();
-    def function2_opt_bridge_long_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_long_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T1_Tag.+(T2_Tag.*(10)).+(R_Tag.*(10).*(10));
   x1 match {
     case 55 => {
@@ -920,7 +950,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_long_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_long_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T1_Tag.+(R_Tag.*(10));
   x1 match {
     case 5 => {
@@ -1070,7 +1103,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_double_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_double_long_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T2_Tag.+(R_Tag.*(10));
   x1 match {
     case 5 => {
@@ -1220,7 +1256,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_double_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_double_double_long[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
     case 0 => {
@@ -1298,7 +1337,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_long_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_long_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T1_Tag.+(T2_Tag.*(10)).+(R_Tag.*(10).*(10));
   x1 match {
     case 755 => {
@@ -1448,7 +1490,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_long_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_long_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T1_Tag.+(R_Tag.*(10));
   x1 match {
     case 75 => {
@@ -1526,7 +1571,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_double_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_double_long_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Int = T2_Tag.+(R_Tag.*(10));
   x1 match {
     case 75 => {
@@ -1604,7 +1652,10 @@ package miniboxing.runtime {
     case _ => MiniboxedFunctionBridge.this.function2_bridge[T1, T2, R](_f)
   }
 }.asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]();
-    def function2_opt_bridge_double_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = {
+    def function2_opt_bridge_double_double_double[T1, T2, R](T1_Tag: Byte, T2_Tag: Byte, R_Tag: Byte, _f: (T1, T2) => R): miniboxing.runtime.MiniboxedFunction2[T1,T2,R] = if (_f.isInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]())
+      _f.asInstanceOf[miniboxing.runtime.AbstractFunction2Wrapper[_, _, _]]().m().asInstanceOf[miniboxing.runtime.MiniboxedFunction2[T1,T2,R]]()
+    else
+      {
   case <synthetic> val x1: Byte = R_Tag;
   x1.toInt match {
     case 7 => {

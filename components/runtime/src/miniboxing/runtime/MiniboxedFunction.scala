@@ -1,5 +1,7 @@
 package miniboxing.runtime
 
+import scala.runtime.{AbstractFunction0, AbstractFunction1, AbstractFunction2}
+
 /**
  * A miniboxed version of the Function0. It is used to
  * efficiently invoke the function from a miniboxed environment.
@@ -50,17 +52,38 @@ trait MiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] {
 //    }
 }
 
+abstract class AbstractFunction0Wrapper[+R] extends AbstractFunction0[R] {
+  def m: MiniboxedFunction0[R]
+}
+
+abstract class AbstractFunction1Wrapper[-T1, +R] extends AbstractFunction1[T1, R] {
+  def m: MiniboxedFunction1[T1, R]
+}
+
+abstract class AbstractFunction2Wrapper[-T1, -T2, +R] extends AbstractFunction2[T1, T2, R] {
+  def m: MiniboxedFunction2[T1, T2, R]
+}
+
 abstract class AbstractMiniboxedFunction0[@miniboxed +R] extends MiniboxedFunction0[R] {
-  def f: Function0[R] = () => apply()
+  val f: Function0[R] = new AbstractFunction0Wrapper[R] {
+    def apply(): R =  AbstractMiniboxedFunction0.this.apply()
+    def m: MiniboxedFunction0[R] = AbstractMiniboxedFunction0.this
+  }
   def apply(): R
 }
 
 abstract class AbstractMiniboxedFunction1[@miniboxed -T1, @miniboxed +R] extends MiniboxedFunction1[T1, R] {
-  def f: Function1[T1, R] = (x: T1) => apply(x)
+  val f: Function1[T1, R] = new AbstractFunction1Wrapper[T1, R] {
+    def apply(t1: T1): R =  AbstractMiniboxedFunction1.this.apply(t1)
+    def m: MiniboxedFunction1[T1, R] = AbstractMiniboxedFunction1.this
+  }
   def apply(t1: T1): R
 }
 
 abstract class AbstractMiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] extends MiniboxedFunction2[T1, T2, R] {
-  def f: Function2[T1, T2, R] = (x1: T1, x2: T2) => apply(x1, x2)
+  val f: Function2[T1, T2, R] = new AbstractFunction2Wrapper[T1, T2, R] {
+    def apply(t1: T1, t2: T2): R =  AbstractMiniboxedFunction2.this.apply(t1, t2)
+    def m: MiniboxedFunction2[T1, T2, R] = AbstractMiniboxedFunction2.this
+  }
   def apply(t1: T1, t2: T2): R
 }
