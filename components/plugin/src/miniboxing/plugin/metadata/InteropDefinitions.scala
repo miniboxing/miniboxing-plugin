@@ -135,6 +135,19 @@ trait InteropDefinitions {
     }
   }
 
+  // TODO: Add curried, tupled, etc...
+  lazy val directMethodUpdate =
+    Map(
+      Function0Class.tpe.member(newTermName("apply")) -> MiniboxedFunction0Class.tpe.member(newTermName("apply")),
+      Function1Class.tpe.member(newTermName("apply")) -> MiniboxedFunction1Class.tpe.member(newTermName("apply")),
+      Function2Class.tpe.member(newTermName("apply")) -> MiniboxedFunction2Class.tpe.member(newTermName("apply")),
+      Function0Class.tpe.member(newTermName("toString")) -> MiniboxedFunction0Class.tpe.member(newTermName("toString")),
+      Function1Class.tpe.member(newTermName("toString")) -> MiniboxedFunction1Class.tpe.member(newTermName("toString")),
+      Function2Class.tpe.member(newTermName("toString")) -> MiniboxedFunction2Class.tpe.member(newTermName("toString"))
+    )
+
+  lazy val directMethodSymbols = directMethodUpdate.keySet.toList
+
   // Transformed anonymous functions
   // TODO: Create InteropMetadata for this map
   lazy val transformedAnonFunctions = perRunCaches.newSet[Symbol]()

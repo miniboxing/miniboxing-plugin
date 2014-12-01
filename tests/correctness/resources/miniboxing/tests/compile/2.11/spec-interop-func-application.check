@@ -1,0 +1,31 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package miniboxing.tests.compile.streams {
+  final class Stream[@miniboxed T] extends Object {
+    <paramaccessor> private[this] val streamf: miniboxing.runtime.MiniboxedFunction1[T => Boolean,Unit] = _;
+    <stable> <accessor> <paramaccessor> def streamf(): miniboxing.runtime.MiniboxedFunction1[T => Boolean,Unit] = Stream.this.streamf;
+    implicit <synthetic> <paramaccessor> private[this] val evidence$1: scala.reflect.ClassTag[T] = _;
+    def <init>(streamf: miniboxing.runtime.MiniboxedFunction1[T => Boolean,Unit], evidence$1: scala.reflect.ClassTag[T]): miniboxing.tests.compile.streams.Stream[T] = {
+      Stream.super.<init>();
+      ()
+    };
+    def filter(p: miniboxing.runtime.MiniboxedFunction1[T,Boolean]): miniboxing.tests.compile.streams.Stream[T] = new miniboxing.tests.compile.streams.Stream[T]({
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit] with Serializable {
+        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit]> = {
+          $anonfun.super.<init>();
+          ()
+        };
+        final def apply(iterf: T => Boolean): Unit = Stream.this.streamf().apply({
+          @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean] with Serializable {
+            def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean]> = {
+              $anonfun.super.<init>();
+              ()
+            };
+            final def apply(value: T): Boolean = p.apply(value).unary_!().||(MiniboxedFunctionBridge.this.function1_bridge[T, Boolean](iterf).apply(value))
+          };
+          new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean]>().f()
+        })
+      };
+      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit]>()
+    }, Stream.this.evidence$1)
+  }
+}

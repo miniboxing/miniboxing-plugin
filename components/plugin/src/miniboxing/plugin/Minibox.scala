@@ -56,6 +56,7 @@ trait InteropInjectComponent extends
   def flag_rewire_functionX_values: Boolean
   def flag_rewire_functionX_repres: Boolean
   def flag_rewire_functionX_bridges: Boolean
+  def flag_rewire_functionX_application: Boolean
 }
 
 /** Tree preparer before retyping the tree */
@@ -226,7 +227,7 @@ trait PostTyperComponent extends
 }
 
 /** Main miniboxing class */
-class Minibox(val global: Global) extends Plugin {
+class Minibox(val global: Global) extends Plugin with ScalacVersion {
   import global._
 
   val name = "minibox"
@@ -284,6 +285,7 @@ class Minibox(val global: Global) extends Plugin {
   var flag_create_local_specs = true
   var flag_strict_warnings = false
   var flag_strict_warnings_outside = false
+  var flag_rewire_functionX_application = false
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -322,6 +324,11 @@ class Minibox(val global: Global) extends Plugin {
           flag_rewire_functionX_repres = false
         case "ykeep-functionx-repres" =>
           flag_rewire_functionX_repres = false
+        case "yrewire-functionx-application" =>
+          if (scalaBinaryVersion == "2.10")
+            error("The option -P:minibox:Yrewire-functionX-application only works on Scala 2.11. La reverdere!")
+          else
+            flag_rewire_functionX_application = true
         case "two-way" =>
           global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                          "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
@@ -364,9 +371,10 @@ class Minibox(val global: Global) extends Plugin {
     override val runsRightAfter = Some("patmat")
     val phaseName = "interop-inject"
 
-    def flag_rewire_functionX_values: Boolean = Minibox.this.flag_rewire_functionX_values
-    def flag_rewire_functionX_repres: Boolean = Minibox.this.flag_rewire_functionX_repres
-    def flag_rewire_functionX_bridges  = Minibox.this.flag_rewire_functionX_bridges
+    def flag_rewire_functionX_values: Boolean       = Minibox.this.flag_rewire_functionX_values
+    def flag_rewire_functionX_repres: Boolean       = Minibox.this.flag_rewire_functionX_repres
+    def flag_rewire_functionX_bridges: Boolean      = Minibox.this.flag_rewire_functionX_bridges
+    def flag_rewire_functionX_application: Boolean  = Minibox.this.flag_rewire_functionX_application
 
     var interopInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

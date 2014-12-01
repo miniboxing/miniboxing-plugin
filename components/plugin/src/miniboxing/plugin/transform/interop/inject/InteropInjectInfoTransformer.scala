@@ -29,7 +29,7 @@ trait InteropInjectInfoTransformer extends InfoTransform {
     def isDelambdafyParam(sym: Symbol) =
       delambdafySupport.isDelambdafyEnabled &&
       sym.isValueParameter
-      sym.owner.isAnonymousClass
+      sym.owner.isAnonymousFunction
 
     val res =
       if (flag_rewire_functionX_values && currentRun.compiles(sym) && !isDelambdafyParam(sym)) {

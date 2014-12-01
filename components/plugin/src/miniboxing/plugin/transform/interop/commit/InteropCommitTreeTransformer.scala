@@ -84,15 +84,6 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
 
   class InteropTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
-    val applyUpdate =
-      Map(
-        FunctionClass(0).tpe.member(newTermName("apply")) -> MiniboxedFunction0Class.tpe.member(newTermName("apply")),
-        FunctionClass(1).tpe.member(newTermName("apply")) -> MiniboxedFunction1Class.tpe.member(newTermName("apply")),
-        FunctionClass(2).tpe.member(newTermName("apply")) -> MiniboxedFunction2Class.tpe.member(newTermName("apply"))
-      )
-
-    val applySymbols = applyUpdate.keySet.toList
-
     override def transform(tree0: Tree): Tree = {
       val oldTpe = tree0.tpe
       val newTpe = deepTransformation(oldTpe)
@@ -138,20 +129,31 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
               }
 
             val tree1 = gen.mkMethodCall(conversion, targs, List(transform(tree)))
-//            println(tree0 + " ==> " + tree1)
             localTyper.typed(tree1)
 
           case MbFunToFun(tree, targ) =>
             val tree1 = gen.mkMethodCall(Select(transform(tree), newTermName("f")), Nil)
-//            println(tree0 + " ==> " + tree1)
             localTyper.typed(tree1)
 
-          case Select(MbFunToFun(fun, targ), apply) if applySymbols.contains(tree0.symbol) =>
-            val tree1 = gen.mkAttributedSelect(transform(fun), applyUpdate(tree0.symbol))
+          case Select(MbFunToFun(fun, targ), _) if directMethodSymbols.contains(tree0.symbol) =>
+            val tree1 = gen.mkAttributedSelect(transform(fun), directMethodUpdate(tree0.symbol))
             val res = localTyper.typedOperator(tree1)
-//            println(tree0 + " ==> " + res)
-//            println(res.symbol.defString)
-//            println(res.symbol.owner)
+            res
+
+          case Select(fun, _) if flag_rewire_functionX_application &&
+                                 directMethodSymbols.contains(tree0.symbol) =>
+
+            // find the type argument
+            val (conversion, targs) =
+              tree0.symbol.owner match {
+                case Function0Class => (function0_bridge, fun.tpe.baseType(Function0Class).typeArgs)
+                case Function1Class => (function1_bridge, fun.tpe.baseType(Function1Class).typeArgs)
+                case Function2Class => (function2_bridge, fun.tpe.baseType(Function2Class).typeArgs)
+              }
+
+            val tree1 = gen.mkMethodCall(conversion, targs, List(transform(fun)))
+            val tree2 = gen.mkAttributedSelect(tree1, directMethodUpdate(tree0.symbol))
+            val res = localTyper.typedOperator(tree2)
              res
 
           case _ =>
