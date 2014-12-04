@@ -9,6 +9,7 @@ import scala.runtime.{AbstractFunction0, AbstractFunction1, AbstractFunction2}
 trait MiniboxedFunction0[@miniboxed +R] {
   def f: Function0[R]
   def apply(): R
+  override def toString = "<function0>"
 }
 
 /**
@@ -20,6 +21,7 @@ trait MiniboxedFunction1[@miniboxed -T1, @miniboxed +R] {
 
   def f: Function1[T1, R]
   def apply(t1: T1): R
+  override def toString = "<function1>"
 
 //  def compose[@miniboxed A](g: MiniboxedFunction1[A, T1]): MiniboxedFunction1[A, R] =
 //    new AbstractMiniboxedFunction1[A, R] {
@@ -39,6 +41,7 @@ trait MiniboxedFunction1[@miniboxed -T1, @miniboxed +R] {
 trait MiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] {
   def f: Function2[T1, T2, R]
   def apply(t1: T1, t2: T2): R
+  override def toString = "<function2>"
 
 //  def curried: MiniboxedFunction1[T1, Function1[T2, R]] =
 //    new AbstractMiniboxedFunction1[T1, Function1[T2, R]] {
