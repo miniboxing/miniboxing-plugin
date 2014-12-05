@@ -30,7 +30,7 @@ object MiniboxingBuild extends Build {
     scalaSource in Test := baseDirectory.value / "test",
     javaSource in Test := baseDirectory.value / "test",
     resourceDirectory in Compile := baseDirectory.value / "resources",
-    compileOrder := CompileOrder.JavaThenScala,
+    compileOrder := CompileOrder.Mixed,
 
     unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
     unmanagedSourceDirectories in Test := Seq((scalaSource in Test).value),

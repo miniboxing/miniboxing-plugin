@@ -2,6 +2,7 @@ package miniboxing.runtime
 package array
 
 class MbArray_L[T](array: Array[AnyRef]) extends MbArray[T] {
+
   def this(array: Array[T]) =
     this({
       val array2 = new Array[AnyRef](array.length)
@@ -13,6 +14,9 @@ class MbArray_L[T](array: Array[AnyRef]) extends MbArray[T] {
       array2
     })
 
+  def this(size: Int) =
+    this(new Array[AnyRef](size))
+
   def apply(idx: Int): T = array(idx).asInstanceOf[T]
   def update(idx: Int, value: T): Unit = array(idx) = value.asInstanceOf[AnyRef]
   override def clone: MbArray[T] = new MbArray_L[T](array.clone())
@@ -20,6 +24,7 @@ class MbArray_L[T](array: Array[AnyRef]) extends MbArray[T] {
 }
 
 class MbArray_J[T](T_Tag: Byte, array: Array[Long]) extends MbArray[T] {
+
   def this(T_Tag: Byte, array: Array[T]) =
     this(T_Tag, {
       val array2 = new Array[Long](array.length)
@@ -30,6 +35,9 @@ class MbArray_J[T](T_Tag: Byte, array: Array[Long]) extends MbArray[T] {
       }
       array2
     })
+
+  def this(T_Tag: Byte, size: Int) =
+    this(T_Tag, new Array[Long](size))
 
   def apply(idx: Int): T = MiniboxConversionsLong.minibox2box(array(idx), T_Tag)
   def update(idx: Int, value: T): Unit = array(idx) = MiniboxConversionsLong.box2minibox_tt(value, T_Tag)
@@ -42,6 +50,7 @@ class MbArray_J[T](T_Tag: Byte, array: Array[Long]) extends MbArray[T] {
 }
 
 class MbArray_D[T](T_Tag: Byte, array: Array[Double]) extends MbArray[T] {
+
   def this(T_Tag: Byte, array: Array[T]) =
     this(T_Tag, {
       val array2 = new Array[Double](array.length)
@@ -53,6 +62,9 @@ class MbArray_D[T](T_Tag: Byte, array: Array[Double]) extends MbArray[T] {
       array2
     })
 
+  def this(T_Tag: Byte, size: Int) =
+    this(T_Tag, new Array[Double](size))
+
   def apply(idx: Int): T = MiniboxConversionsDouble.minibox2box(array(idx), T_Tag)
   def update(idx: Int, value: T): Unit = array(idx) = MiniboxConversionsDouble.box2minibox_tt(value, T_Tag)
   override def clone: MbArray[T] = new MbArray_D[T](T_Tag, array.clone())
@@ -60,5 +72,5 @@ class MbArray_D[T](T_Tag: Byte, array: Array[Double]) extends MbArray[T] {
 
   // optimized accessors:
   def apply_D(idx: Int): Double = array(idx)
-  def update(idx: Int, value: Double): Unit = array(idx) = value
+  def update_D(idx: Int, value: Double): Unit = array(idx) = value
 }

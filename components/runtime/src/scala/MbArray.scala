@@ -1,6 +1,6 @@
 package scala;
 
-import miniboxing.runtime.array.MbAnyRefArray;
+import miniboxing.runtime.array.MbArray_L;
 
 /**
  * The `scala.MbArray` class is an alternative implementation of the `scala.Array` class
@@ -30,20 +30,15 @@ abstract class MbArray[T] {
   def length(): Int
 
   /** Clone the current array */
-  def clone(): MbArray[T]
-
-  // TODO: It may be cool to have this additional member to
-  // allow cloning the array outside miniboxed code :)
-  // def newArrayOfSize(size: Int): MbArray[T]
+  override def clone(): MbArray[T] = sys.error("Should be overridden")
 }
 
 object MbArray {
-
   /** Create an empty MbArray of `size` */
   def empty[T](size: Int): MbArray[T] =
-    new MbAnyRefArray[T](new Array[AnyRef](size));
+    new miniboxing.runtime.array.MbArray_L[T](size);
 
   /** Clone an array into a MbArray */
-  def cloneArray[T](array: Array[T]): MbArray[T] =
-    new MbAnyRefArray[T](array);
+  def clone[T](array: Array[T]): MbArray[T] =
+    new miniboxing.runtime.array.MbArray_L[T](array);
 }
