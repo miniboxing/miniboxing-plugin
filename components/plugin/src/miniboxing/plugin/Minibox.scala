@@ -208,6 +208,22 @@ trait MiniboxCommitComponent extends
   def flag_two_way: Boolean
 }
 
+/** Optimize miniboxed arrays */
+trait MbArrayOptimizeComponent extends
+    PluginComponent
+    with ScalacCrossCompilingLayer {
+
+  val minibox: MiniboxInjectComponent { val global: MbArrayOptimizeComponent.this.global.type }
+  val interop: InteropInjectComponent { val global: MbArrayOptimizeComponent.this.global.type }
+
+  def mbArrayOptimizePhase: StdPhase
+
+  def afterMbArrayOptimize[T](op: => T): T = global.afterPhase(mbArrayOptimizePhase)(op)
+  def beforeMbArrayOptimize[T](op: => T): T = global.beforePhase(mbArrayOptimizePhase)(op)
+
+  def flag_rewire_mbarray: Boolean
+}
+
 trait PreTyperComponent extends
   PluginComponent
   with TypingTransformers
@@ -286,6 +302,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_strict_warnings = false
   var flag_strict_warnings_outside = false
   var flag_rewire_functionX_application = false
+  var flag_rewire_mbarray = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -324,6 +341,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_rewire_functionX_repres = false
         case "ykeep-functionx-repres" =>
           flag_rewire_functionX_repres = false
+        case "ykeep-mbarray-generic" =>
+          flag_rewire_mbarray = false
         case "yrewire-functionx-application" =>
           if (scalaBinaryVersion == "2.10")
             error("The option -P:minibox:Yrewire-functionX-application only works on Scala 2.11. La reverdere!")
@@ -525,6 +544,24 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       mboxCommitPhase = new Phase(prev)
       mboxCommitPhase
+    }
+  }
+
+  private object MbArrayOptimizePhase extends {
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val interop: InteropInjectPhase.type = InteropInjectPhase
+  } with MbArrayOptimizeComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List(MiniboxCoercePhase.phaseName)
+    override val runsRightAfter = Some(MiniboxCoercePhase.phaseName)
+    val phaseName = Minibox.this.name + "-commit"
+
+    def flag_rewire_mbarray = Minibox.this.flag_rewire_mbarray
+
+    var mbArrayOptimizePhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      mbArrayOptimizePhase = ??? //new Phase(prev)
+      mbArrayOptimizePhase
     }
   }
 

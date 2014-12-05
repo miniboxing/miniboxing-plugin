@@ -3,7 +3,7 @@ package miniboxing.runtime.array;
 import miniboxing.runtime.*;
 import scala.MbArray;
 
-class MbArrayOptimization {
+class MbArrayOpts {
 
   public static <T> long mbArray_apply_J(MbArray<T> mbArray, int index, byte T_Tag) {
     if (mbArray instanceof MbArray_J<?>)
