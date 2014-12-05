@@ -56,8 +56,8 @@ package miniboxing.tests.compile.mbarray03 {
       ()
     };
     def apply[@miniboxed T](array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_L[T](scala.MbArray.clone[T](array));
-    def apply_n_D[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_D[T](T_TypeTag, scala.MbArray.clone[T](array));
-    def apply_n_J[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_J[T](T_TypeTag, scala.MbArray.clone[T](array))
+    def apply_n_D[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_D[T](T_TypeTag, MbArrayOpts.this.mbArray_clone_D[T](array, T_TypeTag));
+    def apply_n_J[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_J[T](T_TypeTag, MbArrayOpts.this.mbArray_clone_J[T](array, T_TypeTag))
   };
   object Test extends Object with App {
     def <init>(): miniboxing.tests.compile.mbarray03.Test.type = {
@@ -65,7 +65,7 @@ package miniboxing.tests.compile.mbarray03 {
       ()
     };
     Vec.apply_n_J[Int](5, scala.Array.apply(1, scala.this.Predef.wrapIntArray(Array[Int]{2, 3, 4, 5}))).foo();
-    Vec.apply[String](scala.Array.apply[String](scala.this.Predef.wrapRefArray[String](Array[String]{"x", "y", "z"}), (ClassTag.apply[String](classOf[java.lang.String]): scala.reflect.ClassTag[String]))).foo();
+    Vec.apply[String](scala.Array.apply[String](scala.this.Predef.wrapRefArray[String](Array[String]{"x", "y", "z"}), ClassTag.apply[String](classOf[java.lang.String]))).foo();
     Vec.apply_n_D[Double](8, scala.Array.apply(1.0, scala.this.Predef.wrapDoubleArray(Array[Double]{2.0, 3.0}))).foo();
     Vec.apply_n_J[Boolean](1, scala.Array.apply(true, scala.this.Predef.wrapBooleanArray(Array[Boolean]{false}))).foo()
   }

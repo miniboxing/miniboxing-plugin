@@ -30,7 +30,9 @@ class TestSuite extends ScalacVersion {
     "warning: Reference to uninitialized variable t" -> "", // TODO: Remove after looking at #104
     "\\$anon .*?>" -> "\\$anon",
     "@SerialVersionUID\\(value = " -> "@SerialVersionUID(",
-    "anonymous class \\$anonfun" -> "anonymous class \\$anon"
+    "anonymous class \\$anonfun" -> "anonymous class \\$anon",
+    // for mb_array_03.scala
+    "\\(ClassTag.apply\\[String\\]\\(classOf\\[java.lang.String\\]\\): scala\\.reflect\\.ClassTag\\[String\\]\\)" -> "ClassTag.apply[String](classOf[java.lang.String])"
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
