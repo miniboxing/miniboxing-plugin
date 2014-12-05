@@ -15,19 +15,19 @@ package transform
 package mbarray
 
 import scala.tools.nsc.transform.TypingTransformers
+import scala.reflect.internal.Phase
 
 trait MbArrayTreeTransformer extends TypingTransformers {
   self: MbArrayOptimizeComponent =>
 
   import global._
-  import minibox._
 
   class OptimizePhase(prev: Phase) extends StdPhase(prev) {
     override def name = MbArrayTreeTransformer.this.phaseName
     override def checkable = true
     def apply(unit: CompilationUnit): Unit =
       if (flag_rewire_mbarray)
-        if (!flag_two_way) {
+        if (!minibox.flag_two_way) {
           global.reporter.warning(unit.body.pos, "Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (-Y:minibox:Ytwo-way). `MbArray` will be generic and will box.")
         } else
           afterMbArrayOptimize(new OptimizeTransformer(unit).transformUnit(unit))
@@ -38,6 +38,7 @@ trait MbArrayTreeTransformer extends TypingTransformers {
   class OptimizeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
 
     import global._
+    import minibox._
 
   }
 }

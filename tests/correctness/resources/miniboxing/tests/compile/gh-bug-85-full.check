@@ -58,3 +58,6 @@ Specializing trait F1...
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
   }
+newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile.bug85.full
+                                       ^

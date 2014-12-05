@@ -1,1 +1,4 @@
 [Now checking: minibox-inject]
+newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile.nested.sixth
+                                        ^

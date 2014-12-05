@@ -1,4 +1,3 @@
-warning: 'minibox' selects 4 phases
 Specializing trait CC...
   // interface:
   abstract trait CC[T] extends Object {
@@ -91,3 +90,6 @@ package miniboxing.tests.compile.inheritance.traits {
   }
 }
 [Now checking: minibox-commit]
+newSource1.scala:4: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile.inheritance.traits
+                                             ^

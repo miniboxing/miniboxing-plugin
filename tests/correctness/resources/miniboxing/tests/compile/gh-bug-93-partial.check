@@ -25,3 +25,6 @@ package miniboxing.tests.compile.bug993.partial {
     def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C_L.this.bar(t)
   }
 }
+newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile.bug993.partial
+                                        ^

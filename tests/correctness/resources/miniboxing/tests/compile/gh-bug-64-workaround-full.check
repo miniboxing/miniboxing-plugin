@@ -5,6 +5,9 @@ newSource1.scala:4: warning: The following constructor statement will not be spe
 newSource1.scala:8: warning: The following constructor statement will not be specialized in the miniboxed trait C. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
   println(new A(t).getClass())
          ^
+newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile.bug64.workaround
+                                       ^
 we want a warning for this!
 class miniboxing.tests.compile.bug64.workaround.A_L
 we want a warning for this!

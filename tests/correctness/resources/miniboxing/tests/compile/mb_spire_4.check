@@ -31,3 +31,6 @@ package miniboxing.tests.compile {
     def sample_J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_L.this.sample[CC](n, MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag), cbf)
   }
 }
+newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+package miniboxing.tests.compile
+                         ^

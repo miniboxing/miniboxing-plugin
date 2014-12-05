@@ -23,6 +23,7 @@ import minibox.inject._
 import minibox.bridge._
 import minibox.coerce._
 import minibox.commit._
+import mbarray._
 import hijack._
 import prepare._
 import infrastructure._
@@ -211,6 +212,7 @@ trait MiniboxCommitComponent extends
 /** Optimize miniboxed arrays */
 trait MbArrayOptimizeComponent extends
     PluginComponent
+    with MbArrayTreeTransformer
     with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxInjectComponent { val global: MbArrayOptimizeComponent.this.global.type }
@@ -277,7 +279,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
                           MiniboxInjectPhase,
                           MiniboxBridgePhase,
                           MiniboxCoercePhase,
-                          MiniboxCommitPhase)
+                          MiniboxCommitPhase,
+                          MbArrayOptimizePhase)
   }
 
   // LDL Coercions
@@ -552,15 +555,15 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with MbArrayOptimizeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxCoercePhase.phaseName)
-    override val runsRightAfter = Some(MiniboxCoercePhase.phaseName)
-    val phaseName = Minibox.this.name + "-commit"
+    val runsAfter = List(MiniboxCommitPhase.phaseName)
+    override val runsRightAfter = Some(MiniboxCommitPhase.phaseName)
+    val phaseName = "mbarray-opt"
 
     def flag_rewire_mbarray = Minibox.this.flag_rewire_mbarray
 
     var mbArrayOptimizePhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      mbArrayOptimizePhase = ??? //new Phase(prev)
+      mbArrayOptimizePhase = new OptimizePhase(prev)
       mbArrayOptimizePhase
     }
   }
