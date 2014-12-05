@@ -27,7 +27,9 @@ trait MbArrayDefinitions {
   lazy val MbArray_apply  = definitions.getMember(MbArrayClass, newTermName("apply"))
   lazy val MbArray_update = definitions.getMember(MbArrayClass, newTermName("update"))
   lazy val MbArray_empty  = definitions.getMember(MbArrayModule, newTermName("empty"))
-  lazy val MbArray_clone  = definitions.getMember(MbArrayModule, newTermName("clone"))
+  lazy val MbArray_clone  = definitions.getMember(MbArrayModule, newTermName("clone")).
+                              // filter Object.clone out, we don't want that:
+                              alternatives.find(_.owner == MbArrayModule.moduleClass).get
 
   // optimized alternatives:
   lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.runtime.array.MbArrayOpts")

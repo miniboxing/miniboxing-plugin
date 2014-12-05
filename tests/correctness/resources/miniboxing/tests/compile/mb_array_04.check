@@ -1,0 +1,35 @@
+newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+  val mba4 = MbArray.clone(new Array[Any](10))
+                     ^
+newSource1.scala:14: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+  val mba5 = MbArray.clone(new Array[F forSome { type F }](10))
+                     ^
+newSource1.scala:15: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+  def bar[V: ClassTag] = MbArray.clone(new Array[V](10))
+                                 ^
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.mbarray02 {
+  object Test extends Object with App {
+    def <init>(): miniboxing.tests.compile.mbarray02.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    private[this] val mba0: MbArray[Int] = MbArrayOpts.this.mbArray_empty_J[Int](10, 5);
+    <stable> <accessor> def mba0(): MbArray[Int] = Test.this.mba0;
+    private[this] val mba1: MbArray[Int] = MbArrayOpts.this.mbArray_clone_J[Int](new Array[Int](10), 5);
+    <stable> <accessor> def mba1(): MbArray[Int] = Test.this.mba1;
+    private[this] val mba2: MbArray[Double] = MbArrayOpts.this.mbArray_clone_D[Double](new Array[Double](10), 8);
+    <stable> <accessor> def mba2(): MbArray[Double] = Test.this.mba2;
+    private[this] val mba3: MbArray[String] = scala.MbArray.clone[String](new Array[String](10));
+    <stable> <accessor> def mba3(): MbArray[String] = Test.this.mba3;
+    def foo[@miniboxed T](implicit evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = scala.MbArray.clone[T](evidence$1.newArray(10));
+    def foo_n_D[T](T_TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_D[T](MiniboxArray.this.mbarray_new[T](10, T_TypeTag).asInstanceOf[Array[T]](), T_TypeTag);
+    def foo_n_J[T](T_TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_J[T](MiniboxArray.this.mbarray_new[T](10, T_TypeTag).asInstanceOf[Array[T]](), T_TypeTag);
+    private[this] val mba4: MbArray[Any] = scala.MbArray.clone[Any](new Array[Any](10));
+    <stable> <accessor> def mba4(): MbArray[Any] = Test.this.mba4;
+    private[this] val mba5: MbArray[_] = scala.MbArray.clone[F]((ClassTag.apply[F](classOf[java.lang.Object]): scala.reflect.ClassTag[F]).newArray(10));
+    <stable> <accessor> def mba5(): MbArray[_] = Test.this.mba5;
+    def bar[V](implicit evidence$2: scala.reflect.ClassTag[V]): MbArray[V] = scala.MbArray.clone[V](evidence$2.newArray(10))
+  }
+}
+
