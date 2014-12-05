@@ -15,7 +15,7 @@ Specializing trait MakeImplClass...
     def foo(a: Asp): Asp                                                   // is an interface method
     def foo_J(val A_TypeTag: Byte,a: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 package miniboxing.tests.compile.bug85.reduced
                                        ^
 [[syntax trees at end of                   cleanup]] // newSource1.scala

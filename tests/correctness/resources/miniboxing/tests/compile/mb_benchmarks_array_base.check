@@ -1,6 +1,9 @@
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+package miniboxing.tests.compile
+                         ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait MBResizableArray[@miniboxed T] extends Object {
@@ -245,6 +248,3 @@ package miniboxing.tests.compile {
   }
 }
 [Now checking: minibox-commit]
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
-package miniboxing.tests.compile
-                         ^

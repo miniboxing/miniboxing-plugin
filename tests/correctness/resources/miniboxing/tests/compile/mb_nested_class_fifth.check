@@ -20,6 +20,9 @@ Specializing class CCCCC...
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
 [Now checking: minibox-inject]
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+package miniboxing.tests.compile.nested
+                                 ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.nested {
   abstract trait CCCCC[@miniboxed T] extends Object {
@@ -85,6 +88,3 @@ package miniboxing.tests.compile.nested {
   }
 }
 [Now checking: minibox-commit]
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
-package miniboxing.tests.compile.nested
-                                 ^

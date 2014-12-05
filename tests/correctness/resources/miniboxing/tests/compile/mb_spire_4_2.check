@@ -1,3 +1,6 @@
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+package miniboxing.tests.compile.spire4.var2
+                                        ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.spire4.var2 {
   abstract trait Dist[@miniboxed A] extends Object { self: miniboxing.tests.compile.spire4.var2.Dist[A] =>
@@ -14,6 +17,3 @@ package miniboxing.tests.compile.spire4.var2 {
     def sample_J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long, cbf: scala.collection.generic.CanBuildFrom[CC[Asp],Asp,CC[Asp]]): CC[Asp] = Dist_L.this.sample[CC](n, MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag), cbf)
   }
 }
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
-package miniboxing.tests.compile.spire4.var2
-                                        ^

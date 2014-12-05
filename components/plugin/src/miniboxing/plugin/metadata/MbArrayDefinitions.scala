@@ -17,7 +17,7 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
 
 trait MbArrayDefinitions {
-  this: MbArrayOptimizeComponent =>
+  this: PluginComponent =>
 
   import global._
   import definitions._
@@ -31,5 +31,16 @@ trait MbArrayDefinitions {
 
   // optimized alternatives:
   lazy val MbArrayOpts    = global.rootMirror.getRequiredClass("miniboxing.runtime.array.MbArrayOpts")
-
+  lazy val MbArrayOpts_apply =
+    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_J")),
+        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_D")))
+  lazy val MbArrayOpts_update =
+    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_update_J")),
+        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_update_D")))
+  lazy val MbArrayOpts_empty =
+    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_J")),
+        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_D")))
+  lazy val MbArrayOpts_clone =
+    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_J")),
+        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D")))
 }

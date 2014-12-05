@@ -1,3 +1,6 @@
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+package miniboxing.tests.compile.bug53
+                                 ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug53 {
   object Test3 extends Object {
@@ -36,6 +39,3 @@ package miniboxing.tests.compile.bug53 {
     }
   }
 }
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
-package miniboxing.tests.compile.bug53
-                                 ^

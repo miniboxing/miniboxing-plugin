@@ -27,9 +27,21 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
   import typer.{ typed, atOwner }
 
   override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-    val specTrans = new MiniboxTreeTransformer(unit)
-    override def transform(tree: Tree): Tree =
+
+    override def transform(tree: Tree): Tree = {
+      var mbArray_transform = true
+
+      if (flag_rewire_mbarray && !flag_two_way) {
+        mbArray_transform = false
+        global.reporter.warning(unit.body.pos, "Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.")
+      } else if (!flag_rewire_mbarray) {
+        mbArray_transform = false
+        global.reporter.warning(unit.body.pos, "Heads-up: Optimizing `MbArray` is disabled, thus `MbArray`-s will be generic and will box.")
+      }
+
+      val specTrans = new MiniboxTreeTransformer(unit, mbArray_transform)
       afterMiniboxCommit(checkNoStorage(specTrans.transform(tree)))
+    }
   }
 
   def checkNoStorage(tree: Tree) = {
@@ -80,7 +92,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
     def unapply(tree: Tree): Option[(Tree, Type, Symbol, Symbol)] = unapply(tree, marker_minibox2minibox).map({ case (tree, tpe, List(repr1, repr2)) => (tree, tpe, repr1, repr2) })
   }
 
-  class MiniboxTreeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+  class MiniboxTreeTransformer(unit: CompilationUnit, mbArray_transform: Boolean) extends TypingTransformer(unit) {
 
     override def transform(tree0: Tree): Tree = {
       val oldTpe = tree0.tpe
@@ -190,6 +202,8 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(tag_toString(repr), List(transform(val1), tag1))
             localTyper.typed(tree1)
 
+          // MbArray transformations: TODO
+
           case BoxToMinibox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tree1 =
@@ -261,4 +275,14 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
       tree1.setType(newTpe)
     }
   }
+
+  class OptimizeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
+
+    import global._
+    import minibox._
+
+//    override
+
+  }
+
 }

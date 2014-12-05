@@ -1,7 +1,7 @@
 newSource1.scala:6: warning: The following constructor statement will not be specialized in the miniboxed trait C. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
   println(new A[T].getClass.getSimpleName)
          ^
-newSource1.scala:1: warning: Optimizing `MbArray` is only possible if you allow the plugin to use both {long, double} encodings (Y:minibox:Ytwo-way). `MbArray` will be generic and will box.
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 package miniboxing.tests.compile.bug64
                                  ^
 A_L
