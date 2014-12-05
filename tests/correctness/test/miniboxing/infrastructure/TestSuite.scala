@@ -31,8 +31,10 @@ class TestSuite extends ScalacVersion {
     "\\$anon .*?>" -> "\\$anon",
     "@SerialVersionUID\\(value = " -> "@SerialVersionUID(",
     "anonymous class \\$anonfun" -> "anonymous class \\$anon",
-    // for mb_array_03.scala
-    "\\(ClassTag.apply\\[String\\]\\(classOf\\[java.lang.String\\]\\): scala\\.reflect\\.ClassTag\\[String\\]\\)" -> "ClassTag.apply[String](classOf[java.lang.String])"
+    // for mb_array_03.scala:
+    "\\(ClassTag.apply\\[String\\]\\(classOf\\[java.lang.String\\]\\): scala\\.reflect\\.ClassTag\\[String\\]\\)" -> "ClassTag.apply[String](classOf[java.lang.String])",
+    // for mb_array_04.scala:
+    "\\(ClassTag.apply\\[F\\]\\(classOf\\[java.lang.Object\\]\\): scala.reflect.ClassTag\\[F\\]" -> "ClassTag.apply[F](classOf[java.lang.Object]"
   )
 
   private[this] def files(dirs: List[String], ext: String) = {
