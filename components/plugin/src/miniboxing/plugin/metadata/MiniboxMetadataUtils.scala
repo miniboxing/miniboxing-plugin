@@ -91,25 +91,40 @@ trait MiniboxMetadataUtils {
       }
     }
 
-    def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
+    def valueClassRepresentation(vclass: Symbol): Symbol = {
+      val FloatRepr = if (flag_two_way) DoubleClass else LongClass
+      vclass match {
+        case `UnitClass`    => LongClass
+        case `BooleanClass` => LongClass
+        case `ByteClass`    => LongClass
+        case `CharClass`    => LongClass
+        case `ShortClass`   => LongClass
+        case `IntClass`     => LongClass
+        case `LongClass`    => LongClass
+        case `FloatClass`   => FloatRepr
+        case `DoubleClass`  => FloatRepr
+      }
+    }
 
-      def typeParametersFromOwnerChain(owner: Symbol = currentOwner): List[(Symbol, SpecInfo)] =
-        owner.ownerChain flatMap { sym =>
-          // for methods => normalization
-          // for classes => specialization
-          afterMiniboxInject(owner.info) // make sure it's specialized
-          if (sym.isMethod && !sym.typeParams.isEmpty) {
-            // NOTE: We could also rely on the method's specialization, but we rely on the
-            // assumption that a class' specialization is the one that dominates, else we
-            // would be messing up forwarders.
-            val localPSpec = metadata.getNormalLocalSpecialization(sym)
-            localPSpec
-          } else if (sym.isClass || sym.isTrait) {
-            val localPSpec = metadata.getClassLocalSpecialization(sym)
-            localPSpec
-          } else
-            Nil
-        }
+    def specializationsFromOwnerChain(owner: Symbol): List[(Symbol, SpecInfo)] =
+      owner.ownerChain flatMap { sym =>
+        // for methods => normalization
+        // for classes => specialization
+        afterMiniboxInject(owner.info) // make sure it's specialized
+        if (sym.isMethod && !sym.typeParams.isEmpty) {
+          // NOTE: We could also rely on the method's specialization, but we rely on the
+          // assumption that a class' specialization is the one that dominates, else we
+          // would be messing up forwarders.
+          val localPSpec = metadata.getNormalLocalSpecialization(sym)
+          localPSpec
+        } else if (sym.isClass || sym.isTrait) {
+          val localPSpec = metadata.getClassLocalSpecialization(sym)
+          localPSpec
+        } else
+          Nil
+      }
+
+    def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
 
       def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
         if (!metadata.miniboxedTParamFlag(p))
@@ -118,19 +133,11 @@ trait MiniboxMetadataUtils {
       }
 
 
-      val mboxedTpars = typeParametersFromOwnerChain().toMap ++ pspec
+      val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec = instantiation map { (pair: (Symbol, Type)) =>
-        val FloatRepr = if (flag_two_way) DoubleClass else LongClass
+
         pair match {
-          case (p, `UnitTpe`)    => primitive(p, Miniboxed(LongClass))
-          case (p, `BooleanTpe`) => primitive(p, Miniboxed(LongClass))
-          case (p, `ByteTpe`)    => primitive(p, Miniboxed(LongClass))
-          case (p, `CharTpe`)    => primitive(p, Miniboxed(LongClass))
-          case (p, `ShortTpe`)   => primitive(p, Miniboxed(LongClass))
-          case (p, `IntTpe`)     => primitive(p, Miniboxed(LongClass))
-          case (p, `LongTpe`)    => primitive(p, Miniboxed(LongClass))
-          case (p, `FloatTpe`)   => primitive(p, Miniboxed(FloatRepr))
-          case (p, `DoubleTpe`)  => primitive(p, Miniboxed(FloatRepr))
+          case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) => primitive(p, Miniboxed(valueClassRepresentation(tpe.typeSymbol)))
           case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
             mboxedTpars.get(tpar.deSkolemize) match {
               case Some(spec: SpecInfo) =>

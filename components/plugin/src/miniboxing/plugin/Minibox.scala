@@ -193,6 +193,7 @@ trait MiniboxCommitComponent extends
     PluginComponent
     with MiniboxCommitInfoTransformer
     with MiniboxCommitTreeTransformer
+    with MbArrayDefinitions
     with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxInjectComponent { val global: MiniboxCommitComponent.this.global.type }

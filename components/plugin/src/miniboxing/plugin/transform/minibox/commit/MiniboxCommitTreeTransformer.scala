@@ -202,7 +202,45 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(tag_toString(repr), List(transform(val1), tag1))
             localTyper.typed(tree1)
 
-          // MbArray transformations: TODO
+          // MbArray transformations: MbArray.apply
+          case tree@BoxToMinibox(Apply(fun @ Select(array, _), args), targ, repr) if fun.symbol == MbArray_apply && mbArray_transform =>
+            val tags = minibox.typeTagTrees(currentOwner)
+            val tag1 = tags(targ.dealiasWiden.typeSymbol)
+            val tree1 = gen.mkMethodCall(MbArrayOpts_apply(repr), List(targ), transform(array) :: args.map(transform) ::: List(tag1))
+            localTyper.typed(tree1)
+
+          // MbArray transformations: MbArray.update
+          case Apply(fun @ Select(array, _), List(index, MiniboxToBox(value, targ, repr))) if fun.symbol == MbArray_update && mbArray_transform =>
+            val tags = minibox.typeTagTrees(currentOwner)
+            val tag1 = tags(targ.dealiasWiden.typeSymbol)
+            val tree1 = gen.mkMethodCall(MbArrayOpts_update(repr), List(targ), transform(array) :: transform(index) :: transform(value) :: tag1 :: Nil)
+            localTyper.typed(tree1)
+
+          // MbArray transformations: MbArray.empty and MbArray.clone
+          case tree@Apply(TypeApply(fun, List(targ)), List(arg)) if (fun.symbol == MbArray_empty || fun.symbol == MbArray_clone) && mbArray_transform =>
+            val pspec = PartialSpec.specializationsFromOwnerChain(currentOwner).toMap
+            val tpe1 = targ.tpe
+            val typeSymbol = tpe1.dealiasWiden.typeSymbol.deSkolemize
+
+            def specialize(repr: Symbol): Tree = {
+              val tags = minibox.typeTagTrees(currentOwner)
+              val tag1 = tags(typeSymbol)
+              val tree1 = gen.mkMethodCall(MbArrayOpts_alternatives(fun.symbol)(repr), List(tpe1), transform(arg) :: tag1 :: Nil)
+              localTyper.typed(tree1)
+            }
+
+            pspec.get(typeSymbol) match {
+              case Some(minibox.Miniboxed(repr))                  => specialize(repr)
+              case Some(minibox.Boxed)                            => super.transform(tree)
+              case None if tpe1 <:< AnyRefTpe                     => super.transform(tree)
+              case None if ScalaValueClasses.contains(typeSymbol) => specialize(PartialSpec.valueClassRepresentation(typeSymbol))
+              case _ =>
+                var pos = tree.pos
+                if (pos == NoPosition) pos = fun.pos
+                if (pos == NoPosition) pos = arg.pos
+                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:")
+                super.transform(tree)
+            }
 
           case BoxToMinibox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)

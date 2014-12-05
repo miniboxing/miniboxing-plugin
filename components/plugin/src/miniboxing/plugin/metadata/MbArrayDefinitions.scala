@@ -23,24 +23,25 @@ trait MbArrayDefinitions {
   import definitions._
 
   lazy val MbArrayClass   = global.rootMirror.getRequiredClass("scala.MbArray")
-  lazy val MbArrayModule  = global.rootMirror.getRequiredClass("scala.MbArray")
+  lazy val MbArrayModule  = global.rootMirror.getRequiredModule("scala.MbArray")
   lazy val MbArray_apply  = definitions.getMember(MbArrayClass, newTermName("apply"))
   lazy val MbArray_update = definitions.getMember(MbArrayClass, newTermName("update"))
   lazy val MbArray_empty  = definitions.getMember(MbArrayModule, newTermName("empty"))
   lazy val MbArray_clone  = definitions.getMember(MbArrayModule, newTermName("clone"))
 
   // optimized alternatives:
-  lazy val MbArrayOpts    = global.rootMirror.getRequiredClass("miniboxing.runtime.array.MbArrayOpts")
-  lazy val MbArrayOpts_apply =
+  lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.runtime.array.MbArrayOpts")
+  lazy val MbArrayOpts_apply: Map[Symbol, Symbol] =
     Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_J")),
         DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_D")))
-  lazy val MbArrayOpts_update =
+  lazy val MbArrayOpts_update: Map[Symbol, Symbol] =
     Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_update_J")),
         DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_update_D")))
-  lazy val MbArrayOpts_empty =
-    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_J")),
-        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_D")))
-  lazy val MbArrayOpts_clone =
-    Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_J")),
-        DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D")))
+  lazy val MbArrayOpts_alternatives: Map[Symbol, Map[Symbol, Symbol]] =
+    Map(MbArray_empty ->
+          Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_J")),
+              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_D"))),
+        MbArray_clone ->
+          Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_J")),
+              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D"))))
 }
