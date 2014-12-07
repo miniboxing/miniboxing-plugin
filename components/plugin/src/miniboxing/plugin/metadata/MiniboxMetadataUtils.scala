@@ -136,7 +136,7 @@ trait MiniboxMetadataUtils {
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec = instantiation map { (pair: (Symbol, Type)) =>
 
-        pair match {
+        (pair._1, pair._2.withoutAnnotations) match {
           case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) => primitive(p, Miniboxed(valueClassRepresentation(tpe.typeSymbol)))
           case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
             mboxedTpars.get(tpar.deSkolemize) match {

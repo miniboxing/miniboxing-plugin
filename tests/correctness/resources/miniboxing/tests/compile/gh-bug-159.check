@@ -1,0 +1,51 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug159 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug159.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    abstract trait A[@miniboxed -T] extends Object;
+    class A_D[-Tsp] extends Object with miniboxing.tests.compile.bug159.Test.A[Tsp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug159|Test|A_D|T_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|bug159|Test|A_D|T_TypeTag: Byte): miniboxing.tests.compile.bug159.Test.A_D[Tsp] = {
+        A_D.super.<init>();
+        ()
+      }
+    };
+    class A_J[-Tsp] extends Object with miniboxing.tests.compile.bug159.Test.A[Tsp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug159|Test|A_J|T_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|bug159|Test|A_J|T_TypeTag: Byte): miniboxing.tests.compile.bug159.Test.A_J[Tsp] = {
+        A_J.super.<init>();
+        ()
+      }
+    };
+    class A_L[-Tsp] extends Object with miniboxing.tests.compile.bug159.Test.A[Tsp] {
+      def <init>(): miniboxing.tests.compile.bug159.Test.A_L[Tsp] = {
+        A_L.super.<init>();
+        ()
+      }
+    };
+    abstract trait B[@miniboxed +T] extends AnyRef;
+    class B_D[+Tsp] extends miniboxing.tests.compile.bug159.Test.A_D[Tsp @scala.annotation.unchecked.uncheckedVariance] with miniboxing.tests.compile.bug159.Test.B[Tsp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug159|Test|B_D|T_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|bug159|Test|B_D|T_TypeTag: Byte): miniboxing.tests.compile.bug159.Test.B_D[Tsp] = {
+        B_D.super.<init>(miniboxing|tests|compile|bug159|Test|B_D|T_TypeTag);
+        ()
+      }
+    };
+    class B_J[+Tsp] extends miniboxing.tests.compile.bug159.Test.A_J[Tsp @scala.annotation.unchecked.uncheckedVariance] with miniboxing.tests.compile.bug159.Test.B[Tsp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|bug159|Test|B_J|T_TypeTag: Byte = _;
+      def <init>(miniboxing|tests|compile|bug159|Test|B_J|T_TypeTag: Byte): miniboxing.tests.compile.bug159.Test.B_J[Tsp] = {
+        B_J.super.<init>(miniboxing|tests|compile|bug159|Test|B_J|T_TypeTag);
+        ()
+      }
+    };
+    class B_L[+Tsp] extends miniboxing.tests.compile.bug159.Test.A_L[Tsp @scala.annotation.unchecked.uncheckedVariance] with miniboxing.tests.compile.bug159.Test.B[Tsp] {
+      def <init>(): miniboxing.tests.compile.bug159.Test.B_L[Tsp] = {
+        B_L.super.<init>();
+        ()
+      }
+    }
+  }
+}
