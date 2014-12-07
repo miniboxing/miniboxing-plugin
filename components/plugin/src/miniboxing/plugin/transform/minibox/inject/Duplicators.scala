@@ -26,7 +26,7 @@ import scala.collection.mutable
  */
 abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with ScalacVersion {
   import global._
-  import definitions.{ AnyRefClass, AnyValClass, AnyTpe }
+  import definitions.{ AnyRefClass, AnyValClass, AnyClass, AnyTpe, AnyRefTpe, AnyValTpe }
 
   def postTransform(onwer: Symbol, tree: Tree): Tree
   def suboptimalCodeWarning(pos: Position, msg: String): Unit
@@ -200,7 +200,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
 
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol): List[Tree] = {
       debuglog("attempting to invalidate " + tree.symbol)
-      if (tree.isDef && tree.symbol != NoSymbol) {
+      if ((tree.isDef && tree.symbol != NoSymbol) || tree.isInstanceOf[Try]) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -339,6 +339,15 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             // TODO: Fix this side-effecting call:
             invalidateAll(tparams)
             List(cdef)
+
+          case Try(_, cases, _) =>
+            cases foreach {
+              case CaseDef(bnd: Bind, _, _) =>
+                invalidSyms(bnd.symbol) = bnd
+                bnd.symbol = NoSymbol
+              case _ =>
+            }
+            List(tree)
 
           case _ =>
             tree.symbol = NoSymbol
@@ -567,6 +576,30 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             val tree1 = super.typed(tree, mode, pt)
             // log("plain this typed to: " + tree1)
             tree1
+
+          case Match(scrut, cases) =>
+            val scrut1   = typedByValueExpr(scrut)
+            val scrutTpe = scrut1.tpe.widen
+            val cases1 = {
+              if (scrutTpe.isFinalType) cases filter {
+                case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
+                  // the typed pattern is not incompatible with the scrutinee type
+                  scrutTpe matchesPattern fixType(tpt.tpe)
+                case CaseDef(Typed(_, tpt), EmptyTree, body) =>
+                  // the typed pattern is not incompatible with the scrutinee type
+                  scrutTpe matchesPattern fixType(tpt.tpe)
+                case _ => true
+              }
+              // Without this, AnyRef specializations crash on patterns like
+              //   case _: Boolean => ...
+              // Not at all sure this is safe.
+              else if (scrutTpe <:< AnyRefTpe)
+                cases filterNot (_.pat.tpe <:< AnyValTpe)
+              else
+                cases
+            }
+
+            super.typed(atPos(tree.pos)(Match(scrut, cases1)), mode, pt)
 
           case EmptyTree =>
             // no need to do anything, in particular, don't set the type to null, EmptyTree.tpe_= asserts
