@@ -474,6 +474,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             //if (mods.hasFlag(Flags.LAZY)) vdef.symbol.resetFlag(Flags.MUTABLE) // Martin to Iulian: lazy vars can now appear because they are no longer boxed; Please check that deleting this statement is OK.
             vdef.tpt.setType(fixType(vdef.tpt.tpe))
             vdef.setType(null)
+            // bug #157: PRIVATE and PROTECTED should never be active at the same time:
             if (vdef.symbol.isPrivate && vdef.symbol.isProtected)
               vdef.symbol.resetFlag(Flags.PROTECTED)
             super.typed(vdef, mode, pt)
