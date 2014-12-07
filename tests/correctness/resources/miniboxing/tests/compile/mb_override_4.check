@@ -1,4 +1,7 @@
 Specializing class Base42...
+newSource1.scala:8: warning: The miniboxed class Base42 extends the generic class Base41, which triggers a limitation of the miniboxing transformation: any value of type Base42 cannot be used as a value of type Base41, despite the fact that members and implementations are correctly inherited. There is a simple workaround to this problem, which you can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. Note that this can lead to further errors down the line. Also, keep in mind you should not expose this class in your API, as it may break client code:
+class Base42[@miniboxed T, S] extends Base41[T, S] {
+      ^
   // interface:
   abstract trait Base42[T, S] extends Base41[T,S] {
     override def overrideMe(t1: T,t2: T,t3: T,s: S): T
@@ -76,7 +79,7 @@ package miniboxing.tests.compile {
     };
     def overrideMe(t1: T, t2: T, t3: T, s: S): T = t1
   };
-  abstract trait Base42[@miniboxed T, S] extends miniboxing.tests.compile.Base41[T,S] {
+  abstract trait Base42[@miniboxed T, S] extends AnyRef {
     override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
     override def overrideMe_J(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long
   };

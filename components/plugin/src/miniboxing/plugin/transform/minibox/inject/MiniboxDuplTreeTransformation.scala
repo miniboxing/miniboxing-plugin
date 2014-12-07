@@ -546,8 +546,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             localTyper.silent(_.typed(tree1)) match {
               case global.analyzer.SilentResultValue(t: Tree) => t
               case global.analyzer.SilentTypeError(err) =>
-                global.reporter.warning(err.errPos, "Miniboxing error at: " + currentOwner.ownerChain + "\n" + err.toString() + "\n" + err.getStackTrace().take(20).mkString("\n  "))
-                tree1
+                global.reporter.warning(err.errPos, "Miniboxing redirection error at " + currentOwner.fullName + ":\n" + err.toString() + "\nNote: The resulting bytecode will be incorrect due to this error, so please don't use it in production and report the bug at https://github.com/miniboxing/miniboxing-plugin/issues.")
+                gen.mkMethodCall(Predef_???, Nil)
             }
 
           tree2
