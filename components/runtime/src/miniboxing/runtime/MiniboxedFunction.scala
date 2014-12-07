@@ -67,7 +67,9 @@ abstract class AbstractFunction2Wrapper[-T1, -T2, +R] extends AbstractFunction2[
   def m: MiniboxedFunction2[T1, T2, R]
 }
 
-abstract class AbstractMiniboxedFunction0[@miniboxed +R] extends MiniboxedFunction0[R] {
+// AbstractMiniboxedFunction{0,1,2} needs to extend Serializable, else we run into #161
+// background: http://stackoverflow.com/questions/12125076/java-deserialization-invalidclassexception-no-valid-constructor
+abstract class AbstractMiniboxedFunction0[@miniboxed +R] extends MiniboxedFunction0[R] with Serializable {
   val f: Function0[R] = new AbstractFunction0Wrapper[R] with Serializable {
     def apply(): R =  AbstractMiniboxedFunction0.this.apply()
     def m: MiniboxedFunction0[R] = AbstractMiniboxedFunction0.this
@@ -75,7 +77,7 @@ abstract class AbstractMiniboxedFunction0[@miniboxed +R] extends MiniboxedFuncti
   def apply(): R
 }
 
-abstract class AbstractMiniboxedFunction1[@miniboxed -T1, @miniboxed +R] extends MiniboxedFunction1[T1, R] {
+abstract class AbstractMiniboxedFunction1[@miniboxed -T1, @miniboxed +R] extends MiniboxedFunction1[T1, R] with Serializable {
   val f: Function1[T1, R] = new AbstractFunction1Wrapper[T1, R] with Serializable {
     def apply(t1: T1): R =  AbstractMiniboxedFunction1.this.apply(t1)
     def m: MiniboxedFunction1[T1, R] = AbstractMiniboxedFunction1.this
@@ -83,7 +85,7 @@ abstract class AbstractMiniboxedFunction1[@miniboxed -T1, @miniboxed +R] extends
   def apply(t1: T1): R
 }
 
-abstract class AbstractMiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] extends MiniboxedFunction2[T1, T2, R] {
+abstract class AbstractMiniboxedFunction2[@miniboxed -T1, @miniboxed -T2, @miniboxed +R] extends MiniboxedFunction2[T1, T2, R] with Serializable {
   val f: Function2[T1, T2, R] = new AbstractFunction2Wrapper[T1, T2, R] with Serializable {
     def apply(t1: T1, t2: T2): R =  AbstractMiniboxedFunction2.this.apply(t1, t2)
     def m: MiniboxedFunction2[T1, T2, R] = AbstractMiniboxedFunction2.this
