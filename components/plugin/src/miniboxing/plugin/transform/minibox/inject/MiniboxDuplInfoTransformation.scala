@@ -715,44 +715,74 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
     def computeNewStemParentClasses(stemClass: Symbol, stemClassTpe: Type): List[Type] = {
       val parents = stemClassTpe.parents
 
+      def findFirstClassParent(sym: Symbol): Symbol = {
+        if (metadata.isClassStem(sym))
+          metadata.stemClassParent(sym)
+        else if (isClassParent(sym))
+          sym
+        else // trait parent
+          sym.tpe.parents match {
+            case parentTpe :: _ =>
+              afterMiniboxInject(parentTpe.typeSymbol.info)
+              findFirstClassParent(parentTpe.typeSymbol)
+            case Nil => AnyRefClass
+          }
+      }
+
       def isObject(sym: Symbol): Boolean =
         sym == ObjectClass ||
         sym == AnyRefClass ||
         sym == AnyClass
 
-      if (metadata.classStemTraitFlag(stemClass))
-        // this stem was originally a trait => all parents will be traits and we don't need AnyRef
-        parents
-      else
-        // this stem was a class => it may need an AnyRef marker, so it can behave as such when
-        // retypechecking the tree
-        parents match {
-          case firstParentTpe :: rest =>
-            val firstParent = firstParentTpe.typeSymbol
-            afterMiniboxInject(firstParent.info)
+      def isClassParent(sym: Symbol): Boolean =
+        sym.isClass && !sym.isTrait
 
-            if (metadata.isClassStem(firstParent))
-              AnyRefTpe :: parents
-            else if ((firstParent.isClass) && (!firstParent.isTrait) && !isObject(firstParent)) {
-              // we need a warning here: we're transforming the miniboxed class into a trait
-              // and the trait can't extend a class. Therefore, the miniboxed class won't be
-              // able to pose as its parent class. Sorry :(
-              global.reporter.warning(stemClass.pos, "The miniboxed class " + stemClass.name + " extends the generic " +
-                firstParent + ", which triggers a limitation of the miniboxing transformation: any value of type " +
-                stemClass.name + " cannot be used as a value of type " + firstParent.name + ", despite the fact that " +
-                "members and implementations are correctly inherited. There is a simple workaround to this problem, which you " +
-                "can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. " +
-                "Note that this can lead to further errors down the line. Also, keep in mind you should not expose " +
-                "this class in your API, as it may break client code:"
-              )
-              AnyRefTpe :: rest
-            } else if (isObject(firstParent))
-              parents
-            else // it's a generic trait
-              AnyRefTpe :: parents
-          case Nil =>
-            List(AnyRefTpe)
-        }
+      def isNoArgClassParent(sym: Symbol): Boolean =
+        isClassParent(sym) && sym.primaryConstructor.tpe.paramss.flatten.isEmpty
+
+      val (stemParent: Symbol, parentTpes: List[Type]) =
+        if (metadata.classStemTraitFlag(stemClass))
+          parents match {
+            case firstParentTpe :: rest =>
+              val firstParent = firstParentTpe.typeSymbol
+              afterMiniboxInject(firstParent.info)
+              (findFirstClassParent(firstParent), parents)
+            case Nil =>
+              // not sure this should happen...
+              (AnyRefClass, List(AnyRefTpe))
+          }
+        else
+          // this stem was a class => it may need an AnyRef marker, so it can behave as such when
+          // retypechecking the tree
+          parents match {
+            case firstParentTpe :: rest =>
+              val firstParent = firstParentTpe.typeSymbol
+              afterMiniboxInject(firstParent.info)
+
+              if (metadata.isClassStem(firstParent)) {
+                val classParent = metadata.stemClassParent(firstParent)
+                (classParent, stemClass.tpe.baseType(classParent) :: parents)
+              } else if (isNoArgClassParent(firstParent)) {
+                (firstParent, parents)
+              } else if (isClassParent(firstParent)) {
+                global.reporter.warning(stemClass.pos, "The miniboxed class " + stemClass.name + " extends the generic " +
+                  firstParent + ", which triggers a limitation of the miniboxing transformation: any value of type " +
+                  stemClass.name + " cannot be used as a value of type " + firstParent.name + ", despite the fact that " +
+                  "members and implementations are correctly inherited. There is a simple workaround to this problem, which you " +
+                  "can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. " +
+                  "Note that this can lead to further errors down the line. Also, keep in mind you should not expose " +
+                  "this class in your API, as it may break client code:"
+                )
+                (AnyRefClass, AnyRefTpe :: rest)
+              } else { // it's a generic trait
+                (AnyRefClass, parents)
+              }
+            case Nil =>
+              (AnyRefClass, List(AnyRefTpe))
+          }
+
+      metadata.stemClassParent(stemClass) = stemParent
+      parentTpes
     }
 
     def reportClasses(stemClass: Symbol, scope3: Scope, classes: List[Symbol]) = {

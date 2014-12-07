@@ -1,3 +1,0 @@
-newSource1.scala:6: warning: The miniboxed class VectorSpec extends the generic class WordSpec, which triggers a limitation of the miniboxing transformation: any value of type VectorSpec cannot be used as a value of type WordSpec, despite the fact that members and implementations are correctly inherited. There is a simple workaround to this problem, which you can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. Note that this can lead to further errors down the line. Also, keep in mind you should not expose this class in your API, as it may break client code:
-abstract class VectorSpec[@miniboxed A] extends WordSpec      with BaseVectorGenerator[A]
-               ^

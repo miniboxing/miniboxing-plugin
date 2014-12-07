@@ -72,7 +72,7 @@ package miniboxing.tests.compile.inheritance {
       ()
     }
   };
-  abstract trait PPredicate[@miniboxed T] extends AnyRef;
+  abstract trait PPredicate[@miniboxed T] extends Object;
   class PPredicate_J[Tsp] extends miniboxing.tests.compile.inheritance.FF1_JJ[Tsp,Int] with miniboxing.tests.compile.inheritance.PPredicate[Tsp] {
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|inheritance|PPredicate_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.PPredicate_J[Tsp] = {

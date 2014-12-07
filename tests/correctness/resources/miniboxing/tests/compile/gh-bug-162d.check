@@ -1,0 +1,37 @@
+newSource1.scala:4: warning: The miniboxed class B extends the generic class A, which triggers a limitation of the miniboxing transformation: any value of type B cannot be used as a value of type A, despite the fact that members and implementations are correctly inherited. There is a simple workaround to this problem, which you can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. Note that this can lead to further errors down the line. Also, keep in mind you should not expose this class in your API, as it may break client code:
+class B[@miniboxed T](t: T) extends A(3)
+      ^
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug162d {
+  class A extends Object {
+    <paramaccessor> private[this] val i: Int = _;
+    def <init>(i: Int): miniboxing.tests.compile.bug162d.A = {
+      A.super.<init>();
+      ()
+    }
+  };
+  abstract trait B[@miniboxed T] extends AnyRef;
+  class B_D[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B_D|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val t: Double = _;
+    def <init>(miniboxing|tests|compile|bug162d|B_D|T_TypeTag: Byte, t: Double): miniboxing.tests.compile.bug162d.B_D[Tsp] = {
+      B_D.super.<init>(3);
+      ()
+    }
+  };
+  class B_J[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B_J|T_TypeTag: Byte = _;
+    <paramaccessor> private[this] val t: Long = _;
+    def <init>(miniboxing|tests|compile|bug162d|B_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.bug162d.B_J[Tsp] = {
+      B_J.super.<init>(3);
+      ()
+    }
+  };
+  class B_L[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+    <paramaccessor> private[this] val t: Tsp = _;
+    def <init>(t: Tsp): miniboxing.tests.compile.bug162d.B_L[Tsp] = {
+      B_L.super.<init>(3);
+      ()
+    }
+  }
+}

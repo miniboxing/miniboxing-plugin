@@ -131,6 +131,10 @@ trait MiniboxMetadata {
     /** Those members that will be duplicated and specialized to produce the muliple overloads */
     val templateMembers = mutable.Set[Symbol]()
 
+    /** Stem trait can have a class parent (see bug #162) */
+    val stemClassParent = mutable.HashMap[Symbol, Symbol]()
+
+
     // Accessors:
 
     // Classes:

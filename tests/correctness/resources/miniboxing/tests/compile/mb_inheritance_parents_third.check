@@ -46,7 +46,7 @@ package miniboxing.tests.compile.inheritance {
       ()
     }
   };
-  abstract trait DDD[@miniboxed U] extends AnyRef;
+  abstract trait DDD[@miniboxed U] extends Object;
   class DDD_J[Usp] extends miniboxing.tests.compile.inheritance.CCC_J[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
     <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte = _;
     def <init>(miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDD_J[Usp] = {

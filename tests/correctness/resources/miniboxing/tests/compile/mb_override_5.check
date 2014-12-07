@@ -119,7 +119,7 @@ package miniboxing.tests.compile {
     def overrideMe_JL(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base51_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T_TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T_TypeTag), s), T_TypeTag);
     def overrideMe_LJ(S_TypeTag: Byte, t1: Tsp, t2: Tsp, t3: Tsp, s: Long): Tsp = Base51_LL.this.overrideMe(t1, t2, t3, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
   };
-  abstract trait Base52[@miniboxed T, S] extends AnyRef {
+  abstract trait Base52[@miniboxed T, S] extends Object {
     override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
     override def overrideMe_J(T_TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long
   };
