@@ -1,0 +1,4 @@
+newSource1.scala:5: warning: The following constructor statement will not be specialized in the miniboxed trait RRB. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
+  println(result)
+         ^
+4
