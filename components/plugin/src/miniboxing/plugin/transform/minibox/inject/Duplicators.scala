@@ -577,30 +577,6 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             // log("plain this typed to: " + tree1)
             tree1
 
-          case Match(scrut, cases) =>
-            val scrut1   = typedByValueExpr(scrut)
-            val scrutTpe = scrut1.tpe.widen
-            val cases1 = {
-              if (scrutTpe.isFinalType) cases filter {
-                case CaseDef(Bind(_, pat @ Typed(_, tpt)), EmptyTree, body) =>
-                  // the typed pattern is not incompatible with the scrutinee type
-                  scrutTpe matchesPattern fixType(tpt.tpe)
-                case CaseDef(Typed(_, tpt), EmptyTree, body) =>
-                  // the typed pattern is not incompatible with the scrutinee type
-                  scrutTpe matchesPattern fixType(tpt.tpe)
-                case _ => true
-              }
-              // Without this, AnyRef specializations crash on patterns like
-              //   case _: Boolean => ...
-              // Not at all sure this is safe.
-              else if (scrutTpe <:< AnyRefTpe)
-                cases filterNot (_.pat.tpe <:< AnyValTpe)
-              else
-                cases
-            }
-
-            super.typed(atPos(tree.pos)(Match(scrut, cases1)), mode, pt)
-
           case EmptyTree =>
             // no need to do anything, in particular, don't set the type to null, EmptyTree.tpe_= asserts
             tree
