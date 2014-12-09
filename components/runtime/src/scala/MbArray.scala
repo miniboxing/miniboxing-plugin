@@ -31,6 +31,17 @@ abstract class MbArray[T] {
 
   /** Clone the current array */
   override def clone(): MbArray[T] = sys.error("Should be overridden")
+
+  protected def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int): Unit = {
+    val end = srcPos + length
+    var i = srcPos
+    var j = destPos
+    while (i < end) {
+      dest(j) = this(i)
+      i += 1
+      j += 1
+    }
+  }
 }
 
 object MbArray {
@@ -41,4 +52,9 @@ object MbArray {
   /** Clone an array into a MbArray */
   def clone[T](array: Array[T]): MbArray[T] =
     new miniboxing.runtime.array.MbArray_L[T](array);
+
+  /** Copies the contents of this array to anotherone. This will use the underling System.arraycopy to make the copy */
+  def arraycopy[T](src: MbArray[T], srcPos: Int, dest: MbArray[T], destPos: Int, length: Int): Unit = 
+    src.arraycopy(srcPos, dest, destPos, length)  
+
 }
