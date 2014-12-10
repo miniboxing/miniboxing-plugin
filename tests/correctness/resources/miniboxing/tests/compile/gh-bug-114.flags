@@ -1,1 +1,1 @@
--Xprint:interop-commit
+-P:minibox:warn-off -Xprint:interop-commit

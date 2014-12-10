@@ -1,1 +1,1 @@
--Xprint:interop-commit -P:minibox:yrewire-functionx-application
+-Xprint:interop-commit -P:minibox:yrewire-functionx-application -P:minibox:warn-off

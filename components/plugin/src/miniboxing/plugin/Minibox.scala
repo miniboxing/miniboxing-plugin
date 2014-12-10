@@ -286,7 +286,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_strict_typechecking = false
   var flag_strip_miniboxed = false
   var flag_create_local_specs = true
-  var flag_strict_warnings = false
+  var flag_strict_warnings = true
   var flag_strict_warnings_outside = false
   var flag_rewire_functionX_application = false
   var flag_rewire_mbarray = true
@@ -309,7 +309,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "no-logo" =>
           flag_no_logo = true
         case "warn" =>
-          flag_strict_warnings  = true
+          global.warning("Showing performance warnings became the default behavior of the miniboxing plugin. To hide " +
+                         "warnings, please use the -P:minibox:warn-off scala compiler flag. On the other hand, if you " +
+                         "want cross-library warnings, please use the -P:minibox:warn-all flag. Read more about the " +
+                         "miniboxing warnings at http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
+        case "warn-off" =>
+          flag_strict_warnings = false
         case "warn-all" =>
           flag_strict_warnings = true
           flag_strict_warnings_outside = true
@@ -348,11 +353,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
-    s"  -P:${name}:warn                warn when missing out specialization opportunities (will become default in the future)",
-    s"  -P:${name}:warn-all            same as above, but warn even for outside code, such as libraries that could be optimized",
-    s"  -P:${name}:hijack              hijack the @specialized(...) notation for miniboxing",
-    s"  -P:${name}:mark-all            implicitly add @miniboxed annotations to all type parameters",
-    s"  -P:${name}:log                 log miniboxing signature transformations").mkString("\n"))
+    s"  -P:${name}:warn-off  do not show performance and specialization warnings for your code",
+    s"  -P:${name}:warn-all  show cross-project warnings, aka warn for the libraries as well",
+    s"  -P:${name}:hijack    hijack the @specialized(...) notation for miniboxing",
+    s"  -P:${name}:mark-all  implicitly add @miniboxed annotations to all type parameters",
+    s"  -P:${name}:log       log miniboxing signature transformations").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global

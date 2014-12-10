@@ -1,1 +1,1 @@
--Xprint:minibox-bridge -Xprint:minibox-commit
+-P:minibox:warn-off -Xprint:minibox-bridge -Xprint:minibox-commit

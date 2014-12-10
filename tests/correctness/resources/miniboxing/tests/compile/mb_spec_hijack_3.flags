@@ -1,1 +1,1 @@
--Xprint:mb-ext-hijacker -P:minibox:mark-all
+-P:minibox:warn-off -Xprint:mb-ext-hijacker -P:minibox:mark-all

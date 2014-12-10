@@ -1,1 +1,1 @@
--Xprint:minibox-inject -P:minibox:Yone-way
+-P:minibox:warn-off -Xprint:minibox-inject -P:minibox:Yone-way

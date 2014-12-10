@@ -1,1 +1,1 @@
--P:minibox:warn -P:minibox:Yrewire-functionX-application -Xprint:minibox-commit
+-P:minibox:warn -P:minibox:Yrewire-functionX-application -Xprint:minibox-commit -P:minibox:warn-off
