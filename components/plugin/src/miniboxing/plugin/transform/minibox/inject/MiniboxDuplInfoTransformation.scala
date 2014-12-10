@@ -769,14 +769,15 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
               } else if (isNoArgClassParent(firstParent)) {
                 (firstParent, parents)
               } else if (isClassParent(firstParent)) {
-                global.reporter.warning(stemClass.pos, "The miniboxed class " + stemClass.name + " extends the generic " +
-                  firstParent + ", which triggers a limitation of the miniboxing transformation: any value of type " +
-                  stemClass.name + " cannot be used as a value of type " + firstParent.name + ", despite the fact that " +
-                  "members and implementations are correctly inherited. There is a simple workaround to this problem, which you " +
-                  "can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. " +
-                  "Note that this can lead to further errors down the line. Also, keep in mind you should not expose " +
-                  "this class in your API, as it may break client code:"
-                )
+                if (currentRun.compiles(stemClass)) // #162: don't generate the error with each REPL line!
+                  global.reporter.warning(stemClass.pos, "The miniboxed class " + stemClass.name + " extends the generic " +
+                    firstParent + ", which triggers a limitation of the miniboxing transformation: any value of type " +
+                    stemClass.name + " cannot be used as a value of type " + firstParent.name + ", despite the fact that " +
+                    "members and implementations are correctly inherited. There is a simple workaround to this problem, which you " +
+                    "can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. " +
+                    "Note that this can lead to further errors down the line. Also, keep in mind you should not expose " +
+                    "this class in your API, as it may break client code:"
+                  )
                 (AnyRefClass, AnyRefTpe :: rest)
               } else { // it's a generic trait
                 (AnyRefClass, parents)
