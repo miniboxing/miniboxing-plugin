@@ -704,14 +704,16 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       def getFieldBody(fld: Symbol, owner: Symbol) = getMethodBody(fld, owner)._1
     }
 
-    private def prepareDuplicator(tree0: Tree, source: Symbol): Duplicator = {
+    private def prepareDuplicator(newMethod: Option[Symbol], oldMethod: Option[Symbol], newClass: Symbol, oldClass: Symbol): Duplicator = {
 
-      val symbol = tree0.symbol
-      val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams).toMap
+      if (metadata.getClassStem(newClass) != NoSymbol)
+        assert(metadata.getClassStem(newClass) == oldClass)
+
+      val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(newClass).typeParams.zip(newClass.typeParams).toMap
 
       // specialization environment
-      val senv1: List[(Symbol, Symbol)] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams)
-      val sspec = metadata.classSpecialization.getOrElse(symbol.owner, Map())
+      val senv1: List[(Symbol, Symbol)] = metadata.getClassStem(newClass).typeParams.zip(newClass.typeParams)
+      val sspec = metadata.classSpecialization.getOrElse(newClass, Map())
       val senv2 =
         for ((oldTarg, newTarg) <- senv1) yield
           sspec.getOrElse(oldTarg, Boxed) match {
@@ -721,25 +723,31 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val senv3 = senv2.toMap
 
       // normalization environment
-      val normStem = metadata.getNormalStem(symbol)
-      val nenv1: List[(Symbol, (Symbol, Symbol))] = source.typeParams zip (symbol.typeParams zip normStem.typeParams)
-      val nspec = metadata.normalSpecialization.getOrElse(symbol, Map())
-      val nenv2 =
-        for ((oldTarg, (newTarg, stemTarg)) <- nenv1) yield
-          nspec.getOrElse(stemTarg, Boxed) match {
-            case Boxed => (oldTarg, newTarg.tpeHK)
-            case mboxed => (oldTarg, storageType(newTarg, mboxed))
-          }
-      val nenv3 = nenv2.toMap
+      val nenv3 =
+        (newMethod, oldMethod) match {
+          case (Some(symbol), Some(source)) =>
+            val normStem = metadata.getNormalStem(symbol)
+            val nenv1: List[(Symbol, (Symbol, Symbol))] = source.typeParams zip (symbol.typeParams zip normStem.typeParams)
+            val nspec = metadata.normalSpecialization.getOrElse(symbol, Map())
+            val nenv2 =
+              for ((oldTarg, (newTarg, stemTarg)) <- nenv1) yield
+                nspec.getOrElse(stemTarg, Boxed) match {
+                  case Boxed => (oldTarg, newTarg.tpeHK)
+                  case mboxed => (oldTarg, storageType(newTarg, mboxed))
+                }
+            nenv2.toMap
+          case _ =>
+            Map.empty
+        }
 
       val miniboxedEnv: Map[Symbol, Type] = senv3 ++ nenv3
-      val miniboxedTypeTags = typeTagTrees(symbol)
+      val miniboxedTypeTags = typeTagTrees(newMethod.getOrElse(newClass))
 
       val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
       val d =
         new Duplicator(Map.empty,
-                       source.enclClass,
-                       symbol.enclClass,
+                       oldMethod.map(_.enclClass).getOrElse(oldClass),
+                       newMethod.map(_.enclClass).getOrElse(newClass),
                        mbSubst.shallowSubst,
                        mbSubst.deepSubst
         )
@@ -749,7 +757,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     private def duplicateBody(tree0: Tree, source: Symbol): Tree = {
 
       val symbol = tree0.symbol
-      val d = prepareDuplicator(tree0, source)
+      val d = prepareDuplicator(Some(tree0.symbol), Some(source), tree0.symbol.owner, source.owner)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid
