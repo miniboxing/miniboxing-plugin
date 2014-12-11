@@ -72,7 +72,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       "https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details). "
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
-    class Duplicator(casts: Map[Symbol, Type]) extends {
+    class Duplicator(casts: Map[Symbol, Type], oldThis: Symbol, newThis: Symbol, _subst: TypeMap, _deepSubst: TypeMap) extends {
       val global: MiniboxInjectTreeTransformation.this.global.type = MiniboxInjectTreeTransformation.this.global
       val miniboxing: MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type } =
         MiniboxInjectTreeTransformation.this.asInstanceOf[MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type }]
@@ -84,6 +84,27 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         tree
       }
       def suboptimalCodeWarning(pos: Position, msg: String) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg)
+
+      // utility method:
+      def retyped(context0: Context, tree0: Tree) = {
+        // Duplicator chokes on retyping new C if C is marked as abstract
+        // but we need this in the backend, else we're generating invalid
+        // flags for the entire class - for better or worse we adapt just
+        // before calling the duplicator, and get back for specialization
+        for (clazz <- metadata.allStemClasses)
+          if (metadata.classStemTraitFlag(clazz))
+            clazz.resetFlag(ABSTRACT)
+          else
+            clazz.resetFlag(ABSTRACT | TRAIT)
+
+        val res = util.Try(beforeMiniboxInject(super.retyped(context0, tree0, oldThis, newThis, _subst, _deepSubst)))
+
+        // get back flags
+        for (clazz <- metadata.allStemClasses)
+          clazz.setFlag(ABSTRACT | TRAIT)
+
+        res.get
+      }
     }
 
     class RemovedFieldFinder(stemClass: Symbol) extends Traverser {
@@ -683,7 +704,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       def getFieldBody(fld: Symbol, owner: Symbol) = getMethodBody(fld, owner)._1
     }
 
-    private def duplicateBody(tree0: Tree, source: Symbol): Tree = {
+    private def prepareDuplicator(tree0: Tree, source: Symbol): Duplicator = {
 
       val symbol = tree0.symbol
       val tparamUpdate: Map[Symbol, Symbol] = metadata.getClassStem(symbol.owner).typeParams.zip(symbol.owner.typeParams).toMap
@@ -714,8 +735,21 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val miniboxedEnv: Map[Symbol, Type] = senv3 ++ nenv3
       val miniboxedTypeTags = typeTagTrees(symbol)
 
-      val tree = tree0
-      val d = new Duplicator(Map.empty)
+      val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
+      val d =
+        new Duplicator(Map.empty,
+                       source.enclClass,
+                       symbol.enclClass,
+                       mbSubst.shallowSubst,
+                       mbSubst.deepSubst
+        )
+      d
+    }
+
+    private def duplicateBody(tree0: Tree, source: Symbol): Tree = {
+
+      val symbol = tree0.symbol
+      val d = prepareDuplicator(tree0, source)
 
       // Duplicator chokes on retyping new C if C is marked as abstract
       // but we need this in the backend, else we're generating invalid
@@ -727,26 +761,21 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         else
           clazz.resetFlag(ABSTRACT | TRAIT)
 
-      val mbSubst = typeMappers.MiniboxSubst(miniboxedEnv)
-      val tree2 =
+      val tree1 =
         reportError(symbol)(
-          beforeMiniboxInject(d.retyped(
+          d.retyped(
             localTyper.context1.asInstanceOf[d.Context],
-            tree,
-            source.enclClass,
-            symbol.enclClass,
-            mbSubst.shallowSubst,
-            mbSubst.deepSubst
-          ))
+            tree0
+          )
         )(_ => {
 //          println(tree)
-          localTyper.typed(deriveDefDef(tree)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil))))
+          localTyper.typed(deriveDefDef(tree0)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil))))
         })
       // get back flags
       for (clazz <- metadata.allStemClasses)
         clazz.setFlag(ABSTRACT | TRAIT)
 
-      tree2
+      tree1
     }
 
     /** Put the body of 'source' as the right hand side of the method 'tree'.
