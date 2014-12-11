@@ -199,7 +199,7 @@ object MiniboxingBuild extends Build {
                                  },
           // after publishing the new version:
           // scalacOptions ++= Seq("-P:minibox:Ykeep-functionX-repres") ++ (if (bootstrap == "stage2") Seq("-P:minibox:Ystrip-miniboxed") else Seq())
-          scalacOptions ++= Seq("-P:minibox:library-functions") ++ (if (bootstrap == "stage2") Seq("-P:minibox:Ystrip-miniboxed") else Seq())
+          scalacOptions ++= Seq("-P:minibox:library-functions", "-P:minibox:warn-off") ++ (if (bootstrap == "stage2") Seq("-P:minibox:Ystrip-miniboxed") else Seq())
       )
     }
   }
