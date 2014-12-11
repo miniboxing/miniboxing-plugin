@@ -81,6 +81,28 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       def suboptimalCodeWarning(pos: Position, msg: String) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg)
     }
 
+    class RemovedFieldFinder(stemClass: Symbol) extends Traverser {
+      val removedMbrs = metadata.stemClassRemovedMembers.getOrElse(stemClass, collection.mutable.Set.empty[Symbol])
+      override def traverse(tree: Tree): Unit = {
+        if (tree.hasSymbolField && removedMbrs(tree.symbol)) {
+          val mbr = tree.symbol
+          // NOTE: TODO: Some of these cases will be avoided when addressing #64 and #105:
+          //              - https://github.com/miniboxing/miniboxing-plugin/issues/64
+          //              - https://github.com/miniboxing/miniboxing-plugin/issues/105
+          global.reporter.error(tree.pos, "You ran into a fundamental limitation of the miniboxing transformation. " +
+                                "When miniboxing " + stemClass.tweakedToString + ", the miniboxing plugin moves " +
+                                "all the fields and super-accessors to the specialized subclasses. Therefore, trying " +
+                                "to access them in the nested " + currentOwner.tweakedFullString + " is not a valid " +
+                                "pattern anymore. Please read " +
+                                "https://github.com/miniboxing/miniboxing-plugin/issues/127 " +
+                                "for a thorough explanation and some workarounds for the problem. Thanks and sorry!")
+        }
+        super.traverse(tree)
+      }
+      def find(owner: Symbol, tree: Tree) =
+        atOwner(owner){ traverse(tree) }
+    }
+
     def typeTagTrees(member: Symbol = currentOwner) =
       MiniboxInjectTreeTransformation.this.typeTagTrees(member)
 
@@ -230,15 +252,18 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
               case SpecializedStem =>
                 var sideEffectWarning = true
+                val removedFieldFinder = new RemovedFieldFinder(cls)
                 body.flatMap({
-                  case dt: DefTree if isConstructorOrField(dt.symbol) =>
+                  case dt: DefTree if isConstructorOrField(dt.symbol) || dt.symbol.isSuperAccessor =>
                     Nil
                   case dd: DefDef if heuristics.specializableMethodInClass(cls, dd.symbol) =>
                     deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
                   case cd: ClassDef =>
                     suboptimalCodeWarning(cd.pos, s"The ${cd.symbol} will not be miniboxed based on type parameter(s) ${cls.typeParams.map(_.nameString).mkString(", ")} of miniboxed ${cls.tweakedToString}. To have it transformed, declare new type parameters marked with @miniboxed and instantiate it using the parameters from ${cls.tweakedToString}.")
+                    removedFieldFinder.find(currentOwner, cd)
                     List(cd)
                   case dt: DefTree =>
+                    removedFieldFinder.find(currentOwner, dt)
                     List(dt)
                   case other =>
                     val isInitFromBug64 =
@@ -252,6 +277,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                           s"This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)")
                       sideEffectWarning = false
                     }
+                    removedFieldFinder.find(currentOwner, other)
                     List(other)
                 })
 

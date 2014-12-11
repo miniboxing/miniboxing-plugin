@@ -1,0 +1,110 @@
+[[syntax trees at end of                     mixin]] // newSource1.scala
+package miniboxing.tests.compile.bug166 {
+  abstract trait A extends Object {
+    def getStr(): String
+  };
+  abstract trait A_D extends Object with miniboxing.tests.compile.bug166.A {
+    def miniboxing|tests|compile|bug166|A_D|T_TypeTag(): Byte;
+    def getStr(): String
+  };
+  abstract trait A_J extends Object with miniboxing.tests.compile.bug166.A {
+    def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte;
+    def getStr(): String
+  };
+  abstract trait A_L extends Object with miniboxing.tests.compile.bug166.A {
+    def getStr(): String
+  };
+  abstract trait B extends Object with miniboxing.tests.compile.bug166.A {
+    override def getStr(): String;
+    override def toString(): String
+  };
+  abstract trait B_D extends Object with miniboxing.tests.compile.bug166.A_D with miniboxing.tests.compile.bug166.B {
+    def miniboxing|tests|compile|bug166|B_D|T_TypeTag(): Byte;
+    <superaccessor> <artifact> def super$getStr(): String;
+    override def getStr(): String;
+    override def toString(): String
+  };
+  abstract trait B_J extends Object with miniboxing.tests.compile.bug166.A_J with miniboxing.tests.compile.bug166.B {
+    def miniboxing|tests|compile|bug166|B_J|T_TypeTag(): Byte;
+    <superaccessor> <artifact> def super$getStr(): String;
+    override def getStr(): String;
+    override def toString(): String
+  };
+  abstract trait B_L extends Object with miniboxing.tests.compile.bug166.A_L with miniboxing.tests.compile.bug166.B {
+    <superaccessor> <artifact> def super$getStr(): String;
+    override def getStr(): String;
+    override def toString(): String
+  };
+  class C extends Object with miniboxing.tests.compile.bug166.B_J {
+    <superaccessor> <artifact> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
+    override def getStr(): String = miniboxing.tests.compile.bug166.B_J$class.getStr(C.this);
+    override def toString(): String = miniboxing.tests.compile.bug166.B_J$class.toString(C.this);
+    def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|bug166|B_J|T_TypeTag(): Byte = 5;
+    def <init>(): miniboxing.tests.compile.bug166.C = {
+      C.super.<init>();
+      miniboxing.tests.compile.bug166.A$class./*A$class*/$init$(C.this);
+      miniboxing.tests.compile.bug166.A_J$class./*A_J$class*/$init$(C.this);
+      miniboxing.tests.compile.bug166.B$class./*B$class*/$init$(C.this);
+      miniboxing.tests.compile.bug166.B_J$class./*B_J$class*/$init$(C.this);
+      ()
+    }
+  };
+  object Test extends Object {
+    def main(args: Array[String]): Unit = scala.this.Predef.println(new miniboxing.tests.compile.bug166.C());
+    def <init>(): miniboxing.tests.compile.bug166.Test.type = {
+      Test.super.<init>();
+      ()
+    }
+  };
+  abstract trait A$class extends  {
+    def /*A$class*/$init$($this: miniboxing.tests.compile.bug166.A): Unit = {
+      ()
+    }
+  };
+  abstract trait A_D$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.A_D): String = "aaa";
+    def /*A_D$class*/$init$($this: miniboxing.tests.compile.bug166.A_D): Unit = {
+      ()
+    }
+  };
+  abstract trait A_J$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.A_J): String = "aaa";
+    def /*A_J$class*/$init$($this: miniboxing.tests.compile.bug166.A_J): Unit = {
+      ()
+    }
+  };
+  abstract trait A_L$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.A_L): String = "aaa";
+    def /*A_L$class*/$init$($this: miniboxing.tests.compile.bug166.A_L): Unit = {
+      ()
+    }
+  };
+  abstract trait B$class extends  {
+    def /*B$class*/$init$($this: miniboxing.tests.compile.bug166.B): Unit = {
+      ()
+    }
+  };
+  abstract trait B_D$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.B_D): String = $this.super$getStr();
+    def toString($this: miniboxing.tests.compile.bug166.B_D): String = "instance of C";
+    def /*B_D$class*/$init$($this: miniboxing.tests.compile.bug166.B_D): Unit = {
+      ()
+    }
+  };
+  abstract trait B_J$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.B_J): String = $this.super$getStr();
+    def toString($this: miniboxing.tests.compile.bug166.B_J): String = "instance of C";
+    def /*B_J$class*/$init$($this: miniboxing.tests.compile.bug166.B_J): Unit = {
+      ()
+    }
+  };
+  abstract trait B_L$class extends  {
+    def getStr($this: miniboxing.tests.compile.bug166.B_L): String = $this.super$getStr();
+    def toString($this: miniboxing.tests.compile.bug166.B_L): String = "instance of C";
+    def /*B_L$class*/$init$($this: miniboxing.tests.compile.bug166.B_L): Unit = {
+      ()
+    }
+  }
+}
+instance of C

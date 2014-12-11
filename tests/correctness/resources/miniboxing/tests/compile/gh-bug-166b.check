@@ -1,0 +1,12 @@
+newSource1.scala:8: warning: The following constructor statement will not be specialized in the miniboxed trait B. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
+  println(super.getStr)
+         ^
+newSource1.scala:8: error: You ran into a fundamental limitation of the miniboxing transformation. When miniboxing trait B, the miniboxing plugin moves all the fields and super-accessors to the specialized subclasses. Therefore, trying to access them in the nested trait miniboxing.tests.compile.bug166b.B is not a valid pattern anymore. Please read https://github.com/miniboxing/miniboxing-plugin/issues/127 for a thorough explanation and some workarounds for the problem. Thanks and sorry!
+  println(super.getStr)
+                ^
+newSource1.scala:9: warning: The class X will not be miniboxed based on type parameter(s) T of miniboxed trait B. To have it transformed, declare new type parameters marked with @miniboxed and instantiate it using the parameters from trait B.
+  class X {
+        ^
+newSource1.scala:10: error: You ran into a fundamental limitation of the miniboxing transformation. When miniboxing trait B, the miniboxing plugin moves all the fields and super-accessors to the specialized subclasses. Therefore, trying to access them in the nested method miniboxing.tests.compile.bug166b.B.X.baz is not a valid pattern anymore. Please read https://github.com/miniboxing/miniboxing-plugin/issues/127 for a thorough explanation and some workarounds for the problem. Thanks and sorry!
+    def baz = println(B.super.getStr)
+                              ^
