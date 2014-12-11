@@ -66,6 +66,11 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
     import global._
 
+    val bug64message =
+      "Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see " +
+      "https://github.com/miniboxing/miniboxing-plugin/issues/64 and " +
+      "https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details). "
+
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type]) extends {
       val global: MiniboxInjectTreeTransformation.this.global.type = MiniboxInjectTreeTransformation.this.global
@@ -83,19 +88,46 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
     class RemovedFieldFinder(stemClass: Symbol) extends Traverser {
       val removedMbrs = metadata.stemClassRemovedMembers.getOrElse(stemClass, collection.mutable.Set.empty[Symbol])
+      def skipLocalDummy(sym: Symbol): Symbol =
+        if (sym.isLocalDummy) skipLocalDummy(sym.owner) else sym
+
       override def traverse(tree: Tree): Unit = {
         if (tree.hasSymbolField && removedMbrs(tree.symbol)) {
           val mbr = tree.symbol
+
           // NOTE: TODO: Some of these cases will be avoided when addressing #64 and #105:
           //              - https://github.com/miniboxing/miniboxing-plugin/issues/64
           //              - https://github.com/miniboxing/miniboxing-plugin/issues/105
-          global.reporter.error(tree.pos, "You ran into a fundamental limitation of the miniboxing transformation. " +
-                                "When miniboxing " + stemClass.tweakedToString + ", the miniboxing plugin moves " +
-                                "all the fields and super-accessors to the specialized subclasses. Therefore, trying " +
-                                "to access them in the nested " + currentOwner.tweakedFullString + " is not a valid " +
-                                "pattern anymore. Please read " +
-                                "https://github.com/miniboxing/miniboxing-plugin/issues/127 " +
-                                "for a thorough explanation and some workarounds for the problem. Thanks and sorry!")
+          val additionalMsg =
+            if (skipLocalDummy(currentOwner) == stemClass) bug64message else ""
+
+          if (mbr.isField) {
+            val suggested = s""""${(if (mbr.isMutable) "var " else "val ") + mbr.name + ": " + mbr.tpe}""""
+            val message =
+              if (mbr.isParamAccessor)
+                "adding val to the constructor parameter: "
+              else if (mbr.isPrivateThis)
+                "removing the \"private[this]\" qualifier: "
+              else
+                "making it public: "
+
+            global.reporter.error(tree.pos, "The following code is accessing field " + mbr.name + " of miniboxed " +
+                                            stemClass.tweakedToString + ", a pattern which becomes invalid after the " +
+                                            "miniboxing transformation. Please allow Scala to generate accessors " +
+                                            "for this field by " + message + suggested + ". " + additionalMsg)
+          } else if (!mbr.isConstructor) {
+
+            global.reporter.error(tree.pos, "You ran into a fundamental limitation of the miniboxing transformation. " +
+                                  "When miniboxing " + stemClass.tweakedToString + ", the miniboxing plugin moves " +
+                                  "all the fields and super-accessors to the specialized subclasses. Therefore, trying " +
+                                  "to access them in the nested " + skipLocalDummy(currentOwner).tweakedFullString +
+                                  " is not a valid pattern anymore. Please read " +
+                                  "https://github.com/miniboxing/miniboxing-plugin/issues/127 " +
+                                  "for a thorough explanation and some workarounds for the problem. " +
+                                  additionalMsg + "Thanks and sorry! " + additionalMsg)
+          } else { // mbr.isConstructor
+            // do nothing, it's going to get rewired to a specialized class
+          }
         }
         super.traverse(tree)
       }
@@ -259,7 +291,13 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case dd: DefDef if heuristics.specializableMethodInClass(cls, dd.symbol) =>
                     deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
                   case cd: ClassDef =>
-                    suboptimalCodeWarning(cd.pos, s"The ${cd.symbol} will not be miniboxed based on type parameter(s) ${cls.typeParams.map(_.nameString).mkString(", ")} of miniboxed ${cls.tweakedToString}. To have it transformed, declare new type parameters marked with @miniboxed and instantiate it using the parameters from ${cls.tweakedToString}.")
+                    suboptimalCodeWarning(cd.pos, "The " + cd.symbol.tweakedToString + " will not be miniboxed based " +
+                                                  "on type parameter(s) " + cls.typeParams.map(_.nameString).mkString(", ") +
+                                                  " of miniboxed " + cls.tweakedToString + ". To have it specialized, " +
+                                                  "add the type parameters of " + cls.tweakedToString + ", marked with " +
+                                                  "\"@miniboxed\" to the definition of " + cd.symbol.tweakedToString +
+                                                  " and instantiate it explicitly passing the type parameters from " +
+                                                  cls.tweakedToString + ":")
                     removedFieldFinder.find(currentOwner, cd)
                     List(cd)
                   case dt: DefTree =>
@@ -273,8 +311,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                       }
                     if (sideEffectWarning && !isInitFromBug64) {
                       global.reporter.warning(other.pos,
-                          s"The following constructor statement will not be specialized in the miniboxed ${tree.symbol.enclClass}. " +
-                          s"This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)")
+                          s"The side-effecting statement(s) in the miniboxed ${cls.tweakedToString}'s constructor " +
+                          "will not be miniboxed. " + bug64message +
+                          "For a partial workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/64:")
                       sideEffectWarning = false
                     }
                     removedFieldFinder.find(currentOwner, other)
@@ -395,14 +434,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             case info =>
               sys.error("Unknown info type: " + info)
           }
-
-        // Error on accessing non-existing fields
-        case sel@Select(ths, field) if isMiniboxedFieldInStem(sel) =>
-          global.reporter.error(sel.pos,
-              s"The following code is accessing field ${sel.symbol.name} of miniboxed class/trait ${ths.symbol.name}, a pattern which becomes invalid after the " +
-              s"""miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier: """ +
-              s"""${(if (sel.symbol.isMutable) "var " else "val ") + sel.symbol.name + ": " + sel.symbol.info + "\"."}""")
-          localTyper.typed(gen.mkAttributedRef(Predef_???))
 
         // rewiring new class construction
         // new C[Int] => new C_J[Int]
@@ -778,18 +809,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       debuglog("now typing: " + tree1 + " in " + tree.symbol.owner.fullName)
 
       duplicateBody(tree1, origMember)
-    }
-
-    private def isMiniboxedFieldInStem(sel: Select) = sel match {
-      case Select(ths, field) if ths.hasSymbolField =>
-        afterMiniboxInject(ths.symbol.info)
-        val res = metadata.isClassStem(ths.tpe.typeSymbol) &&
-          sel.symbol.isField &&
-          sel.symbol.tpe.typeSymbol.isTypeParameterOrSkolem &&
-          metadata.miniboxedTParamFlag(sel.symbol.tpe.typeSymbol)
-        res
-      case _ =>
-        false
     }
 
     // Create bodies for members in a tree

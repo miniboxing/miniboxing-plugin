@@ -1,6 +1,6 @@
-newSource1.scala:7: error: The following code is accessing field c of miniboxed class/trait CCCC, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier: val c: T".
+newSource1.scala:7: error: The following code is accessing field c of miniboxed class CCCC, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by adding val to the constructor parameter: "val c: T".
     val x1: T = c
                 ^
-newSource1.scala:10: error: The following code is accessing field c of miniboxed class/trait CCCC, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors by using val/var or removing the "private[this]" qualifier: val c: T".
+newSource1.scala:10: error: The following code is accessing field c of miniboxed class CCCC, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by adding val to the constructor parameter: "val c: T".
       val x3: T = c
                   ^

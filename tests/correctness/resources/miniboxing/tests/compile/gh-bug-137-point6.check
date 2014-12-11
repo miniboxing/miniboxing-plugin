@@ -1,4 +1,4 @@
-newSource1.scala:4: warning: The class D will not be miniboxed based on type parameter(s) T, U of miniboxed class C. To have it transformed, declare new type parameters marked with @miniboxed and instantiate it using the parameters from class C.
+newSource1.scala:4: warning: The class D will not be miniboxed based on type parameter(s) T, U of miniboxed class C. To have it specialized, add the type parameters of class C, marked with "@miniboxed" to the definition of class D and instantiate it explicitly passing the type parameters from class C:
   class D {
         ^
 newSource1.scala:6: warning: The following code could benefit from miniboxing specialization (the reason was explained before).

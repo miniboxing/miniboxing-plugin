@@ -1,0 +1,21 @@
+newSource1.scala:9: warning: The side-effecting statement(s) in the miniboxed class C's constructor will not be miniboxed. Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see https://github.com/miniboxing/miniboxing-plugin/issues/64 and https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details). For a partial workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/64:
+  println(c)
+         ^
+newSource1.scala:9: error: The following code is accessing field c of miniboxed class C, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by adding val to the constructor parameter: "val c: Int". Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see https://github.com/miniboxing/miniboxing-plugin/issues/64 and https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details).
+  println(c)
+          ^
+newSource1.scala:11: error: The following code is accessing field t of miniboxed class C, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by removing the "private[this]" qualifier: "val t: Int". Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see https://github.com/miniboxing/miniboxing-plugin/issues/64 and https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details).
+  println(t)
+          ^
+newSource1.scala:22: warning: The class D will not be miniboxed based on type parameter(s) T of miniboxed class C. To have it specialized, add the type parameters of class C, marked with "@miniboxed" to the definition of class D and instantiate it explicitly passing the type parameters from class C:
+  class D {
+        ^
+newSource1.scala:23: error: The following code is accessing field c of miniboxed class C, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by adding val to the constructor parameter: "val c: Int".
+    println(c)
+            ^
+newSource1.scala:24: error: The following code is accessing field t of miniboxed class C, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by removing the "private[this]" qualifier: "val t: Int".
+    println(t)
+            ^
+newSource1.scala:26: error: You ran into a fundamental limitation of the miniboxing transformation. When miniboxing class C, the miniboxing plugin moves all the fields and super-accessors to the specialized subclasses. Therefore, trying to access them in the nested class miniboxing.tests.compile.field_messages.C.D is not a valid pattern anymore. Please read https://github.com/miniboxing/miniboxing-plugin/issues/127 for a thorough explanation and some workarounds for the problem. Thanks and sorry!
+    C.super.foo()
+            ^

@@ -18,6 +18,11 @@ trait ScalacCrossCompilingLayer {
 
   type Mode = Int
 
+  implicit class CompatSym(sym: Symbol) {
+    import scala.reflect.internal.Flags._
+    def isPrivateThis = (sym hasFlag PRIVATE) && (sym hasFlag LOCAL)
+  }
+
   implicit class CompatTree(tree: Tree) {
     def hasSymbolField: Boolean = tree.hasSymbol
     def hasAttachment[T: ClassTag]: Boolean = tree.attachments.get[T].isDefined

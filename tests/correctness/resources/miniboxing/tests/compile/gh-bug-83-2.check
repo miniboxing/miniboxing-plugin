@@ -1,4 +1,4 @@
-newSource1.scala:11: warning: The following constructor statement will not be specialized in the miniboxed trait C. This is a technical limitation that can be worked around: (please see https://github.com/miniboxing/miniboxing-plugin/issues/64)
+newSource1.scala:11: warning: The side-effecting statement(s) in the miniboxed class C's constructor will not be miniboxed. Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see https://github.com/miniboxing/miniboxing-plugin/issues/64 and https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details). For a partial workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/64:
   t = t2
     ^
 newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
