@@ -1,0 +1,6 @@
+newSource1.scala:12: warning: The class X will not be miniboxed based on type parameter(s) T of miniboxed trait B. To have it specialized, add the type parameters of trait B, marked with "@miniboxed" to the definition of class X and instantiate it explicitly passing the type parameters from trait B:
+  class X {
+        ^
+newSource1.scala:14: warning: The following code could benefit from miniboxing specialization (the reason was explained before).
+    def baz = println(BsuperGetStr)
+                      ^
