@@ -1,1 +1,1 @@
--P:minibox:warn-off -Xprint:minibox-commit -P:minibox:log -Ycheck:minibox -P:minibox:spec-no-opt -P:minibox:Yone-way
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:minibox-commit -P:minibox:log -Ycheck:minibox -P:minibox:spec-no-opt -P:minibox:Yone-way

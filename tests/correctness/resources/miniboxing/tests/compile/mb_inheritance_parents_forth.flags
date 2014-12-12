@@ -1,1 +1,1 @@
--P:minibox:warn-off -Xprint:minibox-commit
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:minibox-commit

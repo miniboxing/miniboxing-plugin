@@ -1,1 +1,1 @@
--P:minibox:warn-off -P:minibox:hijack -P:minibox:Yone-way
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -P:minibox:hijack -P:minibox:Yone-way

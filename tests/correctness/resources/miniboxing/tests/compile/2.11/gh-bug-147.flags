@@ -1,1 +1,1 @@
--Ydelambdafy:method -P:minibox:warn-off
+-P:minibox:Ygeneric-constructor-code  -Ydelambdafy:method -P:minibox:warn-off

@@ -149,6 +149,7 @@ trait MiniboxInjectComponent extends
   def flag_strict_warnings: Boolean
   def flag_strict_warnings_outside: Boolean
   def flag_create_local_specs: Boolean
+  def flag_constructor_spec: Boolean
 }
 
 /** Introduces explicit bridge methods to respect the object model
@@ -290,6 +291,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_strict_warnings_outside = false
   var flag_rewire_functionX_application = false
   var flag_rewire_mbarray = true
+  var flag_constructor_spec = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -340,6 +342,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
             error("The option -P:minibox:Yrewire-functionX-application only works on Scala 2.11. La reverdere!")
           else
             flag_rewire_functionX_application = true
+        case "ygeneric-constructor-code" =>
+          flag_constructor_spec = false
         case "two-way" =>
           global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                          "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
@@ -469,6 +473,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     def flag_create_local_specs = Minibox.this.flag_create_local_specs
     def flag_strict_warnings = Minibox.this.flag_strict_warnings
     def flag_strict_warnings_outside = Minibox.this.flag_strict_warnings_outside
+    def flag_constructor_spec = Minibox.this.flag_constructor_spec
 
     var mboxInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

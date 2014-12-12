@@ -53,7 +53,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     try body
     catch {
       case te: TypeError =>
-        reporter.error(te.pos, s"[ occured while creating miniboxed ${location.fullLocationString} ]\n${te.msg}")
+        if (location != NoSymbol)
+          reporter.error(te.pos, s"[ occured while creating miniboxed ${location.fullLocationString} ]\n${te.msg}")
         handler(te)
 //        throw(te)
     }
@@ -67,9 +68,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     import global._
 
     val bug64message =
-      "Please note this is a transient limitation until bugs #64 and #105 in the miniboxing plugin are addressed (see " +
-      "https://github.com/miniboxing/miniboxing-plugin/issues/64 and " +
-      "https://github.com/miniboxing/miniboxing-plugin/issues/105 for more details). "
+      if (!flag_constructor_spec)
+        "Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements."
+      else
+        ""
 
     /** This duplicator additionally performs casts of expressions if that is allowed by the `casts` map. */
     class Duplicator(casts: Map[Symbol, Type], oldThis: Symbol, newThis: Symbol, _subst: TypeMap, _deepSubst: TypeMap) extends {
@@ -86,7 +88,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       def suboptimalCodeWarning(pos: Position, msg: String) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg)
 
       // utility method:
-      def retyped(context0: Context, tree0: Tree) = {
+      def retyped(context0: MiniboxInjectTreeTransformation.this.global.analyzer.Context, tree0: Tree) = {
         // Duplicator chokes on retyping new C if C is marked as abstract
         // but we need this in the backend, else we're generating invalid
         // flags for the entire class - for better or worse we adapt just
@@ -97,7 +99,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           else
             clazz.resetFlag(ABSTRACT | TRAIT)
 
-        val res = util.Try(beforeMiniboxInject(super.retyped(context0, tree0, oldThis, newThis, _subst, _deepSubst)))
+        val res = util.Try(beforeMiniboxInject(super.retyped(context0.asInstanceOf[Context], tree0, oldThis, newThis, _subst, _deepSubst)))
 
         // get back flags
         for (clazz <- metadata.allStemClasses)
@@ -116,9 +118,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         if (tree.hasSymbolField && removedMbrs(tree.symbol)) {
           val mbr = tree.symbol
 
-          // NOTE: TODO: Some of these cases will be avoided when addressing #64 and #105:
-          //              - https://github.com/miniboxing/miniboxing-plugin/issues/64
-          //              - https://github.com/miniboxing/miniboxing-plugin/issues/105
           val additionalMsg =
             if (skipLocalDummy(currentOwner) == stemClass) bug64message else ""
 
@@ -137,7 +136,6 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                                             "miniboxing transformation. Please allow Scala to generate accessors " +
                                             "for this field by " + message + suggested + ". " + additionalMsg)
           } else if (!mbr.isConstructor) {
-
             global.reporter.error(tree.pos, "You ran into a fundamental limitation of the miniboxing transformation. " +
                                   "When miniboxing " + stemClass.tweakedToString + ", the miniboxing plugin moves " +
                                   "all the fields and super-accessors to the specialized subclasses. Therefore, trying " +
@@ -325,32 +323,57 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     removedFieldFinder.find(currentOwner, dt)
                     List(dt)
                   case other =>
-                    val isInitFromBug64 =
-                      other match {
-                        case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) => true
-                        case _ => false
+                    if (!flag_constructor_spec) {
+                      val isInitFromBug64 =
+                        other match {
+                          case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) => true
+                          case _ => false
+                        }
+                      if (sideEffectWarning && !isInitFromBug64) {
+                        global.reporter.warning(other.pos,
+                            s"The side-effecting statement(s) in the miniboxed ${cls.tweakedToString}'s constructor " +
+                            "will not be miniboxed. " + bug64message)
+                        sideEffectWarning = false
                       }
-                    if (sideEffectWarning && !isInitFromBug64) {
-                      global.reporter.warning(other.pos,
-                          s"The side-effecting statement(s) in the miniboxed ${cls.tweakedToString}'s constructor " +
-                          "will not be miniboxed. " + bug64message +
-                          "For a partial workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/64:")
-                      sideEffectWarning = false
-                    }
-                    removedFieldFinder.find(currentOwner, other)
-                    List(other)
+                      removedFieldFinder.find(currentOwner, other)
+                      List(other)
+                    }  else
+                      Nil
                 })
 
               case SpecializedVariant =>
+                val stemClass = metadata.getClassStem(cls)
+                val duplicator = prepareDuplicator(None, None, cls, stemClass)
+
                 def equivalentMemberTree(sym: Symbol): Option[Tree] = createMemberTree(equivalentMemberInSpecializedClass(sym, cls))
+
                 body.flatMap({
                   case dt: DefTree if isConstructorOrField(dt.symbol) =>
                     equivalentMemberTree(dt.symbol).toList
                   case dd: DefDef =>
                     val equiv = equivalentMemberTree(dd.symbol)
                     equiv.map(dd => dd :: memberVariants(dd.symbol)).getOrElse(Nil)
-                  case other =>
+                  case _: DefTree =>
                     Nil
+                  case other =>
+                    if (flag_constructor_spec)
+                      reportError(NoSymbol){
+                        val context = atOwner(tree.symbol)(localTyper.context1)
+                        List(duplicator.retyped(context, other))
+                      } {
+                        (t: TypeError) =>
+                          global.reporter.error(t.pos, "An error was encountered while specializing constructor code for " +
+                                                       stemClass.tweakedToString + ". Please please please report this " +
+                                                       "error to https://github.com/miniboxing/miniboxing-plugin/issues! " +
+                                                       "As a workaround, you can add the following scala compiler flag: " +
+                                                       "\"-P:minibox:Ygeneric-constructor-code\". The performance will " +
+                                                       "degrade as a result and you'll see a lot of warnings, but the " +
+                                                       "program should compile. (internal error: " + t.msg + ")")
+                          t.printStackTrace()
+                          List(localTyper.typed(gen.mkMethodCall(Predef_???, Nil)))
+                      }
+                    else
+                      Nil
                 })
             }
 
@@ -624,7 +647,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             localTyper.silent(_.typed(tree1)) match {
               case global.analyzer.SilentResultValue(t: Tree) => t
               case global.analyzer.SilentTypeError(err) =>
-                global.reporter.warning(err.errPos, "Miniboxing redirection error at " + currentOwner.fullName + ":\n" + err.toString() + "\nNote: The resulting bytecode will be incorrect due to this error, so please don't use it in production and report the bug at https://github.com/miniboxing/miniboxing-plugin/issues.")
+                global.reporter.warning(err.errPos, "Miniboxing redirection error at " + currentOwner.fullName + ":\n" +
+                                                     err.toString() + "\nNote: The resulting bytecode will be incorrect " +
+                                                     "due to this error, so please don't use it in production and " +
+                                                     "report the bug to https://github.com/miniboxing/miniboxing-plugin/issues.")
                 gen.mkMethodCall(Predef_???, Nil)
             }
 
@@ -772,7 +798,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       val tree1 =
         reportError(symbol)(
           d.retyped(
-            localTyper.context1.asInstanceOf[d.Context],
+            localTyper.context1,
             tree0
           )
         )(_ => {
@@ -801,10 +827,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           (tparams, ttags, vparams, tpt)
       }
 
-
-      val env = metadata.getClassStem(symbol).typeParams.zip(symbol.typeParams.map(_.tpeHK)).toMap
-      val boundTvars = env.keySet
-      val origtparams = source.typeParams.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
+//      val env = metadata.getClassStem(symbol).typeParams.zip(symbol.typeParams.map(_.tpeHK)).toMap
+//      val boundTvars = env.keySet
+      val origtparams = source.typeParams //.filter(tparam => !boundTvars(tparam) || !isPrimitiveValueType(env(tparam)))
       if (origtparams.nonEmpty || symbol.typeParams.nonEmpty)
         debuglog("substituting " + origtparams + " for " + symbol.typeParams)
 

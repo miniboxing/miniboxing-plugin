@@ -1,1 +1,1 @@
--P:minibox:warn-off -Ycheck:interop-commit,minibox-commit
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Ycheck:interop-commit,minibox-commit
