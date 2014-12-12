@@ -1,0 +1,6 @@
+newSource1.scala:8: warning: The side-effecting statement(s) in the miniboxed class Graph's constructor will not be miniboxed. Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements.
+  println(b)
+         ^
+newSource1.scala:8: error: The following code is accessing field b of miniboxed class Graph, a pattern which becomes invalid after the miniboxing transformation. Please allow Scala to generate accessors for this field by adding val to the constructor parameter: "val b: miniboxing.tests.compile.bug127.Config". Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements.
+  println(b)
+          ^
