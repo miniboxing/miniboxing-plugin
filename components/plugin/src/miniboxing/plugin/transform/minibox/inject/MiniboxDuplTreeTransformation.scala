@@ -141,7 +141,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                                   "all the fields and super-accessors to the specialized subclasses. Therefore, trying " +
                                   "to access them in the nested " + skipLocalDummy(currentOwner).tweakedFullString +
                                   " is not a valid pattern anymore. Please read " +
-                                  "https://github.com/miniboxing/miniboxing-plugin/issues/127 " +
+                                  "https://github.com/miniboxing/miniboxing-plugin/issues/166 " +
                                   "for a thorough explanation and some workarounds for the problem. " +
                                   additionalMsg + "Thanks and sorry! " + additionalMsg)
           } else { // mbr.isConstructor
@@ -324,12 +324,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     List(dt)
                   case other =>
                     if (!flag_constructor_spec) {
-                      val isInitFromBug64 =
-                        other match {
-                          case app @ Apply(Select(ths: This, _), Nil) if ths.symbol == cls && !metadata.memberHasOverloads(app.symbol) => true
-                          case _ => false
-                        }
-                      if (sideEffectWarning && !isInitFromBug64) {
+                      if (sideEffectWarning) {
                         global.reporter.warning(other.pos,
                             s"The side-effecting statement(s) in the miniboxed ${cls.tweakedToString}'s constructor " +
                             "will not be miniboxed. " + bug64message)
