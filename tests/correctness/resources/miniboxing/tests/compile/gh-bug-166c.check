@@ -1,0 +1,3 @@
+newSource1.scala:7: error: Using named super is not supported in miniboxed classes. For a workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/166:
+  override def getStr: String = super[A].getStr
+                                ^
