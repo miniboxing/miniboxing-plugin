@@ -260,7 +260,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
               for (specClassSym <- specClassSymbols) yield {
                 debuglog("Creating specialized class " + specClassSym.defString + " for " + specializedStemClassSym)
                 val classDef = atPos(specializedStemClassSym.pos)(classDefTreeFromSym(specClassSym))
-                val classDef2 = deriveClassDef(classDef)(templ => deriveTemplate(templ)(_ => impl.body.map(_.duplicate)))
+                val classDef2 = deriveClassDef(classDef)(templ => deriveTemplate(templ)(_ => impl.body.filter(!_.symbol.isMixinConstructor).map(_.duplicate)))
                 // type check and transform the class before returning the tree
                 transform(localTyper.typed(classDef2))
               }
