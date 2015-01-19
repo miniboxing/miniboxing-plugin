@@ -1,0 +1,5 @@
+scala> class C[@miniboxed T](val t: T)
+defined class C
+
+scala> new C(3).t
+res0: Int = 3

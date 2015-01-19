@@ -221,15 +221,15 @@ package respec {
     <stable> <accessor> def doubleVec(): respec.Vec[Double] = Test.this.doubleVec;
     scala.this.Predef.println("benchmark");
     Test.this.doubleVec().map_n_D[Double](8, {
-      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_DD[Double,Double] with Serializable {
-        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_DD[Double,Double]> = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_DD[Double,Double] with Serializable {
+        def <init>(): anonymous class $anon = {
           $anonfun.super.<init>(8, 8);
           ()
         };
         final def apply(x: Double): Double = MiniboxConversionsDouble.this.minibox2double($anonfun.this.apply_DD(8, 8, MiniboxConversionsDouble.this.double2minibox(x)));
         override def apply_DD(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(MiniboxConversionsDouble.this.minibox2double(t1).*(MiniboxConversionsDouble.this.minibox2double(t1)))
       };
-      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_DD[Double,Double]>()
+      new anonymous class $anon()
     })
   }
 }

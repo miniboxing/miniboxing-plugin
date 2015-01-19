@@ -1,0 +1,14 @@
+scala> // should error:
+
+scala> trait C[@miniboxed T] { def foo[@miniboxed U](t: T, u: U): T }
+defined trait C
+
+scala> class D extends C[Int] 
+<console>:8: error: class D needs to be abstract, since method foo in trait C of type [U](t: Int, u: U)Int is not defined
+       class D extends C[Int]
+             ^
+
+scala> class E[@miniboxed T] extends C[T]
+<console>:8: error: class E needs to be abstract, since method foo in trait C of type [U](t: T, u: U)T is not defined
+       class E[@miniboxed T] extends C[T]
+             ^

@@ -9,23 +9,23 @@ package miniboxing.tests.compile.streams {
       ()
     };
     def filter(p: miniboxing.runtime.MiniboxedFunction1[T,Boolean]): miniboxing.tests.compile.streams.Stream[T] = new miniboxing.tests.compile.streams.Stream[T]({
-      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit] with Serializable {
-        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit]> = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit] with Serializable {
+        def <init>(): anonymous class $anon = {
           $anonfun.super.<init>();
           ()
         };
         final def apply(iterf: T => Boolean): Unit = Stream.this.streamf().apply({
-          @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean] with Serializable {
-            def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean]> = {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean] with Serializable {
+            def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
             };
             final def apply(value: T): Boolean = p.apply(value).unary_!().||(MiniboxedFunctionBridge.this.function1_bridge[T, Boolean](iterf).apply(value))
           };
-          new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T,Boolean]>().f()
+          new anonymous class $anon().f()
         })
       };
-      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1[T => Boolean,Unit]>()
+      new anonymous class $anon()
     }, Stream.this.evidence$1)
   }
 }

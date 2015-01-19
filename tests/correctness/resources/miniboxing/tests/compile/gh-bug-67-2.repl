@@ -1,0 +1,10 @@
+scala> class C[@miniboxed T](val t: T)
+defined class C
+scala> class D extends C[Int](3)
+defined class D
+scala> (new D).t
+res0: Int = 3
+scala> class E[@miniboxed T](t: T) extends C[T](t)
+defined class E
+scala> (new E(3)).t
+res1: Int = 3

@@ -39,7 +39,9 @@ class TestSuite extends ScalacVersion {
     "Type in expressions to have them evaluated." -> "",
     "Type :help for more information." -> "",
     "scala> :quit" -> "",
-    "scala> $" -> ""
+    "scala> $" -> "",
+    // random object addresses:
+    "@[0-9a-f]{1,8}" -> "@<object_id>"
   )
 
   implicit class JFileExt(jfile: JFile) {
