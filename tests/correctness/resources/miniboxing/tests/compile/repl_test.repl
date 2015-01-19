@@ -1,0 +1,2 @@
+scala> class C[@miniboxed T](t: T)
+defined class C

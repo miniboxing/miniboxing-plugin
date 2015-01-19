@@ -34,18 +34,30 @@ class TestSuite extends ScalacVersion {
     // for mb_array_03.scala:
     "\\(ClassTag.apply\\[String\\]\\(classOf\\[java.lang.String\\]\\): scala\\.reflect\\.ClassTag\\[String\\]\\)" -> "ClassTag.apply[String](classOf[java.lang.String])",
     // for mb_array_04.scala:
-    "\\(ClassTag.apply\\[F\\]\\(classOf\\[java.lang.Object\\]\\): scala.reflect.ClassTag\\[F\\]" -> "ClassTag.apply[F](classOf[java.lang.Object]"
+    "\\(ClassTag.apply\\[F\\]\\(classOf\\[java.lang.Object\\]\\): scala.reflect.ClassTag\\[F\\]" -> "ClassTag.apply[F](classOf[java.lang.Object]",
+    // REPL leftovers:
+    "Type in expressions to have them evaluated." -> "",
+    "Type :help for more information." -> "",
+    "scala> :quit" -> "",
+    "scala> $" -> ""
   )
 
-  private[this] def files(dirs: List[String], ext: String) = {
+  implicit class JFileExt(jfile: JFile) {
+    def listFilesNotNull(): List[JFile] = {
+      val res = jfile.listFiles()
+      if (res == null) Nil else res.toList
+    }
+  }
+
+  private[this] def files(dirs: List[String], exts: String*) = {
     val cwd = sys.props.get("user.dir").getOrElse(".")
     val res = dirs.foldLeft(Path(new JFile(cwd)))((path, dir) => path / dir)
     System.err.println("Picking tests from: " + res)
-    res.jfile.listFiles().filter(_.getName().endsWith(ext)).sortBy(_.getName())
+    res.jfile.listFilesNotNull().filter(file => exts.exists(ext => file.getName().endsWith(ext))).sortBy(_.getName())
   }
 
   private[this] def replaceExtension(source: JFile, ext: String) =
-    new JFile(source.toString.replaceAll("\\.scala", "." + ext))
+    new JFile(source.toString.replaceAll("\\.\\p{Alnum}*$", "." + ext))
 
   private[this] def slurp(source: JFile) =
     try {
@@ -74,22 +86,31 @@ class TestSuite extends ScalacVersion {
 
     sys.props("miniboxing.no-logo") = "true"
 
-    val tests = files(List("resources", "miniboxing", "tests", "compile"), ".scala").toList :::
-                files(List("resources", "miniboxing", "tests", "compile", scalaBinaryVersion), ".scala").toList
+    val tests = files(List("resources", "miniboxing", "tests", "compile"), ".scala", ".repl").toList :::
+                files(List("resources", "miniboxing", "tests", "compile", scalaBinaryVersion), ".scala", ".repl").toList
 
     for (source <- tests) {
       System.err.print(f"Compiling ${source.getName()}%-60s ... ")
+      val isRepl = source.getName().endsWith(".repl")
 
       totalTests += 1
 
       // source code:
       val code = File(source).slurp
       val flags = pluginFlag + " " + slurp(replaceExtension(source, "flags"))
-      val check_file = replaceExtension(source, "check")
+      val check_file = if (!isRepl) replaceExtension(source, "check") else source
+      var expect = if (!isRepl) slurp(check_file) else code
       val launch_file = replaceExtension(source, "launch")
-      var expect = slurp(check_file)
-      val launch = slurp(launch_file).replace("\n","")
-      var output = new CompileTest(code, flags, launch).compilationOutput()
+      val launch = if (!isRepl) slurp(launch_file).replace("\n","") else ""
+      var output =
+        isRepl match {
+          case true =>
+            val prompt = "scala> "
+            val code_only = code.lines.filter(_ startsWith prompt).map(_ drop prompt.length).mkString("\n")
+            new ReplTest(code_only).replOutput()
+          case false =>
+            new CompileTest(code, flags, launch).compilationOutput()
+        }
       for ((regex, replace) <- scalaPrinterCompatibility) {
         output = output.replaceAll(regex, replace)
         expect = expect.replaceAll(regex, replace)
