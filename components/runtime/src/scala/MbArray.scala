@@ -1,4 +1,17 @@
-package scala;
+//
+//     _____   .__         .__ ___.                    .__ scala-miniboxing.org
+//    /     \  |__|  ____  |__|\_ |__    ____  ___  ___|__|  ____     ____
+//   /  \ /  \ |  | /    \ |  | | __ \  /  _ \ \  \/  /|  | /    \   / ___\
+//  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
+//  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
+//          \/          \/          \/               \/         \/ /_____/
+// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+//
+// Authors:
+//    * Vlad Ureche
+//    * Nicolas Stucki
+//
+package scala
 
 import miniboxing.runtime.array.MbArray_L;
 
@@ -32,6 +45,8 @@ abstract class MbArray[T] {
   /** Clone the current array */
   override def clone(): MbArray[T] = sys.error("Should be overridden")
 
+  /** Array copy for MbArrays
+   *  @see [[http://docs.oracle.com/javase/7/docs/api/java/lang/System.html System.arraycopy]] */
   protected def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int): Unit = {
     val end = srcPos + length
     var i = srcPos
@@ -53,8 +68,8 @@ object MbArray {
   def clone[T](array: Array[T]): MbArray[T] =
     new miniboxing.runtime.array.MbArray_L[T](array);
 
-  /** Copies the contents of this array to anotherone. This will use the underling System.arraycopy to make the copy */
-  def arraycopy[T](src: MbArray[T], srcPos: Int, dest: MbArray[T], destPos: Int, length: Int): Unit = 
-    src.arraycopy(srcPos, dest, destPos, length)  
-
+  /** Array copy for MbArrays
+   *  @see [[http://docs.oracle.com/javase/7/docs/api/java/lang/System.html System.arraycopy]] */
+  def arraycopy[T](src: MbArray[T], srcPos: Int, dest: MbArray[T], destPos: Int, length: Int): Unit =
+    src.arraycopy(srcPos, dest, destPos, length)
 }
