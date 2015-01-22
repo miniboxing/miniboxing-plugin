@@ -99,7 +99,17 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           else
             clazz.resetFlag(ABSTRACT | TRAIT)
 
-        val res = util.Try(beforeMiniboxInject(super.retyped(context0.asInstanceOf[Context], tree0, oldThis, newThis, _subst, _deepSubst)))
+        val res =
+          util.Try {
+            beforeMiniboxInject {
+              super.retyped(context0.asInstanceOf[Context],
+                            tree0,
+                            oldThis,
+                            newThis,
+                            _subst,
+                            _deepSubst)
+            }
+          }
 
         // get back flags
         for (clazz <- metadata.allStemClasses)
@@ -494,12 +504,20 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
           val (newQual: Tree, newQualTpe: Type, newQualSym: Symbol) =
             oldQual match {
-              case sup @ Super(ths, _) =>
-                // rewriting member selection on the fly, otherwise this won't work :(
-                val selTree = localTyper.typedOperator(Select(Super(transform(ths), sup.mix), mbr))
-                val Select(supTree, _) = selTree
-                val ntpe = supTree.tpe baseType selTree.symbol.owner
-                (supTree, ntpe, selTree.symbol.owner)
+              case sup @ Super(ths, name) =>
+                if (!name.isEmpty) {
+                  // The same code appears in Duplicators, but de-duplicating it is too much work :(
+                  global.reporter.error(tree.pos, "Using named super is not supported in miniboxed classes. " +
+                                                  "For a workaround, please see " +
+                                                  "https://github.com/miniboxing/miniboxing-plugin/issues/166:")
+                  (localTyper.typed(gen.mkMethodCall(definitions.Predef_???, Nil)).setType(ErrorType), ErrorType, oldQualSym)
+                } else {
+                  // rewriting member selection on the fly, otherwise this won't work :(
+                  val selTree = localTyper.typedOperator(Select(Super(transform(ths), sup.mix), mbr))
+                  val Select(supTree, _) = selTree
+                  val ntpe = supTree.tpe baseType selTree.symbol.owner
+                  (supTree, ntpe, selTree.symbol.owner)
+                }
               case _ =>
                 val nqual = transform(oldQual)
                 val ntpe = extractQualifierType(nqual)

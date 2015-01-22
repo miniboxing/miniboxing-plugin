@@ -1,0 +1,9 @@
+newSource1.scala:6: error: Using named super is not supported in miniboxed classes. For a workaround, please see https://github.com/miniboxing/miniboxing-plugin/issues/166:
+  super[Super].superb // okay
+               ^
+newSource1.scala:7: warning: The class Super would benefit from miniboxing type parameter A, since it is instantiated by a primitive type.
+  super.superb        // okay
+        ^
+newSource1.scala:8: warning: The class Super would benefit from miniboxing type parameter A, since it is instantiated by a primitive type.
+  override def superb: Int = super.superb // okay
+                                   ^

@@ -1,0 +1,7 @@
+newSource1.scala:8: warning: The following code could benefit from miniboxing specialization if the type parameter T of class Bar would be marked as "@miniboxed T" (it would be used to instantiate miniboxed type parameter T of trait Foo)
+    trait Bar[T] extends Foo[T] {
+          ^
+foo.f1 bar.f2 foo.f2
+foo.f1 bar.f2 foo.f2
+foo.f1 bar.f2 foo.f2
+

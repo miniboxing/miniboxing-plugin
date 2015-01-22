@@ -581,11 +581,11 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             // no need to do anything, in particular, don't set the type to null, EmptyTree.tpe_= asserts
             tree
 
-          case sup@Super(ths, name) if name != tpnme.EMPTY =>
+          case sup@Super(ths, name) if !name.isEmpty =>
             global.reporter.error(tree.pos, "Using named super is not supported in miniboxed classes. " +
                                             "For a workaround, please see " +
                                             "https://github.com/miniboxing/miniboxing-plugin/issues/166:")
-            typed(gen.mkMethodCall(definitions.Predef_???, Nil), mode, pt)
+            typed(gen.mkMethodCall(definitions.Predef_???, Nil), mode, pt).setType(ErrorType)
 
           case _ =>
             debuglog("Duplicators default case: " + tree.summaryString)
