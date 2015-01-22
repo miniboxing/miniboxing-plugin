@@ -558,11 +558,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- minibox.metadata.allStemClasses)
-          if (minibox.metadata.classStemTraitFlag(sym))
+        for (sym <- minibox.metadata.allStemClasses) {
+          if (!minibox.metadata.classStemTraitFlag(sym))
+            sym.resetFlag(TRAIT)
+          if (!minibox.metadata.classStemAbstractFlag(sym))
             sym.resetFlag(ABSTRACT)
-          else
-            sym.resetFlag(ABSTRACT | TRAIT)
+        }
 
         // add the dummy constructors
         for (ctor <- minibox.metadata.stemConstructors) {

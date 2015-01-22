@@ -59,6 +59,7 @@ trait MiniboxMetadata {
     /** Miniboxed classes and traits become traits with subclasses/subtraits as specialized variants
      *  This set contains the traits that were transformed. */
     val classStemTraitFlag = mutable.Set.empty[Symbol]
+    val classStemAbstractFlag = mutable.Set.empty[Symbol] // whether the class is abstract
 
     val classOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 

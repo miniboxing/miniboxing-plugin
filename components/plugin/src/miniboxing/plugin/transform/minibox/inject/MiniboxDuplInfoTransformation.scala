@@ -734,6 +734,8 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       // instantiation will fail, since C becomes an abstract class
       if (stemClass.hasFlag(TRAIT))
         metadata.classStemTraitFlag += stemClass
+      else if (stemClass.hasFlag(ABSTRACT))
+        metadata.classStemAbstractFlag += stemClass
       stemClass.setFlag(TRAIT | ABSTRACT)
 
       stemClass.resetFlag(FINAL)

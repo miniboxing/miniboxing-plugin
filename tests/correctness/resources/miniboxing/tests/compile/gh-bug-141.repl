@@ -1,0 +1,10 @@
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> abstract class C[@miniboxed T] { def foo: T }
+defined class C
+
+scala> val c = new C[Int]
+<console>:8: error: class C is abstract; cannot be instantiated
+       val c = new C[Int]
+               ^
