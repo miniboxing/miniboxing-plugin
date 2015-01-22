@@ -10,21 +10,25 @@ fi
 FILE=$1
 shift
 
+FILE_NAME=$FILE
+FILE_NAME=${FILE_NAME%\.scala}
+FILE_NAME=${FILE_NAME%\.repl}
+
 # file
 cp $FILE $DIR
 
 # command-line args
 if [ $# -eq 0 ]
 then
-  vim $DIR/${FILE/\.scala/.flags}
+  vim $DIR/"$FILE_NAME".flags
 else
-  echo $@ > $DIR/${FILE/\.scala/.flags}
+  echo $@ > $DIR/"$FILE_NAME".flags
 fi
 
 # checked output
-vim $DIR/${FILE/\.scala/.check}
-sed -i "s/$FILE/newSource1.scala/" $DIR/${FILE/\.scala/.check}
+vim $DIR/"$FILE_NAME".check
+sed -i "s/$FILE/newSource1.scala/" $DIR/"$FILE_NAME".check
 
 # launch configuration
-vim $DIR/${FILE/\.scala/.launch}
-ls $DIR/${FILE/\.scala/\*}
+vim $DIR/"$FILE_NAME".launch
+ls $DIR/"$FILE_NAME"*
