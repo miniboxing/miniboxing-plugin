@@ -1,0 +1,43 @@
+newSource1.scala:6: warning: The following code could benefit from miniboxing specialization if the type parameter A of class C2 would be marked as "@miniboxed A" (it would be used to instantiate miniboxed type parameter A of trait C1)
+trait C2[+A] extends C1[A] {
+      ^
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug73.ver3 {
+  abstract trait C1[@miniboxed +A] extends Object {
+    def head(): A;
+    def head_D(A_TypeTag: Byte): Double;
+    def head_J(A_TypeTag: Byte): Long
+  };
+  abstract trait C1_D[+Asp] extends Object with miniboxing.tests.compile.bug73.ver3.C1[Asp] {
+    def miniboxing|tests|compile|bug73|ver3|C1_D|A_TypeTag(): Byte;
+    def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C1_D.this.head_D(C1_D.this.miniboxing|tests|compile|bug73|ver3|C1_D|A_TypeTag()), C1_D.this.miniboxing|tests|compile|bug73|ver3|C1_D|A_TypeTag());
+    def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A_TypeTag);
+    def head_J(A_TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
+  };
+  abstract trait C1_J[+Asp] extends Object with miniboxing.tests.compile.bug73.ver3.C1[Asp] {
+    def miniboxing|tests|compile|bug73|ver3|C1_J|A_TypeTag(): Byte;
+    def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C1_J.this.head_J(C1_J.this.miniboxing|tests|compile|bug73|ver3|C1_J|A_TypeTag()), C1_J.this.miniboxing|tests|compile|bug73|ver3|C1_J|A_TypeTag());
+    def head_D(A_TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A_TypeTag)
+  };
+  abstract trait C1_L[+Asp] extends Object with miniboxing.tests.compile.bug73.ver3.C1[Asp] {
+    def head(): Asp = scala.sys.`package`.error("");
+    def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C1_L.this.head(), A_TypeTag);
+    def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C1_L.this.head(), A_TypeTag)
+  };
+  abstract trait C2[+A] extends Object with miniboxing.tests.compile.bug73.ver3.C1_L[A] {
+    <superaccessor> <artifact> private def super$head(): A;
+    def /*C2*/$init$(): Unit = {
+      ()
+    };
+    override def head(): A = C2.this.super$head()
+  };
+  class C3 extends Object with miniboxing.tests.compile.bug73.ver3.C2[Char] {
+    def <init>(): miniboxing.tests.compile.bug73.ver3.C3 = {
+      C3.super.<init>();
+      ()
+    }
+  }
+}
+
+[Now checking: minibox-commit]

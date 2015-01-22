@@ -1,0 +1,24 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug73.ver4 {
+  abstract trait C1[+A] extends Object {
+    def /*C1*/$init$(): Unit = {
+      ()
+    };
+    def head(): Int = scala.sys.`package`.error("")
+  };
+  abstract trait C2[+A] extends Object with miniboxing.tests.compile.bug73.ver4.C1[A] {
+    <superaccessor> <artifact> private def super$head(): Int;
+    def /*C2*/$init$(): Unit = {
+      ()
+    };
+    override def head(): Int = C2.this.super$head()
+  };
+  class C3 extends Object with miniboxing.tests.compile.bug73.ver4.C2[Char] {
+    def <init>(): miniboxing.tests.compile.bug73.ver4.C3 = {
+      C3.super.<init>();
+      ()
+    }
+  }
+}
+
+[Now checking: minibox-commit]

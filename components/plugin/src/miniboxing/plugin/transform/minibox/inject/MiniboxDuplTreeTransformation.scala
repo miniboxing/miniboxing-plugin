@@ -345,7 +345,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                 body.flatMap({
                   case dt: DefTree if isConstructorOrField(dt.symbol) =>
                     equivalentMemberTree(dt.symbol).toList
-                  case dd: DefDef =>
+                  case dd: DefDef if !dd.symbol.isSuperAccessor => // superaccessors are added by mixin
                     val equiv = equivalentMemberTree(dd.symbol)
                     equiv.map(dd => dd :: memberVariants(dd.symbol)).getOrElse(Nil)
                   case _: DefTree =>

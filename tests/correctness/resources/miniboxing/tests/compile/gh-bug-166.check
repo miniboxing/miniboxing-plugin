@@ -20,23 +20,20 @@ package miniboxing.tests.compile.bug166 {
   };
   abstract trait B_D extends Object with miniboxing.tests.compile.bug166.A_D with miniboxing.tests.compile.bug166.B {
     def miniboxing|tests|compile|bug166|B_D|T_TypeTag(): Byte;
-    <superaccessor> <artifact> def super$getStr(): String;
     override def getStr(): String;
     override def toString(): String
   };
   abstract trait B_J extends Object with miniboxing.tests.compile.bug166.A_J with miniboxing.tests.compile.bug166.B {
     def miniboxing|tests|compile|bug166|B_J|T_TypeTag(): Byte;
-    <superaccessor> <artifact> def super$getStr(): String;
     override def getStr(): String;
     override def toString(): String
   };
   abstract trait B_L extends Object with miniboxing.tests.compile.bug166.A_L with miniboxing.tests.compile.bug166.B {
-    <superaccessor> <artifact> def super$getStr(): String;
     override def getStr(): String;
     override def toString(): String
   };
   class C extends Object with miniboxing.tests.compile.bug166.B_J {
-    <superaccessor> <artifact> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
+    <superaccessor> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
     override def getStr(): String = miniboxing.tests.compile.bug166.B_J$class.getStr(C.this);
     override def toString(): String = miniboxing.tests.compile.bug166.B_J$class.toString(C.this);
     def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte = 5;

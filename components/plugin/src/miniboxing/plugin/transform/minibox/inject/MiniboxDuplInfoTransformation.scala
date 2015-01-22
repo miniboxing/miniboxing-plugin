@@ -317,31 +317,76 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
             })
 
             // step3: rewire to the correct referenced symbol, else mixin crashes
+            // Super-accessors replaces super.method(...) calls to traits by super$method(...), since the super
+            // is not known statically and depends on the linearization. The new `super$method` symbol has the
+            // alias field set to the trait it should point to, but since the member itself is only created later
+            // in the pipeline, there is no adaptation between arguments -- it is simply written as:
+            //
+            //   def super$method() = <trait>.method()
+            //
+            // So far, so good. The problem occurs when we are miniboxing. Let's assume `method` belongs to trait T:
+            //   trait T[A] {
+            //     def method = ???
+            //   }
+            // and the supercall occurs in
+            //   class C[@miniboxed A] extends T[A] {
+            //     override def method = super.method // rewritten to super$method by the superaccessors phase
+            //   }
+            //
+            // In class C, the miniboxing plugin will attempt to create specialized versions of the `super$method`,
+            // creating variants such as `super$method_J` and `super$method_D`. Yet, this is a show-stopper for
+            // the mixin phase, which does now know what these method point to:
+            //
+            //   def super$method_J(A_TypeTag: Byte) = <trait>.method_J(A_TypeTag)
+            //
+            // Well, there's no `method_J` in trait T that takes a type tag!
+            //
+            // So, what to do about it? If there is no equivalent member for the current specialization, we do not
+            // create it at all. Instead we warn that the two specializations should be identical:
+            //
+            //   trait T[@miniboxed A] {
+            //     def method = ???
+            //   }
+            //   class C[@miniboxed A] extends T[A] {
+            //     override def method = super.method // rewritten to super$method by the superaccessors phase
+            //   }
+            //
+            // When the two specializations match, in T we'll have `method_J` and `method_D`, which will allow us to
+            // have `super$method_J` and `super$method_D` in class C:
             val alias = variantMethod.alias
             if (alias != NoSymbol) {
               // Find the correct alias in a rewired class
               val baseTpe = stemClass.info.baseType(alias.owner)
-              val spec2 = PartialSpec.fromTargs(variantMethod.pos, baseTpe.typeSymbol.typeParams, baseTpe.typeArgs, stemClass.owner, spec)
+              val spec2 = PartialSpec.fromTargs(NoPosition, baseTpe.typeSymbol.typeParams, baseTpe.typeArgs, stemClass.owner, spec)
               if (metadata.memberOverloads.isDefinedAt(alias) &&
-                  metadata.memberOverloads(alias).isDefinedAt(spec2)) {
+                  metadata.memberOverloads(alias).isDefinedAt(spec2) &&
+                  /* signatures need to match exactly, otherwise mixin will crash: */
+                  metadata.memberOverloads(alias)(spec2).paramss.map(_.length) == variantMethod.paramss.map(_.length)) {
                 variantMethod.asInstanceOf[TermSymbol].referenced = metadata.memberOverloads(alias)(spec2)
-              } else
-                global.error(s"""|Could not rewire paramaccessor => will crash in mixin.
-                                 |base: ${variantMethod.defString}
-                                 |from: ${alias.defString}
-                                 |baseTpe: $baseTpe
-                                 |typeParams: ${baseTpe.typeSymbol.typeParams}
-                                 |typeArgs: ${baseTpe.typeArgs}
-                                 |spec2: $spec2
-                                 |memberOverloads for alias: ${metadata.memberOverloads.get(alias)}""".stripMargin)
+              } else {
+                if (currentRun.compiles(stemClass))
+                suboptimalCodeWarning(variantMethod.pos,
+                                      "The " + alias + " in " + alias.owner + " is called from " + stemClass + " " +
+                                      "using the `super." + alias.nameString + "` construction. However, after " +
+                                      "miniboxing, this construction becomes suboptimal, since there is no specialized " +
+                                      "variant of " + alias + " exactly matching the specialization in " + stemClass +
+                                      ". To fix this, make sure that the specializations of " + stemClass + " and " +
+                                      alias.owner + " match exactly.\nFor more information, please see " +
+                                      "https://github.com/miniboxing/miniboxing-plugin/issues/73:", !currentRun.compiles(stemClass))
+
+                variantMethod = NoSymbol
+              }
             }
 
-            newMembers ::= variantMethod
+            if (variantMethod != NoSymbol)
+              newMembers ::= variantMethod
           }
 
-          specializedOverloads(spec) = variantMethod
-          metadata.memberOverloads(variantMethod) = specializedOverloads
-          metadata.setMemberStem(variantMethod, stemMethod)
+          if (variantMethod != NoSymbol) {
+            specializedOverloads(spec) = variantMethod
+            metadata.memberOverloads(variantMethod) = specializedOverloads
+            metadata.setMemberStem(variantMethod, stemMethod)
+          }
         }
 
         for (variantClass <- specs; variantMethod <- specializedOverloads get variantClass)

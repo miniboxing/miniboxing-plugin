@@ -302,10 +302,6 @@ trait MiniboxMetadataUtils {
       // TODO: Make this invariant stand (it's violated by normalization)
       // assert(clazz.isClass || clazz.isModule || clazz.isTrait, clazz.defString)
 
-      // Make sure the alias symbol is either undefined (not a trait) or is specialized as well, else we crash in the
-      // mixin phase when searching for an alias for the specialized member
-      val specializedAlias = (mbr.alias == NoSymbol) || metadata.memberOverloads.isDefinedAt(mbr.alias)
-
       // The synthetic canEqual method generated for case classes is incorrect, as the existential type
       // is not correctly transformed by the asSeenFrom TypeMap:
       //
@@ -334,7 +330,8 @@ trait MiniboxMetadataUtils {
       // For more details see bugs #129 and #130, which give the entire context
       val isCanEqual = (mbr.name.toString == "canEqual") && mbr.isMethod && clazz.isCase && mbr.isSynthetic
                      // mbr.isMethod && mbr.isSynthetic
-      specializedAlias && !isCanEqual
+
+      !isCanEqual
     }
 
     def normalizableMethodInMethod(sym: Symbol): Boolean = (
