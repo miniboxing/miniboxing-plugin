@@ -251,9 +251,10 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       // we make specialized specializedMembers for every member of the stemClassal class
       for (stemMethod <- methods ::: getters ::: setters if heuristics.specializableMethodInClass(stemClass, stemMethod)) {
 
-        if (stemMethod.isPrivate)
+        if (stemMethod.isPrivate) {
           // #164: Temporary band-aid until we fix #61
           stemMethod.setFlag(notPRIVATE)
+        }
 
         val specializedOverloads = new HashMap[PartialSpec, Symbol]
         val specs_filtered =

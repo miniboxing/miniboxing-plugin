@@ -318,7 +318,16 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case dt: DefTree if isConstructorOrField(dt.symbol) || dt.symbol.isSuperAccessor =>
                     Nil
                   case dd: DefDef if heuristics.specializableMethodInClass(cls, dd.symbol) =>
-                    deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
+                    if (!dd.symbol.isPrivate || !dd.symbol.owner.isTrait)
+                      deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
+                    else
+                      if (!flag_constructor_spec)
+                        global.reporter.warning(dd.pos, "The " + dd.symbol + " should be made public or the constructor " +
+                                                        "specialization should be enabled, otherwise the translation " +
+                                                        "of this method will be incorrect. Plase see " +
+                                                        "https://github.com/miniboxing/miniboxing-plugin/issues/86 " +
+                                                        "for more details." )
+                      Nil
                   case cd: ClassDef =>
                     suboptimalCodeWarning(cd.pos, "The " + cd.symbol.tweakedToString + " will not be miniboxed based " +
                                                   "on type parameter(s) " + cls.typeParams.map(_.nameString).mkString(", ") +
