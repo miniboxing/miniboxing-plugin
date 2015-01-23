@@ -7,10 +7,10 @@ Specializing class MBList...
     def length_J(val T_TypeTag: Byte): Int
     def toString2(): String
     def toString2_J(val T_TypeTag: Byte): String
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[T],e: T): Boolean
-    final def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],e: T @storage[Long]): Boolean
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
-    final def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[T],e: T): Boolean
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],e: T @storage[Long]): Boolean
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
+    final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[T],or: Int): Int
     override def hashCode(): Int
     override def hashCode_J(val T_TypeTag: Byte): Int
     override def toString(): String
@@ -29,10 +29,10 @@ Specializing class MBList...
     def length_J(val T_TypeTag: Byte): Int                                 // is a specialized implementation of method length
     def toString2(): String                                                // is a forwarder to the specialized member
     def toString2_J(val T_TypeTag: Byte): String                           // is a specialized implementation of method toString2
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a forwarder to the specialized member
-    final def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage[Long]): Boolean // is a specialized implementation of method containsTail
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
-    final def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a forwarder to the specialized member
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage[Long]): Boolean // is a specialized implementation of method containsTail
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
+    final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
     override def hashCode(): Int                                           // is a forwarder to the specialized member
     override def hashCode_J(val T_TypeTag: Byte): Int                      // is a specialized implementation of method hashCode
     override def toString(): String                                        // is a forwarder to the specialized member
@@ -54,10 +54,10 @@ Specializing class MBList...
     def length_J(val T_TypeTag: Byte): Int                                 // is a forwarder to the specialized member
     def toString2(): String                                                // is a specialized implementation of method toString2
     def toString2_J(val T_TypeTag: Byte): String                           // is a forwarder to the specialized member
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a specialized implementation of method containsTail
-    final def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage[Long]): Boolean // is a forwarder to the specialized member
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
-    final def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp): Boolean // is a specialized implementation of method containsTail
+    final private[this] def containsTail_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],e: Tsp @storage[Long]): Boolean // is a forwarder to the specialized member
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a specialized implementation of method tailHash
+    final private[this] def tailHash_J(val T_TypeTag: Byte,list: miniboxing.benchmarks.minibox.MBList[Tsp],or: Int): Int // is a forwarder to the specialized member
     override def hashCode(): Int                                           // is a specialized implementation of method hashCode
     override def hashCode_J(val T_TypeTag: Byte): Int                      // is a forwarder to the specialized member
     override def toString(): String                                        // is a specialized implementation of method toString
@@ -86,12 +86,8 @@ package miniboxing.benchmarks.minibox {
     def length_J(T_TypeTag: Byte): Int;
     override def toString(): String;
     override def toString_J(T_TypeTag: Byte): String;
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[T], e: T): Boolean;
-    final def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[T], e: Long): Boolean;
     def contains(e: T): Boolean;
     def contains_J(T_TypeTag: Byte, e: Long): Boolean;
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[T], or: Int): Int;
-    final def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[T], or: Int): Int;
     override def hashCode(): Int;
     override def hashCode_J(T_TypeTag: Byte): Int;
     def toString2(): String;
@@ -119,8 +115,8 @@ package miniboxing.benchmarks.minibox {
       ", ".+(MBList_J.this.tail_J(T_TypeTag).toString_J(T_TypeTag))
     else
       "");
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Tsp): Boolean = MBList_J.this.containsTail_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag, list, MiniboxConversions.this.box2minibox_tt[Tsp](e, MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag));
-    final def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = if (MiniboxDispatch.this.mboxed_eqeq_notag(list.head_J(T_TypeTag), e))
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Tsp): Boolean = MBList_J.this.containsTail_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag, list, MiniboxConversions.this.box2minibox_tt[Tsp](e, MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag));
+    final private[this] def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = if (MiniboxDispatch.this.mboxed_eqeq_notag(list.head_J(T_TypeTag), e))
       true
     else
       if (list.tail_J(T_TypeTag).==(null))
@@ -129,8 +125,8 @@ package miniboxing.benchmarks.minibox {
         MBList_J.this.containsTail_J(T_TypeTag, list.tail_J(T_TypeTag), e);
     def contains(e: Tsp): Boolean = MBList_J.this.contains_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](e, MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag));
     def contains_J(T_TypeTag: Byte, e: Long): Boolean = MBList_J.this.containsTail_J(T_TypeTag, MBList_J.this, e);
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = MBList_J.this.tailHash_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag, list, or);
-    final def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = {
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = MBList_J.this.tailHash_J(MBList_J.this.miniboxing|benchmarks|minibox|MBList_J|T_TypeTag, list, or);
+    final private[this] def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = {
       val headhash: Int = MiniboxDispatch.this.mboxed_hashCode(list.head_J(T_TypeTag), T_TypeTag);
       if (list.tail_J(T_TypeTag).==(null))
         headhash.|(or)
@@ -163,24 +159,24 @@ package miniboxing.benchmarks.minibox {
     else
       "");
     override def toString_J(T_TypeTag: Byte): String = MBList_L.this.toString();
-    final def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Tsp): Boolean = if (list.head().==(e))
+    final private[this] def containsTail(list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Tsp): Boolean = if (list.head().==(e))
       true
     else
       if (list.tail().==(null))
         false
       else
         MBList_L.this.containsTail(list.tail(), e);
-    final def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = MBList_L.this.containsTail(list, MiniboxConversions.this.minibox2box[Tsp](e, T_TypeTag));
+    final private[this] def containsTail_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], e: Long): Boolean = MBList_L.this.containsTail(list, MiniboxConversions.this.minibox2box[Tsp](e, T_TypeTag));
     def contains(e: Tsp): Boolean = MBList_L.this.containsTail(MBList_L.this, e);
     def contains_J(T_TypeTag: Byte, e: Long): Boolean = MBList_L.this.contains(MiniboxConversions.this.minibox2box[Tsp](e, T_TypeTag));
-    final def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = {
+    final private[this] def tailHash(list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = {
       val headhash: Int = list.head().hashCode();
       if (list.tail().==(null))
         headhash.|(or)
       else
         MBList_L.this.tailHash(list.tail(), or.|(headhash.>>(8)))
     };
-    final def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = MBList_L.this.tailHash(list, or);
+    final private[this] def tailHash_J(T_TypeTag: Byte, list: miniboxing.benchmarks.minibox.MBList[Tsp], or: Int): Int = MBList_L.this.tailHash(list, or);
     override def hashCode(): Int = MBList_L.this.tailHash(MBList_L.this, 0);
     override def hashCode_J(T_TypeTag: Byte): Int = MBList_L.this.hashCode();
     def toString2(): String = MBList_L.this.toString();

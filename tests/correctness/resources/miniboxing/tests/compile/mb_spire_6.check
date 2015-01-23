@@ -1,27 +1,27 @@
 Specializing class TailCallsCrasher...
   // interface:
   abstract trait TailCallsCrasher[A] extends Object {
-    def zzz2(x: A): A
-    def zzz2_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
     final def zzz1(x: A): A
     final def zzz1_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
+    private[this] def zzz2(x: A): A
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
   }
   // specialized class:
   class TailCallsCrasher_J[Asp] extends TailCallsCrasher[Asp] {
     def <init>(val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] // is a specialized implementation of constructor TailCallsCrasher
-    def zzz2(x: Asp): Asp                                                  // is a forwarder to the specialized member
-    def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz2
     final def zzz1(x: Asp): Asp                                            // is a forwarder to the specialized member
     final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz1
+    private[this] def zzz2(x: Asp): Asp                                    // is a forwarder to the specialized member
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz2
     private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte // is a type tag
   }
   // specialized class:
   class TailCallsCrasher_L[Asp] extends TailCallsCrasher[Asp] {
     def <init>(): miniboxing.tests.compile.TailCallsCrasher_L[Asp]         // is a specialized implementation of constructor TailCallsCrasher
-    def zzz2(x: Asp): Asp                                                  // is a specialized implementation of method zzz2
-    def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
     final def zzz1(x: Asp): Asp                                            // is a specialized implementation of method zzz1
     final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
+    private[this] def zzz2(x: Asp): Asp                                    // is a specialized implementation of method zzz2
+    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -33,9 +33,7 @@ package miniboxing.tests.compile
 package miniboxing.tests.compile {
   abstract trait TailCallsCrasher[@miniboxed A] extends Object {
     final def zzz1(x: A): A;
-    final def zzz1_J(A_TypeTag: Byte, x: Long): Long;
-    def zzz2(x: A): A;
-    def zzz2_J(A_TypeTag: Byte, x: Long): Long
+    final def zzz1_J(A_TypeTag: Byte, x: Long): Long
   };
   class TailCallsCrasher_J[Asp] extends Object with miniboxing.tests.compile.TailCallsCrasher[Asp] {
     <paramaccessor> private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte = _;
@@ -45,8 +43,8 @@ package miniboxing.tests.compile {
     };
     final def zzz1(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz1_J(TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag);
     @scala.annotation.tailrec final def zzz1_J(A_TypeTag: Byte, x: Long): Long = TailCallsCrasher_J.this.zzz1_J(A_TypeTag, x);
-    def zzz2(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz2_J(TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag);
-    @scala.annotation.tailrec def zzz2_J(A_TypeTag: Byte, x: Long): Long = TailCallsCrasher_J.this.zzz2_J(A_TypeTag, x)
+    private[this] def zzz2(x: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](TailCallsCrasher_J.this.zzz2_J(TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](x, TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag)), TailCallsCrasher_J.this.miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag);
+    @scala.annotation.tailrec private[this] def zzz2_J(A_TypeTag: Byte, x: Long): Long = TailCallsCrasher_J.this.zzz2_J(A_TypeTag, x)
   };
   class TailCallsCrasher_L[Asp] extends Object with miniboxing.tests.compile.TailCallsCrasher[Asp] {
     def <init>(): miniboxing.tests.compile.TailCallsCrasher_L[Asp] = {
@@ -55,11 +53,8 @@ package miniboxing.tests.compile {
     };
     @scala.annotation.tailrec final def zzz1(x: Asp): Asp = TailCallsCrasher_L.this.zzz1(x);
     final def zzz1_J(A_TypeTag: Byte, x: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](TailCallsCrasher_L.this.zzz1(MiniboxConversions.this.minibox2box[Asp](x, A_TypeTag)), A_TypeTag);
-    @scala.annotation.tailrec def zzz2(x: Asp): Asp = TailCallsCrasher_L.this.zzz2(x);
-    def zzz2_J(A_TypeTag: Byte, x: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](TailCallsCrasher_L.this.zzz2(MiniboxConversions.this.minibox2box[Asp](x, A_TypeTag)), A_TypeTag)
+    @scala.annotation.tailrec private[this] def zzz2(x: Asp): Asp = TailCallsCrasher_L.this.zzz2(x);
+    private[this] def zzz2_J(A_TypeTag: Byte, x: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](TailCallsCrasher_L.this.zzz2(MiniboxConversions.this.minibox2box[Asp](x, A_TypeTag)), A_TypeTag)
   }
 }
 [Now checking: minibox-commit]
-newSource1.scala:7: error: could not optimize @tailrec annotated method zzz2_J: it is neither private nor final so can be overridden
-  @tailrec private[this] def zzz2(x: A): A = zzz2(x)
-                             ^

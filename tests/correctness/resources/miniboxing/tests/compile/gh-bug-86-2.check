@@ -1,0 +1,3 @@
+newSource1.scala:4: error: The method foo should be made public or the constructor specialization should be enabled, otherwise the translation of this method will be incorrect. Plase see https://github.com/miniboxing/miniboxing-plugin/issues/86 for more details.
+  private def foo(t: Any): Unit = println("OK")
+              ^

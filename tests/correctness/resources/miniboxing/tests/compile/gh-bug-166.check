@@ -33,7 +33,7 @@ package miniboxing.tests.compile.bug166 {
     override def toString(): String
   };
   class C extends Object with miniboxing.tests.compile.bug166.B_J {
-    <superaccessor> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
+    final <superaccessor> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
     override def getStr(): String = miniboxing.tests.compile.bug166.B_J$class.getStr(C.this);
     override def toString(): String = miniboxing.tests.compile.bug166.B_J$class.toString(C.this);
     def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte = 5;
