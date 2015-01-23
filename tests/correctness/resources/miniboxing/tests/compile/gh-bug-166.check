@@ -1,107 +1,51 @@
-[[syntax trees at end of                     mixin]] // newSource1.scala
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug166 {
-  abstract trait A extends Object {
+  abstract trait A[@miniboxed T] extends Object {
     def getStr(): String
   };
-  abstract trait A_D extends Object with miniboxing.tests.compile.bug166.A {
+  abstract trait A_D[Tsp] extends Object with miniboxing.tests.compile.bug166.A[Tsp] {
     def miniboxing|tests|compile|bug166|A_D|T_TypeTag(): Byte;
-    def getStr(): String
+    def getStr(): String = "aaa"
   };
-  abstract trait A_J extends Object with miniboxing.tests.compile.bug166.A {
+  abstract trait A_J[Tsp] extends Object with miniboxing.tests.compile.bug166.A[Tsp] {
     def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte;
-    def getStr(): String
+    def getStr(): String = "aaa"
   };
-  abstract trait A_L extends Object with miniboxing.tests.compile.bug166.A {
-    def getStr(): String
+  abstract trait A_L[Tsp] extends Object with miniboxing.tests.compile.bug166.A[Tsp] {
+    def getStr(): String = "aaa"
   };
-  abstract trait B extends Object with miniboxing.tests.compile.bug166.A {
+  abstract trait B[@miniboxed T] extends Object with miniboxing.tests.compile.bug166.A[T] {
     override def getStr(): String;
     override def toString(): String
   };
-  abstract trait B_D extends Object with miniboxing.tests.compile.bug166.A_D with miniboxing.tests.compile.bug166.B {
+  abstract trait B_D[Tsp] extends Object with miniboxing.tests.compile.bug166.A_D[Tsp] with miniboxing.tests.compile.bug166.B[Tsp] {
     def miniboxing|tests|compile|bug166|B_D|T_TypeTag(): Byte;
-    override def getStr(): String;
-    override def toString(): String
+    override def getStr(): String = B_D.this.super$getStr();
+    override def toString(): String = "instance of C"
   };
-  abstract trait B_J extends Object with miniboxing.tests.compile.bug166.A_J with miniboxing.tests.compile.bug166.B {
+  abstract trait B_J[Tsp] extends Object with miniboxing.tests.compile.bug166.A_J[Tsp] with miniboxing.tests.compile.bug166.B[Tsp] {
     def miniboxing|tests|compile|bug166|B_J|T_TypeTag(): Byte;
-    override def getStr(): String;
-    override def toString(): String
+    override def getStr(): String = B_J.this.super$getStr();
+    override def toString(): String = "instance of C"
   };
-  abstract trait B_L extends Object with miniboxing.tests.compile.bug166.A_L with miniboxing.tests.compile.bug166.B {
-    override def getStr(): String;
-    override def toString(): String
+  abstract trait B_L[Tsp] extends Object with miniboxing.tests.compile.bug166.A_L[Tsp] with miniboxing.tests.compile.bug166.B[Tsp] {
+    override def getStr(): String = B_L.this.super$getStr();
+    override def toString(): String = "instance of C"
   };
-  class C extends Object with miniboxing.tests.compile.bug166.B_J {
-    final <superaccessor> def super$getStr(): String = miniboxing.tests.compile.bug166.A_J$class.getStr(C.this);
-    override def getStr(): String = miniboxing.tests.compile.bug166.B_J$class.getStr(C.this);
-    override def toString(): String = miniboxing.tests.compile.bug166.B_J$class.toString(C.this);
+  class C extends Object with miniboxing.tests.compile.bug166.B_J[Int] {
     def miniboxing|tests|compile|bug166|A_J|T_TypeTag(): Byte = 5;
     def miniboxing|tests|compile|bug166|B_J|T_TypeTag(): Byte = 5;
     def <init>(): miniboxing.tests.compile.bug166.C = {
       C.super.<init>();
-      miniboxing.tests.compile.bug166.A$class./*A$class*/$init$(C.this);
-      miniboxing.tests.compile.bug166.A_J$class./*A_J$class*/$init$(C.this);
-      miniboxing.tests.compile.bug166.B$class./*B$class*/$init$(C.this);
-      miniboxing.tests.compile.bug166.B_J$class./*B_J$class*/$init$(C.this);
       ()
     }
   };
   object Test extends Object {
-    def main(args: Array[String]): Unit = scala.this.Predef.println(new miniboxing.tests.compile.bug166.C());
     def <init>(): miniboxing.tests.compile.bug166.Test.type = {
       Test.super.<init>();
       ()
-    }
-  };
-  abstract trait A$class extends  {
-    def /*A$class*/$init$($this: miniboxing.tests.compile.bug166.A): Unit = {
-      ()
-    }
-  };
-  abstract trait A_D$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.A_D): String = "aaa";
-    def /*A_D$class*/$init$($this: miniboxing.tests.compile.bug166.A_D): Unit = {
-      ()
-    }
-  };
-  abstract trait A_J$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.A_J): String = "aaa";
-    def /*A_J$class*/$init$($this: miniboxing.tests.compile.bug166.A_J): Unit = {
-      ()
-    }
-  };
-  abstract trait A_L$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.A_L): String = "aaa";
-    def /*A_L$class*/$init$($this: miniboxing.tests.compile.bug166.A_L): Unit = {
-      ()
-    }
-  };
-  abstract trait B$class extends  {
-    def /*B$class*/$init$($this: miniboxing.tests.compile.bug166.B): Unit = {
-      ()
-    }
-  };
-  abstract trait B_D$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.B_D): String = $this.super$getStr();
-    def toString($this: miniboxing.tests.compile.bug166.B_D): String = "instance of C";
-    def /*B_D$class*/$init$($this: miniboxing.tests.compile.bug166.B_D): Unit = {
-      ()
-    }
-  };
-  abstract trait B_J$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.B_J): String = $this.super$getStr();
-    def toString($this: miniboxing.tests.compile.bug166.B_J): String = "instance of C";
-    def /*B_J$class*/$init$($this: miniboxing.tests.compile.bug166.B_J): Unit = {
-      ()
-    }
-  };
-  abstract trait B_L$class extends  {
-    def getStr($this: miniboxing.tests.compile.bug166.B_L): String = $this.super$getStr();
-    def toString($this: miniboxing.tests.compile.bug166.B_L): String = "instance of C";
-    def /*B_L$class*/$init$($this: miniboxing.tests.compile.bug166.B_L): Unit = {
-      ()
-    }
+    };
+    def main(args: Array[String]): Unit = scala.this.Predef.println(new miniboxing.tests.compile.bug166.C())
   }
 }
 instance of C
