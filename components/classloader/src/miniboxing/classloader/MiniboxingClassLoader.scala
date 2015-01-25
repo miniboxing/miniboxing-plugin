@@ -5,7 +5,7 @@
 //  /    Y    \|  ||   |  \|  | | \_\ \(  <_> ) >    < |  ||   |  \ / /_/  >
 //  \____|__  /|__||___|  /|__| |___  / \____/ /__/\_ \|__||___|  / \___  /
 //          \/          \/          \/               \/         \/ /_____/
-// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+// Copyright (c) 2011-2015 Scala Team, École polytechnique fédérale de Lausanne
 //
 // Authors:
 //    * Cristian Talau

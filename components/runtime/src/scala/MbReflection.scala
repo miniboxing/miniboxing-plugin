@@ -1,15 +1,18 @@
 //
 //     _____   .__         .__ ____.                     .__ scala-miniboxing.org
-//    /     \  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
-//   /  \ /  \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
+//    /_   _\  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
+//   / o\ /o \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
 //  /    Y    \|  ||   |  \|  | |  \_\ \(  (_)  ) >    < |  ||   |  \(  /_/  )
 //  \____|__  /|__||___|  /|__| |____  / \_____/ /__/\_ \|__||___|  / \___  /
 //          \/          \/           \/                \/         \/ /_____/
-// Copyright (c) 2012-2014 Scala Team, École polytechnique fédérale de Lausanne
+// Copyright (c) 2011-2015 Scala Team, École polytechnique fédérale de Lausanne
 //
 // Authors:
 //    * Vlad Ureche
 //    * Nicolas Stucki
+//
+// Thanks to: @tixxit (Tom Switzer), @dlwh (David Hall) and @ichoran (Rex Kerr)
+// for their very good feedback!
 //
 package scala
 
