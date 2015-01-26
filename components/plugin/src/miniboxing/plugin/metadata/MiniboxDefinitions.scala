@@ -215,7 +215,7 @@ trait MiniboxDefinitions {
 
   // direct conversions
 
-  lazy val standardTypeTagTrees = Map(
+  lazy val standardTypeTagTrees = Map[Symbol, Tree](
       UnitClass ->    Literal(Constant(UNIT)),
       BooleanClass -> Literal(Constant(BOOLEAN)),
       ByteClass ->    Literal(Constant(BYTE)),

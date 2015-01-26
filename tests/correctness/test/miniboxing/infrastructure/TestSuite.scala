@@ -109,7 +109,7 @@ class TestSuite extends ScalacVersion {
           case true =>
             val prompt = "scala> "
             val code_only = code.lines.filter(_ startsWith prompt).map(_ drop prompt.length).mkString("\n")
-            new ReplTest(code_only).replOutput()
+            new ReplTest(code_only, flags).replOutput()
           case false =>
             new CompileTest(code, flags, launch).compilationOutput()
         }

@@ -29,8 +29,8 @@ import scala.reflect.ClassTag
  *  Let's see an example:
  *
  *  {{{
- *     scala> import MiniboxingReflection._
- *     import MiniboxingReflection._
+ *     scala> import MbReflection._
+ *     import MbReflection._
  *
  *     scala> class C[@miniboxed T] {
  *          |   override def toString: String =
@@ -39,13 +39,13 @@ import scala.reflect.ClassTag
  *     defined class C
  *
  *     scala> new C[Int]
- *     res4: C[Int] = C[T = Int, miniboxed into a Long]
+ *     res4: C[Int] = C[T = int, miniboxed into a long]
  *
  *     scala> new C[Unit]
- *     res5: C[Unit] = C[T = Unit, miniboxed into a Long]
+ *     res5: C[Unit] = C[T = unit, miniboxed into a long]
  *
  *     scala> new C[Float]
- *     res6: C[Float] = C[T = Float, miniboxed into a Double]
+ *     res6: C[Float] = C[T = float, miniboxed into a double]
  *  }}}
  *
  *  Yet, it's still possible to instantiate the class in an erased context,
@@ -68,7 +68,7 @@ import scala.reflect.ClassTag
  *     type parameter T, since it is instantiated by a primitive type.
  *                   newC[Int]
  *                       ^
- *      res3: C[Int] = C[T = Object, miniboxed into a Object]
+ *      res3: C[Int] = C[T = reference, miniboxed into a reference]
  *   }}}
  *
  *   Finally, there's a good use case for this, if the class is always supposed
@@ -79,35 +79,67 @@ import scala.reflect.ClassTag
  *           |   assert(isMiniboxed[T], "Idiot!")
  *           | }
  *      define class D
+ *
+ *      scala> new D[String]
+ *      java.lang.AssertionError: assertion failed: Idiot!
+ *        at scala.Predef$.assert(Predef.scala:165)
+ *        ... 34 elided
  *   }}}
+ *
+ *   The "isMiniboxed" method is also partially evaluated away by the compiler:
+ *
+ *   {{{
+ *      scala> def foo[@miniboxed T]: Unit = {
+ *           |   if (isMiniboxed[T])
+ *           |     println("foo[miniboxed]")
+ *           |   else
+ *           |     println("foo[reference]")
+ *           | }
+ *      foo: [T]=> Unit
+ *
+ *      scala> foo[Byte]
+ *      foo[miniboxed]
+ *   }}}
+ *
+ *   In the low-level bytecode you will have:
+ *
+ *   {{{
+ *      def foo(): Unit = println("foo[reference]")
+ *      def foo_J(...): Unit = println("foo[miniboxed]")
+ *      def foo_D(...): Unit = println("foo[miniboxed]")
+ *   }}}
+ *
+ *   So there is 0 overhead in using the `isMiniboxed` method. Still,
+ *   `reifiedType` and `storageType` are not partially evaluated and do incur
+ *   a small overhead.
  */
-object MiniboxingReflection {
+object MbReflection {
 
   object SimpleType extends Enumeration {
     type SimpleType = Value
-    val Unit,
-        Boolean,
-        Byte,
-        Char,
-        Short,
-        Int,
-        Float,
-        Long,
-        Double,
-        Object = Value
+    val unit,
+        boolean,
+        byte,
+        char,
+        short,
+        int,
+        float,
+        long,
+        double,
+        reference = Value
   }
   import SimpleType._
 
   /**
    *  Is this type parameter miniboxed?
    */
-  def isMiniboxed: Boolean =   native
+  def isMiniboxed[T]: Boolean = native
 
   /**
    *  If miniboxed, what is the actual type of a type parameter?
    *  It can be any of the [[SimpleType scala miniboxing types]].
    */
-  def reifiedType: SimpleType = native
+  def reifiedType[T]: SimpleType = native
 
   /**
    *  If miniboxed, what is the storage type of a type parameter?
@@ -120,8 +152,10 @@ object MiniboxingReflection {
    *  `Char`, `Short`, `Int` and `Long`
    *    * `Double` for instantiations with `Float` and `Double`
    */
-  def storageType: SimpleType = native
+  def storageType[T]: SimpleType = native
 
   // This should be hijacked by the miniboxing plugin to provide the actual implementations:
   private[this] def native = sys.error("The miniboxing plugin was not active during compilation.")
+
+  // TODO: MbArray reflection!
 }

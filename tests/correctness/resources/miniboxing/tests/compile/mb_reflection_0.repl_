@@ -1,0 +1,43 @@
+scala> import MbReflection._
+import MbReflection._
+
+scala> class C[@miniboxed T] { override def toString: String = s"C[T = ${reifiedType[T]}, miniboxed into a ${storageType[T]}]" }
+defined class C
+
+scala> new C[Int]
+res0: C[Int] = C[T = int, miniboxed into a long]
+
+scala> new C[Unit]
+res1: C[Unit] = C[T = unit, miniboxed into a long]
+
+scala> new C[Float]
+res2: C[Float] = C[T = float, miniboxed into a double]
+
+scala> def newC[T] = new C[T]
+<console>:11: warning: The following code could benefit from miniboxing specialization if the type parameter T of method newC would be marked as "@miniboxed T" (it would be used to instantiate miniboxed type parameter T of class C)
+       def newC[T] = new C[T]
+                     ^
+newC: [T]=> C[T]
+
+scala> newC[Int]
+<console>:13: warning: The method newC would benefit from miniboxing type parameter T, since it is instantiated by a primitive type.
+              newC[Int]
+                  ^
+res3: C[Int] = C[T = reference, miniboxed into a reference]
+
+scala> class D[@miniboxed T] { assert(isMiniboxed[T], "Idiot!") }
+defined class D
+
+scala> new D[Int[
+res4: D[Int] = D_J@29d405f7
+
+scala> new D[String]
+java.lang.AssertionError: assertion failed: Idiot!
+  at scala.Predef$.assert(Predef.scala:165)
+  ... 34 elided
+
+scala> def foo[@miniboxed T]: Unit = if (isMiniboxed[T]) println("miniboxed") else println("generic")
+foo: [T]=> Unit
+
+scala> foo[Byte]
+miniboxed

@@ -21,7 +21,7 @@ class MbArray_L[T](private[array] final val array: Array[AnyRef]) extends MbArra
   def update(idx: Int, value: T): Unit = array(idx) = value.asInstanceOf[AnyRef]
   override def clone: MbArray[T] = new MbArray_L[T](array.clone())
   def length: Int = array.length
-  
+
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
       case dest_L: MbArray_L[T] => System.arraycopy(array, srcPos, dest_L.array, destPos, length)

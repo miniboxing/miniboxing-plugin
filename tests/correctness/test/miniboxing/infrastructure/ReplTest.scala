@@ -15,7 +15,10 @@ import scala.tools.nsc.interpreter.ILoop
 import java.lang.reflect.{ Method => JMethod, Field => JField }
 import scala.tools.partest.DirectTest
 
-class ReplTest(val code: String) extends DirectTest {
+class ReplTest(val code: String, val flags: String) extends DirectTest {
+
+// once #170 is fixed (https://github.com/miniboxing/miniboxing-plugin/issues/170):
+//  override val extraSettings: String = flags 
 
   final override def settings: Settings = {
     val s = super.settings

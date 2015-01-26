@@ -257,6 +257,11 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       }
 
       tree match {
+
+        // Miniboxing reflection
+        case MiniboxingReflectionMethod(rewrite_fn) =>
+          localTyper.typed(rewrite_fn(currentOwner))
+
         case ClassDef(_, _, _, impl: Template) =>
 
           if (heuristics.isSpecializableClass(tree.symbol) && metadata.isClassStem(tree.symbol)) {

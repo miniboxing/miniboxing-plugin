@@ -306,6 +306,11 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             } else
               super.transform(tree0)
 
+          // Reflection-based constant folding
+          // Warning: this may not be correct!
+          case If(Literal(Constant(cond: Boolean)), thenb, elseb) =>
+            if (cond) thenb else elseb
+
           case _ =>
             super.transform(tree0)
         }

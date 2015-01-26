@@ -1,0 +1,18 @@
+newSource1.scala:10: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(isMiniboxed[T forSome { type T <: String }])
+                     ^
+newSource1.scala:11: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(reifiedType[List[Int]])
+                     ^
+newSource1.scala:12: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(storageType[T with W])
+                     ^
+newSource1.scala:14: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(isMiniboxed[T { def boo: Int } ])
+                     ^
+newSource1.scala:15: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(reifiedType[{def baz: String }])
+                     ^
+newSource1.scala:16: error: The miniboxing reflection can only be called with a type parameter or a primitive type argument.
+  println(storageType[Any])
+                     ^

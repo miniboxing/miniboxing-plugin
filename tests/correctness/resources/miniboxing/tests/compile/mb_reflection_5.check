@@ -1,0 +1,15 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.bug171.test5 {
+  object Test extends Object {
+    def <init>(): miniboxing.tests.compile.bug171.test5.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    scala.this.Predef.println(true);
+    scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(5));
+    scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(5));
+    scala.this.Predef.println(true);
+    scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(7));
+    scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(7))
+  }
+}

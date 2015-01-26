@@ -1,0 +1,36 @@
+newSource1.scala:7: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(isMiniboxed[T])
+                       ^
+newSource1.scala:8: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(reifiedType[T])
+                       ^
+newSource1.scala:9: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(storageType[T])
+                       ^
+newSource1.scala:13: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(isMiniboxed[T])
+                       ^
+newSource1.scala:14: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(reifiedType[T])
+                       ^
+newSource1.scala:15: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(storageType[T])
+                       ^
+newSource1.scala:19: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(isMiniboxed[T])
+                       ^
+newSource1.scala:20: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(reifiedType[T])
+                       ^
+newSource1.scala:21: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(storageType[T])
+                       ^
+newSource1.scala:25: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(isMiniboxed[T])
+                       ^
+newSource1.scala:26: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+    println(reifiedType[T])
+                       ^
+newSource1.scala:27: error: The miniboxing reflection can only be used with the 2-way miniboxing transformation (without the `-P:minibox:Yone-way` argument).
+   println(storageType[T])
+                      ^
