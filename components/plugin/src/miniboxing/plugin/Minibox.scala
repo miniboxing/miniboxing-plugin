@@ -595,9 +595,6 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         import global._
         import global.Flag._
 
-        if (scalaVersion == "2.11.4")
-          return // see https://github.com/scala/scala/commit/24a0777219d647ec310a0b6da305f619f69950cd
-
         for (sym <- minibox.metadata.allStemClasses)
           sym.setFlag(ABSTRACT | TRAIT)
 

@@ -25,16 +25,15 @@ scala> newC[Int]
                   ^
 res3: C[Int] = C[T = reference, miniboxed into a reference]
 
-scala> class D[@miniboxed T] { assert(isMiniboxed[T], "Idiot!") }
+scala> class D[@miniboxed T] { if (!isMiniboxed[T]) println("Idiot!") }
 defined class D
 
-scala> new D[Int[
-res4: D[Int] = D_J@29d405f7
+scala> new D[Int]
+res4: D[Int] = D_J@<object_id>
 
 scala> new D[String]
-java.lang.AssertionError: assertion failed: Idiot!
-  at scala.Predef$.assert(Predef.scala:165)
-  ... 34 elided
+Idiot!
+res5: D[String] = D_L@<object_id>
 
 scala> def foo[@miniboxed T]: Unit = if (isMiniboxed[T]) println("miniboxed") else println("generic")
 foo: [T]=> Unit

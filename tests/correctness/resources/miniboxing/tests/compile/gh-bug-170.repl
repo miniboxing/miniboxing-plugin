@@ -1,0 +1,9 @@
+scala> trait T[@miniboxed X]
+defined trait T
+
+scala> class C extends T[Int]
+defined class C
+
+scala> new C
+res0: C = C@756c99c2
+
