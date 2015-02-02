@@ -49,7 +49,9 @@ trait MiniboxFlagVersioning {
   def removeFieldsFromStem(stemClass: Symbol, stemClassDecls: Scope): Scope = {
     val decls = stemClassDecls.cloneScope
     for (mbr <- decls) {
-      if (mbr.isMethod) mbr.setFlag(DEFERRED)
+      if (mbr.isMethod)
+        mbr.setFlag(DEFERRED)
+
       // #166: Protect against synthetic superaccessors, which create duplicate entries in classes:
       //
       // abstract trait B#7862 extends Object#130 with A#8027 {
@@ -113,7 +115,7 @@ trait MiniboxFlagVersioning {
 
     // remove deferred flag from values
     for (sym <- metadata.allStemClasses)
-      for (mbr <- sym.info.decls if !flagdata.deferredMembers(mbr))
+      for (mbr <- sym.info.decls if mbr.isMethod && !flagdata.deferredMembers(mbr))
         mbr.resetFlag(DEFERRED)
 
   }
@@ -123,7 +125,14 @@ trait MiniboxFlagVersioning {
       sym.setFlag(ABSTRACT | TRAIT)
 
     // remove the dummy constructors
-    for (ctor <- flagdata.stemConstructors)
+    for (ctor <- flagdata.stemConstructors) {
       ctor.owner.info.decls unlink ctor
+      ctor setFlag(DEFERRED)
+    }
+
+    // remove deferred flag from values
+    for (sym <- metadata.allStemClasses)
+      for (mbr <- sym.info.decls if mbr.isMethod)
+        mbr.setFlag(DEFERRED)
   }
 }
