@@ -131,6 +131,7 @@ trait MiniboxInjectComponent extends
     with MiniboxMetadataUtils
     with MiniboxMetadataAddons
     with MiniboxMethodInfo
+    with MiniboxFlagVersioning
     with MiniboxInjectInfoTransformation
     with MiniboxInjectTreeTransformation
     with TreeRewriters
@@ -559,23 +560,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
-        for (sym <- minibox.metadata.allStemClasses) {
-          if (!minibox.metadata.classStemTraitFlag(sym))
-            sym.resetFlag(TRAIT)
-          if (!minibox.metadata.classStemAbstractFlag(sym))
-            sym.resetFlag(ABSTRACT)
-        }
 
-        // add the dummy constructors
-        for (ctor <- minibox.metadata.stemConstructors) {
-          ctor.owner.info.decls enter ctor
-          ctor.resetFlag(DEFERRED)
-        }
-
-        // remove deferred flag from values
-        for (sym <- minibox.metadata.allStemClasses)
-          for (mbr <- sym.info.decls if !minibox.metadata.deferredMembers(mbr))
-            mbr.resetFlag(DEFERRED)
+        minibox.preMiniboxingFlags()
       }
     }
   }
@@ -595,12 +581,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         import global._
         import global.Flag._
 
-        for (sym <- minibox.metadata.allStemClasses)
-          sym.setFlag(ABSTRACT | TRAIT)
-
-        // remove the dummy constructors
-        for (ctor <- minibox.metadata.stemConstructors)
-          ctor.owner.info.decls unlink ctor
+        minibox.postMiniboxingFlags()
       }
     }
   }

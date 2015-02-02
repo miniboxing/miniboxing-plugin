@@ -47,7 +47,7 @@ trait MiniboxMetadataAddons {
     }
     def isField = sym.isValue && !sym.isMethod
 
-    private def tweakedKind = if (sym.isTrait) if (metadata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
+    private def tweakedKind = if (sym.isTrait) if (flagdata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
     private def tweakedName = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString
 
     def tweakedToString: String = tweakedKind + " " + tweakedName

@@ -89,15 +89,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
       // utility method:
       def retyped(context0: MiniboxInjectTreeTransformation.this.global.analyzer.Context, tree0: Tree) = {
+
         // Duplicator chokes on retyping new C if C is marked as abstract
         // but we need this in the backend, else we're generating invalid
         // flags for the entire class - for better or worse we adapt just
         // before calling the duplicator, and get back for specialization
-        for (clazz <- metadata.allStemClasses)
-          if (metadata.classStemTraitFlag(clazz))
-            clazz.resetFlag(ABSTRACT)
-          else
-            clazz.resetFlag(ABSTRACT | TRAIT)
+        preMiniboxingFlags()
 
         val res =
           util.Try {
@@ -112,15 +109,14 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           }
 
         // get back flags
-        for (clazz <- metadata.allStemClasses)
-          clazz.setFlag(ABSTRACT | TRAIT)
+        postMiniboxingFlags()
 
         res.get
       }
     }
 
     class RemovedFieldFinder(stemClass: Symbol) extends Traverser {
-      val removedMbrs = metadata.stemClassRemovedMembers.getOrElse(stemClass, collection.mutable.Set.empty[Symbol])
+      val removedMbrs = flagdata.stemClassRemovedMembers.getOrElse(stemClass, collection.mutable.Set.empty[Symbol])
       def skipLocalDummy(sym: Symbol): Symbol =
         if (sym.isLocalDummy) skipLocalDummy(sym.owner) else sym
 
@@ -826,11 +822,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
       // but we need this in the backend, else we're generating invalid
       // flags for the entire class - for better or worse we adapt just
       // before calling the duplicator, and get back for specialization
-      for (clazz <- metadata.allStemClasses)
-        if (metadata.classStemTraitFlag(clazz))
-          clazz.resetFlag(ABSTRACT)
-        else
-          clazz.resetFlag(ABSTRACT | TRAIT)
+      preMiniboxingFlags()
 
       val tree1 =
         reportError(symbol)(
@@ -843,8 +835,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           localTyper.typed(deriveDefDef(tree0)(_ => localTyper.typed(gen.mkMethodCall(Predef_???, Nil))))
         })
       // get back flags
-      for (clazz <- metadata.allStemClasses)
-        clazz.setFlag(ABSTRACT | TRAIT)
+      postMiniboxingFlags()
 
       tree1
     }

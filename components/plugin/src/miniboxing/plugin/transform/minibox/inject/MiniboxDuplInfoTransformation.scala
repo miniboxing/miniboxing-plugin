@@ -244,7 +244,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       val fields = members.filter(m => m.isTerm && !m.isMethod)
 
       // mark the members that are actually deferred
-      metadata.deferredMembers ++= members.filter(_.isDeferred)
+      recordDeferredStemMembers(members)
 
       var newMembers = List[Symbol]()
 
@@ -733,57 +733,6 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       newScope
     }
 
-    def removeFieldsFromStem(stemClass: Symbol, stemClassDecls: Scope): Scope = {
-      val decls = stemClassDecls.cloneScope
-      for (mbr <- decls) {
-        if (mbr.isMethod) mbr.setFlag(DEFERRED)
-        // #166: Protect against synthetic superaccessors, which create duplicate entries in classes:
-        //
-        // abstract trait B#7862 extends Object#130 with A#8027 {
-        //   <superaccessor> <artifact> def super$getStr#16404(): String#232;
-        //   override def getStr#15942(): String#232
-        // };
-        //
-        //  abstract trait B_J#17719 extends Object#130 with A_J#17447 with B#7862 {
-        //    def B_J|T_TypeTag#17721(): Byte#2468;
-        //    <superaccessor> <artifact> def super$getStr#17723(): String#232;
-        //    override def getStr#17722(): String#232
-        //  };
-        //
-        //  class C#7877 extends Object#130 with B_J#17719 {
-        //    <superaccessor> <artifact> def super$getStr#33169(): String#232 = A_J$class#7887.getStr#33130(C#7877.this); // <= for B
-        //    <superaccessor> <artifact> def super$getStr#33171(): String#232 = A_J$class#7887.getStr#33130(C#7877.this); // <= for B_J
-        //    override def getStr#33170(): String#232 = B_J$class#7842.getStr#33141(C#7877.this);
-        //    def A_J|T_TypeTag#17741(): Byte#2468 = 5;
-        //    def B_J|T_TypeTag#17742(): Byte#2468 = 5;
-        //    ...
-        //  }
-        //
-        // Solution: Completely move superaccessors to the leaf classes.
-        //
-        if ((mbr.isTerm && !mbr.isMethod /* field */) || (mbr.isConstructor /* constuctor */) || mbr.isSuperAccessor /* #166 */) {
-          if (mbr.isConstructor) metadata.stemConstructors += mbr
-          decls unlink mbr
-          if (currentRun.compiles(stemClass))
-            metadata.stemClassRemovedMembers.getOrElseUpdate(stemClass, collection.mutable.Set.empty[Symbol]) += mbr
-        }
-      }
-      // Remove the tailcall notation from members
-      decls.foreach(_.removeAnnotation(TailrecClass))
-      // This needs to be delayed until trees have been duplicated, else
-      // instantiation will fail, since C becomes an abstract class
-      if (stemClass.hasFlag(TRAIT))
-        metadata.classStemTraitFlag += stemClass
-      else if (stemClass.hasFlag(ABSTRACT))
-        metadata.classStemAbstractFlag += stemClass
-      stemClass.setFlag(TRAIT | ABSTRACT)
-
-      stemClass.resetFlag(FINAL)
-      stemClass.resetFlag(CASE)
-
-      decls
-    }
-
     def computeNewStemParentClasses(stemClass: Symbol, stemClassTpe: Type): List[Type] = {
       val parents = stemClassTpe.parents
 
@@ -813,7 +762,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
         isClassParent(sym) && sym.primaryConstructor.tpe.paramss.flatten.isEmpty
 
       val (stemParent: Symbol, parentTpes: List[Type]) =
-        if (metadata.classStemTraitFlag(stemClass))
+        if (flagdata.classStemTraitFlag(stemClass))
           parents match {
             case firstParentTpe :: rest =>
               val firstParent = firstParentTpe.typeSymbol

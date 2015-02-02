@@ -56,11 +56,6 @@ trait MiniboxMetadata {
      *  for C_L/C_J: T --> Tsp mapping in
      */
 
-    /** Miniboxed classes and traits become traits with subclasses/subtraits as specialized variants
-     *  This set contains the traits that were transformed. */
-    val classStemTraitFlag = mutable.Set.empty[Symbol]
-    val classStemAbstractFlag = mutable.Set.empty[Symbol] // whether the class is abstract
-
     val classOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
     val classSpecialization = new mutable.HashMap[Symbol, PartialSpec]
@@ -123,21 +118,11 @@ trait MiniboxMetadata {
     /** A list of dummy constructors necessary to satisfy the duplicator */
     val dummyConstructors = mutable.Set[/* dummy constructor */ Symbol]()
 
-    /** The stem class constructors that are eliminated by the miniboxing inject phase */
-    val stemConstructors = mutable.Set[/* stem class constructors */ Symbol]()
-
-    /** A list of members that are deferred in the original stem classes */
-    val deferredMembers = mutable.Set[/* dummy constructor */ Symbol]()
-
     /** Those members that will be duplicated and specialized to produce the muliple overloads */
     val templateMembers = mutable.Set[Symbol]()
 
     /** Stem class can have a class parent (see bug #162) */
     val stemClassParent = mutable.HashMap[Symbol, Symbol]()
-
-    /** Stem class removed members (see bugs #127 and #166) */
-    val stemClassRemovedMembers = perRunCaches.newMap[Symbol, mutable.Set[Symbol]]()
-
 
 
     // Accessors:
