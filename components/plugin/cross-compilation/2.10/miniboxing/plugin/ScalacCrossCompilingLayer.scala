@@ -38,6 +38,15 @@ trait ScalacCrossCompilingLayer {
     def getterName: TermName           = dropSetter.dropLocal
   }
 
+  implicit class CompatScope(scope: Scope) {
+    def enterIfNew[T <: Symbol](sym: T): T = {
+      val existing = scope.lookupEntry(sym.name)
+      if (existing == null) scope.enter(sym)
+      else existing.sym.asInstanceOf[T]
+    }
+
+  }
+
   def turnOffErrorReporting(analyzer: Analyzer)(context: analyzer.Context) = {
     // copy pasted from the impl
     val ReportErrors     = 1 << 0

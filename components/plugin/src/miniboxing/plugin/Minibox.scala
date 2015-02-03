@@ -112,6 +112,7 @@ trait InteropCommitComponent extends
     with InteropCommitTreeTransformer
     with ScalacCrossCompilingLayer {
 
+  def minibox: MiniboxInjectComponent
   val interop: InteropInjectComponent { val global: InteropCommitComponent.this.global.type }
 
   def interopCommitPhase: StdPhase
@@ -439,6 +440,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val runsAfter = List(InteropCoercePhase.phaseName)
     override val runsRightAfter = Some(InteropCoercePhase.phaseName)
     val phaseName = "interop-commit"
+
+    def minibox = MiniboxInjectPhase
 
     var interopCommitPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

@@ -1,0 +1,11 @@
+scala> trait A[@miniboxed T] { def getStr: String = "aaa" }
+defined trait A
+
+scala> trait B[@miniboxed T] extends A[T] { override def getStr: String = super.getStr }
+defined trait B
+
+scala> class C extends B[Int] { override def toString = "C" }
+defined class C
+
+scala> println(new C) /* force ClassLoader to try and load C */
+C

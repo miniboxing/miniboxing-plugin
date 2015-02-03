@@ -33,6 +33,9 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
       // clear the two functions
       FunctionsObjectSymbol.info.decls unlink marker_fun2mbfun
       FunctionsObjectSymbol.info.decls unlink marker_mbfun2fun
+      // in newer versions of Scalac, the type history is refreshed for older
+      // symbols, thus we need to reset flags and refresh the type history by hand
+      minibox.refreshTypeHistory()
       res
     }
   }

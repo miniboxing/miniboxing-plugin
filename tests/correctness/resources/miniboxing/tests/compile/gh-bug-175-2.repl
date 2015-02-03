@@ -1,0 +1,10 @@
+scala> class C[@miniboxed T](val t: T) { override def toString = MbReflection.isMiniboxed[T].toString }
+defined class C
+scala> class D[@miniboxed T](val t2: T) extends C[T](t2)
+defined class D
+scala> new D(3)
+res0: D[Int] = true
+scala> res0.t
+res1: Int = 3
+scala> res0.t2
+res2: Int = 3

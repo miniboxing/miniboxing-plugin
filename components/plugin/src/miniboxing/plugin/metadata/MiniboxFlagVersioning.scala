@@ -16,7 +16,7 @@ package metadata
 import scala.collection.mutable
 import language.implicitConversions
 
-trait MiniboxFlagVersioning {
+trait MiniboxFlagVersioning extends ScalacVersion {
   self: MiniboxInjectComponent =>
 
   import global._
@@ -89,7 +89,7 @@ trait MiniboxFlagVersioning {
     // instantiation will fail, since C becomes an abstract class
     if (stemClass.hasFlag(TRAIT))
       flagdata.classStemTraitFlag += stemClass
-    else if (stemClass.hasFlag(ABSTRACT))
+    if (stemClass.hasFlag(ABSTRACT))
       flagdata.classStemAbstractFlag += stemClass
     stemClass.setFlag(TRAIT | ABSTRACT)
 
@@ -109,7 +109,7 @@ trait MiniboxFlagVersioning {
 
     // add the dummy constructors
     for (ctor <- flagdata.stemConstructors) {
-      ctor.owner.info.decls enter ctor
+      ctor.owner.info.decls enterIfNew ctor
       ctor.resetFlag(DEFERRED)
     }
 
@@ -134,5 +134,16 @@ trait MiniboxFlagVersioning {
     for (sym <- metadata.allStemClasses)
       for (mbr <- sym.info.decls if mbr.isMethod)
         mbr.setFlag(DEFERRED)
+  }
+
+  def refreshTypeHistory(): Unit = {
+    // for 2.11, we need to reset flags for miniboxed stem classes, since the type transformer
+    // will revisit them (https://github.com/scala/scala/commit/24a0777219d647ec310a0b6da305f619f69950cd)
+    if (scalaBinaryVersion == "2.11") { // TODO: Refine the condition, now it's too coarse
+      preMiniboxingFlags()
+      for (stem <- metadata.allStemClasses)
+        // force the updated info on the symbol
+        afterMiniboxInject(stem.info)
+    }
   }
 }

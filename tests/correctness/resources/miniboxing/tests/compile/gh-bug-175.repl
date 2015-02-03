@@ -1,0 +1,5 @@
+scala> class C[@miniboxed T] { override def toString = MbReflection.isMiniboxed[T].toString }
+defined class C
+
+scala> new C[Int]
+res0: C[Int] = true

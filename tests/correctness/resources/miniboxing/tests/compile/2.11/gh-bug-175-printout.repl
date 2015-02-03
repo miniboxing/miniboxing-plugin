@@ -1,0 +1,28 @@
+scala> class C[@miniboxed T] { override def toString = MbReflection.isMiniboxed[T].toString }
+Specializing class C...
+  // interface:
+  abstract trait C[T] extends Object {
+    override def toString(): String
+  }
+  // specialized class:
+  class C_J[Tsp] extends C[Tsp] {
+    def <init>(val $line3|$read|$iw|$iw|C_J|T_TypeTag: Byte): C_J[Tsp]     // is a specialized implementation of constructor C
+    override def toString(): String                                        // is a specialized implementation of method toString
+    private[this] val $line3|$read|$iw|$iw|C_J|T_TypeTag: Byte             // is a type tag
+  }
+  // specialized class:
+  class C_D[Tsp] extends C[Tsp] {
+    def <init>(val $line3|$read|$iw|$iw|C_D|T_TypeTag: Byte): C_D[Tsp]     // is a specialized implementation of constructor C
+    override def toString(): String                                        // is a specialized implementation of method toString
+    private[this] val $line3|$read|$iw|$iw|C_D|T_TypeTag: Byte             // is a type tag
+  }
+  // specialized class:
+  class C_L[Tsp] extends C[Tsp] {
+    def <init>(): C_L[Tsp]                                                 // is a specialized implementation of constructor C
+    override def toString(): String                                        // is a specialized implementation of method toString
+  }
+defined class C
+scala> println("x")
+x
+scala> println("y")
+y
