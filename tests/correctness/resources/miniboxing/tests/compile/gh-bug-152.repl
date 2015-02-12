@@ -1,0 +1,2 @@
+scala> val f = (x: Int) => x + 1
+f: Int => Int = <function1>

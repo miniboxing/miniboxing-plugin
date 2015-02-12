@@ -32,7 +32,7 @@ trait InteropInjectInfoTransformer extends InfoTransform {
       sym.owner.isAnonymousFunction
 
     val res =
-      if (flag_rewire_functionX_values && currentRun.compiles(sym) && !isDelambdafyParam(sym)) {
+      if (flag_rewire_functionX_values && (sym.sourceFile != null) && !isDelambdafyParam(sym)) {
         updatedType(NoPosition, tpe)
       } else
         tpe
