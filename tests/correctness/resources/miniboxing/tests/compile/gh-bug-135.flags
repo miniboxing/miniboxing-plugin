@@ -1,1 +1,1 @@
--P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:interop-commit
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:interop-commit -P:minibox:Ykeep-functionX-application

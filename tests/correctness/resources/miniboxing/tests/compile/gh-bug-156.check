@@ -1,0 +1,15 @@
+[[syntax trees at end of            interop-inject]] // newSource1.scala
+package miniboxing.tests.compile.bug156 {
+  object Test extends scala.AnyRef {
+    def <init>(): miniboxing.tests.compile.bug156.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    def main(args: Array[String]): Unit = {
+      val f: (Int => Int) => Int @miniboxing.mbFunction = ((x: Int => Int @miniboxing.mbFunction) => x.apply(3));
+      val id: Int => Int @miniboxing.mbFunction = ((z: Int) => z);
+      scala.this.Predef.println(f.apply(id))
+    }
+  }
+}
+3

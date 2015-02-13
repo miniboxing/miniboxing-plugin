@@ -1,1 +1,1 @@
--P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:minibox-commit -Ycheck:minibox-commit -P:minibox:Ykeep-functionX-repres
+-P:minibox:Ygeneric-constructor-code  -P:minibox:warn-off -Xprint:minibox-commit -Ycheck:minibox-commit -P:minibox:Ykeep-functionX-repres -P:minibox:Ykeep-functionX-application

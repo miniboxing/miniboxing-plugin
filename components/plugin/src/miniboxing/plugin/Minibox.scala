@@ -292,13 +292,16 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_create_local_specs = true
   var flag_strict_warnings = true
   var flag_strict_warnings_outside = false
-  var flag_rewire_functionX_application = false
+  var flag_rewire_functionX_application = true
   var flag_rewire_mbarray = true
   var flag_constructor_spec = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
       option.toLowerCase() match {
+
+        // Basic (and documented) miniboxing compiler flags:
+
         case "log" =>
           flag_log = true
         case "debug" =>
@@ -323,36 +326,46 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "warn-all" =>
           flag_strict_warnings = true
           flag_strict_warnings_outside = true
+        case "mark-all" =>
+          flag_mark_all = true
+
+        // The following flags are undocumented, since they control options that transform the miniboxing compilation
+        // scheme in (possibly) binary incompatible ways, thus are not explosed by default to the user. Should
+
         case "yone-way" =>                       // Undocumented flag, only used for running the test suite,
           flag_two_way = false                   // where the tests required the one-way translation
-        case "ygen-brdgs" =>                     // Undocumented flag, only used for running the test suite
-          flag_rewire_functionX_bridges = false  // while avoiding func. to miniboxed func. bridge optimization
-        case "ystrict-typechecking" =>           // Undocumented flag
-          flag_strict_typechecking = true
-        case "ystrip-miniboxed" =>               // Undocumented flag
-          flag_strip_miniboxed = true
-        case "yno-local-specs" =>                // Undocumented flag
-          flag_create_local_specs = false
-        case "ykeep-functionx-values" | "library-functions"=>
-          flag_rewire_functionX_values  = false
-          flag_rewire_functionX_repres = false
-        case "ykeep-functionx-repres" =>
-          flag_rewire_functionX_repres = false
-        case "ykeep-mbarray-generic" =>
-          flag_rewire_mbarray = false
-        case "yrewire-functionx-application" =>
-          if (scalaBinaryVersion == "2.10")
-            error("The option -P:minibox:Yrewire-functionX-application only works on Scala 2.11. La reverdere!")
-          else
-            flag_rewire_functionX_application = true
-        case "ygeneric-constructor-code" =>
-          flag_constructor_spec = false
         case "two-way" =>
           global.warning("The two-way transformation (with long and double as storage types) has become default in " +
                          "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
                          "command line")
-        case "mark-all" =>
-          flag_mark_all = true
+        case "ygen-brdgs" =>                     // Undocumented flag, only used for running the test suite
+          flag_rewire_functionX_bridges = false  // while avoiding func. to miniboxed func. bridge optimization
+        case "ystrip-miniboxed" =>
+          flag_strip_miniboxed = true
+        case "yno-local-specs" =>
+          flag_create_local_specs = false
+        case "ykeep-functionx-values" | "library-functions"=>
+          flag_rewire_functionX_values  = false
+          flag_rewire_functionX_repres = false
+
+        // The following flags are undocumented, since they control internal miniboxing plugin features, which
+        // should not be used directly by the programmers (they are mainly here to allow reproducing test cases)
+
+        case "ykeep-functionx-repres" =>
+          flag_rewire_functionX_repres = false
+        case "ystrict-typechecking" =>
+          flag_strict_typechecking = true
+        case "ykeep-mbarray-generic" =>
+          flag_rewire_mbarray = false
+        case "yrewire-functionx-application" =>
+          global.warning("The function application specialization is now the default miniboxing plugin behavior, so " +
+                         s"there is no need to use the -P:minibox:$option flag anymore. To leave function " +
+                         "applications generic, please use the -P:minibox:Ykeep-functionX-application flag.")
+          flag_rewire_functionX_application = true
+        case "ykeep-functionx-application" =>
+          flag_rewire_functionX_application = false
+        case "ygeneric-constructor-code" =>
+          flag_constructor_spec = false
         case _ =>
           error("Miniboxing: Option not understood: " + option)
       }
