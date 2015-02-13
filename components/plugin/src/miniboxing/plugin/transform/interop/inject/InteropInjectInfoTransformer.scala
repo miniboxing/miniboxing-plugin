@@ -24,17 +24,17 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   import global._
   import definitions.ByNameParamClass
 
-  override def transformInfo(sym: Symbol, tpe: Type): Type = {
+  def isDelambdafyParam(sym: Symbol) =
+    sym.owner.isAnonymousFunction && sym.isValueParameter
 
-    def isDelambdafyParam(sym: Symbol) =
-      delambdafySupport.isDelambdafyEnabled && sym.isValueParameter ||
-      sym.owner.isAnonymousFunction && sym.isParameter
+  override def transformInfo(sym: Symbol, tpe: Type): Type = {
 
     val res =
       if (flag_rewire_functionX_values && (sym.sourceFile != null) && !isDelambdafyParam(sym)) {
         updatedType(NoPosition, tpe)
-      } else
+      } else {
         tpe
+      }
 
     res
   }

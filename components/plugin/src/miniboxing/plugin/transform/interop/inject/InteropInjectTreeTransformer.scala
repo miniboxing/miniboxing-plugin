@@ -43,8 +43,8 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
         treeCopy.TypeApply(tree, transform(sel), tpes)
       case Template(parents, self, body) =>
          deriveTemplate(tree)(body => transformStats(body, currentOwner))
-//      case vd@ValDef(mods, name, tpt, rhs) if vd.symbol.isValueParameter && vd.symbol.owner.isAnonymousFunction =>
-//        treeCopy.ValDef(tree, mods, name, tpt, transform(rhs))
+      case vd@ValDef(mods, name, tpt, rhs) if isDelambdafyParam(vd.symbol) =>
+        treeCopy.ValDef(tree, mods, name, /* don't touch the */ tpt, transform(rhs))
       case tree: TypeTree =>
         val res = updatedType(tree.pos, tree.tpe)
         if (res eq tree.tpe)

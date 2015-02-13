@@ -6,7 +6,7 @@ package miniboxing.tests.compile.bug156 {
       ()
     };
     def main(args: Array[String]): Unit = {
-      val f: (Int => Int) => Int @miniboxing.mbFunction = ((x: Int => Int @miniboxing.mbFunction) => x.apply(3));
+      val f: (Int => Int) => Int @miniboxing.mbFunction = ((x: Int => Int) => x.apply(3));
       val id: Int => Int @miniboxing.mbFunction = ((z: Int) => z);
       scala.this.Predef.println(f.apply(id))
     }
