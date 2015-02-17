@@ -13,7 +13,7 @@ package miniboxing.tests.compile.bug135b {
       ()
     };
     override def foo(u: U, v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = false;
-    @scala.annotation.bridge override def foo(u: U, v: Int => Int): Boolean = foo(u, MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
+    @scala.annotation.bridge override def foo(u: U, v: Int => Int): Boolean = D.this.foo(u, MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
   };
   class E extends miniboxing.tests.compile.bug135b.D[String => String] {
     def <init>(): miniboxing.tests.compile.bug135b.E = {
@@ -21,7 +21,7 @@ package miniboxing.tests.compile.bug135b {
       ()
     };
     override def foo(u: miniboxing.runtime.MiniboxedFunction1[String,String], v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = true;
-    @scala.annotation.bridge override def foo(u: String => String, v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), v);
-    @scala.annotation.bridge override def foo(u: String => String, v: Int => Int): Boolean = foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
+    @scala.annotation.bridge override def foo(u: String => String, v: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Boolean = E.this.foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), v);
+    @scala.annotation.bridge override def foo(u: String => String, v: Int => Int): Boolean = E.this.foo(MiniboxedFunctionBridge.this.function1_bridge[String, String](u), MiniboxedFunctionBridge.this.function1_bridge[Int, Int](v))
   }
 }

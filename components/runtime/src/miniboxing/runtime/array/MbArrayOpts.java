@@ -33,22 +33,18 @@ public class MbArrayOpts {
       mbArray.update(index, MiniboxConversionsDouble.<T>minibox2box(value, T_Tag));
   }
 
-  @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_empty_J(int size, byte T_Tag) {
     return new MbArray_J<T>(T_Tag, size);
   }
 
-  @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_empty_D(int size, byte T_Tag) {
     return new MbArray_D<T>(T_Tag, size);
   }
 
-  @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_clone_J(Object array, byte T_Tag) {
     return new MbArray_J<T>(T_Tag, array);
   }
 
-  @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_clone_D(Object array, byte T_Tag) {
     return new MbArray_D<T>(T_Tag, array);
   }
