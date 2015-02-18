@@ -345,8 +345,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "yno-local-specs" =>
           flag_create_local_specs = false
         case "ykeep-functionx-values" | "library-functions"=>
-          flag_rewire_functionX_values  = false
+          flag_rewire_functionX_values = false
           flag_rewire_functionX_repres = false
+          flag_rewire_functionX_application = false
 
         // The following flags are undocumented, since they control internal miniboxing plugin features, which
         // should not be used directly by the programmers (they are mainly here to allow reproducing test cases)
