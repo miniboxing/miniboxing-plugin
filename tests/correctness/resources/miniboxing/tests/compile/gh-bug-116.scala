@@ -1,11 +1,15 @@
 package miniboxing.tests.compile.bug116
 
-object Test extends App {
-  val f = (x: Int) => { ???; x }
-  try {
-    f(3)
-  } catch {
-    case t: Throwable =>
-      println(t.getStackTrace()(1).getMethodName())
+object Test {
+
+  def main(args: Array[String]): Unit = {
+    val f = (x: Int) => { ???; x }
+    try {
+      f(3)
+    } catch {
+      case t: Throwable =>
+        println(t.getStackTrace()(1).getMethodName())
+    }
   }
+
 }
