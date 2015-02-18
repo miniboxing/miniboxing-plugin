@@ -6,6 +6,6 @@ object Test extends App {
     f(3)
   } catch {
     case t: Throwable =>
-      println(t.getStackTrace()(2).getMethodName())
+      println(t.getStackTrace()(1).getMethodName())
   }
 }
