@@ -1,7 +1,4 @@
+newSource1.scala:6: error: Following the miniboxing transformation, this method will no longer be in tailcall position (please see https://github.com/miniboxing/miniboxing-plugin/issues/181 for a workaround):
+  @tailrec final def euclid1(a: A, b: A): A =
+                     ^
 [Now checking: minibox-inject]
-[Now checking: minibox-bridge]
-[Not checkable: minibox-coerce]
-newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-package miniboxing.tests.compile
-                         ^
-[Now checking: minibox-commit]

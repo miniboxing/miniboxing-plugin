@@ -1,0 +1,3 @@
+newSource1.scala:8: error: Following the miniboxing transformation, this method will no longer be in tailcall position (please see https://github.com/miniboxing/miniboxing-plugin/issues/181 for a workaround):
+  @tailrec final def dropWhile(p: A => Boolean): ConsList[A] = this match {
+                     ^

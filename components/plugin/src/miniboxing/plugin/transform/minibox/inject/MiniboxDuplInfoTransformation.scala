@@ -257,6 +257,12 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
           else
             specs.filter(PartialSpec.isAllAnyRef(_)) // only the generic specialization
 
+        if (stemMethod.hasAnnotation(TailrecClass)) {
+          global.reporter.error(stemMethod.pos, "Following the miniboxing transformation, this method will no longer " +
+                     "be in tailcall position (please see https://github.com/miniboxing/miniboxing-plugin/issues/181 " +
+                     "for a workaround):")
+        }
+
         for (spec <- specs_filtered) {
 
           // if this is the generic version, we keep this member
