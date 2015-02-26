@@ -56,5 +56,5 @@ trait InteropInjectInfoTransformer extends InfoTransform {
         if (nres eq res) tpe else PolyType(targs, updatedType(pos, res))
       case _ =>
         tpe.withoutAnnotations
-    }).withAnnotations(tpe.annotations)
+    }).withAnnotations(tpe.annotations.filter(_.tpe.typeSymbol != apiClass))
 }

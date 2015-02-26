@@ -106,6 +106,7 @@ trait InteropDefinitions {
 
   implicit class RichType(tpe: Type) {
     def hasApiAnnotation: Boolean = tpe.hasAnnotation(apiClass)
+    def withoutApiAnnotations: Type = tpe.filterAnnotations(_.tpe.typeSymbol != apiClass)
 
     def isMbFunction: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == mbFunctionClass)
     def withMbFunction: Type = tpe.withAnnotations(List(Annotation.apply(mbFunctionClass.tpe, Nil, ListMap.empty)))
