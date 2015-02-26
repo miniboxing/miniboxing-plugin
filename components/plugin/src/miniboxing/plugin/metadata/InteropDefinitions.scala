@@ -31,6 +31,7 @@ trait InteropDefinitions {
   lazy val AbstractFunction0Class = global.definitions.AbstractFunctionClass(0)
   lazy val AbstractFunction1Class = global.definitions.AbstractFunctionClass(1)
   lazy val AbstractFunction2Class = global.definitions.AbstractFunctionClass(2)
+  lazy val FunctionSyms = List(Function0Class, Function1Class, Function2Class)
   lazy val AbstractFunctions = List(AbstractFunction0Class, AbstractFunction1Class, AbstractFunction2Class)
 
   lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction0")

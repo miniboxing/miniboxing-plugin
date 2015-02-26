@@ -50,7 +50,7 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
         if (res eq tree.tpe)
           tree
         else
-          localTyper.typed(TypeTree(res))
+          TypeTree(res).setType(res)
       case _ =>
         super.transform(tree)
     }

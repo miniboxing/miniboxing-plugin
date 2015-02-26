@@ -41,10 +41,10 @@ trait InteropInjectInfoTransformer extends InfoTransform {
 
   def updatedType(pos: Position, tpe: Type): Type =
     (tpe.withoutAnnotations match {
-      case TypeRef(_, Function0Class, _) => if (tpe.hasApiAnnotation) tpe else tpe.withMbFunction
-      case TypeRef(_, Function1Class, _) => if (tpe.hasApiAnnotation) tpe else tpe.withMbFunction
-      case TypeRef(_, Function2Class, _) => if (tpe.hasApiAnnotation) tpe else tpe.withMbFunction
-      case TypeRef(_, ByNameParamClass, _) => tpe.withMbFunction
+      case TypeRef(pre, fun, targs) if FunctionSyms.contains(fun) =>
+        if (tpe.hasApiAnnotation || targs.last.hasApiAnnotation) typeRef(pre, fun, targs.map(_.withoutApiAnnotations)) else tpe.withMbFunction
+      case TypeRef(pre, ByNameParamClass, List(targ)) =>
+        if (targ.hasApiAnnotation) typeRef(pre, ByNameParamClass, List(targ.withoutApiAnnotations)) else tpe.withMbFunction
       case NullaryMethodType(res)        =>
         val nres = updatedType(pos, res)
         if (nres eq res) tpe else NullaryMethodType(nres)
