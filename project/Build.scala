@@ -180,7 +180,9 @@ object MiniboxingBuild extends Build {
           "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
         )
       }
-    )
+    ),
+    // I want the ScalaTest library around:
+    libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4"
   )
 
   val recursiveDeps = {

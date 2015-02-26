@@ -8,21 +8,21 @@ package miniboxing.tests.compile.bug114.reuse {
     def getId(o: Any): Int = java.this.lang.System.identityHashCode(o);
     def main(args: Array[String]): Unit = {
       val f: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
           };
           final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
           override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = t1
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]>()
+        new anonymous class $anon()
       };
-      val g: miniboxing.runtime.MiniboxedFunction1[Int,Int] = MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, scala.this.Predef.identity[Int => Int](f.f()));
-      val h: miniboxing.runtime.MiniboxedFunction1[Int,Int] = MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, scala.this.Predef.identity[Int => Int](g.f()));
-      val idf: Int = Test.this.getId(f.f());
-      val idg: Int = Test.this.getId(g.f());
-      val idh: Int = Test.this.getId(h.f());
+      val g: miniboxing.runtime.MiniboxedFunction1[Int,Int] = MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, scala.this.Predef.identity[Int => Int](f.extractFunctionX()));
+      val h: miniboxing.runtime.MiniboxedFunction1[Int,Int] = MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, scala.this.Predef.identity[Int => Int](g.extractFunctionX()));
+      val idf: Int = Test.this.getId(f.extractFunctionX());
+      val idg: Int = Test.this.getId(g.extractFunctionX());
+      val idh: Int = Test.this.getId(h.extractFunctionX());
       scala.this.Predef.println(idf.==(idg));
       scala.this.Predef.println(idf.==(idh))
     }

@@ -22,6 +22,6 @@ package miniboxing.tests.compile.bug135c {
       };
       new anonymous class $anon()
     };
-    @scala.annotation.bridge override def foo(): Int => Int = D.this.foo().f()
+    @scala.annotation.bridge override def foo(): Int => Int = D.this.foo().extractFunctionX()
   }
 }

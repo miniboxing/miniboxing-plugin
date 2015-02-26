@@ -23,6 +23,7 @@ trait InteropDefinitions {
   import definitions._
 
   lazy val mbFunctionClass = global.rootMirror.getRequiredClass("miniboxing.mbFunction")
+  lazy val apiClass = global.rootMirror.getRequiredClass("scala.api")
 
   lazy val Function0Class = global.definitions.FunctionClass(0)
   lazy val Function1Class = global.definitions.FunctionClass(1)
@@ -99,9 +100,13 @@ trait InteropDefinitions {
   def flag_rewire_functionX_repres: Boolean
   def flag_rewire_functionX_bridges: Boolean
 
+  lazy val libraryFunctionName = newTermName("extractFunctionX")
+
   // Addons, not yet separated:
 
   implicit class RichType(tpe: Type) {
+    def hasApiAnnotation: Boolean = tpe.hasAnnotation(apiClass)
+
     def isMbFunction: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == mbFunctionClass)
     def withMbFunction: Type = tpe.withAnnotations(List(Annotation.apply(mbFunctionClass.tpe, Nil, ListMap.empty)))
     def withoutMbFunction: Type = tpe.filterAnnotations(_.tpe.typeSymbol != mbFunctionClass)

@@ -114,7 +114,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
           // update the constructor for transformed anonymous functions, when represented as FunctionX
           case Typed(ctor @ Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil), _) if { tpt.symbol.info; transformedAnonFunctions(tpt.symbol) } =>
             val ctor2 = Apply(Select(New(tpt), nme.CONSTRUCTOR), Nil)
-            val conv = gen.mkMethodCall(Select(ctor2, newTermName("f")), Nil)
+            val conv = gen.mkMethodCall(Select(ctor2, libraryFunctionName), Nil)
             localTyper.typed(conv)
 
           // update the super constructor
@@ -135,7 +135,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             localTyper.typed(tree1)
 
           case MbFunToFun(tree, targ) =>
-            val tree1 = gen.mkMethodCall(Select(transform(tree), newTermName("f")), Nil)
+            val tree1 = gen.mkMethodCall(Select(transform(tree), libraryFunctionName), Nil)
             localTyper.typed(tree1)
 
           case Select(MbFunToFun(fun, targ), _) if directMethodSymbols.contains(tree0.symbol) =>

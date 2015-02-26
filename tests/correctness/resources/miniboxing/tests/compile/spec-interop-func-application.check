@@ -22,7 +22,7 @@ package miniboxing.tests.compile.streams {
             };
             final def apply(value: T): Boolean = p.apply(value).unary_!().||(MiniboxedFunctionBridge.this.function1_bridge[T, Boolean](iterf).apply(value))
           };
-          new anonymous class $anon().f()
+          new anonymous class $anon().extractFunctionX()
         })
       };
       new anonymous class $anon()
