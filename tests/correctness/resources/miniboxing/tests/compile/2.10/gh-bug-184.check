@@ -1,0 +1,3 @@
+newSource1.scala:6: error: You ran into a Scala compiler limitation that prevents the miniboxing plugin from correctly transforming your code. The bug can only be worked around in Scala 2.11. Please upgrade your compiler version. See https://github.com/miniboxing/miniboxing-plugin/issues/184 for more information (and a possible workaround). Thanks and sorry!
+    case object Apple
+                ^

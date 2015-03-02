@@ -52,6 +52,17 @@ trait ScalacCrossCompilingLayer {
   }
 }
 
+trait TweakedDuplicator extends Analyzer {
+  import global._
+
+  def tweakedEnsureCompanionObject(namer: Namer, cdef: ClassDef, creator: ClassDef => Tree): Option[Symbol]
+  override def pluginsEnsureCompanionObject(namer: Namer, cdef: ClassDef, creator: ClassDef => Tree = companionModuleDef(_)): Symbol =
+    tweakedEnsureCompanionObject(namer, cdef, creator) match {
+      case Some(sym) => sym
+      case None => super.pluginsEnsureCompanionObject(namer, cdef, creator)
+    }
+}
+
 trait ScalacVersion {
   lazy val scalaBinaryVersion = "2.11"
   lazy val scalaVersion = "2.11.4"

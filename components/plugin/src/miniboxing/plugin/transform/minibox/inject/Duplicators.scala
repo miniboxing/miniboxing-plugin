@@ -24,7 +24,7 @@ import scala.collection.mutable
  *
  *  @version miniboxing
  */
-abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with ScalacVersion {
+abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLayer with ScalacVersion {
   import global._
   import definitions.{ AnyRefClass, AnyValClass, AnyClass, AnyTpe, AnyRefTpe, AnyValTpe }
 
@@ -77,6 +77,31 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
   private var envDeepSubst: TypeMap = _
 
   private val invalidSyms: mutable.Map[Symbol, Tree] = perRunCaches.newMap[Symbol, Tree]()
+
+  // Bug #184: `case object` expands into `case class` and a getter
+  // but when the entire thing is duplicated, the `case class` wants
+  // to create the companion object, which lives in the same term
+  // namespace as the def Apple(), leading to the clash seen in
+  //
+  //   https://github.com/miniboxing/miniboxing-plugin/issues/184
+  //
+  // ```
+  //    case object Apple extends Object with Product with Serializable {
+  //      ...
+  //    }
+  //    @volatile var Apple$module: Apple.type = _
+  //    case <stable> def Apple(): Apple.type = {
+  //      Apple$module = new Apple.type();
+  //      Apple$module
+  //    }
+  // ```
+  // solution: don't add the companion object to the scope at all :)
+  class DerivedFromObject(val module: Symbol)
+  def tweakedEnsureCompanionObject(namer: Namer, cdef: ClassDef, creator: ClassDef => Tree = companionModuleDef(_)): Option[Symbol] =
+    if (cdef.hasAttachment[DerivedFromObject])
+      Some(NoSymbol)
+    else
+      None
 
 
   /** A typer that creates new symbols for all definitions in the given tree
@@ -335,9 +360,23 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             List(tdef)
 
           case cdef @ ClassDef(_, _, tparams, impl) =>
+
+            // Bug #184: mark `case class` which is derived from object
+            // (search for 184 in this file for more details)
+            if (cdef.symbol.isModuleClass) {
+              cdef.updateAttachment(new DerivedFromObject(cdef.symbol.sourceModule))
+              if (cdef.symbol.sourceModule.isCase && scalaBinaryVersion == "2.10")
+                global.reporter.error(cdef.symbol.pos, "You ran into a Scala compiler limitation that prevents the miniboxing " +
+                                                       "plugin from correctly transforming your code. The bug can only be " +
+                                                       "worked around in Scala 2.11. Please upgrade your compiler version. " +
+                                                       "See https://github.com/miniboxing/miniboxing-plugin/issues/184 for " +
+                                                       "more information (and a possible workaround). Thanks and sorry!")
+            }
+
             cdef.symbol = NoSymbol
             // TODO: Fix this side-effecting call:
             invalidateAll(tparams)
+
             List(cdef)
 
           case Try(_, cases, _) =>
@@ -384,7 +423,7 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
     }
 
     def dupldbg(ind: Int, msg: => String): Unit = {
-      // println("  " * ind + msg)
+//       println("  " * ind + msg)
     }
 
     var rewireThis = new scala.util.DynamicVariable(true)
@@ -464,6 +503,15 @@ abstract class Duplicators extends Analyzer with ScalacCrossCompilingLayer with 
             val tree2 = treeCopy.ClassDef(tree, mods, name, targs, treeCopy.Template(tmpl, parents, self, stats2).setSymbol(tmpl.symbol)).setSymbol(tree.symbol)
             tree2.setType(null)
             updateInvalidSym(tree, tree2)
+            // Bug #184: protect against module classes with no module symbol attached
+            // for which modClass.typeOfThis.typeSymbol == NoSymbol, breaking the
+            // parent checks in typedTemplate.
+            val sym = tree2.symbol
+            if (tree.hasAttachment[DerivedFromObject]) {
+              val module = updateSym(tree.attachments.get[DerivedFromObject].get.module)
+              sym.sourceModule = module
+              module.asInstanceOf[TermSymbol].referenced = sym
+            }
             super.typed(tree2, mode, pt)
 
           case ddef @ DefDef(_, _, vparamss, _, tpt, rhs) =>
