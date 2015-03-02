@@ -1,0 +1,31 @@
+warning: Turning off all minboxing specialization!
+newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is disabled, thus `MbArray`-s will be generic and will box.
+package miniboxing.tests.compile.off
+                                 ^
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.tests.compile.off {
+  class C[T] extends Object {
+    <paramaccessor> private[this] val t: T = _;
+    def <init>(t: T): miniboxing.tests.compile.off.C[T] = {
+      C.super.<init>();
+      ()
+    };
+    def f(): T => T = {
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[T,T] with Serializable {
+        def <init>(): <$anon: T => T> = {
+          $anonfun.super.<init>();
+          ()
+        };
+        final def apply(t: T): T = t
+      };
+      (new <$anon: T => T>(): T => T)
+    };
+    def bar(): T = C.this.f().apply(C.this.t)
+  };
+  object Test extends miniboxing.tests.compile.off.C[Int] {
+    def <init>(): miniboxing.tests.compile.off.Test.type = {
+      Test.super.<init>(3);
+      ()
+    }
+  }
+}

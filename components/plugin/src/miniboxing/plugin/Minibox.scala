@@ -348,6 +348,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_rewire_functionX_values = false
           flag_rewire_functionX_repres = false
           flag_rewire_functionX_application = false
+          flag_rewire_functionX_bridges = false
 
         // The following flags are undocumented, since they control internal miniboxing plugin features, which
         // should not be used directly by the programmers (they are mainly here to allow reproducing test cases)
@@ -366,6 +367,18 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "ykeep-functionx-application" =>
           flag_rewire_functionX_application = false
         case "ygeneric-constructor-code" =>
+          flag_constructor_spec = false
+        case "off" =>
+          global.warning("Turning off all minboxing specialization!")
+          flag_rewire_functionX_values = false
+          flag_rewire_functionX_repres = false
+          flag_rewire_functionX_bridges = false
+          flag_rewire_functionX_application = false
+          flag_strip_miniboxed = true
+          flag_create_local_specs = false
+          flag_strict_warnings = false
+          flag_strict_warnings_outside = false
+          flag_rewire_mbarray = false
           flag_constructor_spec = false
         case _ =>
           error("Miniboxing: Option not understood: " + option)
