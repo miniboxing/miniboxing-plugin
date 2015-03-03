@@ -18,7 +18,7 @@ package miniboxing.tests.correctness.erasure.torture5 {
     };
     def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture5|A_J|T_TypeTag));
     def foo_J(T_TypeTag: Byte, c: Long): Any = {
-      def foo_tail(c: Long, cond: Boolean): Long = if (cond)
+      @scala.annotation.tailrec def foo_tail(c: Long, cond: Boolean): Long = if (cond)
         foo_tail(c, cond.unary_!())
       else
         c;
@@ -31,7 +31,7 @@ package miniboxing.tests.correctness.erasure.torture5 {
       ()
     };
     def foo(c: Tsp): Any = {
-      def foo_tail(c: Tsp, cond: Boolean): Tsp = if (cond)
+      @scala.annotation.tailrec def foo_tail(c: Tsp, cond: Boolean): Tsp = if (cond)
         foo_tail(c, cond.unary_!())
       else
         c;

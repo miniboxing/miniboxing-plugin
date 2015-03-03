@@ -19,7 +19,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_DLL[Asp,B,B] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_DLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>(F_D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_D|A_TypeTag);
               ()
@@ -40,7 +40,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_JLL[Asp,B,B] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_JLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>(F_J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_J|A_TypeTag);
               ()
@@ -60,7 +60,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo[B](b: B): Unit = {
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_LLL[Asp,B,B] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2_LLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()

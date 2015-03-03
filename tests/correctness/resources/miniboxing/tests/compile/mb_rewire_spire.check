@@ -109,7 +109,7 @@ package miniboxing.tests.compile {
     def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
     def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b);
     def gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = {
-      def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_J.this.f().lt_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag(), a.abs_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag()), CplxIsEuclideanRing_J.this.f().one_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag())))
+      @scala.annotation.tailrec def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_J.this.f().lt_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag(), a.abs_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag()), CplxIsEuclideanRing_J.this.f().one_J(CplxIsEuclideanRing_J.this.miniboxing|tests|compile|CplxIsEuclideanRing_J|A_TypeTag())))
         CplxIsEuclideanRing_J.this.one()
       else
         if (b.isZero())
@@ -127,7 +127,7 @@ package miniboxing.tests.compile {
     def mod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a.%(b);
     def quotmod(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = a./%(b);
     def gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = {
-      def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_L.this.f().lt(a.abs(), CplxIsEuclideanRing_L.this.f().one()))
+      @scala.annotation.tailrec def _gcd(a: miniboxing.tests.compile.Cplx[Asp], b: miniboxing.tests.compile.Cplx[Asp]): miniboxing.tests.compile.Cplx[Asp] = if (CplxIsEuclideanRing_L.this.f().lt(a.abs(), CplxIsEuclideanRing_L.this.f().one()))
         CplxIsEuclideanRing_L.this.one()
       else
         if (b.isZero())

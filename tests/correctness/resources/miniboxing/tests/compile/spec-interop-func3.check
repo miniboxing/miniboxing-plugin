@@ -26,7 +26,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo(b: Bsp): Unit = F_DD.this.foo_DD(F_DD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|A_TypeTag, F_DD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|B_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](b, F_DD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_DD|B_TypeTag));
       def foo_DD(A_TypeTag: Byte, B_TypeTag: Byte, b: Double): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -36,7 +36,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -46,7 +46,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -56,7 +56,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -66,7 +66,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -76,7 +76,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -86,7 +86,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -116,7 +116,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_DD(A_TypeTag: Byte, B_TypeTag: Byte, b: Double): Unit = F_DJ.this.foo_DJ(A_TypeTag, B_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
       def foo_DJ(A_TypeTag: Byte, B_TypeTag: Byte, b: Long): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -126,7 +126,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -136,7 +136,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -146,7 +146,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -156,7 +156,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -166,7 +166,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -176,7 +176,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_opt_bridge_double_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -205,7 +205,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_DJ(A_TypeTag: Byte, B_TypeTag: Byte, b: Long): Unit = F_DL.this.foo_DL(A_TypeTag, MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag));
       def foo_DL(A_TypeTag: Byte, b: Bsp): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -215,7 +215,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_double[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -225,7 +225,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -235,7 +235,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_double_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -245,7 +245,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -255,7 +255,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Int, Bsp]((new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -265,7 +265,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -295,7 +295,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_DL(A_TypeTag: Byte, b: Bsp): Unit = F_JD.this.foo_JD(A_TypeTag, F_JD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|B_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](b, F_JD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_JD|B_TypeTag));
       def foo_JD(A_TypeTag: Byte, B_TypeTag: Byte, b: Double): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -305,7 +305,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -315,7 +315,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -325,7 +325,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -335,7 +335,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -345,7 +345,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -355,7 +355,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_double_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -385,7 +385,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_JD(A_TypeTag: Byte, B_TypeTag: Byte, b: Double): Unit = F_JJ.this.foo_JJ(A_TypeTag, B_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
       def foo_JJ(A_TypeTag: Byte, B_TypeTag: Byte, b: Long): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -395,7 +395,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -405,7 +405,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Bsp](A_TypeTag, B_TypeTag, (new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -415,7 +415,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -425,7 +425,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -435,7 +435,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -445,7 +445,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_opt_bridge_long_long_long[Asp, Bsp, Int](A_TypeTag, B_TypeTag, 5, (new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -474,7 +474,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_JJ(A_TypeTag: Byte, B_TypeTag: Byte, b: Long): Unit = F_JL.this.foo_JL(A_TypeTag, MiniboxConversionsLong.this.minibox2box[Bsp](b, B_TypeTag));
       def foo_JL(A_TypeTag: Byte, b: Bsp): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -484,7 +484,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Asp](A_TypeTag, A_TypeTag, (new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -494,7 +494,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -504,7 +504,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Asp, Int](A_TypeTag, 5, (new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -514,7 +514,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -524,7 +524,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Int, Bsp]((new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -534,7 +534,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -563,7 +563,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_JL(A_TypeTag: Byte, b: Bsp): Unit = F_LD.this.foo_LD(F_LD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|B_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Bsp](b, F_LD.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F_LD|B_TypeTag));
       def foo_LD(B_TypeTag: Byte, b: Double): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -573,7 +573,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Asp]((new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -583,7 +583,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -593,7 +593,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Int]((new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -603,7 +603,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -613,7 +613,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_double[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -623,7 +623,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -652,7 +652,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       def foo_LD(B_TypeTag: Byte, b: Double): Unit = F_LJ.this.foo_LJ(B_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
       def foo_LJ(B_TypeTag: Byte, b: Long): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -662,7 +662,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Asp]((new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -672,7 +672,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -682,7 +682,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Int]((new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -692,7 +692,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -702,7 +702,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Bsp](5, B_TypeTag, (new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -712,7 +712,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -731,7 +731,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
       };
       def foo(b: Bsp): Unit = {
         val f0: miniboxing.runtime.MiniboxedFunction1[Asp,Asp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Asp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -741,7 +741,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Asp]((new anonymous class $anon(): Asp => Asp))
         };
         val f1: miniboxing.runtime.MiniboxedFunction1[Asp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -751,7 +751,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Bsp]((new anonymous class $anon(): Asp => Bsp))
         };
         val f2: miniboxing.runtime.MiniboxedFunction1[Asp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Asp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -761,7 +761,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Asp, Int]((new anonymous class $anon(): Asp => Int))
         };
         val f3: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -771,7 +771,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, (new anonymous class $anon(): Int => Int))
         };
         val f4: miniboxing.runtime.MiniboxedFunction1[Int,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -781,7 +781,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function1_bridge[Int, Bsp]((new anonymous class $anon(): Int => Bsp))
         };
         val f5: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Int] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Int] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()
@@ -791,7 +791,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
           MiniboxedFunctionBridge.this.function2_bridge[Asp, Bsp, Int]((new anonymous class $anon(): (Asp, Bsp) => Int))
         };
         val f6: miniboxing.runtime.MiniboxedFunction2[Asp,Bsp,Bsp] = {
-          final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction2[Asp,Bsp,Bsp] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()

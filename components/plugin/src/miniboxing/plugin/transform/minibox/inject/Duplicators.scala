@@ -230,6 +230,15 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
         invalidSyms(tree.symbol) = tree
 
         tree match {
+          case _: DefTree =>
+            if (!tree.symbol.annotations.isEmpty) {
+              val newAtt = tree.attachments.update[AnnotationAttachment](AnnotationAttachment(tree.symbol.annotations))
+               tree.setAttachments(newAtt)
+            }
+          case _ => // do nothing
+        }
+
+        tree match {
           case ldef @ LabelDef(name, params, rhs) =>
             debuglog("LabelDef " + name + " sym.info: " + ldef.symbol.info)
             invalidSyms(ldef.symbol) = ldef
@@ -350,10 +359,6 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
             List(tree)
 
           case tdef @ TypeDef(_, _, tparams, rhs) =>
-            if (!tdef.symbol.annotations.isEmpty) {
-              val newAtt = tdef.attachments.update[AnnotationAttachment](AnnotationAttachment(tdef.symbol.annotations))
-               tdef.setAttachments(newAtt)
-            }
             tdef.symbol = NoSymbol
             // TODO: Fix this side-effecting call:
             invalidateAll(tparams)
@@ -396,16 +401,24 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
         List(tree)
     }
 
-    override def typedTypeDef(td: TypeDef): TypeDef = {
-      val res = super.typedTypeDef(td)
-      td.attachments.get[AnnotationAttachment] match {
-        case Some(AnnotationAttachment(annots)) if res.hasSymbolField =>
+    def addAnnotations[T <: Tree, U <: Tree](orig: T, f: T => U): U = {
+      val tree: U = f(orig)
+      orig.attachments.get[AnnotationAttachment] match {
+        case Some(AnnotationAttachment(annots)) if tree.hasSymbolField =>
           for (annot <- annots)
-            res.symbol.deSkolemize.addAnnotation(annot)
+            tree.symbol.deSkolemize.addAnnotation(annot)
         case _ =>
       }
-      res
+      tree
     }
+
+    // Add annotations back to all DefTrees
+    override def typedTypeDef(td: TypeDef)     = addAnnotations(td, super.typedTypeDef)
+    override def typedDefDef(dd: DefDef)       = addAnnotations(dd, super.typedDefDef)
+    override def typedValDef(vd: ValDef)       = addAnnotations(vd, super.typedValDef)
+    override def typedClassDef(cd: ClassDef)   = addAnnotations(cd, super.typedClassDef)
+    override def typedLabelDef(md: LabelDef)   = addAnnotations(md, super.typedLabelDef)
+    override def typedModuleDef(md: ModuleDef) = addAnnotations(md, super.typedModuleDef)
 
     private def invalidateAll(stats: List[Tree], owner: Symbol = NoSymbol): List[Tree] = {
       stats.flatMap(invalidate(_, owner))
@@ -476,6 +489,7 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
             tree.symbol = NoSymbol
           }
         }
+
 
         val res = tree match {
           // The point is: any type application should
