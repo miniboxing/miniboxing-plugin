@@ -145,7 +145,13 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
     afterMiniboxInject(stemClassTpe.parents.map(_.typeSymbol.info))
     val specs =
       if (heuristics.isSpecializableClass(stemClass))
-        variants.allSpecializations(stemClass.info.typeParams)
+        if (stemClass.isDerivedValueClass) {
+          global.reporter.error(stemClass.pos, "Value classes cannot be miniboxed. This is a fundamental limitation " +
+                                               "of opportunistic specialization that can't be worked around:")
+          stemClass.typeParams.foreach(_.removeAnnotation(MinispecClass))
+          Nil
+        } else
+          variants.allSpecializations(stemClass.info.typeParams)
       else
         Nil
 

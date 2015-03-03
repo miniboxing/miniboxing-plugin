@@ -1,0 +1,6 @@
+newSource1.scala:3: error: Value classes cannot be miniboxed. This is a fundamental limitation of opportunistic specialization that can't be worked around:
+  implicit class RichX[@miniboxed X](val x: X) extends AnyVal {
+                 ^
+newSource1.scala:4: warning: The following code could benefit from miniboxing specialization if the type parameter X of class RichX would be marked as "@miniboxed X" (it would be used to instantiate miniboxed type parameter X of method f$extension)
+    def f = 0
+            ^
