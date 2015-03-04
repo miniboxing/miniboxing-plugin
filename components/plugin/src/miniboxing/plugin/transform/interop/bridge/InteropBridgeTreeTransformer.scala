@@ -17,6 +17,7 @@ package bridge
 
 import scala.tools.nsc.transform.TypingTransformers
 import infrastructure.TreeRewriters
+import scala.reflect.internal.Flags._
 
 trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompilingLayer {
   self: InteropBridgeComponent =>
@@ -43,6 +44,8 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
     protected def rewrite(tree: Tree): Result = {
       tree match {
         case defdef: DefDef => // if hasStorage(defdef) =>
+
+          def hasMbFunction(sym: Symbol) = sym.paramss.flatten.exists(_.tpe.isMbFunction) || sym.tpe.finalResultType.isMbFunction
 
           val sameResultEncoding = (s: Symbol) => s.tpe.finalResultType.isMbFunction == defdef.symbol.info.finalResultType.isMbFunction
 
@@ -79,8 +82,16 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
 
               // transform RHS of the defdef + typecheck
               val bridgeDef2 = localTyper.typed(bridgeDef)
+
+              if (hasMbFunction(bridge))
+                bridge.setFlag(ARTIFACT)
+
               bridgeDef2
             }
+
+          if (hasMbFunction(defdef.symbol))
+            defdef.symbol.setFlag(ARTIFACT)
+
           val defdef2 = localTyper.typed(deriveDefDef(defdef){rhs => super.atOwner(defdef.symbol)(super.transform(rhs))})
 
           Multi(defdef2 :: bridges)
