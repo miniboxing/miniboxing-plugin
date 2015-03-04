@@ -38,13 +38,16 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
     import global._
     import definitions.BridgeClass
 
-    // flag to set in order to prevent erasure from generating a bridge
-    //  - for 2.10 => BRIDGE
-    //  - for 2.11 => ARTIFACT
-    val NO_BRIDGE_FLAG = if (scalaBinaryVersion == "2.10") BRIDGE else ARTIFACT
-
     def hasMbFunction(defdef: DefDef) =
       defdef.vparamss.flatten.exists(_.tpt.tpe.isMbFunction) || defdef.tpt.isMbFunction
+
+    def setArtifactFlag(sym: Symbol) = {
+      // This won't work for 2.10, as the logic for generating bridges does not exclude
+      // the ARTIFACT flag => duplicate methods are still generated, despite the fact
+      // that they shouldn't :(
+      // Unfortunately there's no good way of fixing this on 2.10.
+      sym.setFlag(ARTIFACT)
+    }
 
     protected def rewrite(tree: Tree): Result = {
       tree match {
@@ -89,13 +92,13 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
               val bridgeDef2 = localTyper.typed(bridgeDef)
 
               if (hasMbFunction(bridge))
-                bridge.setFlag(NO_BRIDGE_FLAG)
+                setArtifactFlag(bridge)
 
               bridgeDef2
             }
 
           if (hasMbFunction(defdef.symbol))
-            defdef.symbol.setFlag(NO_BRIDGE_FLAG)
+            setArtifactFlag(defdef.symbol)
 
           val defdef2 = localTyper.typed(deriveDefDef(defdef){rhs => super.atOwner(defdef.symbol)(super.transform(rhs))})
 
