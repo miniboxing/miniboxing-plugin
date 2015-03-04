@@ -31,6 +31,9 @@ class TestSuite extends ScalacVersion {
     "\\$anon .*?>" -> "\\$anon",
     "@SerialVersionUID\\(value = " -> "@SerialVersionUID(",
     "anonymous class \\$anonfun" -> "anonymous class \\$anon",
+    "def .*\\$\\$outer\\(\\)" -> "def \\$outer()",
+    "<bridge>" -> "<bridge/artifact>",
+    "<artifact>" -> "<bridge/artifact>",
     // for mb_array_03.scala:
     "\\(ClassTag.apply\\[String\\]\\(classOf\\[java.lang.String\\]\\): scala\\.reflect\\.ClassTag\\[String\\]\\)" -> "ClassTag.apply[String](classOf[java.lang.String])",
     // for mb_array_04.scala:

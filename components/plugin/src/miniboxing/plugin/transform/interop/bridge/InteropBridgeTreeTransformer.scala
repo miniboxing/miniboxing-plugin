@@ -33,10 +33,15 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
     }
   }
 
-  class BridgeTransformer(unit: CompilationUnit) extends TreeRewriter(unit) {
+  class BridgeTransformer(unit: CompilationUnit) extends TreeRewriter(unit) with ScalacVersion {
 
     import global._
     import definitions.BridgeClass
+
+    // flag to set in order to prevent erasure from generating a bridge
+    //  - for 2.10 => BRIDGE
+    //  - for 2.11 => ARTIFACT
+    val NO_BRIDGE_FLAG = if (scalaBinaryVersion == "2.10") BRIDGE else ARTIFACT
 
     def hasMbFunction(defdef: DefDef) =
       defdef.vparamss.flatten.exists(_.tpt.tpe.isMbFunction) || defdef.tpt.isMbFunction
@@ -84,13 +89,13 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
               val bridgeDef2 = localTyper.typed(bridgeDef)
 
               if (hasMbFunction(bridge))
-                bridge.setFlag(ARTIFACT)
+                bridge.setFlag(NO_BRIDGE_FLAG)
 
               bridgeDef2
             }
 
           if (hasMbFunction(defdef.symbol))
-            defdef.symbol.setFlag(ARTIFACT)
+            defdef.symbol.setFlag(NO_BRIDGE_FLAG)
 
           val defdef2 = localTyper.typed(deriveDefDef(defdef){rhs => super.atOwner(defdef.symbol)(super.transform(rhs))})
 
