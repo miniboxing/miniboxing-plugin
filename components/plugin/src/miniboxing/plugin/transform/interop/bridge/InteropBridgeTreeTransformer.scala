@@ -41,13 +41,13 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
     def hasMbFunction(defdef: DefDef) =
       defdef.vparamss.flatten.exists(_.tpt.tpe.isMbFunction) || defdef.tpt.isMbFunction
 
-    def setArtifactFlag(sym: Symbol) = {
-      // This won't work for 2.10, as the logic for generating bridges does not exclude
-      // the ARTIFACT flag => duplicate methods are still generated, despite the fact
-      // that they shouldn't :(
-      // Unfortunately there's no good way of fixing this on 2.10.
-      sym.setFlag(ARTIFACT)
-    }
+    def setNoErasureBridge(sym: Symbol) =
+      // Erasure generates the last iteration of bridges, the ones that take Object.
+      // Yet, in some cases, there is no need to generate these bridges, since they
+      // interfere with the JVM bytecode invariants. Instead of preventing erasure
+      // from creating them in the first place (which can't be done in a plugin)
+      // we remove them later, in the `mb-tweakerasure` phase
+      sym.addAnnotation(AnnotationInfo(nobridgeTpe, Nil, Nil))
 
     protected def rewrite(tree: Tree): Result = {
       tree match {
@@ -92,13 +92,13 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
               val bridgeDef2 = localTyper.typed(bridgeDef)
 
               if (hasMbFunction(bridge))
-                setArtifactFlag(bridge)
+                setNoErasureBridge(bridge)
 
               bridgeDef2
             }
 
           if (hasMbFunction(defdef.symbol))
-            setArtifactFlag(defdef.symbol)
+            setNoErasureBridge(defdef.symbol)
 
           val defdef2 = localTyper.typed(deriveDefDef(defdef){rhs => super.atOwner(defdef.symbol)(super.transform(rhs))})
 

@@ -155,7 +155,6 @@ trait InteropDefinitions {
 
   lazy val directMethodSymbols = directMethodUpdate.keySet.toList
 
-  // Transformed anonymous functions
-  // TODO: Create InteropMetadata for this map
-  lazy val transformedAnonFunctions = perRunCaches.newSet[Symbol]()
+  lazy val nobridgeClass = global.rootMirror.getRequiredClass("miniboxing.runtime.nobridge")
+  lazy val nobridgeTpe = nobridgeClass.tpe
 }

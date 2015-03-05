@@ -26,6 +26,7 @@ import minibox.commit._
 import hijack._
 import prepare._
 import infrastructure._
+import tweakerasure._
 import scala.tools.nsc.settings.ScalaVersion
 
 /** Specialization hijacking component `@specialized T` -> `@miniboxed T` */
@@ -44,6 +45,7 @@ trait HijackComponent extends
 trait InteropInjectComponent extends
     PluginComponent
     with InteropDefinitions
+    with InteropMetadata
     with InteropInjectInfoTransformer
     with InteropInjectTreeTransformer
     with ScalacCrossCompilingLayer {
@@ -233,6 +235,21 @@ trait PostTyperComponent extends
   val minibox: MiniboxInjectComponent { val global: PostTyperComponent.this.global.type }
 }
 
+/** Tree preparer before retyping the tree */
+trait TweakErasureComponent extends
+    PluginComponent
+    with TweakErasureTreeTransformer
+    with ScalacCrossCompilingLayer {
+
+  val interop: InteropInjectComponent { val global: TweakErasureComponent.this.global.type }
+
+  def tweakErasurePhase: Phase
+
+  def afterTweakErasure[T](op: => T): T = global.afterPhase(tweakErasurePhase)(op)
+  def beforeTweakErasure[T](op: => T): T = global.beforePhase(tweakErasurePhase)(op)
+}
+
+
 /** Main miniboxing class */
 class Minibox(val global: Global) extends Plugin with ScalacVersion {
   import global._
@@ -268,7 +285,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
                           MiniboxInjectPhase,
                           MiniboxBridgePhase,
                           MiniboxCoercePhase,
-                          MiniboxCommitPhase)
+                          MiniboxCommitPhase,
+                          TweakErasurePhase)
   }
 
   // LDL Coercions
@@ -613,6 +631,22 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
         minibox.postMiniboxingFlags()
       }
+    }
+  }
+
+  private object TweakErasurePhase extends {
+    val interop: InteropInjectPhase.type = InteropInjectPhase
+  } with TweakErasureComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = List()
+    override val runsRightAfter = Some("posterasure")
+    val phaseName = "mb-tweak-erasure"
+
+    var tweakErasurePhase: Phase = _
+
+    def newPhase(_prev: Phase) = {
+      tweakErasurePhase = new TweakErasurePhase(_prev)
+      tweakErasurePhase
     }
   }
 }
