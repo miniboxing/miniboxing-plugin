@@ -1,0 +1,28 @@
+[[syntax trees at end of          mb-tweak-erasure]] // newSource1.scala
+package miniboxing.tests.compile.bug192 {
+  abstract trait Monoid extends Object {
+    def id(): Object
+  };
+  class Test extends Object with miniboxing.tests.compile.bug192.Monoid {
+    def <init>(): miniboxing.tests.compile.bug192.Test = {
+      Test.super.<init>();
+      ()
+    };
+    def id(): miniboxing.runtime.MiniboxedFunction1 = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ with Serializable {
+        def <init>($outer: miniboxing.tests.compile.bug192.Test): anonymous class $anon = {
+          $anonfun.super.<init>(5, 5);
+          ()
+        };
+        final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+        override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = t1;
+        <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug192.Test = _;
+        <synthetic> <stable> def $outer(): miniboxing.tests.compile.bug192.Test = $anonfun.this.$outer;
+        final <bridge> def apply(t1: Object): Object = scala.Int.box($anonfun.this.apply(unbox(t1)))
+      };
+      new anonymous class $anon(Test.this)
+    };
+    @scala.annotation.bridge def id(): Function1 = Test.this.id().extractFunctionX();
+    <bridge> def id(): Object = Test.this.id()
+  }
+}
