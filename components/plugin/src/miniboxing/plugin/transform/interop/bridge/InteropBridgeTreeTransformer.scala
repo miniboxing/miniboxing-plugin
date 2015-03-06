@@ -55,21 +55,33 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
 
           def hasMbFunction(sym: Symbol) = sym.paramss.flatten.exists(_.tpe.isMbFunction) || sym.tpe.finalResultType.isMbFunction
 
-          val sameResultEncoding = (s: Symbol) => s.tpe.finalResultType.isMbFunction == defdef.symbol.info.finalResultType.isMbFunction
+          def sameResultEncoding(as: Symbol) = (s: Symbol) => s.tpe.finalResultType.isMbFunction == as.info.finalResultType.isMbFunction
 
           val preOverrides = beforeInteropBridgeNext(defdef.symbol.allOverriddenSymbols).flatMap(_.alternatives)
-          val postOverrides = afterInteropBridgeNext(defdef.symbol.allOverriddenSymbols).flatMap(_.alternatives).filter(sameResultEncoding)
+          val postOverrides = afterInteropBridgeNext(defdef.symbol.allOverriddenSymbols).flatMap(_.alternatives).filter(sameResultEncoding(defdef.symbol))
 
           val bridgeSyms = preOverrides.filterNot(postOverrides.contains)
 
           def filterBridges(bridges: List[Symbol]): List[Symbol] = bridges match {
             case Nil => Nil
             case sym :: tail =>
-              val overs = afterInteropBridgeNext(sym.allOverriddenSymbols).flatMap(_.alternatives).filter(sameResultEncoding)
+              val overs = afterInteropBridgeNext(sym.allOverriddenSymbols).flatMap(_.alternatives).filter(sameResultEncoding(sym))
               val others = tail filterNot (overs.contains)
+//              println()
+//              println("sym: " + sym)
+//              println("tail: " + tail)
+//              println("overs: " + overs)
+//              println("others: " + others)
               sym :: filterBridges(others)
           }
+
+//          println()
+//          println("filtering bridges for: " + defdef.symbol + " in " + defdef.symbol.owner)
+//          println("bridgeSyms: " + bridgeSyms)
+
           val bridgeSymsFiltered = filterBridges(bridgeSyms)
+
+//          println("filtered bridges for: " + defdef.symbol + " in " + defdef.symbol.owner + "::: " + bridgeSymsFiltered)
 
           val bridges: List[Tree] =
             for (sym <- bridgeSymsFiltered) yield {
