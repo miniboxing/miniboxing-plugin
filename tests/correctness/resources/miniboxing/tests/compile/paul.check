@@ -1,0 +1,27 @@
+Specializing class Foo...
+
+  // interface:
+  abstract trait Foo[A] extends Object {
+  }
+
+  // specialized class:
+  final class Foo_J[Asp] extends Foo[Asp] {
+    private def <init>(val Foo_J|A_TypeTag: Byte,x: Asp @storage[Long]): Foo_J[Asp] // is a specialized implementation of constructor Foo
+    private[this] val Foo_J|A_TypeTag: Byte                                // is a type tag
+    private[this] val x: Asp @storage[Long]                                // is a specialized implementation of value x
+  }
+
+  // specialized class:
+  final class Foo_D[Asp] extends Foo[Asp] {
+    private def <init>(val Foo_D|A_TypeTag: Byte,x: Asp @storage[Double]): Foo_D[Asp] // is a specialized implementation of constructor Foo
+    private[this] val Foo_D|A_TypeTag: Byte                                // is a type tag
+    private[this] val x: Asp @storage[Double]                              // is a specialized implementation of value x
+  }
+
+  // specialized class:
+  final class Foo_L[Asp] extends Foo[Asp] {
+    private def <init>(x: Asp): Foo_L[Asp]                                 // is a specialized implementation of constructor Foo
+    private[this] val x: Asp                                               // is a specialized implementation of value x
+  }
+
+
