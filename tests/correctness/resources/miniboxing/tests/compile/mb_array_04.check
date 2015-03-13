@@ -1,10 +1,10 @@
-newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   val mba4 = MbArray.clone(new Array[Any](10))
                      ^
-newSource1.scala:14: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:14: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   val mba5 = MbArray.clone(new Array[F forSome { type F }](10))
                      ^
-newSource1.scala:15: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:15: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   def bar[V: ClassTag] = MbArray.clone(new Array[V](10))
                                  ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
@@ -27,9 +27,8 @@ package miniboxing.tests.compile.mbarray02 {
     def foo_n_J[T](T_TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_J[T](MiniboxArray.this.mbarray_new[T](10, T_TypeTag).asInstanceOf[Array[T]](), T_TypeTag);
     private[this] val mba4: MbArray[Any] = scala.MbArray.clone[Any](new Array[Any](10));
     <stable> <accessor> def mba4(): MbArray[Any] = Test.this.mba4;
-    private[this] val mba5: MbArray[_] = scala.MbArray.clone[F]((ClassTag.apply[F](classOf[java.lang.Object]): scala.reflect.ClassTag[F]).newArray(10));
+    private[this] val mba5: MbArray[_] = scala.MbArray.clone[F](ClassTag.apply[F](classOf[java.lang.Object]).newArray(10));
     <stable> <accessor> def mba5(): MbArray[_] = Test.this.mba5;
     def bar[V](implicit evidence$2: scala.reflect.ClassTag[V]): MbArray[V] = scala.MbArray.clone[V](evidence$2.newArray(10))
   }
 }
-

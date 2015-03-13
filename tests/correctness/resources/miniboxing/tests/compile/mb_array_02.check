@@ -1,10 +1,10 @@
-newSource1.scala:11: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:11: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   val mba4 = MbArray.empty[Any](10)
                      ^
-newSource1.scala:12: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:12: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   val mba5 = MbArray.empty[F forSome { type F }](10)
                      ^
-newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:
+newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   def bar[V] = MbArray.empty[V](10)
                        ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
