@@ -1,4 +1,4 @@
-warning: The two-way transformation (with long and double as storage types) has become default in version 0.4 version of the miniboxing plugin, so there is no need to specify it in the command line
+Miniboxing plugin warning: The two-way transformation (with long and double as storage types) has become default in version 0.4 version of the miniboxing plugin, so there is no need to specify it in the command line
 [Now checking: minibox-inject]
 [check: minibox-inject] symbol out of scope
 [check: minibox-inject] symbol out of scope

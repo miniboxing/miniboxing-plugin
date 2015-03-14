@@ -1,7 +1,5 @@
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
-newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-package miniboxing.tests.compile.library7.var2
-                                          ^
+Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 [Now checking: minibox-commit]

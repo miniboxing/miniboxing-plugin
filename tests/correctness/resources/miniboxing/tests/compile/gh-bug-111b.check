@@ -1,6 +1,4 @@
 newSource1.scala:7: warning: unreachable code
       case _ => default.apply(x1)
                              ^
-newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-package miniboxing.tests.compile.bug111
-                                 ^
+Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.

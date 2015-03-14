@@ -1,7 +1,5 @@
 newSource1.scala:6: warning: The side-effecting statement(s) in the miniboxed class C's constructor will not be miniboxed. Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements.
   println(new A[T].getClass.getSimpleName)
          ^
-newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-package miniboxing.tests.compile.bug64
-                                 ^
+Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 A_L

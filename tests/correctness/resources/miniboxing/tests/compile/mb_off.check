@@ -1,7 +1,5 @@
-warning: Turning off all minboxing specialization!
-newSource1.scala:1: warning: Heads-up: Optimizing `MbArray` is disabled, thus `MbArray`-s will be generic and will box.
-package miniboxing.tests.compile.off
-                                 ^
+Miniboxing plugin warning: Turning off all minboxing specialization!
+Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will be generic and will box.
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.off {
   class C[T] extends Object {
@@ -11,14 +9,14 @@ package miniboxing.tests.compile.off {
       ()
     };
     def f(): T => T = {
-      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[T,T] with Serializable {
-        def <init>(): <$anon: T => T> = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[T,T] with Serializable {
+        def <init>(): anonymous class $anon = {
           $anonfun.super.<init>();
           ()
         };
         final def apply(t: T): T = t
       };
-      (new <$anon: T => T>(): T => T)
+      (new anonymous class $anon(): T => T)
     };
     def bar(): T = C.this.f().apply(C.this.t)
   };

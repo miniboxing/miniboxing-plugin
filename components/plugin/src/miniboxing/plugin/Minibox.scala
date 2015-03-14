@@ -335,10 +335,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "no-logo" =>
           flag_no_logo = true
         case "warn" =>
-          global.warning("Showing performance warnings became the default behavior of the miniboxing plugin. To hide " +
-                         "warnings, please use the -P:minibox:warn-off scala compiler flag. On the other hand, if you " +
-                         "want cross-library warnings, please use the -P:minibox:warn-all flag. Read more about the " +
-                         "miniboxing warnings at http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
+          global.reporter.echo("Miniboxing plugin warning: Showing performance warnings became the default behavior " +
+                               "of the miniboxing plugin. To hide warnings, please use the -P:minibox:warn-off " +
+                               "Scala compiler flag. On the other hand, if you want cross-library warnings, " +
+                               "please use the -P:minibox:warn-all flag. Read more about the miniboxing warnings at " +
+                               "http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
         case "warn-off" =>
           flag_strict_warnings = false
         case "warn-all" =>
@@ -353,9 +354,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "yone-way" =>                       // Undocumented flag, only used for running the test suite,
           flag_two_way = false                   // where the tests required the one-way translation
         case "two-way" =>
-          global.warning("The two-way transformation (with long and double as storage types) has become default in " +
-                         "version 0.4 version of the miniboxing plugin, so there is no need to specify it in the " +
-                         "command line")
+          global.reporter.echo("Miniboxing plugin warning: The two-way transformation (with long and double as " +
+                               "storage types) has become default in version 0.4 version of the miniboxing plugin, " +
+                               "so there is no need to specify it in the command line")
         case "ygen-brdgs" =>                     // Undocumented flag, only used for running the test suite
           flag_rewire_functionX_bridges = false  // while avoiding func. to miniboxed func. bridge optimization
         case "ystrip-miniboxed" =>
@@ -378,16 +379,17 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "ykeep-mbarray-generic" =>
           flag_rewire_mbarray = false
         case "yrewire-functionx-application" =>
-          global.warning("The function application specialization is now the default miniboxing plugin behavior, so " +
-                         s"there is no need to use the -P:minibox:$option flag anymore. To leave function " +
-                         "applications generic, please use the -P:minibox:Ykeep-functionX-application flag.")
+          global.reporter.echo("Miniboxing plugin warning: The function application specialization is now the default " +
+                               s"miniboxing plugin behavior, so there is no need to use the -P:minibox:$option flag " +
+                               "anymore. To leave function applications generic, please use the " +
+                               "-P:minibox:Ykeep-functionX-application flag.")
           flag_rewire_functionX_application = true
         case "ykeep-functionx-application" =>
           flag_rewire_functionX_application = false
         case "ygeneric-constructor-code" =>
           flag_constructor_spec = false
         case "off" =>
-          global.warning("Turning off all minboxing specialization!")
+          global.reporter.echo("Miniboxing plugin warning: Turning off all minboxing specialization!")
           flag_rewire_functionX_values = false
           flag_rewire_functionX_repres = false
           flag_rewire_functionX_bridges = false
