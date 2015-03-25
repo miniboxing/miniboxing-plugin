@@ -341,12 +341,12 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
                       suboptimalCodeWarning(tree.pos,
                           "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of " +
                           symbol.owner + ", which allows outer code to call and/or override it. If you don't use it " +
-                          "outside this " + symbol.owner.kindString + ", you can make it rivate and miniboxing will " +
+                          "outside this " + symbol.owner.kindString + ", you can make it private and miniboxing will " +
                           "be allowed to specialize it:", symbol hasAnnotation GenericClass)
                     case (_, _, true) =>
                       suboptimalCodeWarning(tree.pos,
                           "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of a type, " +
-                          "which allows outer code to call it. If you don't usesymbol hasAnnotation GenericClass it outside, you can allow miniboxing " +
+                          "which allows outer code to call it. If you don't use it outside, you can allow miniboxing " +
                           "to transform the signature by making the member protected or private:", symbol hasAnnotation GenericClass)
                     case (_, _, _) =>
                       // here just to satisfy exhaustivity, since the if condition protects us from getting here
