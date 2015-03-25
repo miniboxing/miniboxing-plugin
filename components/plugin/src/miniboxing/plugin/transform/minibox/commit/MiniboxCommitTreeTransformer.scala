@@ -33,13 +33,10 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
 
       if (flag_rewire_mbarray && !flag_two_way) {
         mbArray_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow " +
-                             "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
-                             "compiler option). `MbArray`-s will be generic and will box.")
+        global.reporter.warning(unit.body.pos, "Heads-up: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.")
       } else if (!flag_rewire_mbarray) {
         mbArray_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
-                             "be generic and will box.")
+        global.reporter.warning(unit.body.pos, "Heads-up: Optimizing `MbArray` is disabled, thus `MbArray`-s will be generic and will box.")
       }
 
       val specTrans = new MiniboxTreeTransformer(unit, mbArray_transform)
@@ -241,7 +238,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 var pos = tree.pos
                 if (pos == NoPosition) pos = fun.pos
                 if (pos == NoPosition) pos = arg.pos
-                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:")
+                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type paramter or a subtype of AnyRef. This means that primitive types could end up boxed:", typeSymbol.isGenericAnnotated)
                 super.transform(tree)
             }
 
