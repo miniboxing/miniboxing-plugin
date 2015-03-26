@@ -241,7 +241,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 var pos = tree.pos
                 if (pos == NoPosition) pos = fun.pos
                 if (pos == NoPosition) pos = arg.pos
-                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:")
+                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:", typeSymbol.isGenericAnnotated)
                 super.transform(tree)
             }
 
