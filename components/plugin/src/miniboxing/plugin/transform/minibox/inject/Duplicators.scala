@@ -29,7 +29,7 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
   import definitions.{ AnyRefClass, AnyValClass, AnyClass, AnyTpe, AnyRefTpe, AnyValTpe }
 
   def postTransform(onwer: Symbol, tree: Tree): Tree
-  def suboptimalCodeWarning(pos: Position, msg: String): Unit
+  def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false): Unit
   def flag_create_local_specs: Boolean
 
   case class AnnotationAttachment(annots: List[AnnotationInfo])
@@ -327,6 +327,7 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
               else {
                 keepSignature
                 if (shouldWarn) {
+                  lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
                   (doesntOverrideOthers, cantBeOverridden, isStructuralRefinement) match {
                     case (false, _, _) =>
 //                      This error will appear later, when the class is extending something else:
@@ -335,18 +336,18 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
 //                          "class/trait members: \n" +
 //                          symbol.allOverriddenSymbols.map(sym => " * " + sym.defString + " from " + sym.owner).mkString("\n") +
 //                          "\nTo benefit from a miniboxed version of the method, mark the type parameters of the above " +
-//                          "classes/traits with the @miniboxed annotation.")
+//                          "classes/traits with the @miniboxed annotation.", symbol hasAnnotation GenericClass)
                     case (_, false, _) =>
                       suboptimalCodeWarning(tree.pos,
                           "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of " +
                           symbol.owner + ", which allows outer code to call and/or override it. If you don't use it " +
                           "outside this " + symbol.owner.kindString + ", you can make it private and miniboxing will " +
-                          "be allowed to specialize it:")
+                          "be allowed to specialize it:", symbol hasAnnotation GenericClass)
                     case (_, _, true) =>
                       suboptimalCodeWarning(tree.pos,
                           "The " + symbol + " cannot have its signature minibox-transformed as it becomes part of a type, " +
                           "which allows outer code to call it. If you don't use it outside, you can allow miniboxing " +
-                          "to transform the signature by making the member protected or private:")
+                          "to transform the signature by making the member protected or private:", symbol hasAnnotation GenericClass)
                     case (_, _, _) =>
                       // here just to satisfy exhaustivity, since the if condition protects us from getting here
                   }
@@ -681,4 +682,3 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
 
   }
 }
-

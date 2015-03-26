@@ -45,6 +45,9 @@ trait MiniboxMetadataAddons {
       beforeMiniboxInject(sym.info) // make sure the annotation hijacker updated it
       sym hasAnnotation MinispecClass
     }
+    def isGenericAnnotated: Boolean = {
+      sym hasAnnotation GenericClass
+    }
     def isField = sym.isValue && !sym.isMethod
 
     private def tweakedKind = if (sym.isTrait) if (flagdata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString

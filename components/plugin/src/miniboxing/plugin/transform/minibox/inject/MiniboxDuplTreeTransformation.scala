@@ -85,7 +85,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         //val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
         tree
       }
-      def suboptimalCodeWarning(pos: Position, msg: String) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg)
+      def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg, isSymbolGenericAnnotated)
 
       // utility method:
       def retyped(context0: MiniboxInjectTreeTransformation.this.global.analyzer.Context, tree0: Tree) = {
@@ -341,7 +341,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                                                   "add the type parameters of " + cls.tweakedToString + ", marked with " +
                                                   "\"@miniboxed\" to the definition of " + cd.symbol.tweakedToString +
                                                   " and instantiate it explicitly passing the type parameters from " +
-                                                  cls.tweakedToString + ":")
+                                                  cls.tweakedToString + ":", cd.symbol.isGenericAnnotated)
                     removedFieldFinder.find(currentOwner, cd)
                     List(cd)
                   case dt: DefTree =>
