@@ -1,0 +1,29 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package miniboxing.example {
+  object Test extends Object {
+    def <init>(): miniboxing.example.Test.type = {
+      Test.super.<init>();
+      ()
+    };
+    final private[this] val len: Int(20000000) = 20000000;
+    final <stable> <accessor> def len(): Int(20000000) = 20000000;
+    def sumB(ary: MbArray[Int]): Int = {
+      var i: Int = 0;
+      while$1(){
+        if (i.<(20000000))
+          {
+            {
+              MbArrayOpts.this.mbArray_update_J[Int](ary, i, MiniboxConversions.this.int2minibox(1), 5);
+              MbArrayOpts.this.mbArray_update_J[Int](ary, 0, MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(MbArrayOpts.this.mbArray_apply_J[Int](ary, 0, 5)).+(MiniboxConversions.this.minibox2int(MbArrayOpts.this.mbArray_apply_J[Int](ary, i, 5)))), 5);
+              i = i.+(1)
+            };
+            while$1()
+          }
+        else
+          ()
+      };
+      MiniboxConversions.this.minibox2int(MbArrayOpts.this.mbArray_apply_J[Int](ary, 0, 5))
+    }
+  }
+}
+

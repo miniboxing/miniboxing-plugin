@@ -212,12 +212,32 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(MbArrayOpts_apply(repr), List(targ), transform(array) :: args.map(transform) ::: List(tag1))
             localTyper.typed(tree1)
 
+          // MbArray transformations: MbArray.apply if primitive type
+          case tree@Apply(fun @ Select(array, _), args) if fun.symbol == MbArray_apply && mbArray_transform && ScalaValueClasses.contains(tree.tpe.dealiasWiden.typeSymbol) =>
+            val tpeSym = tree.tpe.dealiasWiden.typeSymbol
+            val tags = minibox.typeTagTrees(currentOwner)
+            val tag1 = tags(tpeSym)
+            val repr: Symbol = PartialSpec.valueClassRepresentation(tpeSym)
+            val tree1 = gen.mkMethodCall(MbArrayOpts_apply(repr), List(tree.tpe.dealiasWiden), transform(array) :: args.map(transform) ::: List(tag1))
+            val tree2 = gen.mkMethodCall(minibox2x(repr)(tpeSym), List(tree1))
+            localTyper.typed(tree2)
+
           // MbArray transformations: MbArray.update
           case Apply(fun @ Select(array, _), List(index, MiniboxToBox(value, targ, repr))) if fun.symbol == MbArray_update && mbArray_transform =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tag1 = tags(targ.dealiasWiden.typeSymbol)
             val tree1 = gen.mkMethodCall(MbArrayOpts_update(repr), List(targ), transform(array) :: transform(index) :: transform(value) :: tag1 :: Nil)
             localTyper.typed(tree1)
+
+          // MbArray transformations: MbArray.update if primitive type
+          case Apply(fun @ Select(array, _), List(index, tree)) if fun.symbol == MbArray_update && mbArray_transform && ScalaValueClasses.contains(tree.tpe.dealiasWiden.typeSymbol) =>
+            val tpeSym = tree.tpe.dealiasWiden.typeSymbol
+            val tags = minibox.typeTagTrees(currentOwner)
+            val tag1 = tags(tpeSym)
+            val repr: Symbol = PartialSpec.valueClassRepresentation(tpeSym)
+            val tree1 = gen.mkMethodCall(x2minibox(repr)(tpeSym), List(transform(tree)))
+            val tree2 = gen.mkMethodCall(MbArrayOpts_update(repr), List(tree.tpe.dealiasWiden), transform(array) :: transform(index) :: tree1 :: tag1 :: Nil)
+            localTyper.typed(tree2)
 
           // MbArray transformations: MbArray.empty and MbArray.clone
           case tree@Apply(TypeApply(fun, List(targ)), List(arg)) if (fun.symbol == MbArray_empty || fun.symbol == MbArray_clone) && mbArray_transform =>
