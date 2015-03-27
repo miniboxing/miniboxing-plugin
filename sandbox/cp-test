@@ -20,15 +20,15 @@ cp $FILE $DIR
 # command-line args
 if [ $# -eq 0 ]
 then
-  vim $DIR/"$FILE_NAME".flags
+  $EDITOR $DIR/"$FILE_NAME".flags
 else
   echo $@ > $DIR/"$FILE_NAME".flags
 fi
 
 # checked output
-vim $DIR/"$FILE_NAME".check
+$EDITOR $DIR/"$FILE_NAME".check
 sed -i "s/$FILE/newSource1.scala/" $DIR/"$FILE_NAME".check
 
 # launch configuration
-vim $DIR/"$FILE_NAME".launch
+$EDITOR $DIR/"$FILE_NAME".launch
 ls $DIR/"$FILE_NAME"*
