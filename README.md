@@ -7,7 +7,7 @@ Miniboxing is a Scala compiler transformation that [improves the performance of 
 
 [![Gitter Badge](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/miniboxing/miniboxing-plugin)
 [![Travis Badge](https://travis-ci.org/miniboxing/miniboxing-plugin.png?branch=wip)](https://travis-ci.org/miniboxing/miniboxing-plugin) 
-<!--[![Codacy Badge](https://www.codacy.com/project/badge/90aa63bcd45d431cb0dc6213c0b09dd1)](https://www.codacy.com/public/vladureche/miniboxing-plugin) -->
+[![Codacy Badge](https://www.codacy.com/project/badge/9251707ef64240969c55760af54da8bf)](https://www.codacy.com/app/vladureche/miniboxing)
 
 ##Why use Miniboxing?##
 **Short answer:** because it matches the performance of specialization, without the bytecode blowup. For the `Tuple3` class:
