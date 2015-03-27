@@ -1,0 +1,12 @@
+newSource1.scala:6: warning: The method Test.test1 would benefit from miniboxing type parameter T, since it is instantiated by miniboxed type parameter U of method test2.
+		test1[U](u)
+                ^
+newSource1.scala:9: warning: The following code could benefit from miniboxing specialization if the type parameter X of method test4 would be marked as "@miniboxed X" (it would be used to instantiate miniboxed type parameter U of class C)
+  def test4[X](x: X) = new C[X](x)
+                       ^
+newSource1.scala:11: warning: The method Test.test1 would benefit from miniboxing type parameter T, since it is instantiated by a primitive type.
+		test1[Int](3)
+                     ^
+newSource1.scala:13: warning: Using the type argument "Any" for the miniboxed type parameter S of method test3 is not specific enough, as it could mean either a primitive or a reference type. Although method test3 is miniboxed, it won't benefit from specialization:
+		test3[Any](5)
+                     ^
