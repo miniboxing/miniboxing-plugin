@@ -63,6 +63,8 @@ trait MiniboxDefinitions {
     StorageSym setInfoAndEnter PolyType(List(TypeParamSym), ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym))
     StorageSym
   }
+  
+  lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
 
 //  lazy val MangledNameClass = {
 //    val AnnotationName = "scala.annotation.Annotation"
