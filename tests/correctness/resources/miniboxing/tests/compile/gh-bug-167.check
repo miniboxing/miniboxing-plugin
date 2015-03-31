@@ -1,0 +1,15 @@
+newSource1.scala:13: warning: Use MbArray instead of Array and benefit from miniboxing specialization
+  def newArray = new C(new Array[Int](10))
+                       ^
+newSource1.scala:24: warning: The method scala.Any.isInstanceOf would benefit from miniboxing type parameter T0, since it is instantiated by a primitive type.
+    if (x.isInstanceOf[Int])
+          ^
+newSource1.scala:25: warning: The method scala.Any.asInstanceOf would benefit from miniboxing type parameter T0, since it is instantiated by a primitive type.
+      println(x.asInstanceOf[Int])
+                ^
+newSource1.scala:28: warning: The method scala.Predef.ArrowAssoc.-> would benefit from miniboxing type parameter B, since it is instantiated by a primitive type.
+  2 -> 3
+    ^
+newSource1.scala:36: warning: The method Test.zoo would benefit from miniboxing type parameter S, since it is instantiated by miniboxed type parameter S of method zar.
+  def zar[@miniboxed S](t: S) = zoo[S](t)
+                                ^

@@ -26,10 +26,12 @@ trait MbArrayDefinitions {
   lazy val MbArrayModule  = global.rootMirror.getRequiredModule("scala.MbArray")
   lazy val MbArray_apply  = definitions.getMember(MbArrayClass, newTermName("apply"))
   lazy val MbArray_update = definitions.getMember(MbArrayClass, newTermName("update"))
+  lazy val MbArray_length = definitions.getMember(MbArrayClass, newTermName("length"))
   lazy val MbArray_empty  = definitions.getMember(MbArrayModule, newTermName("empty"))
   lazy val MbArray_clone  = definitions.getMember(MbArrayModule, newTermName("clone")).
                               // filter Object.clone out, we don't want that:
                               alternatives.find(_.owner == MbArrayModule.moduleClass).get
+  lazy val MbArray_arraycopy  = definitions.getMember(MbArrayModule, newTermName("arraycopy"))                      
 
   // optimized alternatives:
   lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.runtime.array.MbArrayOpts")
@@ -45,5 +47,13 @@ trait MbArrayDefinitions {
               DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_D"))),
         MbArray_clone ->
           Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_J")),
-              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D"))))
+              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D")))) 
+              
+  def isSymbolMbArrayMethod(sym: Symbol): Boolean = 
+    sym.equals(MbArray_apply) || 
+    sym.equals(MbArray_update) ||
+    sym.equals(MbArray_length) ||
+    sym.equals(MbArray_empty) || 
+    sym.equals(MbArray_clone) ||
+    sym.equals(MbArray_arraycopy)
 }

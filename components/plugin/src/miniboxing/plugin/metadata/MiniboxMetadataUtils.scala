@@ -125,13 +125,22 @@ trait MiniboxMetadataUtils {
       }
 
     def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
-
+      def useMbArrayInsteadOfArrayWarning(p: Symbol): Unit = 
+        suboptimalCodeWarning(pos, "Use MbArray instead of Array and benefit from miniboxing specialization", p.isGenericAnnotated)
+        
       def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
-        if (!metadata.miniboxedTParamFlag(p))
-          suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
+        if (!metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner) && !p.hasAnnotation(SpecializedClass))
+          if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
+          else suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
         (p, spec)
       }
-
+      
+      def isUselessWarning(p: Symbol): Boolean = {
+        p.isMbArrayMethod || 
+        p.isImplicitlyPredefMethod ||
+        p.isArrowAssocPredefMethod
+      }
+        
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec = instantiation map { (pair: (Symbol, Type)) =>
         (pair._1, pair._2.withoutAnnotations) match {
@@ -139,24 +148,29 @@ trait MiniboxMetadataUtils {
           case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
             mboxedTpars.get(tpar.deSkolemize) match {
               case Some(spec: SpecInfo) =>
-                if (!metadata.miniboxedTParamFlag(p) && spec != Boxed)
-                  suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
-                (p, spec)
-              case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) =>
-                if (metadata.miniboxedTParamFlag(p))
-                  suboptimalCodeWarning(pos, s"""The following code could benefit from miniboxing specialization (the reason was explained before).""", p.isGenericAnnotated)
+                if (!metadata.miniboxedTParamFlag(p) && spec != Boxed && !isUselessWarning(p.owner))
+                  if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
+                  else suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
+                  (p, spec)
+              case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod =>
+                if (metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner))
+                  if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
+                  else suboptimalCodeWarning(pos, s"""The following code could benefit from miniboxing specialization (the reason was explained before).""", p.isGenericAnnotated)
                 (p, Boxed)
               case None =>
-                if (metadata.miniboxedTParamFlag(p))
-                  suboptimalCodeWarning(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""", p.isGenericAnnotated)
+                if (metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner))
+                  if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
+                  else suboptimalCodeWarning(pos, s"""The following code could benefit from miniboxing specialization if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} would be marked as "@miniboxed ${tpar.name}" (it would be used to instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})""", p.isGenericAnnotated)
                 (p, Boxed)
             }
           case (p, tpe) if tpe <:< AnyRefTpe =>
             (p, Boxed)
-          case (p, tpe)          =>
-            if (metadata.miniboxedTParamFlag(p))
-              suboptimalCodeWarning(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner.tweakedToString} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner.tweakedToString} is miniboxed, it won't benefit from specialization:""", p.isGenericAnnotated)
-            (p, Boxed)
+          case (p, tpe)          => {
+            if (metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner))
+              if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
+              else suboptimalCodeWarning(pos, s"""Using the type argument "$tpe" for the miniboxed type parameter ${p.name} of ${p.owner.tweakedToString} is not specific enough, as it could mean either a primitive or a reference type. Although ${p.owner.tweakedToString} is miniboxed, it won't benefit from specialization:""", p.isGenericAnnotated)
+          }
+          (p, Boxed)
         }
       }
       spec.toMap

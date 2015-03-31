@@ -128,6 +128,7 @@ trait MiniboxInjectComponent extends
     PluginComponent
     with MiniboxLogging
     with MiniboxDefinitions
+    with MbArrayDefinitions
     with MbReflectionDefinitions
     with MiniboxNameUtils
     with MiniboxMetadata

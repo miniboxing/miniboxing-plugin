@@ -1,1 +1,5 @@
+newSource1.scala:11: warning: Use MbArray instead of Array and benefit from miniboxing specialization
+    array = new Array[Int](16)
+            ^
+
 init() called.
