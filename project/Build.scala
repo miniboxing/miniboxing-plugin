@@ -53,12 +53,15 @@ object MiniboxingBuild extends Build {
     ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := 
       List(
         "<empty>",
+        "scala\\..*",
         "miniboxing\\.benchmarks\\..*",
         "miniboxing\\.runtime\\..*",
         "miniboxing\\.classloader\\..*",
         "miniboxing\\.tools\\.asm\\.*",
         "miniboxing\\.infrastructure\\..*"
-      ).mkString(";")
+      ).mkString(";"),
+ 
+    com.codacy.CodacyCoveragePlugin.autoImport.codacyProjectToken := sys.props.get("CODACY_REPO_CODE")
   )
 
   val crossCompilationLayer = Seq(

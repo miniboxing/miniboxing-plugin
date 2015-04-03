@@ -1,29 +1,28 @@
 language: scala
 script:
-  - sbt clean +update
-  - sbt +compile +package
-  - sbt +test +publish
+- sbt clean miniboxing-plugin/coverage test miniboxing-plugin/codacyCoverage
+- sbt clean +update
+- sbt +compile +package
+- sbt +test +publish
 scala:
-  - 2.10.4
+- 2.10.4
 jdk:
-  - oraclejdk7
-notifications:
-  email:
-    - vlad.ureche@epfl.ch
-env:
-  global:
-   - MINIBOXING_MAVEN_REALM="Sonatype Nexus Repository Manager"
-   - MINIBOXING_MAVEN_DOMAIN="oss.sonatype.org"
-   - secure: "YH2L0Ex1sxRZTz9+I3z5bKH6OwQa3yQ/SrDj9btf4JfXAoMkBgMXSi8/SIYzDKrkng2rmxcyocoNYcj3DHiRZxwoLO8OU6zaABh6LgtqfA+IfQTMuqyf/2Msphowgcm5biVFmBXQNIQfGf/Wpzv5F7uoz1drKtOMOTnmjkKbP60="
-   - secure: "gtMP4tLkBQaoqrdahvqBYtSAMp9wWe0CRZA5oE/sen0Soww5QYOtsCGlNkzDO0LrUxL4Dsux/3Wlu2oF0/zWanadKwKpKxXMmIBhn716bbHm51L7JZdixdWEyYP7IkDXPqm1WYqAcNgDk97TFBDv9FRdX4ZeuXwg1uMyugFYJeQ="
-branches:
-  only:
-    - master
-    - wip
+- oraclejdk7
 notifications:
   webhooks:
     urls:
-      - https://webhooks.gitter.im/e/39b434177bceb59300c7
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: true     # default: false
+    - https://webhooks.gitter.im/e/39b434177bceb59300c7
+    on_success: always
+    on_failure: always
+    on_start: true
+env:
+  global:
+  - MINIBOXING_MAVEN_REALM="Sonatype Nexus Repository Manager"
+  - MINIBOXING_MAVEN_DOMAIN="oss.sonatype.org"
+  - secure: YH2L0Ex1sxRZTz9+I3z5bKH6OwQa3yQ/SrDj9btf4JfXAoMkBgMXSi8/SIYzDKrkng2rmxcyocoNYcj3DHiRZxwoLO8OU6zaABh6LgtqfA+IfQTMuqyf/2Msphowgcm5biVFmBXQNIQfGf/Wpzv5F7uoz1drKtOMOTnmjkKbP60=
+  - secure: gtMP4tLkBQaoqrdahvqBYtSAMp9wWe0CRZA5oE/sen0Soww5QYOtsCGlNkzDO0LrUxL4Dsux/3Wlu2oF0/zWanadKwKpKxXMmIBhn716bbHm51L7JZdixdWEyYP7IkDXPqm1WYqAcNgDk97TFBDv9FRdX4ZeuXwg1uMyugFYJeQ=
+  - secure: ZjiBRqSIaSNzD0B4nvwLT4goPHDBw3owBcXdGjZTLMoBNuOJtWmh0Y9QmZSjn7GPGIzicTsVuYtlz1D4W5HpYeSnc1m+7GGry279oYmXdsNr+ieG0Peg1lB2beiqQuEaeRT6iK8mpQgpowSQW7JRLijkHEmFfmbboL2ryKaC85Q=
+branches:
+  only:
+  - master
+  - wip
