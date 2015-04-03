@@ -14,6 +14,7 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 import xerial.sbt.Sonatype._ 
 import SonatypeKeys._
+import scoverage._
 
 object MiniboxingBuild extends Build {
 
@@ -46,7 +47,18 @@ object MiniboxingBuild extends Build {
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-    }
+    },
+
+    // scoverage:
+    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := 
+      List(
+        "<empty>",
+        "miniboxing\\.benchmarks\\..*",
+        "miniboxing\\.runtime\\..*",
+        "miniboxing\\.classloader\\..*",
+        "miniboxing\\.tools\\.asm\\.*",
+        "miniboxing\\.infrastructure\\..*"
+      ).mkString(";")
   )
 
   val crossCompilationLayer = Seq(
@@ -159,10 +171,15 @@ object MiniboxingBuild extends Build {
   val testsDeps: Seq[Setting[_]] = junitDeps ++ Seq(
     getJarsTask,
     fork in Test := true,
-    javaOptions in Test <+= (dependencyClasspath in Runtime, scalaBinaryVersion, packageBin in Compile in plugin) map { (path, ver, _) =>
-      def isBoot(file: java.io.File) = 
-        ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
-        (file.toString contains ("target/scala-" + ver)) // this makes me cry, seriously sbt...
+    javaOptions in Test <+= (dependencyClasspath in Test, scalaBinaryVersion, packageBin in Compile in plugin) map { (path, ver, _) =>
+      def isBoot(file: java.io.File) = {
+        val res =
+          ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
+          (file.toString contains ("target/scala-" + ver)) || // this makes me cry, seriously sbt...
+          (file.toString contains "scoverage")
+        // println(file + " .... " + res)
+        res
+      }
 
       val cp = "-Xbootclasspath/a:" + path.map(_.data).filter(isBoot).mkString(":")
       // println(cp)
