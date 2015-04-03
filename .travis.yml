@@ -19,9 +19,9 @@ env:
   global:
   - MINIBOXING_MAVEN_REALM="Sonatype Nexus Repository Manager"
   - MINIBOXING_MAVEN_DOMAIN="oss.sonatype.org"
-  - secure: YH2L0Ex1sxRZTz9+I3z5bKH6OwQa3yQ/SrDj9btf4JfXAoMkBgMXSi8/SIYzDKrkng2rmxcyocoNYcj3DHiRZxwoLO8OU6zaABh6LgtqfA+IfQTMuqyf/2Msphowgcm5biVFmBXQNIQfGf/Wpzv5F7uoz1drKtOMOTnmjkKbP60=
-  - secure: gtMP4tLkBQaoqrdahvqBYtSAMp9wWe0CRZA5oE/sen0Soww5QYOtsCGlNkzDO0LrUxL4Dsux/3Wlu2oF0/zWanadKwKpKxXMmIBhn716bbHm51L7JZdixdWEyYP7IkDXPqm1WYqAcNgDk97TFBDv9FRdX4ZeuXwg1uMyugFYJeQ=
-  - secure: ZjiBRqSIaSNzD0B4nvwLT4goPHDBw3owBcXdGjZTLMoBNuOJtWmh0Y9QmZSjn7GPGIzicTsVuYtlz1D4W5HpYeSnc1m+7GGry279oYmXdsNr+ieG0Peg1lB2beiqQuEaeRT6iK8mpQgpowSQW7JRLijkHEmFfmbboL2ryKaC85Q=
+  - secure: "YH2L0Ex1sxRZTz9+I3z5bKH6OwQa3yQ/SrDj9btf4JfXAoMkBgMXSi8/SIYzDKrkng2rmxcyocoNYcj3DHiRZxwoLO8OU6zaABh6LgtqfA+IfQTMuqyf/2Msphowgcm5biVFmBXQNIQfGf/Wpzv5F7uoz1drKtOMOTnmjkKbP60="
+  - secure: "gtMP4tLkBQaoqrdahvqBYtSAMp9wWe0CRZA5oE/sen0Soww5QYOtsCGlNkzDO0LrUxL4Dsux/3Wlu2oF0/zWanadKwKpKxXMmIBhn716bbHm51L7JZdixdWEyYP7IkDXPqm1WYqAcNgDk97TFBDv9FRdX4ZeuXwg1uMyugFYJeQ="
+  - secure: "E8jNPj2r4L+oDi3oxdI4kPoL5HpPw5tvIdzoRLfWhmFo0JG1Hm0U7E/B8Ms70eqiWKhE/bsF7nVtlW6xKGDy3VqnFcC3xp1TbfHvVt5DFrTd7ESJisq3sgJEoDoe/6qgC9vsVxQJIZmRxxJbV9+e2Vu5Qm3UEWyUUiDLTa/R0Rc="
 branches:
   only:
   - master

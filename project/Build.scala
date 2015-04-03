@@ -25,7 +25,7 @@ object MiniboxingBuild extends Build {
     println("Full classpath is: "+cp.map(_.data).mkString(":"))
   }
 
-  val defaults = Defaults.defaultSettings ++ assemblySettings ++ Seq(
+  val defaults = Defaults.coreDefaultSettings ++ assemblySettings ++ Seq(
     scalaSource in Compile := baseDirectory.value / "src",
     javaSource in Compile := baseDirectory.value / "src",
     scalaSource in Test := baseDirectory.value / "test",
