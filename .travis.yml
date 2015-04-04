@@ -1,6 +1,6 @@
 language: scala
 script:
-- sbt clean miniboxing-plugin/coverage test miniboxing-plugin/codacyCoverage
+- sbt clean coverage test scalastyle coverageReport coverageAggregate codacyCoverage
 - sbt clean +update
 - sbt +compile +package
 - sbt +test +publish
