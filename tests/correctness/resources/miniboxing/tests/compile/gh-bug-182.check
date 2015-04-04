@@ -1,0 +1,4 @@
+newSource1.scala:8: warning: The following code could benefit from miniboxing specialization if the type parameter A of method dropWhile would be marked as "@miniboxed A" (it would be used to instantiate miniboxed type parameter A of method unapply)
+    case Cons(h, t) => t
+         ^
+one warning found
