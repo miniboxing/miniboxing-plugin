@@ -1,9 +1,6 @@
 language: scala
 script:
-- sbt clean coverage test coverageReport coverageAggregate codacyCoverage
-- sbt clean +update
-- sbt +compile +package
-- sbt +test +publish
+- sbt clean miniboxing-plugin/coverage test coverageReport coverageAggregate codacyCoverage miniboxing-plugin/codacyCoverage && sbt clean +update && sbt +compile +package && sbt +test +publish
 scala:
 - 2.10.4
 jdk:
