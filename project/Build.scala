@@ -61,7 +61,7 @@ object MiniboxingBuild extends Build {
         "miniboxing\\.infrastructure\\..*"
       ).mkString(";"),
  
-    com.codacy.CodacyCoveragePlugin.autoImport.codacyProjectToken := sys.props.get("CODACY_REPO_CODE")
+    com.codacy.CodacyCoveragePlugin.autoImport.codacyProjectToken := sys.env.get("CODACY_REPO_CODE")
   )
 
   val crossCompilationLayer = Seq(
