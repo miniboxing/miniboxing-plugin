@@ -1,0 +1,15 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package <empty> {
+  object TuplesQuickSort extends Object {
+    def <init>(): TuplesQuickSort.type = {
+      TuplesQuickSort.super.<init>();
+      ()
+    };
+    private def quicksort[@miniboxed T](a: Array[(T, Double)]): Array[(T, Double)] = a;
+    private def quicksort_n_D[T](T_TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
+    private def quicksort_n_J[T](T_TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
+    def quicksortByKey[@miniboxed T](arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort[T](arr);
+    def quicksortByKey_n_D[T](T_TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort_n_D[T](T_TypeTag, arr);
+    def quicksortByKey_n_J[T](T_TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort_n_J[T](T_TypeTag, arr)
+  }
+}
