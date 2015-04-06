@@ -1,11 +1,11 @@
 package miniboxing.benchmarks.tuples.launch.tests
 
-import miniboxing.benchmarks.tuples.ideal.TuplesQuickSort
 import scala.util.Random
+import miniboxing.benchmarks.tuples.miniboxed.TuplesQuickSort
 
-trait IdealBenchTest extends BaseTest {
+trait MiniboxedBenchTest extends BaseTest {
   
-  def testIdeal() = {
+  def testMiniboxed() = {
     var arr: Array[(Int, Double)] = new Array[(Int, Double)](testSize)
     val random = new Random(0)
     for( ind <- 0 to (testSize - 1)){
@@ -13,11 +13,11 @@ trait IdealBenchTest extends BaseTest {
     }
 
     test(
-      "ideal", 
+      "miniboxed", 
       "quicksort_array_of_tuples", 
       _ => (),  
-      TuplesQuickSort.quicksortByKey(arr)(TuplesQuickSort.IntIdealOrdering), 
+      TuplesQuickSort.quicksortByKey[Int](arr)(TuplesQuickSort.IntMiniboxedOrdering), 
       () => {}
-     )
+    )
   }
 }

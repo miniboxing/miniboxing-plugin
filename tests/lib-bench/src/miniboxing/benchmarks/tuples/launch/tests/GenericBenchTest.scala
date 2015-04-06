@@ -12,14 +12,6 @@ trait GenericBenchTest extends BaseTest {
        arr(ind) = (random.nextInt(testSize), 0.0)
     }
 
-    test(
-        "generic", 
-        "quicksort_array_of_tuples", 
-        _ => (),  
-        TuplesQuickSort.quicksortByKey[Int](arr)(new Ordering[Int]{
-          override def compare(a: Int, b: Int) = a - b
-        }), 
-        () => {}
-     )
+    test("generic", "quicksort_array_of_tuples", _ => (), TuplesQuickSort.quicksortByKey[Int](arr), () => {})
   }
 }

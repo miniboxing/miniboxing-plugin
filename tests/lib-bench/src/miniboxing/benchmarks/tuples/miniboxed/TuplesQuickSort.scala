@@ -1,19 +1,23 @@
-package miniboxing.benchmarks.tuples.specialized
+package miniboxing.benchmarks.tuples.miniboxed
+
+import miniboxing.runtime.MiniboxConstants
+import miniboxing.runtime.MiniboxedTuple
+import miniboxing.runtime.MiniboxConversions
 
 object TuplesQuickSort {
   
-  trait SpecializedOrdering[@specialized T] {
+  trait MiniboxedOrdering[@miniboxed T] {
     def compare(t1: T, t2: T): Int
     def lt(t1: T, t2: T): Boolean = compare(t1, t2) < 0
     def gt(t1: T, t2: T): Boolean = compare(t1, t2) > 0
     def eq(t1: T, t2: T): Boolean = compare(t1, t2) == 0
   }
   
-  object IntSpecializedOrdering extends SpecializedOrdering[Int] {
+  object IntMiniboxedOrdering extends MiniboxedOrdering[Int] {
     override def compare(t1: Int, t2: Int): Int = t1 - t2
   }
-  
-  private def quicksort[@specialized T](a:Array[(T, Double)])(ord: SpecializedOrdering[T]): Array[(T, Double)] =  {
+
+  private def quicksort[@miniboxed T](a: Array[(T, Double)])(ord: MiniboxedOrdering[T]): Array[(T, Double)] = {
     def swap(i: Int, j: Int): Unit = {
       val t = a(i); a(i) = a(j); a(j) = t
     }
@@ -36,6 +40,6 @@ object TuplesQuickSort {
     a
   }
   
-  def quicksortByKey[@specialized T](arr: Array[(T, Double)])(ord: SpecializedOrdering[T]): Array[(T, Double)] =
+  def quicksortByKey[@miniboxed T](arr: Array[(T, Double)])(ord: MiniboxedOrdering[T]): Array[(T, Double)] =
     quicksort(arr)(ord)
 }

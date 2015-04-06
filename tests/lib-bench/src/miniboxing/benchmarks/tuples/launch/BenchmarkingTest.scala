@@ -8,6 +8,7 @@ object BenchmarkingTest extends ScalameterBenchTest
                            with SpecializedBenchTest
                            with IdealBenchTest
                            with HardcodedMiniboxedBenchTest
+                           with MiniboxedBenchTest
                            with Serializable {
 
   // the number of independent samples to use
@@ -20,14 +21,15 @@ object BenchmarkingTest extends ScalameterBenchTest
 
   // the test size
   lazy val testSizes = {
-    List(2000000)
+    List(3000000)
   }
   
-  withTestSize(2000000){
-    // run the tests:
+  withTestSize(3000000){
+    // run the tests:    
+    testHardcodedMiniboxed()
+    testMiniboxed()
     testIdeal()
     testGeneric()
     testSpecialized()
-    testHardcodedMiniboxed()
   }
 }

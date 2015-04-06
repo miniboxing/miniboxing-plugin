@@ -2,8 +2,19 @@ package miniboxing.benchmarks.tuples.ideal
 
 object TuplesQuickSort {
   
-  private def quicksort(a:Array[(Int, Double)])(implicit ord: Ordering[Int]): Array[(Int, Double)] =  {
-    def swap(i: Int, j: Int) {
+  trait IdealOrdering {
+    def compare(t1: Int, t2: Int): Int
+    def lt(t1: Int, t2: Int): Boolean = compare(t1, t2) < 0
+    def gt(t1: Int, t2: Int): Boolean = compare(t1, t2) > 0
+    def eq(t1: Int, t2: Int): Boolean = compare(t1, t2) == 0
+  }
+  
+  object IntIdealOrdering extends IdealOrdering {
+    override def compare(t1: Int, t2: Int): Int = t1 - t2
+  }
+  
+  private def quicksort(a:Array[(Int, Double)])(ord: IdealOrdering): Array[(Int, Double)] =  {
+    def swap(i: Int, j: Int): Unit = {
       val t = a(i); a(i) = a(j); a(j) = t
     }
     def partition(l: Int, r: Int) {
@@ -23,14 +34,8 @@ object TuplesQuickSort {
     }
     partition(0, a.length - 1)
     a
-//    if (a.length < 2) a
-//    else {
-//      val pivot = a(a.length / 2)
-//      quicksort (a.filter(p => ord.lt(p._1, pivot._1))) ++ (a.filter(p => ord.equiv(p._1, pivot._1))) ++
-//        quicksort (a.filter(p => ord.gt(p._1, pivot._1)))
-//    }
   }
   
-  def quicksortByKey(arr: Array[(Int, Double)])(implicit ord: Ordering[Int]): Array[(Int, Double)] = 
+  def quicksortByKey(arr: Array[(Int, Double)])(ord: IdealOrdering): Array[(Int, Double)] = 
     quicksort(arr)(ord)
 }

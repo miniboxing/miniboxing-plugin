@@ -13,13 +13,11 @@ trait SpecializedBenchTest extends BaseTest {
     }
 
     test(
-        "specialized", 
-        "quicksort_array_of_tuples", 
-        _ => (),  
-        TuplesQuickSort.quicksortByKey[Int](arr)(new Ordering[Int]{
-          override def compare(a: Int, b: Int) = a - b
-        }), 
-        () => {}
+      "specialized", 
+      "quicksort_array_of_tuples", 
+      _ => (),  
+      TuplesQuickSort.quicksortByKey[Int](arr)(TuplesQuickSort.IntSpecializedOrdering), 
+      () => {}
      )
   }
 }

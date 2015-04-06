@@ -3,7 +3,7 @@ package miniboxing.benchmarks.tuples.generic
 object TuplesQuickSort {
   
   private def quicksort[T](a:Array[(T, Double)])(implicit ord: Ordering[T]): Array[(T, Double)] =  {
-    def swap(i: Int, j: Int) {
+    def swap(i: Int, j: Int): Unit = {
       val t = a(i); a(i) = a(j); a(j) = t
     }
     def partition(l: Int, r: Int) {
@@ -23,12 +23,6 @@ object TuplesQuickSort {
     }
     partition(0, a.length - 1)
     a
-//    if (a.length < 2) a
-//    else {
-//      val pivot = a(a.length / 2)
-//      quicksort (a.filter(p => ord.lt(p._1, pivot._1))) ++ (a.filter(p => ord.equiv(p._1, pivot._1))) ++
-//        quicksort (a.filter(p => ord.gt(p._1, pivot._1)))
-//    }
   }
   
   def quicksortByKey[T](arr: Array[(T, Double)])(implicit ord: Ordering[T]): Array[(T, Double)] =
