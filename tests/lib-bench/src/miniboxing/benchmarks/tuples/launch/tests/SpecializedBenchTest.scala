@@ -4,19 +4,13 @@ import miniboxing.benchmarks.tuples.specialized.TuplesQuickSort
 import scala.util.Random
 
 trait SpecializedBenchTest extends BaseTest {
-  
-  def testSpecialized() = {
-    var arr: Array[(Int, Double)] = new Array[(Int, Double)](testSize)
-    val random = new Random(0)
-    for( ind <- 0 to (testSize - 1)){
-       arr(ind) = (random.nextInt(testSize), 0.0)
-    }
 
+  def testSpecialized(arr: Array[(Int, Double)]) = {
     test(
-      "specialized", 
-      "quicksort_array_of_tuples", 
-      _ => (),  
-      TuplesQuickSort.quicksortByKey[Int](arr)(TuplesQuickSort.IntSpecializedOrdering), 
+      "specialized",
+      "quicksort_array_of_tuples",
+      _ => (),
+      TuplesQuickSort.quicksortByKey(arr.clone())(TuplesQuickSort.IntSpecializedOrdering),
       () => {}
      )
   }
