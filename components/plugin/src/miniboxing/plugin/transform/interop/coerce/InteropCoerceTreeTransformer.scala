@@ -20,6 +20,7 @@ import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.transform.InfoTransform
 import scala.tools.nsc.typechecker.Analyzer
+import scala.reflect.internal.Flags._
 
 trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers with ScalacCrossCompilingLayer {
   self: InteropCoerceComponent =>
@@ -117,6 +118,11 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
         indent += 1
         adaptdbg(ind, " <== " + tree + ": " + showRaw(pt, true, true, false, false) + "  now: " + tree.tpe + "   " + tree.pos)
 
+        // #200: If labels have both CASE | SYNTHETIC flags set, their arguments are
+        // no longer typechecked. Simple solution => wipe SYNTHETIC :))
+        if (tree.hasSymbolField && tree.symbol.hasAllFlags(SYNTHETIC | LABEL | CASE))
+          tree.symbol.resetFlag(SYNTHETIC)
+
         if (tree.hasAttachment[AlreadyTyped.type] && (pt == WildcardType) && tree.tpe != null)
           return tree
 
@@ -139,6 +145,15 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
               tree.setType(null)
               super.typed(tree, mode, pt)
             }
+
+          // #200: If labels have both CASE | SYNTHETIC flags set, their arguments are
+          // not checked against the expected type, so we end up without coercions
+          // see https://github.com/scala/scala/commit/9d330e3c839a52ddcb508ffb3c2660ce244fb92b
+          case Apply(lbl, args) if lbl.symbol.hasAllFlags(LABEL|CASE|SYNTHETIC) && lbl.symbol.tpe.paramTypes.exists(_.isMbFunction) =>
+            lbl.symbol.resetFlag(SYNTHETIC)
+            val res = typed(tree, mode, pt)
+            lbl.symbol.setFlag(SYNTHETIC)
+            res
 
           case _ =>
             tree.setType(null)
