@@ -128,6 +128,15 @@ object MbReflection {
         double,
         reference = Value
   }
+
+  // TODO: Optimize these for miniboxed classes
+  // TODO: Warn if the type T is not miniboxed!
+  object SimpleConv {
+    implicit class conversion[T](t: T) {
+      def as[U]  = t.asInstanceOf[U]
+    }
+  }
+
   import SimpleType._
 
   /**
