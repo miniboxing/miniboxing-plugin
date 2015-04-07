@@ -179,6 +179,7 @@ object MiniboxingBuild extends Build {
         val res =
           ((file.getName() startsWith "scala-") && (file.getName() endsWith ".jar")) ||
           (file.toString contains ("target/scala-" + ver)) || // this makes me cry, seriously sbt...
+          (file.toString contains ("target\\scala-" + ver)) || // this makes me cry, seriously sbt...
           (file.toString contains "scoverage")
         // println(file + " .... " + res)
         res
