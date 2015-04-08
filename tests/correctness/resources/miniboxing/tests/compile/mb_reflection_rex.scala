@@ -2,6 +2,9 @@ import MbReflection._
 import SimpleType._
 import SimpleConv._
 
+// more context:
+// https://groups.google.com/forum/#!topic/scala-internals/w2BAhTQ59jY
+
 object Test {
   def bippy[@miniboxed A, @miniboxed B](a: A, b: B): B = 
     (reifiedType[A], reifiedType[B]) match {
