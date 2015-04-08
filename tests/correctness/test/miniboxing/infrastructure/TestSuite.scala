@@ -73,7 +73,7 @@ class TestSuite extends ScalacVersion {
   // TODO: This needs to be general, it's currently a mess
   private[this] def pluginCompilerFlag() =
     try {
-      "-Xplugin:" + files(List("..", "..", "components", "plugin", "target", "scala-" + scalaBinaryVersion), ".jar").head.toString
+      "-Xplugin:" + files(List("..", "..", "components", "plugin", "target", "scala-" + scalaBinaryVersion), ".jar").sortBy(_.toString.size).head.toString
     } catch {
       case x: NoSuchElementException =>
         sys.error("The plugin jar is not available! Run \"sbt miniboxing-plugin/package\" to generate it.")
