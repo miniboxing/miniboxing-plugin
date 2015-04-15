@@ -215,6 +215,7 @@ trait MiniboxCommitComponent extends
   def flag_stats: Boolean
   def flag_two_way: Boolean
   def flag_rewire_mbarray: Boolean
+  def flag_rewire_tuples: Boolean
 }
 
 trait PreTyperComponent extends
@@ -313,6 +314,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_rewire_functionX_application = true
   var flag_rewire_mbarray = true
   var flag_constructor_spec = true
+  var flag_rewire_tuples = true
 
   override def processOptions(options: List[String], error: String => Unit) {
     for (option <- options) {
@@ -386,6 +388,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_rewire_functionX_application = true
         case "ykeep-functionx-application" =>
           flag_rewire_functionX_application = false
+        case "ykeep-tuples" =>
+          flag_rewire_tuples = false
         case "ygeneric-constructor-code" =>
           flag_constructor_spec = false
         case "off" =>
@@ -589,6 +593,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     def flag_stats = Minibox.this.flag_stats
     def flag_two_way = Minibox.this.flag_two_way
     def flag_rewire_mbarray = Minibox.this.flag_rewire_mbarray
+    def flag_rewire_tuples = Minibox.this.flag_rewire_tuples
 
     var mboxCommitPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {

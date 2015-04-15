@@ -268,7 +268,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
           // Tuple2 constructor
           case Apply(Select(New(tpt), nme.CONSTRUCTOR), List(MiniboxToBox(t1, _, repr1),
                                                              MiniboxToBox(t2, _, repr2)))
-               if tpt.tpe.typeSymbol == Tuple2Class =>
+               if flag_rewire_tuples && (tpt.tpe.typeSymbol == Tuple2Class) =>
             val targ1 = tpt.tpe.typeArgs(0)
             val targ2 = tpt.tpe.typeArgs(1)
             val tags = minibox.typeTagTrees(currentOwner)
