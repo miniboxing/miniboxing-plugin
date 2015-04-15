@@ -63,7 +63,7 @@ trait MiniboxDefinitions {
     StorageSym setInfoAndEnter PolyType(List(TypeParamSym), ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym))
     StorageSym
   }
-  
+
   lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
 
 //  lazy val MangledNameClass = {
@@ -238,6 +238,20 @@ trait MiniboxDefinitions {
     val Miniboxed(repr) = spec
     withStorage(tparam, repr)
   }
+
+  lazy val Tuple1Class = definitions.TupleClass(1)
+  lazy val Tuple2Class = definitions.TupleClass(2)
+  lazy val Tuple1_1 = definitions.getMember(Tuple1Class, newTermName("_1"))
+  lazy val Tuple2_1 = definitions.getMember(Tuple2Class, newTermName("_1"))
+  lazy val Tuple2_2 = definitions.getMember(Tuple2Class, newTermName("_2"))
+
+  lazy val MbTupleModule = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedTuple")
+  def tupleConstructor(n: Int, repr: List[String]) = definitions.getMember(MbTupleModule, newTermName(s"newTuple$n${repr.map("_"+_).mkString}"))
+  lazy val MbTuple2Constructors: Map[(Symbol, Symbol), Symbol] =
+    Map((LongClass, LongClass)     -> tupleConstructor(2, List("long", "long")),
+        (LongClass, DoubleClass)   -> tupleConstructor(2, List("long", "double")),
+        (DoubleClass, LongClass)   -> tupleConstructor(2, List("double", "long")),
+        (DoubleClass, DoubleClass) -> tupleConstructor(2, List("double", "double")))
 
   // filled in from outside
   def flag_two_way: Boolean
