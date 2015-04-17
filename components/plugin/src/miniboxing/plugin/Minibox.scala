@@ -215,6 +215,7 @@ trait MiniboxCommitComponent extends
   def flag_stats: Boolean
   def flag_two_way: Boolean
   def flag_rewire_mbarray: Boolean
+  def flag_rewire_tuples: Boolean
 }
 
 trait PreTyperComponent extends
@@ -312,6 +313,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_strict_warnings_outside = false
   var flag_rewire_functionX_application = true
   var flag_rewire_mbarray = true
+  var flag_rewire_tuples = true
   var flag_constructor_spec = true
 
   override def processOptions(options: List[String], error: String => Unit) {
@@ -378,6 +380,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_strict_typechecking = true
         case "ykeep-mbarray-generic" =>
           flag_rewire_mbarray = false
+        case "ykeep-tuples-generic" =>
+          flag_rewire_tuples = false
         case "yrewire-functionx-application" =>
           global.reporter.echo("Miniboxing plugin warning: The function application specialization is now the default " +
                                s"miniboxing plugin behavior, so there is no need to use the -P:minibox:$option flag " +
@@ -399,6 +403,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_strict_warnings = false
           flag_strict_warnings_outside = false
           flag_rewire_mbarray = false
+          flag_rewire_tuples = false
           flag_constructor_spec = false
         case _ =>
           error("Miniboxing: Option not understood: " + option)
@@ -589,6 +594,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     def flag_stats = Minibox.this.flag_stats
     def flag_two_way = Minibox.this.flag_two_way
     def flag_rewire_mbarray = Minibox.this.flag_rewire_mbarray
+    def flag_rewire_tuples = Minibox.this.flag_rewire_tuples
 
     var mboxCommitPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
