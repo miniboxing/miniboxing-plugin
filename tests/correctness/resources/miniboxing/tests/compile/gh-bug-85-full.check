@@ -59,3 +59,4 @@ Specializing trait F1...
     def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
   }
 Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.

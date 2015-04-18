@@ -2,4 +2,5 @@ newSource1.scala:6: warning: The side-effecting statement(s) in the miniboxed cl
   println(new A[T].getClass.getSimpleName)
          ^
 Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
+Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.
 A_L

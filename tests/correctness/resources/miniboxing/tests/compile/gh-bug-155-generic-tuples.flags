@@ -1,1 +1,1 @@
--Xprint:minibox-commit -Ycheck:minibox-commit -Xprint:spec -P:minibox:Ykeep-tuples-generic
+-Xprint:minibox-commit -Ycheck:minibox-commit -P:minibox:Ykeep-tuples-generic
