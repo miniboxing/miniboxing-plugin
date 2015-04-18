@@ -126,7 +126,7 @@ trait MiniboxMetadataUtils {
 
     def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
       def useMbArrayInsteadOfArrayWarning(p: Symbol): Unit = 
-        suboptimalCodeWarning(pos, "Use MbArray instead of Array and benefit from miniboxing specialization", p.isGenericAnnotated)
+        if (flag_warn_mbarrays) suboptimalCodeWarning(pos, "Use MbArray instead of Array and benefit from miniboxing specialization", p.isGenericAnnotated)
         
       def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
         if (!metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner) && !p.hasAnnotation(SpecializedClass))

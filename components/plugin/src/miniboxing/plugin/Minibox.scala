@@ -154,6 +154,7 @@ trait MiniboxInjectComponent extends
   def flag_two_way: Boolean
   def flag_strict_warnings: Boolean
   def flag_strict_warnings_outside: Boolean
+  def flag_warn_mbarrays: Boolean
   def flag_create_local_specs: Boolean
   def flag_constructor_spec: Boolean
 }
@@ -311,6 +312,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   var flag_create_local_specs = true
   var flag_strict_warnings = true
   var flag_strict_warnings_outside = false
+  var flag_warn_mbarrays = true
   var flag_rewire_functionX_application = true
   var flag_rewire_mbarray = true
   var flag_constructor_spec = true
@@ -346,6 +348,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "warn-all" =>
           flag_strict_warnings = true
           flag_strict_warnings_outside = true
+        case "warn-mbarrays-off" =>
+          flag_warn_mbarrays = false
         case "mark-all" =>
           flag_mark_all = true
 
@@ -399,6 +403,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_create_local_specs = false
           flag_strict_warnings = false
           flag_strict_warnings_outside = false
+          flag_warn_mbarrays = false
           flag_rewire_mbarray = false
           flag_constructor_spec = false
         case _ =>
@@ -408,11 +413,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
-    s"  -P:${name}:warn-off  do not show performance and specialization warnings for your code",
-    s"  -P:${name}:warn-all  show cross-project warnings, aka warn for the libraries as well",
-    s"  -P:${name}:hijack    hijack the @specialized(...) notation for miniboxing",
-    s"  -P:${name}:mark-all  implicitly add @miniboxed annotations to all type parameters",
-    s"  -P:${name}:log       log miniboxing signature transformations").mkString("\n"))
+    s"  -P:${name}:warn-off          do not show performance and specialization warnings for your code",
+    s"  -P:${name}:warn-all          show cross-project warnings, aka warn for the libraries as well",
+    s"  -P:${name}:warn-mbarrys-off  do not show warnings suggesting use of MbArray instead of Array",
+    s"  -P:${name}:hijack            hijack the @specialized(...) notation for miniboxing",
+    s"  -P:${name}:mark-all          implicitly add @miniboxed annotations to all type parameters",
+    s"  -P:${name}:log               log miniboxing signature transformations").mkString("\n"))
 
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -526,6 +532,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     def flag_create_local_specs = Minibox.this.flag_create_local_specs
     def flag_strict_warnings = Minibox.this.flag_strict_warnings
     def flag_strict_warnings_outside = Minibox.this.flag_strict_warnings_outside
+    def flag_warn_mbarrays = Minibox.this.flag_warn_mbarrays
     def flag_constructor_spec = Minibox.this.flag_constructor_spec
 
     var mboxInjectPhase : StdPhase = _
