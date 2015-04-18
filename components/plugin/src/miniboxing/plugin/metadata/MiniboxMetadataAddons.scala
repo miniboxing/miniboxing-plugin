@@ -50,9 +50,11 @@ trait MiniboxMetadataAddons {
     }
     def isField = sym.isValue && !sym.isMethod
     def isMbArrayMethod: Boolean = isSymbolMbArrayMethod(sym)
-    def isArray: Boolean = sym.equals(ArrayClass)
+    def isArray: Boolean = sym == ArrayClass
     def isImplicitlyPredefMethod: Boolean = isPredefMemberNamed(sym, nme.implicitly)
-    def isArrowAssocPredefMethod: Boolean = isPredefMemberNamed(sym, nme.Predef.newName("ArrowAssoc"))
+    def isCastSymbol: Boolean = definitions.isCastSymbol(sym)
+    def isIsInstanceOfAnyMethod: Boolean = sym == Any_isInstanceOf
+    def isArrowAssocMethod: Boolean = isPredefMemberNamed(sym, nme.Predef.newName("ArrowAssoc")) || (sym.owner == getMemberClass(PredefModule, TypeName("ArrowAssoc")) && sym.name == nme.MINGT)
 
     private def tweakedKind = if (sym.isTrait) if (flagdata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
     private def tweakedName = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString

@@ -138,7 +138,9 @@ trait MiniboxMetadataUtils {
       def isUselessWarning(p: Symbol): Boolean = {
         p.isMbArrayMethod || 
         p.isImplicitlyPredefMethod ||
-        p.isArrowAssocPredefMethod
+        p.isCastSymbol ||
+        p.isIsInstanceOfAnyMethod ||
+        p.isArrowAssocMethod
       }
         
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
@@ -150,7 +152,8 @@ trait MiniboxMetadataUtils {
               case Some(spec: SpecInfo) =>
                 if (!metadata.miniboxedTParamFlag(p) && spec != Boxed && !isUselessWarning(p.owner))
                   if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
-                  else suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
+                  else if (!p.hasAnnotation(SpecializedClass)) suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by miniboxed type parameter ${tpar.nameString.stripSuffix("sp")} of ${metadata.getStem(tpar.owner).tweakedToString}.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
+                  else suboptimalCodeWarning(pos, s"Although the type parameter ${p.nameString} of ${p.owner.tweakedFullString} is specialized, miniboxing and specialization communicate among themselves by boxing (thus, inefficiently) on all classes other than as FunctionX and TupleX. If you want to maximize performance, consider switching from specialization to miniboxing: '@miniboxed T':", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
                   (p, spec)
               case None if metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod =>
                 if (metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner))
