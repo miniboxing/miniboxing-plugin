@@ -345,6 +345,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
                                "http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
         case "warn-off" =>
           flag_strict_warnings = false
+          flag_warn_mbarrays = false
         case "warn-all" =>
           flag_strict_warnings = true
           flag_strict_warnings_outside = true
