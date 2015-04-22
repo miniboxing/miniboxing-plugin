@@ -17,6 +17,7 @@ package commit
 
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.typechecker._
+import miniboxing.runtime.MiniboxConstants
 
 trait MiniboxCommitTreeTransformer extends TypingTransformers {
   self: MiniboxCommitComponent =>
@@ -30,6 +31,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
 
     override def transform(tree: Tree): Tree = {
       var mbArray_transform = true
+      var mbTuple_transform = true
 
       if (flag_rewire_mbarray && !flag_two_way) {
         mbArray_transform = false
@@ -41,8 +43,19 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
                              "be generic and will box.")
       }
+      
+      if (flag_rewire_tuples && !flag_two_way) {
+        mbTuple_transform = false
+        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow " +
+                             "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
+                             "compiler option). `MbTuple`-s will be generic and will box.")
+      } else if (!flag_rewire_tuples) {
+        mbTuple_transform = false
+        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is disabled, thus `MbTuple`-s will " +
+                             "be generic and will box.")
+      }
 
-      val specTrans = new MiniboxTreeTransformer(unit, mbArray_transform)
+      val specTrans = new MiniboxTreeTransformer(unit, mbArray_transform, mbTuple_transform)
       afterMiniboxCommit(checkNoStorage(specTrans.transform(tree)))
     }
   }
@@ -95,7 +108,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
     def unapply(tree: Tree): Option[(Tree, Type, Symbol, Symbol)] = unapply(tree, marker_minibox2minibox).map({ case (tree, tpe, List(repr1, repr2)) => (tree, tpe, repr1, repr2) })
   }
 
-  class MiniboxTreeTransformer(unit: CompilationUnit, mbArray_transform: Boolean) extends TypingTransformer(unit) {
+  class MiniboxTreeTransformer(unit: CompilationUnit, mbArray_transform: Boolean, mbTuple_transform: Boolean) extends TypingTransformer(unit) {
 
     override def transform(tree0: Tree): Tree = {
       val oldTpe = tree0.tpe
@@ -264,7 +277,37 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:", typeSymbol.isGenericAnnotated)
                 super.transform(tree)
             }
-
+ 
+          // Tuple1 constructor
+          case Apply(Select(New(tpt), nme.CONSTRUCTOR), List(MiniboxToBox(t1, _, repr1))) if mbTuple_transform && (tpt.tpe.typeSymbol == Tuple1Class) =>
+            val targ1 = tpt.tpe.typeArgs(0)
+            val tags = minibox.typeTagTrees(currentOwner)
+            val ttag1 = tags(targ1.typeSymbol)
+            val ctor = MbTuple1Constructors(repr1)
+            val tree1 = gen.mkMethodCall(ctor, List(targ1), List(ttag1, transform(t1)))
+            localTyper.typed(tree1)
+            
+          // Tuple2 constructor
+          case Apply(Select(New(tpt), nme.CONSTRUCTOR), List(MiniboxToBox(t1, _, repr1), MiniboxToBox(t2, _, repr2))) if mbTuple_transform && (tpt.tpe.typeSymbol == Tuple2Class) =>
+            val targ1 = tpt.tpe.typeArgs(0)
+            val targ2 = tpt.tpe.typeArgs(1)
+            val tags = minibox.typeTagTrees(currentOwner)
+            val ttag1 = tags(targ1.typeSymbol)
+            val ttag2 = tags(targ2.typeSymbol)
+            val ctor = MbTuple2Constructors((repr1,repr2))
+            val tree1 = gen.mkMethodCall(ctor, List(targ1, targ2), List(ttag1, ttag2, transform(t1), transform(t2)))
+            localTyper.typed(tree1)
+          
+          // Tuple accessors
+           case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
+            val targs = tuple.tpe.widen.typeArgs
+            assert(targs.length == numberOfTargsForTupleXClass(tuple.tpe.typeSymbol), "targs don't match for " + tree0 + ": " + targs)
+            val tags = minibox.typeTagTrees(currentOwner)
+            val ttag = tags(targs(0).typeSymbol)
+            val accessor = MbTupleAccessor(tree.symbol)(repr)
+            val tree1 = gen.mkMethodCall(accessor, targs, List(ttag, tuple))
+            localTyper.typed(tree1)
+             
           case BoxToMinibox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tree1 =
