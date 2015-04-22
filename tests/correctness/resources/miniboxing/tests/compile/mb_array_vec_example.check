@@ -1,3 +1,6 @@
+newSource1.scala:24: warning: Use MbArray instead of Array and benefit from miniboxing specialization
+  val doubleData: Array[Double] = new Array[Double](size)
+                                  ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package respec {
   abstract trait Vec[@miniboxed T] extends Object {

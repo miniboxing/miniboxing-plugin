@@ -1,0 +1,7 @@
+newSource1.scala:34: warning: Although the type parameter S of method Test.zoo is specialized, miniboxing and specialization communicate among themselves by boxing (thus, inefficiently) on all classes other than as FunctionX and TupleX. If you want to maximize performance, consider switching from specialization to miniboxing: '@miniboxed T':
+  zoo[Int](3)
+     ^
+newSource1.scala:36: warning: Although the type parameter S of method Test.zoo is specialized, miniboxing and specialization communicate among themselves by boxing (thus, inefficiently) on all classes other than as FunctionX and TupleX. If you want to maximize performance, consider switching from specialization to miniboxing: '@miniboxed T':
+   def zar[@miniboxed S](t: S) = zoo[S](t)
+                                 ^
+

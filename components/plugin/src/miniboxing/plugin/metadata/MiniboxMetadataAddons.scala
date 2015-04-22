@@ -15,6 +15,7 @@ package metadata
 
 import scala.collection.immutable.ListMap
 import language.implicitConversions
+import scala.reflect.NameTransformer
 
 trait MiniboxMetadataAddons {
   self: MiniboxInjectComponent =>
@@ -49,6 +50,15 @@ trait MiniboxMetadataAddons {
       sym hasAnnotation GenericClass
     }
     def isField = sym.isValue && !sym.isMethod
+    def isMbArrayMethod: Boolean = isSymbolMbArrayMethod(sym)
+    def isArray: Boolean = sym == ArrayClass
+    def isImplicitlyPredefMethod: Boolean = isPredefMemberNamed(sym, nme.implicitly)
+    def isCastSymbol: Boolean = definitions.isCastSymbol(sym)
+    def isIsInstanceOfAnyMethod: Boolean = sym == Any_isInstanceOf
+    def isArrowAssocMethod: Boolean = 
+      isPredefMemberNamed(sym, newTermName("ArrowAssoc")) || 
+      isPredefMemberNamed(sym, newTermName("any2ArrowAssoc")) || 
+      (sym.owner == getMemberClass(PredefModule, newTermName("ArrowAssoc")) && sym.name == newTermName(NameTransformer.encode("->")))
 
     private def tweakedKind = if (sym.isTrait) if (flagdata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
     private def tweakedName = if (sym.hasMeaninglessName) sym.owner.decodedName + sym.idString else sym.nameString
