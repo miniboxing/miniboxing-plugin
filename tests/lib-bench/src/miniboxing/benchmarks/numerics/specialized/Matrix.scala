@@ -1,14 +1,15 @@
-package miniboxing.benchmarks.numerics.generic
+package miniboxing.benchmarks.numerics.specialized
 
 import Predef.{any2stringadd => _, StringAdd => _, _}
 import scala.reflect.ClassTag
+import miniboxing.benchmarks.numerics.specialized.math.SpecializedNumeric
 
 class MatrixException(s:String) extends Exception
 
 /**
  * Matrix implementation in terms of a generic numeric type.
  */
-class Matrix[A: ClassTag](val data: Array[Array[A]], val rows: Int, val cols: Int)(implicit numeric: Numeric[A]) extends Serializable {
+class Matrix[@specialized A: ClassTag](val data: Array[Array[A]], val rows: Int, val cols: Int)(implicit numeric: SpecializedNumeric[A]) extends Serializable {
   import numeric._
   
   if (rows < 1) throw new MatrixException("illegal height")
@@ -18,11 +19,11 @@ class Matrix[A: ClassTag](val data: Array[Array[A]], val rows: Int, val cols: In
   def update(i: Int, j: Int, value: A) = data(i)(j) = value
   def createEmpty() = Matrix.empty[A](rows, cols)
   
-  def map[B: ClassTag](f:(A) => B)(implicit num: Numeric[B]) = 
+  def map[@specialized B: ClassTag](arg: A, f:(A) => B)(implicit num: SpecializedNumeric[B]) = 
     new Matrix[B](data.map(t => t.map(s => f(s))), rows, cols)
 
   /* combine two matrices element-by-element */
-  def combine(rhs:Matrix[A], f:(A, A) => A) = {
+  def combine(arg: A, rhs:Matrix[A], f:(A, A) => A) = {
     val result = createEmpty
     for (i <- 0 until rows; j <- 0 until cols) {
       result(i, j) = f(this(i, j), rhs(i, j))
@@ -31,16 +32,16 @@ class Matrix[A: ClassTag](val data: Array[Array[A]], val rows: Int, val cols: In
   }
 
   /* add a scalar value to each element */
-  def +(a:A)():Matrix[A] = map(_ + a)
+  def +(a:A)():Matrix[A] = map(a, _ + a)
 
   /* add two matrices */
-  def +(rhs:Matrix[A]):Matrix[A] = combine(rhs, _ + _)
+  def +(arg: A, rhs:Matrix[A]):Matrix[A] = combine(arg, rhs, _ + _)
 
   /* multiply each element by a scalar value */
-  def *(a:A):Matrix[A] = map(_ * a)
+  def *(a:A):Matrix[A] = map(a, _ * a)
   
   /* multiply two matrices */
-  def *(rhs:Matrix[A]):Matrix[A] = {
+  def *(arg: A, rhs:Matrix[A]):Matrix[A] = {
 
     /* make sure this and rhs are compatible */
     if (this.rows != rhs.cols || this.cols != rhs.rows) {
@@ -78,11 +79,11 @@ class Matrix[A: ClassTag](val data: Array[Array[A]], val rows: Int, val cols: In
 }
 
 object Matrix {
-  def empty[A: ClassTag](rows:Int, cols:Int)(implicit numeric: Numeric[A]) = {
+  def empty[@specialized A: ClassTag](rows:Int, cols:Int)(implicit numeric: SpecializedNumeric[A]) = {
     new Matrix(Array.ofDim[A](rows, cols), rows, cols)
   }
 
-  def apply[A: ClassTag](data:Array[Array[A]], rows:Int, cols:Int)(implicit numeric: Numeric[A]) = {
+  def apply[@specialized A: ClassTag](data:Array[Array[A]], rows:Int, cols:Int)(implicit numeric: SpecializedNumeric[A]) = {
     new Matrix(data, rows, cols)
   }
 }

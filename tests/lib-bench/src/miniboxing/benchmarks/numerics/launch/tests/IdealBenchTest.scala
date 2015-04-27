@@ -5,8 +5,9 @@ import scala.util.Random
 
 trait IdealBenchTest extends BaseTest {
 
-  def testIdeal(matrix: Array[Array[Double]], rows: Int, cols: Int) = {
+  def testIdeal(matrix: Array[Array[Double]], rows: Int, cols: Int, rowsForMul: Int, colsForMul: Int) = {
     val m = new DMatrix(matrix, rows, cols)
+    val mMul = new DMatrix(matrix, rowsForMul, colsForMul)
     test(
       "ideal",
       "scalar_addition",
@@ -32,7 +33,7 @@ trait IdealBenchTest extends BaseTest {
       "ideal",
       "matrix_multiplication",
       _ => (),
-      m * m,
+      mMul * mMul,
       () => {}
     )
   }

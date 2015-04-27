@@ -32,7 +32,7 @@ class Matrix[@miniboxed A: ClassTag](val data: Array[Array[A]], val rows: Int, v
   }
 
   /* add a scalar value to each element */
-  def +(a:A):Matrix[A] = map(numeric.plus(_, a))
+  def +(a:A):Matrix[A] = map(_ + a)
 
   /* add two matrices */
   def +(rhs:Matrix[A]):Matrix[A] = combine(rhs, numeric.plus(_, _))
@@ -54,12 +54,20 @@ class Matrix[@miniboxed A: ClassTag](val data: Array[Array[A]], val rows: Int, v
     val result = Matrix.empty[A](rows, rcols)
 
     /* loop over the cells in the result matrix */
-    for(y <- 0 until rrows; x <- 0 until rcols) {
-      /* for each pair of values in this-row/rhs-column, multiply them
-       * and then sum to get the result value for this cell. */
-      result(y, x) = (0 until n).foldLeft(numeric.zero) {
-        case (sum, i) => numeric.plus(sum, numeric.times(this(y, i), rhs(i, x)))
+    var i: Int = 0
+    while (i < rrows) {
+      var j: Int = 0
+      while (j < rcols) {
+        var sum: A = numeric.zero
+        var k: Int = 0
+        while (k < n) {
+          sum = sum + this(i, k) * rhs(k, j)
+          k = k + 1
+        }
+        result(i, j) = sum
+        j = j + 1
       }
+      i = i + 1
     }
     result
   }

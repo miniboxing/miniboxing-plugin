@@ -54,10 +54,20 @@ class DMatrix(val data:Array[Array[Double]], val rows:Int, val cols:Int) extends
 
     val result = DMatrix.empty(rrows, rcols)
 
-    for(y <- 0 until rrows; x <- 0 until rcols) {
-      result(y, x) = (0 until n).foldLeft(0.0) {
-        case (sum, i) => sum + (this(y, i) * rhs(i, x))
+    var i: Int = 0
+    while (i < rrows) {
+      var j: Int = 0
+      while (j < rcols) {
+        var sum: Double = 0.0
+        var k: Int = 0
+        while (k < n) {
+          sum = sum + this(i, k) * rhs(k, j)
+          k = k + 1
+        }
+        result(i, j) = sum
+        j = j + 1
       }
+      i = i + 1
     }
 
     result
