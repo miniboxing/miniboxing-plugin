@@ -145,7 +145,7 @@ package <empty> {
       val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag));
       val t4: Int = tuple3._1();
       val t5: Double = tuple4._1();
-      val t6: Double = MiniboxedTuple.this.tuple2_accessor_2_double[Double, X](8, tuple4);
+      val t6: Double = MiniboxedTuple.this.tuple2_accessor_2_double[Double, X](X_TypeTag, tuple4);
       ()
     };
     def MbTupleAccessors_n_J[X](X_TypeTag: Byte, x: Long): Unit = {
@@ -158,10 +158,9 @@ package <empty> {
       val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag));
       val t4: Int = tuple3._1();
       val t5: Double = tuple4._1();
-      val t6: Long = MiniboxedTuple.this.tuple2_accessor_2_long[Double, X](8, tuple4);
+      val t6: Long = MiniboxedTuple.this.tuple2_accessor_2_long[Double, X](X_TypeTag, tuple4);
       ()
     }
   }
 }
-
 [Now checking: minibox-commit]

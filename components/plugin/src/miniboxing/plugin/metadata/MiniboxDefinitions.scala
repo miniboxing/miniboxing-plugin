@@ -63,7 +63,7 @@ trait MiniboxDefinitions {
     StorageSym setInfoAndEnter PolyType(List(TypeParamSym), ClassInfoType(List(AnnotationTpe, TypeConstrTpe), newScope, StorageSym))
     StorageSym
   }
-  
+
   lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
 
 //  lazy val MangledNameClass = {
@@ -238,9 +238,9 @@ trait MiniboxDefinitions {
     val Miniboxed(repr) = spec
     withStorage(tparam, repr)
   }
-  
+
   // Tuples
-  
+
   lazy val Tuple1Class = definitions.TupleClass(1)
   lazy val Tuple2Class = definitions.TupleClass(2)
   lazy val Tuple1_1 = definitions.getMember(Tuple1Class, newTermName("_1"))
@@ -252,7 +252,7 @@ trait MiniboxDefinitions {
 
 
   lazy val MbTupleModule = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedTuple")
-  
+
   def tupleConstructor(n: Int, repr: List[String]) = definitions.getMember(MbTupleModule, newTermName(s"newTuple$n${repr.map("_"+_).mkString}"))
   lazy val MbTuple1Constructors: Map[Symbol, Symbol] =
     Map(LongClass   -> tupleConstructor(1, List("long")),
@@ -262,27 +262,27 @@ trait MiniboxDefinitions {
         (LongClass, DoubleClass)   -> tupleConstructor(2, List("long", "double")),
         (DoubleClass, LongClass)   -> tupleConstructor(2, List("double", "long")),
         (DoubleClass, DoubleClass) -> tupleConstructor(2, List("double", "double")))
- 
+
   def tupleAccessor(n: Int, field: Int, repr: String) = definitions.getMember(MbTupleModule, newTermName(s"tuple${n}_accessor_${field}_${repr}"))
   lazy val MbTupleAccessor: Map[Symbol, Map[Symbol, Symbol]] =
     Map(
-      Tuple1_1 -> 
+      Tuple1_1 ->
         Map(
           LongClass   -> tupleAccessor(1, 1, "long"),
           DoubleClass -> tupleAccessor(1, 1, "double")
         ),
-      Tuple2_1 -> 
+      Tuple2_1 ->
         Map(
           LongClass   -> tupleAccessor(2, 1, "long"),
           DoubleClass -> tupleAccessor(2, 1, "double")
         ),
-      Tuple2_2 -> 
+      Tuple2_2 ->
         Map(
           LongClass   -> tupleAccessor(2, 2, "long"),
           DoubleClass -> tupleAccessor(2, 2, "double")
         )
     )
-        
+
   // filled in from outside
   def flag_two_way: Boolean
 }

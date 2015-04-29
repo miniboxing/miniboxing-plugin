@@ -43,7 +43,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
                              "be generic and will box.")
       }
-      
+
       if (flag_rewire_tuples && !flag_two_way) {
         mbTuple_transform = false
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow " +
@@ -277,37 +277,38 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:", typeSymbol.isGenericAnnotated)
                 super.transform(tree)
             }
- 
+
           // Tuple1 constructor
           case Apply(Select(New(tpt), nme.CONSTRUCTOR), List(MiniboxToBox(t1, _, repr1))) if mbTuple_transform && (tpt.tpe.typeSymbol == Tuple1Class) =>
-            val targ1 = tpt.tpe.typeArgs(0)
+            val targ1 = tpt.tpe.typeArgs(0).dealiasWiden
             val tags = minibox.typeTagTrees(currentOwner)
-            val ttag1 = tags(targ1.typeSymbol)
+            val ttag1 = tags(targ1.typeSymbol.deSkolemize)
             val ctor = MbTuple1Constructors(repr1)
             val tree1 = gen.mkMethodCall(ctor, List(targ1), List(ttag1, transform(t1)))
             localTyper.typed(tree1)
-            
+
           // Tuple2 constructor
           case Apply(Select(New(tpt), nme.CONSTRUCTOR), List(MiniboxToBox(t1, _, repr1), MiniboxToBox(t2, _, repr2))) if mbTuple_transform && (tpt.tpe.typeSymbol == Tuple2Class) =>
-            val targ1 = tpt.tpe.typeArgs(0)
-            val targ2 = tpt.tpe.typeArgs(1)
+            val targ1 = tpt.tpe.typeArgs(0).dealiasWiden
+            val targ2 = tpt.tpe.typeArgs(1).dealiasWiden
             val tags = minibox.typeTagTrees(currentOwner)
-            val ttag1 = tags(targ1.typeSymbol)
-            val ttag2 = tags(targ2.typeSymbol)
+            val ttag1 = tags(targ1.typeSymbol.deSkolemize)
+            val ttag2 = tags(targ2.typeSymbol.deSkolemize)
             val ctor = MbTuple2Constructors((repr1,repr2))
             val tree1 = gen.mkMethodCall(ctor, List(targ1, targ2), List(ttag1, ttag2, transform(t1), transform(t2)))
             localTyper.typed(tree1)
-          
-          // Tuple accessors
+
+          // Tuple accessor (both _1 and _2)
            case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
             val targs = tuple.tpe.widen.typeArgs
             assert(targs.length == numberOfTargsForTupleXClass(tuple.tpe.typeSymbol), "targs don't match for " + tree0 + ": " + targs)
+            val targ = if (field == nme._1) targs(0) else targs(1)
             val tags = minibox.typeTagTrees(currentOwner)
-            val ttag = tags(targs(0).typeSymbol)
+            val ttag = tags(targ.typeSymbol.deSkolemize)
             val accessor = MbTupleAccessor(tree.symbol)(repr)
             val tree1 = gen.mkMethodCall(accessor, targs, List(ttag, tuple))
             localTyper.typed(tree1)
-             
+
           case BoxToMinibox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tree1 =
