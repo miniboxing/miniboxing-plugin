@@ -28,10 +28,14 @@ public class MbArrayOpts {
   }
 
   public static <T> double mbArray_apply_D(MbArray<T> mbArray, int index, byte T_Tag) {
-    if (mbArray instanceof MbArray_D<?>)
-      return ((MbArray_D<?>)mbArray).apply_D(index);
-    else
-      return MiniboxConversionsDouble.box2minibox_tt(mbArray.apply(index), T_Tag);
+    switch(T_Tag) {
+    case MiniboxConstants.DOUBLE:
+    	return ((MbArray_D<?>)mbArray).apply_D(index);
+    case MiniboxConstants.FLOAT:
+    	return ((MbArray_F<?>)mbArray).apply_D(index);
+    default:
+    	return MiniboxConversionsDouble.box2minibox_tt(mbArray.apply(index), T_Tag);
+    }
   }
 
   public static final <T> void mbArray_update_J(MbArray<T> mbArray, int index, long value, byte T_Tag) {
@@ -64,10 +68,16 @@ public class MbArrayOpts {
   }
 
   public static <T> void mbArray_update_D(MbArray<T> mbArray, int index, double value, byte T_Tag) {
-    if (mbArray instanceof MbArray_D<?>)
-      ((MbArray_D<?>)mbArray).update_D(index, value);
-    else
-      mbArray.update(index, MiniboxConversionsDouble.<T>minibox2box(value, T_Tag));
+	switch(T_Tag) {
+	case MiniboxConstants.DOUBLE:
+		((MbArray_D<?>)mbArray).update_D(index, value);
+		break;
+	case MiniboxConstants.FLOAT:
+		((MbArray_F<?>)mbArray).update_D(index, value);
+		break;
+	default:
+		mbArray.update(index, MiniboxConversionsDouble.<T>minibox2box(value, T_Tag));
+	}
   }
 
   @SuppressWarnings("unchecked")
@@ -94,7 +104,14 @@ public class MbArrayOpts {
 
   @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_empty_D(int size, byte T_Tag) {
-    return new MbArray_D<T>(T_Tag, size);
+    switch(T_Tag){
+    case MiniboxConstants.DOUBLE:
+      return new MbArray_D<T>(size);
+    case MiniboxConstants.FLOAT:
+      return new MbArray_F<T>(size);
+    default:
+      return new MbArray_L<T>(size);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -121,6 +138,13 @@ public class MbArrayOpts {
 
   @SuppressWarnings("unchecked")
   public static <T> MbArray<T> mbArray_clone_D(Object array, byte T_Tag) {
-    return new MbArray_D<T>(T_Tag, array);
+    switch(T_Tag){
+    case MiniboxConstants.DOUBLE:
+      return new MbArray_D<T>(array);
+    case MiniboxConstants.FLOAT:
+      return new MbArray_F<T>(array);
+    default:
+      return new MbArray_L<T>(array);
+    }
   }
 }

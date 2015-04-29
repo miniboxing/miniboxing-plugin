@@ -57,7 +57,7 @@ class MbArray_I[T](private[array] final val array: Array[Int]) extends MbArray[T
   def update_J(idx: Int, value: Long): Unit = array(idx) = MiniboxConversions.minibox2int(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_I[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_I: MbArray_I[T] => System.arraycopy(array, srcPos, dest_I.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -89,7 +89,7 @@ class MbArray_S[T](private[array] final val array: Array[Short]) extends MbArray
   def update_J(idx: Int, value: Long): Unit = array(idx) = MiniboxConversions.minibox2short(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_S[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_S: MbArray_S[T] => System.arraycopy(array, srcPos, dest_S.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -121,7 +121,7 @@ class MbArray_B[T](private[array] final val array: Array[Byte]) extends MbArray[
   def update_J(idx: Int, value: Long): Unit = array(idx) = MiniboxConversions.minibox2byte(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_B[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_B: MbArray_B[T] => System.arraycopy(array, srcPos, dest_B.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -153,7 +153,7 @@ class MbArray_Z[T](private[array] final val array: Array[Boolean]) extends MbArr
   def update_J(idx: Int, value: Long): Unit = array(idx) = MiniboxConversions.minibox2boolean(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_Z[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_Z: MbArray_Z[T] => System.arraycopy(array, srcPos, dest_Z.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -185,7 +185,7 @@ class MbArray_C[T](private[array] final val array: Array[Char]) extends MbArray[
   def update_J(idx: Int, value: Long): Unit = array(idx) = MiniboxConversions.minibox2char(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_C[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_C: MbArray_C[T] => System.arraycopy(array, srcPos, dest_C.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -217,7 +217,7 @@ class MbArray_V[T](private[array] final val array: Array[Unit]) extends MbArray[
   def update_J(idx: Int, value: Long): Unit = array(idx) = Unit // TODO: WTF
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
-      case dest_J: MbArray_V[T] => System.arraycopy(array, srcPos, dest_J.array, destPos, length)
+      case dest_V: MbArray_V[T] => System.arraycopy(array, srcPos, dest_V.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
@@ -255,34 +255,65 @@ class MbArray_J[T](private[array] final val array: Array[Long]) extends MbArray[
   }
 }
 
+class MbArray_D[T](private[array] final val array: Array[Double]) extends MbArray[T] {
 
-class MbArray_D[T](T_Tag: Byte, private[array] final val array: Array[Double]) extends MbArray[T] {
-
-  def this(T_Tag: Byte, array: Array[T]) =
-    this(T_Tag, {
+  def this(array: Array[T]) =
+    this({
       val array2 = new Array[Double](array.length)
       var index = 0
       while (index < array.length) {
-        array2(index) = MiniboxConversionsDouble.box2minibox_tt(array(index), T_Tag)
+        array2(index) = array(index).asInstanceOf[Double]
         index += 1
       }
       array2
     })
 
-  def this(T_Tag: Byte, size: Int) =
-    this(T_Tag, new Array[Double](size))
+  def this(size: Int) =
+    this(new Array[Double](size))
 
-  def apply(idx: Int): T = MiniboxConversionsDouble.minibox2box(array(idx), T_Tag)
-  def update(idx: Int, value: T): Unit = array(idx) = MiniboxConversionsDouble.box2minibox_tt(value, T_Tag)
-  override def clone: MbArray[T] = new MbArray_D[T](T_Tag, array.clone())
+  def apply(idx: Int): T = array(idx).asInstanceOf[T]
+  def update(idx: Int, value: T): Unit = array(idx) = value.asInstanceOf[Double]
+  override def clone: MbArray[T] = new MbArray_D[T](array.clone())
   def length: Int = array.length
 
   // optimized accessors:
-  def apply_D(idx: Int): Double = array(idx)
-  def update_D(idx: Int, value: Double): Unit = array(idx) = value
+  def apply_D(idx: Int): Double = MiniboxConversionsDouble.double2minibox(array(idx))
+  def update_D(idx: Int, value: Double): Unit = array(idx) = MiniboxConversionsDouble.minibox2double(value)
   override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
     dest match {
       case dest_D: MbArray_D[T] => System.arraycopy(array, srcPos, dest_D.array, destPos, length)
+      case _ => super.arraycopy(srcPos, dest, destPos, length)
+    }
+  }
+}
+
+class MbArray_F[T](private[array] final val array: Array[Float]) extends MbArray[T] {
+
+  def this(array: Array[T]) =
+    this({
+      val array2 = new Array[Float](array.length)
+      var index = 0
+      while (index < array.length) {
+        array2(index) = array(index).asInstanceOf[Float]
+        index += 1
+      }
+      array2
+    })
+
+  def this(size: Int) =
+    this(new Array[Float](size))
+
+  def apply(idx: Int): T = array(idx).asInstanceOf[T]
+  def update(idx: Int, value: T): Unit = array(idx) = value.asInstanceOf[Float]
+  override def clone: MbArray[T] = new MbArray_F[T](array.clone())
+  def length: Int = array.length
+
+  // optimized accessors:
+  def apply_D(idx: Int): Double = MiniboxConversionsDouble.float2minibox(array(idx))
+  def update_D(idx: Int, value: Double): Unit = array(idx) = MiniboxConversionsDouble.minibox2float(value)
+  override def arraycopy(srcPos: Int, dest: MbArray[T], destPos: Int, length: Int) = {
+    dest match {
+      case dest_F: MbArray_F[T] => System.arraycopy(array, srcPos, dest_F.array, destPos, length)
       case _ => super.arraycopy(srcPos, dest, destPos, length)
     }
   }
