@@ -27,7 +27,7 @@ public class MbArrayOpts {
     }
   }
 
-  public static <T> double mbArray_apply_D(MbArray<T> mbArray, int index, byte T_Tag) {
+  public static final <T> double mbArray_apply_D(MbArray<T> mbArray, int index, byte T_Tag) {
     switch(T_Tag) {
     case MiniboxConstants.DOUBLE:
     	return ((MbArray_D<?>)mbArray).apply_D(index);
@@ -67,7 +67,7 @@ public class MbArrayOpts {
     }
   }
 
-  public static <T> void mbArray_update_D(MbArray<T> mbArray, int index, double value, byte T_Tag) {
+  public static final <T> void mbArray_update_D(MbArray<T> mbArray, int index, double value, byte T_Tag) {
 	switch(T_Tag) {
 	case MiniboxConstants.DOUBLE:
 		((MbArray_D<?>)mbArray).update_D(index, value);
@@ -103,7 +103,7 @@ public class MbArrayOpts {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> MbArray<T> mbArray_empty_D(int size, byte T_Tag) {
+  public static final <T> MbArray<T> mbArray_empty_D(int size, byte T_Tag) {
     switch(T_Tag){
     case MiniboxConstants.DOUBLE:
       return new MbArray_D<T>(size);
@@ -137,7 +137,7 @@ public class MbArrayOpts {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> MbArray<T> mbArray_clone_D(Object array, byte T_Tag) {
+  public static final <T> MbArray<T> mbArray_clone_D(Object array, byte T_Tag) {
     switch(T_Tag){
     case MiniboxConstants.DOUBLE:
       return new MbArray_D<T>(array);
