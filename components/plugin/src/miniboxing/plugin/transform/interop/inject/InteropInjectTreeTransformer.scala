@@ -25,7 +25,7 @@ trait InteropInjectTreeTransformer extends TypingTransformers {
   import definitions._
 
   def newTransformer(unit: CompilationUnit) =
-    if (flag_rewire_functionX_values) {
+    if (flags.flag_rewire_functionX_values) {
       if (delambdafySupport.isDelambdafyEnabled)
         // NOTE: The delambdafy transformation is incompatible with MiniboxedFunctionX-es.
         global.reporter.warning(unit.body.pos,

@@ -143,7 +143,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             val res = localTyper.typedOperator(tree1)
             res
 
-          case Select(fun, _) if flag_rewire_functionX_application &&
+          case Select(fun, _) if flags.flag_rewire_functionX_application &&
                                  directMethodSymbols.contains(tree0.symbol) =>
 
             // find the type argument

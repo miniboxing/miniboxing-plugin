@@ -29,6 +29,31 @@ import infrastructure._
 import tweakerasure._
 import scala.tools.nsc.settings.ScalaVersion
 
+trait Flags {
+  def flag_log: Boolean
+  def flag_debug: Boolean
+  def flag_stats: Boolean
+  def flag_hijack_spec: Boolean
+  def flag_spec_no_opt: Boolean
+  def flag_loader_friendly: Boolean
+  def flag_two_way: Boolean
+  def flag_rewire_functionX_values: Boolean
+  def flag_rewire_functionX_repres: Boolean
+  def flag_rewire_functionX_bridges: Boolean
+  def flag_mark_all: Boolean
+  def flag_strict_typechecking: Boolean
+  def flag_strip_miniboxed: Boolean
+  def flag_create_local_specs: Boolean
+  def flag_strict_warnings: Boolean
+  def flag_strict_warnings_outside: Boolean
+  def flag_warn_mbarrays: Boolean
+  def flag_rewire_functionX_application: Boolean
+  def flag_rewire_mbarray: Boolean
+  def flag_rewire_tuples: Boolean
+  def flag_constructor_spec: Boolean
+}
+
+
 /** Specialization hijacking component `@specialized T` -> `@miniboxed T` */
 trait HijackComponent extends
     PluginComponent
@@ -36,9 +61,7 @@ trait HijackComponent extends
     with MiniboxDefinitions
     with ScalacCrossCompilingLayer {
 
-  def flag_hijack_spec: Boolean
-  def flag_mark_all: Boolean
-  def flag_strip_miniboxed: Boolean
+  def flags: Flags
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -55,10 +78,7 @@ trait InteropInjectComponent extends
   def afterInteropInject[T](op: => T): T = global.afterPhase(interopInjectPhase)(op)
   def beforeInteropInject[T](op: => T): T = global.beforePhase(interopInjectPhase)(op)
 
-  def flag_rewire_functionX_values: Boolean
-  def flag_rewire_functionX_repres: Boolean
-  def flag_rewire_functionX_bridges: Boolean
-  def flag_rewire_functionX_application: Boolean
+  def flags: Flags
 }
 
 /** Tree preparer before retyping the tree */
@@ -71,6 +91,8 @@ trait PrepareComponent extends
 
   def afterPrepare[T](op: => T): T = global.afterPhase(preparePhase)(op)
   def beforePrepare[T](op: => T): T = global.beforePhase(preparePhase)(op)
+
+  def flags: Flags
 }
 
 /** Introduces explicit bridge methods to respect the object model
@@ -88,6 +110,8 @@ trait InteropBridgeComponent extends
   def beforeInteropBridge[T](op: => T): T = global.beforePhase(interopBridgePhase)(op)
   def afterInteropBridgeNext[T](op: => T): T = global.afterPhase(interopBridgePhase.next)(op)
   def beforeInteropBridgeNext[T](op: => T): T = global.beforePhase(interopBridgePhase.next)(op)
+
+  def flags: Flags
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -101,10 +125,10 @@ trait InteropCoerceComponent extends
 
   def interopCoercePhase: StdPhase
 
-  def flag_strict_typechecking: Boolean
-
   def afterInteropCoerce[T](op: => T): T = global.afterPhase(interopCoercePhase)(op)
   def beforeInteropCoerce[T](op: => T): T = global.beforePhase(interopCoercePhase)(op)
+
+  def flags: Flags
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -121,6 +145,8 @@ trait InteropCommitComponent extends
 
   def afterInteropCommit[T](op: => T): T = global.afterPhase(interopCommitPhase)(op)
   def beforeInteropCommit[T](op: => T): T = global.beforePhase(interopCommitPhase)(op)
+
+  def flags: Flags
 }
 
 /** Injecticator component `def t -> def t_L, def t_J` */
@@ -146,17 +172,7 @@ trait MiniboxInjectComponent extends
   def afterMiniboxInject[T](op: => T): T = global.afterPhase(mboxInjectPhase)(op)
   def beforeMiniboxInject[T](op: => T): T = global.beforePhase(mboxInjectPhase)(op)
 
-  def flag_log: Boolean
-  def flag_debug: Boolean
-  def flag_stats: Boolean
-  def flag_spec_no_opt: Boolean
-  def flag_loader_friendly: Boolean
-  def flag_two_way: Boolean
-  def flag_strict_warnings: Boolean
-  def flag_strict_warnings_outside: Boolean
-  def flag_warn_mbarrays: Boolean
-  def flag_create_local_specs: Boolean
-  def flag_constructor_spec: Boolean
+  def flags: Flags
 }
 
 /** Introduces explicit bridge methods to respect the object model
@@ -174,6 +190,8 @@ trait MiniboxBridgeComponent extends
   def beforeMiniboxBridge[T](op: => T): T = global.beforePhase(mboxBridgePhase)(op)
   def afterMiniboxBridgeNext[T](op: => T): T = global.afterPhase(mboxBridgePhase.next)(op)
   def beforeMiniboxBridgeNext[T](op: => T): T = global.beforePhase(mboxBridgePhase.next)(op)
+
+  def flags: Flags
 }
 
 
@@ -189,10 +207,10 @@ trait MiniboxCoerceComponent extends
 
   def mboxCoercePhase: StdPhase
 
-  def flag_strict_typechecking: Boolean
-
   def afterMiniboxCoerce[T](op: => T): T = global.afterPhase(mboxCoercePhase)(op)
   def beforeMiniboxCoerce[T](op: => T): T = global.beforePhase(mboxCoercePhase)(op)
+
+  def flags: Flags
 }
 
 
@@ -212,12 +230,7 @@ trait MiniboxCommitComponent extends
   def afterMiniboxCommit[T](op: => T): T = global.afterPhase(mboxCommitPhase)(op)
   def beforeMiniboxCommit[T](op: => T): T = global.beforePhase(mboxCommitPhase)(op)
 
-  def flag_log: Boolean
-  def flag_debug: Boolean
-  def flag_stats: Boolean
-  def flag_two_way: Boolean
-  def flag_rewire_mbarray: Boolean
-  def flag_rewire_tuples: Boolean
+  def flags: Flags
 }
 
 trait PreTyperComponent extends
@@ -236,6 +249,8 @@ trait PostTyperComponent extends
   import global._
   import global.Flag._
   val minibox: MiniboxInjectComponent { val global: PostTyperComponent.this.global.type }
+
+  def flags: Flags
 }
 
 /** Tree preparer before retyping the tree */
@@ -250,6 +265,8 @@ trait TweakErasureComponent extends
 
   def afterTweakErasure[T](op: => T): T = global.afterPhase(tweakErasurePhase)(op)
   def beforeTweakErasure[T](op: => T): T = global.beforePhase(tweakErasurePhase)(op)
+
+  def flags: Flags
 }
 
 
@@ -261,21 +278,6 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   val description = "Specializes generic classes"
 
   lazy val components = {
-    if (!flag_no_logo) {
-
-      def printLogo() =
-        Console.println("""
-          |     _____   .__         .__ ____.                     .__ scala-miniboxing.org
-          |    /     \  |__|  ____  |__|\_  |__    _____  ___  ___|__|  ____    _____
-          |   /  \ /  \ |  | /    \ |  | |  __ \  /  ___\ \  \/  /|  | /    \  /  ___\
-          |  /    Y    \|  ||   |  \|  | |  \_\ \(  (_)  ) >    < |  ||   |  \(  /_/  )
-          |  \____|__  /|__||___|  /|__| |____  / \_____/ /__/\_ \|__||___|  / \___  /
-          |          \/          \/           \/                \/         \/ /_____/
-          | Copyright (c) 2011-2015 Scala Team, École polytechnique fédérale de Lausanne.""".stripMargin)
-
-      // printLogo()
-    }
-
     // and here are the compiler phases miniboxing introduces:
     List[PluginComponent](PreTyperPhase,
                           PostTyperPhase,
@@ -296,30 +298,34 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   global.addAnnotationChecker(MiniboxCoercePhase.StorageAnnotationChecker)
   global.addAnnotationChecker(InteropCoercePhase.mbFunctionAnnotationChecker)
 
-  var flag_log = sys.props.get("miniboxing.log").isDefined
-  var flag_debug = sys.props.get("miniboxing.debug").isDefined
-  var flag_stats = sys.props.get("miniboxing.stats").isDefined
-  var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
-  var flag_spec_no_opt = sys.props.get("miniboxing.Commit.no-opt").isDefined
-  var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
-  var flag_no_logo = sys.props.get("miniboxing.no-logo").isDefined
-  var flag_two_way = true
-  var flag_rewire_functionX_values = true
-  var flag_rewire_functionX_repres = true
-  var flag_rewire_functionX_bridges = true
-  var flag_mark_all = false // type parameters as @miniboxed
-  var flag_strict_typechecking = false
-  var flag_strip_miniboxed = false
-  var flag_create_local_specs = true
-  var flag_strict_warnings = true
-  var flag_strict_warnings_outside = false
-  var flag_warn_mbarrays = true
-  var flag_rewire_functionX_application = true
-  var flag_rewire_mbarray = true
-  var flag_rewire_tuples = true
-  var flag_constructor_spec = true
+  object MiniboxingFlags extends Flags {
+    var flag_log = sys.props.get("miniboxing.log").isDefined
+    var flag_debug = sys.props.get("miniboxing.debug").isDefined
+    var flag_stats = sys.props.get("miniboxing.stats").isDefined
+    var flag_hijack_spec = sys.props.get("miniboxing.hijack.spec").isDefined
+    var flag_spec_no_opt = sys.props.get("miniboxing.Commit.no-opt").isDefined
+    var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
+    var flag_two_way = true
+    var flag_rewire_functionX_values = true
+    var flag_rewire_functionX_repres = true
+    var flag_rewire_functionX_bridges = true
+    var flag_mark_all = false // type parameters as @miniboxed
+    var flag_strict_typechecking = false
+    var flag_strip_miniboxed = false
+    var flag_create_local_specs = true
+    var flag_strict_warnings = true
+    var flag_strict_warnings_outside = false
+    var flag_warn_mbarrays = true
+    var flag_rewire_functionX_application = true
+    var flag_rewire_mbarray = true
+    var flag_rewire_tuples = true
+    var flag_constructor_spec = true
+  }
 
   override def processOptions(options: List[String], error: String => Unit) {
+
+    import MiniboxingFlags._
+
     for (option <- options) {
       option.toLowerCase() match {
 
@@ -337,8 +343,6 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_spec_no_opt = true
         case "loader" =>
           flag_loader_friendly = true
-        case "no-logo" =>
-          flag_no_logo = true
         case "warn" =>
           global.reporter.echo("Miniboxing plugin warning: Showing performance warnings became the default behavior " +
                                "of the miniboxing plugin. To hide warnings, please use the -P:minibox:warn-off " +
@@ -458,15 +462,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(ExtensionMethodsPhaseName)
     val phaseName = HijackPhaseName
 
-    def flag_hijack_spec = Minibox.this.flag_hijack_spec
-    def flag_two_way = Minibox.this.flag_two_way
-    def flag_mark_all = Minibox.this.flag_mark_all
-    def flag_strip_miniboxed = Minibox.this.flag_strip_miniboxed
-
     // no change
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = tree
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object InteropInjectPhase extends InteropInjectComponent {
@@ -475,16 +476,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(PatternMatcherPhaseName)
     val phaseName = InteropInjectPhaseName
 
-    def flag_rewire_functionX_values: Boolean       = Minibox.this.flag_rewire_functionX_values
-    def flag_rewire_functionX_repres: Boolean       = Minibox.this.flag_rewire_functionX_repres
-    def flag_rewire_functionX_bridges: Boolean      = Minibox.this.flag_rewire_functionX_bridges
-    def flag_rewire_functionX_application: Boolean  = Minibox.this.flag_rewire_functionX_application
-
     var interopInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       interopInjectPhase = new Phase(prev)
       interopInjectPhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object PreparePhase extends PrepareComponent {
@@ -498,6 +496,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       preparePhase = new PreparePhaseImpl(prev)
       preparePhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object InteropBridgePhase extends {
@@ -513,6 +513,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopBridgePhase = new BridgePhase(prev.asInstanceOf[StdPhase])
       interopBridgePhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object InteropCoercePhase extends {
@@ -523,13 +525,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(InteropBridgePhaseName)
     val phaseName = InteropCoercePhaseName
 
-    def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
-
     var interopCoercePhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       interopCoercePhase = new CoercePhase(prev)
       interopCoercePhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object InteropCommitPhase extends {
@@ -547,6 +549,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopCommitPhase = new Phase(prev)
       interopCommitPhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object MiniboxInjectPhase extends MiniboxInjectComponent {
@@ -554,18 +558,6 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val runsAfter = Nil
     override val runsRightAfter = Some(PostTyperPhaseName)
     val phaseName = MiniboxInjectPhaseName
-
-    def flag_log = Minibox.this.flag_log
-    def flag_debug = Minibox.this.flag_debug
-    def flag_stats = Minibox.this.flag_stats
-    def flag_spec_no_opt = Minibox.this.flag_spec_no_opt
-    def flag_loader_friendly = Minibox.this.flag_loader_friendly
-    def flag_two_way = Minibox.this.flag_two_way
-    def flag_create_local_specs = Minibox.this.flag_create_local_specs
-    def flag_strict_warnings = Minibox.this.flag_strict_warnings
-    def flag_strict_warnings_outside = Minibox.this.flag_strict_warnings_outside
-    def flag_warn_mbarrays = Minibox.this.flag_warn_mbarrays
-    def flag_constructor_spec = Minibox.this.flag_constructor_spec
 
     var mboxInjectPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
@@ -581,6 +573,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         tree1
       }
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object MiniboxBridgePhase extends {
@@ -596,6 +590,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       mboxBridgePhase = new BridgePhase(prev.asInstanceOf[minibox.Phase])
       mboxBridgePhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object MiniboxCoercePhase extends {
@@ -606,13 +602,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(MiniboxBridgePhaseName)
     val phaseName = MiniboxCoercePhaseName
 
-    def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
-
     var mboxCoercePhase : StdPhase = _
     def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       mboxCoercePhase = new CoercePhase(prev.asInstanceOf[StdPhase])
       mboxCoercePhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object MiniboxCommitPhase extends {
@@ -624,18 +620,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(MiniboxCoercePhaseName)
     val phaseName = MiniboxCommitPhaseName
 
-    def flag_log = Minibox.this.flag_log
-    def flag_debug = Minibox.this.flag_debug
-    def flag_stats = Minibox.this.flag_stats
-    def flag_two_way = Minibox.this.flag_two_way
-    def flag_rewire_mbarray = Minibox.this.flag_rewire_mbarray
-    def flag_rewire_tuples = Minibox.this.flag_rewire_tuples
-
     var mboxCommitPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
       mboxCommitPhase = new Phase(prev)
       mboxCommitPhase
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object PreTyperPhase extends {
@@ -655,6 +646,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         minibox.preMiniboxingFlags()
       }
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object PostTyperPhase extends {
@@ -675,6 +668,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         minibox.postMiniboxingFlags()
       }
     }
+
+    val flags = MiniboxingFlags
   }
 
   private object TweakErasurePhase extends {
@@ -691,5 +686,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       tweakErasurePhase = new TweakErasurePhase(_prev)
       tweakErasurePhase
     }
+
+    val flags = MiniboxingFlags
   }
 }

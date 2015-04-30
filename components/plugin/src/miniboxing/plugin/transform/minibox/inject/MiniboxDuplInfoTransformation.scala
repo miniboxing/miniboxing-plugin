@@ -408,7 +408,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
       // step1: Compute the new name
       val variantClassParamValues = variants.typeParamValues(stemClass, spec)
-      val baseName = if (flag_loader_friendly) newTermName(stemClass.name.toString + "_class") else stemClass.name
+      val baseName = if (flags.flag_loader_friendly) newTermName(stemClass.name.toString + "_class") else stemClass.name
       val variantClassName = specializedName(baseName, variantClassParamValues).toTypeName
       val bytecodeClass = stemClass.owner.info.decl(variantClassName)
       // Same as SI-5054, to avoid duplicate definitions:

@@ -100,7 +100,7 @@ trait MiniboxCoerceTreeTransformer extends TypingTransformers with ScalacCrossCo
           if (oldTpe <:< newTpe)
             tree
           else
-            if (flag_strict_typechecking)
+            if (flags.flag_strict_typechecking)
               super.adapt(tree, mode, pt, original)
             else
               tree.setType(newTpe)

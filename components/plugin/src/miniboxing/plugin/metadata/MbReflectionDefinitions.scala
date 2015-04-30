@@ -48,7 +48,7 @@ trait MbReflectionDefinitions {
         case Apply(TypeApply(mth, List(tpt)), Nil) if reflectionMethods(mth.symbol) =>
           Some(
             (currentOwner: Symbol) => {
-              if (!flag_two_way)
+              if (!flags.flag_two_way)
                 global.reporter.error(tree.pos,
                     "The miniboxing reflection can only be used with the 2-way miniboxing transformation (without " +
                     "the `-P:minibox:Yone-way` argument).")

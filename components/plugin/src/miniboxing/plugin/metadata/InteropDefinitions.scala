@@ -97,9 +97,8 @@ trait InteropDefinitions {
         )
     )
 
-  def flag_rewire_functionX_values: Boolean
-  def flag_rewire_functionX_repres: Boolean
-  def flag_rewire_functionX_bridges: Boolean
+  // filled in from outside:
+  def flags: Flags
 
   lazy val libraryFunctionName = newTermName("extractFunctionX")
 

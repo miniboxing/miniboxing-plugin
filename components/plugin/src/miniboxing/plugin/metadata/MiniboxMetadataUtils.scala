@@ -56,7 +56,7 @@ trait MiniboxMetadataUtils {
       for (tParam <- mboxTParams)
         if (tParam.hasAnnotation(MinispecClass) || tParam.hasAnnotation(SpecializedClass))
           envs = envs.flatMap(rest =>
-            if (!flag_two_way)
+            if (!flags.flag_two_way)
               List(Miniboxed(LongClass) :: rest, Boxed :: rest)
             else
               List(Miniboxed(LongClass) :: rest, Miniboxed(DoubleClass) :: rest, Boxed :: rest))
@@ -92,7 +92,7 @@ trait MiniboxMetadataUtils {
     }
 
     def valueClassRepresentation(vclass: Symbol): Symbol = {
-      val FloatRepr = if (flag_two_way) DoubleClass else LongClass
+      val FloatRepr = if (flags.flag_two_way) DoubleClass else LongClass
       vclass match {
         case `UnitClass`    => LongClass
         case `BooleanClass` => LongClass
@@ -126,11 +126,11 @@ trait MiniboxMetadataUtils {
 
     def fromTargsAllTargs(pos: Position, instantiation: List[(Symbol, Type)], currentOwner: Symbol, pspec: PartialSpec = Map.empty): PartialSpec = {
       def useMbArrayInsteadOfArrayWarning(p: Symbol): Unit =
-        if (flag_warn_mbarrays) suboptimalCodeWarning(pos, "Use MbArray instead of Array and benefit from miniboxing specialization", p.isGenericAnnotated)
-      
-      def replaceSpecializedWithMiniboxedWarning(p: Symbol): Unit = 
+        if (flags.flag_warn_mbarrays) suboptimalCodeWarning(pos, "Use MbArray instead of Array and benefit from miniboxing specialization", p.isGenericAnnotated)
+
+      def replaceSpecializedWithMiniboxedWarning(p: Symbol): Unit =
         suboptimalCodeWarning(pos, s"Although the type parameter ${p.nameString} of ${p.owner.tweakedFullString} is specialized, miniboxing and specialization communicate among themselves by boxing (thus, inefficiently) on all classes other than as FunctionX and TupleX. If you want to maximize performance, consider switching from specialization to miniboxing: '@miniboxed T':", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
-        
+
       def primitive(p: Symbol, spec: SpecInfo): (Symbol, SpecInfo) = {
         if (!metadata.miniboxedTParamFlag(p) && !isUselessWarning(p.owner))
           if (p.owner.isArray) useMbArrayInsteadOfArrayWarning(p)
@@ -138,15 +138,15 @@ trait MiniboxMetadataUtils {
           else suboptimalCodeWarning(pos, s"The ${p.owner.tweakedFullString} would benefit from miniboxing type parameter ${p.nameString}, since it is instantiated by a primitive type.", p.isGenericAnnotated, inLibrary = (p.sourceFile == null))
         (p, spec)
       }
-      
+
       def isUselessWarning(p: Symbol): Boolean = {
-        p.isMbArrayMethod || 
+        p.isMbArrayMethod ||
         p.isImplicitlyPredefMethod ||
         p.isCastSymbol ||
         p.isIsInstanceOfAnyMethod ||
         p.isArrowAssocMethod
       }
-        
+
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec = instantiation map { (pair: (Symbol, Type)) =>
         (pair._1, pair._2.withoutAnnotations) match {
@@ -298,7 +298,7 @@ trait MiniboxMetadataUtils {
 
   object heuristics {
     def hasSpecializedArgumentsOrReturn(clazz: Symbol, member: Symbol) =
-      flag_spec_no_opt || {
+      flags.flag_spec_no_opt || {
         val tparams = clazz.typeParams.filter(s => new RichSym(s).isMiniboxAnnotated)
         val res = member.info.paramss.flatten.exists(mbr => tparams.contains(mbr.info.typeSymbol.deSkolemize)) ||
         tparams.contains(member.info.finalResultType.typeSymbol.deSkolemize)

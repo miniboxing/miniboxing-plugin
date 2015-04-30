@@ -20,15 +20,15 @@ trait MiniboxLogging {
   import global._
 
   def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false, inLibrary: Boolean = false) =
-    if (flag_strict_warnings && (pos != NoPosition) && !isSymbolGenericAnnotated)
-      if (!inLibrary || flag_strict_warnings_outside)
+    if (flags.flag_strict_warnings && (pos != NoPosition) && !isSymbolGenericAnnotated)
+      if (!inLibrary || flags.flag_strict_warnings_outside)
         global.reporter.warning(pos, msg)
-        
+
   def global_log(msg: => String) = if (settings.log.value.contains(phaseName)) global.log(msg)
-  def log(msg: => Any) = if (flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
+  def log(msg: => Any) = if (flags.flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
   def mblog(msg: => Any) = log(msg)
-  def debug(msg: => Any) = if (flag_debug) global_log(msg.toString)
-  def stats(msg: => Any) = if (flag_stats) global_log(msg.toString)
+  def debug(msg: => Any) = if (flags.flag_debug) global_log(msg.toString)
+  def stats(msg: => Any) = if (flags.flag_stats) global_log(msg.toString)
 
   def printTree(label: Any, tree: global.Tree) = {
 //    val showTrees = global.settings.Xshowtrees.value

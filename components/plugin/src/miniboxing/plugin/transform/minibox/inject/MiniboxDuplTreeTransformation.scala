@@ -68,7 +68,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
     import global._
 
     val bug64message =
-      if (!flag_constructor_spec)
+      if (!flags.flag_constructor_spec)
         "Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements."
       else
         ""
@@ -80,7 +80,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         MiniboxInjectTreeTransformation.this.asInstanceOf[MiniboxInjectComponent { val global: MiniboxInjectTreeTransformation.this.global.type }]
     } with miniboxing.plugin.transform.minibox.inject.Duplicators {
 
-      def flag_create_local_specs = MiniboxInjectTreeTransformation.this.flag_create_local_specs
+      def flag_create_local_specs = flags.flag_create_local_specs
       override def postTransform(owner: Symbol, tree: Tree): Tree = {
         //val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
         tree
@@ -326,7 +326,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     if (!dd.symbol.isPrivate)
                       deriveDefDef(dd)(_ => EmptyTree) :: memberVariants(dd.symbol)
                     else {
-                      if (!flag_constructor_spec)
+                      if (!flags.flag_constructor_spec)
                         global.reporter.error(dd.pos, "The " + dd.symbol + " should be made public or the constructor " +
                                                       "specialization should be enabled, otherwise the translation " +
                                                       "of this method will be incorrect. Plase see " +
@@ -348,7 +348,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     removedFieldFinder.find(currentOwner, dt)
                     List(dt)
                   case other =>
-                    if (!flag_constructor_spec) {
+                    if (!flags.flag_constructor_spec) {
                       if (sideEffectWarning) {
                         global.reporter.warning(other.pos,
                             s"The side-effecting statement(s) in the miniboxed ${cls.tweakedToString}'s constructor " +
@@ -376,7 +376,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                   case _: DefTree =>
                     Nil
                   case other =>
-                    if (flag_constructor_spec)
+                    if (flags.flag_constructor_spec)
                       reportError(NoSymbol){
                         val context = atOwner(tree.symbol)(localTyper.context1)
                         // we need to wrap this in a block, in order to force invalidation:

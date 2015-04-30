@@ -110,7 +110,7 @@ trait MiniboxDefinitions {
   object array_2way_double extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArrayDouble") }
 
   def array(repr: Symbol): array = repr match {
-    case _ if !flag_two_way => array_1way
+    case _ if !flags.flag_two_way => array_1way
     case LongClass          => array_2way_long
     case DoubleClass        => array_2way_double
   }
@@ -134,7 +134,7 @@ trait MiniboxDefinitions {
   object ops_2way_double extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatchDouble")}
 
   def ops(repr: Symbol): ops = repr match {
-    case _ if !flag_two_way => ops_1way
+    case _ if !flags.flag_two_way => ops_1way
     case LongClass          => ops_2way_long
     case DoubleClass        => ops_2way_double
   }
@@ -204,7 +204,7 @@ trait MiniboxDefinitions {
   }
 
   def convs(repr: Symbol): convs =  repr match {
-    case _ if !flag_two_way => convs_1way
+    case _ if !flags.flag_two_way => convs_1way
     case LongClass          => convs_2way_long
     case DoubleClass        => convs_2way_double
   }
@@ -284,5 +284,5 @@ trait MiniboxDefinitions {
     )
 
   // filled in from outside
-  def flag_two_way: Boolean
+  def flags: Flags
 }

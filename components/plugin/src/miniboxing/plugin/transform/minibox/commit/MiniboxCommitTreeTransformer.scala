@@ -33,23 +33,23 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
       var mbArray_transform = true
       var mbTuple_transform = true
 
-      if (flag_rewire_mbarray && !flag_two_way) {
+      if (flags.flag_rewire_mbarray && !flags.flag_two_way) {
         mbArray_transform = false
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow " +
                              "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
                              "compiler option). `MbArray`-s will be generic and will box.")
-      } else if (!flag_rewire_mbarray) {
+      } else if (!flags.flag_rewire_mbarray) {
         mbArray_transform = false
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
                              "be generic and will box.")
       }
 
-      if (flag_rewire_tuples && !flag_two_way) {
+      if (flags.flag_rewire_tuples && !flags.flag_two_way) {
         mbTuple_transform = false
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow " +
                              "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
                              "compiler option). `MbTuple`-s will be generic and will box.")
-      } else if (!flag_rewire_tuples) {
+      } else if (!flags.flag_rewire_tuples) {
         mbTuple_transform = false
         global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is disabled, thus `MbTuple`-s will " +
                              "be generic and will box.")
@@ -335,7 +335,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(unreachableConversion, List(Literal(Constant(repr1.nameString)), Literal(Constant(repr2.nameString))))
             localTyper.typed(tree1)
 
-          case Apply(TypeApply(conv, _targs), _args) if interop.flag_rewire_functionX_bridges && interop.function_bridges(conv.symbol) =>
+          case Apply(TypeApply(conv, _targs), _args) if flags.flag_rewire_functionX_bridges && interop.function_bridges(conv.symbol) =>
             val targs = _targs.map(transform(_).tpe)
             val args  = _args.map(transform)
             val bridge = conv.symbol
