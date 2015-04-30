@@ -426,11 +426,37 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     s"  -P:${name}:mark-all          implicitly add @miniboxed annotations to all type parameters",
     s"  -P:${name}:log               log miniboxing signature transformations").mkString("\n"))
 
+
+  // main phases:
+  def MiniboxInjectPhaseName = "minibox-inject"
+  def MiniboxBridgePhaseName = "minibox-bridge"
+  def MiniboxCoercePhaseName = "minibox-coerce"
+  def MiniboxCommitPhaseName = "minibox-commit"
+  def InteropInjectPhaseName = "interop-inject"
+  def InteropBridgePhaseName = "interop-bridge"
+  def InteropCoercePhaseName = "interop-coerce"
+  def InteropCommitPhaseName = "interop-commit"
+
+  // helper phases:
+  def PreparePhaseName = "mb-ext-prepare"
+  def PostTyperPhaseName = "mb-ext-post-tpe"
+  def PreTyperPhaseName = "mb-ext-pre-tpe"
+  def HijackPhaseName = "mb-ext-hijacker"
+  def TweakErasurePhaseName = "mb-tweak-erasure"
+
+  // outside phases:
+  def TyperPhaseName = "typer"
+  def PatternMatcherPhaseName = "patmat"
+  def ExtensionMethodsPhaseName = "extmethods"
+  def ParserPhaseName = "parser"
+  def UncurryPhaseName = "uncurry"
+  def PostErasurePhaseName = "posterasure"
+
   private object HijackPhase extends HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("typer")
-    override val runsRightAfter = Some("extmethods")
-    val phaseName = "mb-ext-hijacker"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(ExtensionMethodsPhaseName)
+    val phaseName = HijackPhaseName
 
     def flag_hijack_spec = Minibox.this.flag_hijack_spec
     def flag_two_way = Minibox.this.flag_two_way
@@ -445,9 +471,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
   private object InteropInjectPhase extends InteropInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List("patmat")
-    override val runsRightAfter = Some("patmat")
-    val phaseName = "interop-inject"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(PatternMatcherPhaseName)
+    val phaseName = InteropInjectPhaseName
 
     def flag_rewire_functionX_values: Boolean       = Minibox.this.flag_rewire_functionX_values
     def flag_rewire_functionX_repres: Boolean       = Minibox.this.flag_rewire_functionX_repres
@@ -461,17 +487,30 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     }
   }
 
+  private object PreparePhase extends PrepareComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = Nil
+    override val runsRightAfter = Some(InteropCommitPhaseName)
+    val phaseName = PreparePhaseName
+
+    var preparePhase : StdPhase = _
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      preparePhase = new PreparePhaseImpl(prev)
+      preparePhase
+    }
+  }
+
   private object InteropBridgePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with InteropBridgeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropInjectPhase.phaseName)
-    override val runsRightAfter = Some("uncurry")
-    val phaseName = "interop-bridge"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(UncurryPhaseName)
+    val phaseName = InteropBridgePhaseName
 
     var interopBridgePhase : StdPhase = _
     def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      interopBridgePhase = new BridgePhase(prev.asInstanceOf[interop.Phase])
+      interopBridgePhase = new BridgePhase(prev.asInstanceOf[StdPhase])
       interopBridgePhase
     }
   }
@@ -480,9 +519,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with InteropCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropBridgePhase.phaseName)
-    override val runsRightAfter = Some(InteropBridgePhase.phaseName)
-    val phaseName = "interop-coerce"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(InteropBridgePhaseName)
+    val phaseName = InteropCoercePhaseName
 
     def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
 
@@ -497,9 +536,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with InteropCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropCoercePhase.phaseName)
-    override val runsRightAfter = Some(InteropCoercePhase.phaseName)
-    val phaseName = "interop-commit"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(InteropCoercePhaseName)
+    val phaseName = InteropCommitPhaseName
 
     def minibox = MiniboxInjectPhase
 
@@ -510,24 +549,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     }
   }
 
-  private object PreparePhase extends PrepareComponent {
-    val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(InteropCommitPhase.phaseName)
-    override val runsRightAfter = Some(InteropCommitPhase.phaseName)
-    val phaseName = "mb-ext-prepare"
-
-    var preparePhase : StdPhase = _
-    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
-      preparePhase = new PreparePhaseImpl(prev)
-      preparePhase
-    }
-  }
-
   private object MiniboxInjectPhase extends MiniboxInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(PreparePhase.phaseName)
-//    override val runsRightAfter = Some(PostTyperPhase.phaseName)
-    val phaseName = Minibox.this.name + "-inject"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(PostTyperPhaseName)
+    val phaseName = MiniboxInjectPhaseName
 
     def flag_log = Minibox.this.flag_log
     def flag_debug = Minibox.this.flag_debug
@@ -561,9 +587,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with MiniboxBridgeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxInjectPhase.phaseName)
-    override val runsRightAfter = Some(MiniboxInjectPhase.phaseName)
-    val phaseName = Minibox.this.name + "-bridge"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(MiniboxInjectPhaseName)
+    val phaseName = MiniboxBridgePhaseName
 
     var mboxBridgePhase : StdPhase = _
     def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
@@ -576,9 +602,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with MiniboxCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxBridgePhase.phaseName)
-    override val runsRightAfter = Some(MiniboxBridgePhase.phaseName)
-    val phaseName = Minibox.this.name + "-coerce"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(MiniboxBridgePhaseName)
+    val phaseName = MiniboxCoercePhaseName
 
     def flag_strict_typechecking = Minibox.this.flag_strict_typechecking
 
@@ -594,9 +620,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with MiniboxCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(MiniboxCoercePhase.phaseName)
-    override val runsRightAfter = Some(MiniboxCoercePhase.phaseName)
-    val phaseName = Minibox.this.name + "-commit"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(MiniboxCoercePhaseName)
+    val phaseName = MiniboxCommitPhaseName
 
     def flag_log = Minibox.this.flag_log
     def flag_debug = Minibox.this.flag_debug
@@ -616,12 +642,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List()
-    override val runsRightAfter = Some("parser")
-    val phaseName = "mb-ext-pre-tpe"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(ParserPhaseName)
+    val phaseName = PreTyperPhaseName
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
-      override def name = PreTyperPhase.phaseName
+      override def name = PreTyperPhaseName
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
@@ -636,12 +662,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   } with PreTyperComponent
     with ScalacVersion {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List(PreparePhase.phaseName)
-    override val runsRightAfter = Some(PreparePhase.phaseName)
-    val phaseName = "mb-ext-post-tpe"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(PreparePhaseName)
+    val phaseName = PostTyperPhaseName
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
-      override def name = PostTyperPhase.phaseName
+      override def name = PostTyperPhaseName
       def apply(unit: CompilationUnit) {
         import global._
         import global.Flag._
@@ -655,9 +681,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val interop: InteropInjectPhase.type = InteropInjectPhase
   } with TweakErasureComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = List()
-    override val runsRightAfter = Some("posterasure")
-    val phaseName = "mb-tweak-erasure"
+    val runsAfter = Nil
+    override val runsRightAfter = Some(PostErasurePhaseName)
+    val phaseName = TweakErasurePhaseName
 
     var tweakErasurePhase: Phase = _
 

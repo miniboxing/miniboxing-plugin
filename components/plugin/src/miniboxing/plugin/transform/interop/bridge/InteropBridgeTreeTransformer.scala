@@ -25,7 +25,7 @@ trait InteropBridgeTreeTransformer extends TreeRewriters with ScalacCrossCompili
   import global._
   import interop._
 
-  class BridgePhase(prev: Phase) extends StdPhase(prev) {
+  class BridgePhase(prev: StdPhase) extends StdPhase(prev) {
     override def name = InteropBridgeTreeTransformer.this.phaseName
     override def checkable = true
     def apply(unit: CompilationUnit): Unit = {
