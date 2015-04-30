@@ -87,6 +87,8 @@ trait PrepareComponent extends
     with PrepareTreeTransformer
     with ScalacCrossCompilingLayer {
 
+  val interop: InteropInjectComponent { val global: PrepareComponent.this.global.type }
+
   def preparePhase: StdPhase
 
   def afterPrepare[T](op: => T): T = global.afterPhase(preparePhase)(op)
@@ -485,7 +487,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val flags = MiniboxingFlags
   }
 
-  private object PreparePhase extends PrepareComponent {
+  private object PreparePhase extends {
+    val interop: InteropInjectPhase.type = InteropInjectPhase
+  } with PrepareComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
     override val runsRightAfter = Some(UncurryPhaseName)

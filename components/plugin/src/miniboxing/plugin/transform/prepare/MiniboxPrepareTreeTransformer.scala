@@ -32,6 +32,8 @@ trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilin
     }
   }
 
+  import interop._
+
   class PrepareAdapter extends TweakedAnalyzer {
     var indent = 0
     override lazy val global: self.global.type = self.global
@@ -56,7 +58,7 @@ trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilin
           tree
         else {
           debuglog("casting " + tree + " to " + pt)
-          Apply(TypeApply(Select(tree, Any_asInstanceOf).setType(Any_asInstanceOf.tpe), List(TypeTree(pt))).setType(pt), List()).setType(pt)
+          Apply(TypeApply(Select(tree, Any_asInstanceOf).setType(Any_asInstanceOf.tpe), List(TypeTree(pt.withoutMbFunction))).setType(pt), List()).setType(pt)
         }
 
       def supertyped(tree: Tree, mode: Mode, pt: Type) =
@@ -75,6 +77,15 @@ trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilin
           // calls such as x1.<outer>() when <outer> does not take parameters at all...
           case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
             super.typed(outer, mode, pt)
+
+          // bug #204: Superaccessors introduces asInstanceOf calls that include the @mbFunction annotation.
+          // Later, when the annotated types become incompatible with the non-annotated types, the type
+          // checker rejects the code saying that T => R @mbFunction does not conform to the bounds of
+          // asInstanceOf, T0. To fix this, we eliminate all asInstanceOf calls where the type is annotated
+          // if necessary, a cast will be introduced by the adapt method.
+          case Apply(tapply @ TypeApply(Select(value, nme.asInstanceOf_), List(tpt)), List()) if tapply.symbol == definitions.Any_asInstanceOf && tpt.tpe.isMbFunction =>
+            typed(value, tpt.tpe)
+
           case EmptyTree | TypeTree() =>
             tree
           case _ =>
