@@ -130,9 +130,6 @@ trait InteropCoerceTreeTransformer extends InfoTransform with TypingTransformers
           case EmptyTree | TypeTree() =>
             super.typed(tree, mode, pt)
 
-          case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
-            super.typed(outer, mode, pt)
-
           case Select(qual, meth) if qual.isTerm && tree.symbol.isMethod =>
             val qual2 = super.typedQualifier(qual.setType(null), mode, WildcardType).withTypedAnnot
 

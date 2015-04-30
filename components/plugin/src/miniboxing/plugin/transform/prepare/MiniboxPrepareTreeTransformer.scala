@@ -71,6 +71,10 @@ trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilin
 
       override def typed(tree: Tree, mode: Mode, pt: Type): Tree = {
         val res = tree match {
+
+          // calls such as x1.<outer>() when <outer> does not take parameters at all...
+          case Apply(outer, List()) if (outer.hasSymbolField && outer.symbol.name.decoded == "<outer>") =>
+            super.typed(outer, mode, pt)
           case EmptyTree | TypeTree() =>
             tree
           case _ =>

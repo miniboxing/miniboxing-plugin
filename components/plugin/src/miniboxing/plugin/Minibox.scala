@@ -488,7 +488,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   private object PreparePhase extends PrepareComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
-    override val runsRightAfter = Some(InteropCommitPhaseName)
+    override val runsRightAfter = Some(UncurryPhaseName)
     val phaseName = PreparePhaseName
 
     var preparePhase : StdPhase = _
@@ -505,7 +505,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   } with InteropBridgeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
-    override val runsRightAfter = Some(UncurryPhaseName)
+    override val runsRightAfter = Some(PreparePhaseName)
     val phaseName = InteropBridgePhaseName
 
     var interopBridgePhase : StdPhase = _
@@ -656,7 +656,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     with ScalacVersion {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
-    override val runsRightAfter = Some(PreparePhaseName)
+    override val runsRightAfter = Some(InteropCommitPhaseName)
     val phaseName = PostTyperPhaseName
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
