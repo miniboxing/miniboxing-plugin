@@ -70,6 +70,7 @@ object Test {
     }
 
     assert(ta > tb, s"Array[Any] ($ta) is worse than MbArray[Int] ($tb)")
-    assert(tb > tc, s"MbArray[Int] ($tb) is worse than Array[Int] ($tc)")
+    // may not always be the case:
+    // assert(tb > tc, s"MbArray[Int] ($tb) is worse than Array[Int] ($tc)")
   }
 }
