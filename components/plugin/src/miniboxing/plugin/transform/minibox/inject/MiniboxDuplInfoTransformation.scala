@@ -162,7 +162,8 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
     val tpe =
       if (specs.nonEmpty) {
-        log("Specializing " + stemClass + "...\n")
+        if (currentRun.compiles(stemClass))
+          log("Specializing " + stemClass + "...\n")
 
         // step1: widen the class or trait to contain specialized overloads
         val scope1 = newScopeWith(widen(stemClass, specs): _*)
@@ -196,7 +197,8 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
         val parents1 = computeNewStemParentClasses(stemClass, stemClassTpe)
         val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
 
-        reportClasses(stemClass, scope3, variantClasses)
+        if (currentRun.compiles(stemClass))
+          reportClasses(stemClass, scope3, variantClasses)
 
         tpe1
 
