@@ -20,8 +20,30 @@ trait CommonDefinitions extends Flags {
   val global: Global
   import global._
 
-  def isCompiledInCurrentRuns(sym: Symbol): Boolean =
-    sym.sourceFile != null
+  /**
+   * Find out whether a symbol was created in the current run or is picked up from
+   * the classpath. For batch mode, currentRun.compiles(sym) is exactly what we need,
+   * since it tells whether the symbol is part of the current batch. On the other hand,
+   * this is not what we want for the IDE and REPL:
+   *  * for the REPL, each line is compiled in a different batch
+   *  * for the IDE, the presentation compiler only contains the frontend, so there's no
+   * problem. When invoking the full compilation, it invokes the normal Global
+   */
+  def isCompiledInCurrentBatch(sym: Symbol): Boolean = {
+    val res =
+      if (global.getClass.getName.contains("scala.tools.nsc.interpreter.IMain"))
+        (sym.sourceFile != null) && (sym.sourceFile.name == "<console>")
+//      else if (global.isInstanceOf[scala.tools.nsc.interactive.Global])
+//        currentRun.compiles(sym) || (sym.sourceFile != null)
+      else
+        currentRun.compiles(sym)
+
+//    if (sym.nameString == "foo") {
+//      global.reporter.warning(sym.pos, "Symbol " + sym.name + " in " + sym.owner + ": " + global.isInstanceOf[scala.tools.nsc.interactive.Global] + " ==> " + res + "   " + global.getClass + "   " + sym.sourceFile)
+//    }
+
+    res
+  }
 }
 
 trait Flags {

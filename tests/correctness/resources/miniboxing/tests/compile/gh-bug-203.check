@@ -1,0 +1,11 @@
+[[syntax trees at end of            interop-commit]] // newSource1.scala
+package <empty> {
+  class D extends miniboxing.test.support.bug203.C {
+    def <init>(): D = {
+      D.super.<init>();
+      ()
+    };
+    override def foo(t: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Nothing = scala.this.Predef.???();
+    @scala.annotation.bridge override def foo(t: Int => Int): Nothing = D.this.foo(MiniboxedFunctionBridge.this.function1_bridge[Int, Int](t))
+  }
+}

@@ -30,7 +30,7 @@ trait InteropInjectInfoTransformer extends InfoTransform {
   override def transformInfo(sym: Symbol, tpe: Type): Type = {
 
     val res =
-      if (flags.flag_rewire_functionX_values && (sym.sourceFile != null) && !isDelambdafyParam(sym)) {
+      if (flags.flag_rewire_functionX_values && common.isCompiledInCurrentBatch(sym) && !isDelambdafyParam(sym)) {
         updatedType(NoPosition, tpe)
       } else {
         tpe
