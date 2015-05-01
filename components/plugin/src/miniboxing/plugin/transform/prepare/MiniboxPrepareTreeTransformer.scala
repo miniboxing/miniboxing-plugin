@@ -88,6 +88,7 @@ trait PrepareTreeTransformer extends TypingTransformers with ScalacCrossCompilin
 
           case EmptyTree | TypeTree() =>
             tree
+
           case _ =>
             tree.setType(null)
             supertyped(tree, mode, pt)

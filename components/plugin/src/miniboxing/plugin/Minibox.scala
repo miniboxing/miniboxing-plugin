@@ -29,29 +29,6 @@ import infrastructure._
 import tweakerasure._
 import scala.tools.nsc.settings.ScalaVersion
 
-trait Flags {
-  def flag_log: Boolean
-  def flag_debug: Boolean
-  def flag_stats: Boolean
-  def flag_hijack_spec: Boolean
-  def flag_spec_no_opt: Boolean
-  def flag_loader_friendly: Boolean
-  def flag_two_way: Boolean
-  def flag_rewire_functionX_values: Boolean
-  def flag_rewire_functionX_repres: Boolean
-  def flag_rewire_functionX_bridges: Boolean
-  def flag_mark_all: Boolean
-  def flag_strict_typechecking: Boolean
-  def flag_strip_miniboxed: Boolean
-  def flag_create_local_specs: Boolean
-  def flag_strict_warnings: Boolean
-  def flag_strict_warnings_outside: Boolean
-  def flag_warn_mbarrays: Boolean
-  def flag_rewire_functionX_application: Boolean
-  def flag_rewire_mbarray: Boolean
-  def flag_rewire_tuples: Boolean
-  def flag_constructor_spec: Boolean
-}
 
 
 /** Specialization hijacking component `@specialized T` -> `@miniboxed T` */
@@ -61,7 +38,8 @@ trait HijackComponent extends
     with MiniboxDefinitions
     with ScalacCrossCompilingLayer {
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: HijackComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -78,7 +56,8 @@ trait InteropInjectComponent extends
   def afterInteropInject[T](op: => T): T = global.afterPhase(interopInjectPhase)(op)
   def beforeInteropInject[T](op: => T): T = global.beforePhase(interopInjectPhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: InteropInjectComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Tree preparer before retyping the tree */
@@ -94,7 +73,8 @@ trait PrepareComponent extends
   def afterPrepare[T](op: => T): T = global.afterPhase(preparePhase)(op)
   def beforePrepare[T](op: => T): T = global.beforePhase(preparePhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: PrepareComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Introduces explicit bridge methods to respect the object model
@@ -113,7 +93,8 @@ trait InteropBridgeComponent extends
   def afterInteropBridgeNext[T](op: => T): T = global.afterPhase(interopBridgePhase.next)(op)
   def beforeInteropBridgeNext[T](op: => T): T = global.beforePhase(interopBridgePhase.next)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: InteropBridgeComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -130,7 +111,8 @@ trait InteropCoerceComponent extends
   def afterInteropCoerce[T](op: => T): T = global.afterPhase(interopCoercePhase)(op)
   def beforeInteropCoerce[T](op: => T): T = global.beforePhase(interopCoercePhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: InteropCoerceComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Glue transformation to bridge Function and MiniboxedFunction */
@@ -148,7 +130,8 @@ trait InteropCommitComponent extends
   def afterInteropCommit[T](op: => T): T = global.afterPhase(interopCommitPhase)(op)
   def beforeInteropCommit[T](op: => T): T = global.beforePhase(interopCommitPhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: InteropCommitComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Injecticator component `def t -> def t_L, def t_J` */
@@ -174,7 +157,8 @@ trait MiniboxInjectComponent extends
   def afterMiniboxInject[T](op: => T): T = global.afterPhase(mboxInjectPhase)(op)
   def beforeMiniboxInject[T](op: => T): T = global.beforePhase(mboxInjectPhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: MiniboxInjectComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Introduces explicit bridge methods to respect the object model
@@ -193,7 +177,8 @@ trait MiniboxBridgeComponent extends
   def afterMiniboxBridgeNext[T](op: => T): T = global.afterPhase(mboxBridgePhase.next)(op)
   def beforeMiniboxBridgeNext[T](op: => T): T = global.beforePhase(mboxBridgePhase.next)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: MiniboxBridgeComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 
@@ -212,7 +197,8 @@ trait MiniboxCoerceComponent extends
   def afterMiniboxCoerce[T](op: => T): T = global.afterPhase(mboxCoercePhase)(op)
   def beforeMiniboxCoerce[T](op: => T): T = global.beforePhase(mboxCoercePhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: MiniboxCoerceComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 
@@ -232,7 +218,8 @@ trait MiniboxCommitComponent extends
   def afterMiniboxCommit[T](op: => T): T = global.afterPhase(mboxCommitPhase)(op)
   def beforeMiniboxCommit[T](op: => T): T = global.beforePhase(mboxCommitPhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: MiniboxCommitComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 trait PreTyperComponent extends
@@ -241,6 +228,8 @@ trait PreTyperComponent extends
   with ScalacCrossCompilingLayer {
 
   val minibox: MiniboxInjectComponent { val global: PreTyperComponent.this.global.type }
+  val common: CommonDefinitions { val global: PreTyperComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 trait PostTyperComponent extends
@@ -252,7 +241,8 @@ trait PostTyperComponent extends
   import global.Flag._
   val minibox: MiniboxInjectComponent { val global: PostTyperComponent.this.global.type }
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: PostTyperComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 /** Tree preparer before retyping the tree */
@@ -268,7 +258,8 @@ trait TweakErasureComponent extends
   def afterTweakErasure[T](op: => T): T = global.afterPhase(tweakErasurePhase)(op)
   def beforeTweakErasure[T](op: => T): T = global.beforePhase(tweakErasurePhase)(op)
 
-  def flags: Flags
+  val common: CommonDefinitions { val global: TweakErasureComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
 }
 
 
@@ -300,7 +291,10 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   global.addAnnotationChecker(MiniboxCoercePhase.StorageAnnotationChecker)
   global.addAnnotationChecker(InteropCoercePhase.mbFunctionAnnotationChecker)
 
-  object MiniboxingFlags extends Flags {
+  trait MiniboxingCommon extends CommonDefinitions {
+
+    val global: Global
+
     var flag_log = sys.props.get("miniboxing.log").isDefined
     var flag_debug = sys.props.get("miniboxing.debug").isDefined
     var flag_stats = sys.props.get("miniboxing.stats").isDefined
@@ -324,9 +318,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     var flag_constructor_spec = true
   }
 
+  lazy val common = new MiniboxingCommon {
+    val global: Minibox.this.global.type = Minibox.this.global
+  }
+
   override def processOptions(options: List[String], error: String => Unit) {
 
-    import MiniboxingFlags._
+    import common._
 
     for (option <- options) {
       option.toLowerCase() match {
@@ -346,11 +344,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "loader" =>
           flag_loader_friendly = true
         case "warn" =>
-          global.reporter.echo("Miniboxing plugin warning: Showing performance warnings became the default behavior " +
-                               "of the miniboxing plugin. To hide warnings, please use the -P:minibox:warn-off " +
-                               "Scala compiler flag. On the other hand, if you want cross-library warnings, " +
-                               "please use the -P:minibox:warn-all flag. Read more about the miniboxing warnings at " +
-                               "http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
+          this.global.reporter.echo("Miniboxing plugin warning: Showing performance warnings became the default behavior " +
+                                    "of the miniboxing plugin. To hide warnings, please use the -P:minibox:warn-off " +
+                                    "Scala compiler flag. On the other hand, if you want cross-library warnings, " +
+                                    "please use the -P:minibox:warn-all flag. Read more about the miniboxing warnings at " +
+                                    "http://scala-miniboxing.org/2014/10/21/miniboxing-warnings.html.")
         case "warn-off" =>
           flag_strict_warnings = false
           flag_warn_mbarrays = false
@@ -368,9 +366,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "yone-way" =>                       // Undocumented flag, only used for running the test suite,
           flag_two_way = false                   // where the tests required the one-way translation
         case "two-way" =>
-          global.reporter.echo("Miniboxing plugin warning: The two-way transformation (with long and double as " +
-                               "storage types) has become default in version 0.4 version of the miniboxing plugin, " +
-                               "so there is no need to specify it in the command line")
+          this.global.reporter.echo("Miniboxing plugin warning: The two-way transformation (with long and double as " +
+                                    "storage types) has become default in version 0.4 version of the miniboxing plugin, " +
+                                    "so there is no need to specify it in the command line")
         case "ygen-brdgs" =>                     // Undocumented flag, only used for running the test suite
           flag_rewire_functionX_bridges = false  // while avoiding func. to miniboxed func. bridge optimization
         case "ystrip-miniboxed" =>
@@ -395,17 +393,17 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         case "ykeep-tuples-generic" =>
           flag_rewire_tuples = false
         case "yrewire-functionx-application" =>
-          global.reporter.echo("Miniboxing plugin warning: The function application specialization is now the default " +
-                               s"miniboxing plugin behavior, so there is no need to use the -P:minibox:$option flag " +
-                               "anymore. To leave function applications generic, please use the " +
-                               "-P:minibox:Ykeep-functionX-application flag.")
+          this.global.reporter.echo("Miniboxing plugin warning: The function application specialization is now the default " +
+                                   s"miniboxing plugin behavior, so there is no need to use the -P:minibox:$option flag " +
+                                    "anymore. To leave function applications generic, please use the " +
+                                    "-P:minibox:Ykeep-functionX-application flag.")
           flag_rewire_functionX_application = true
         case "ykeep-functionx-application" =>
           flag_rewire_functionX_application = false
         case "ygeneric-constructor-code" =>
           flag_constructor_spec = false
         case "off" =>
-          global.reporter.echo("Miniboxing plugin warning: Turning off all minboxing specialization!")
+          this.global.reporter.echo("Miniboxing plugin warning: Turning off all minboxing specialization!")
           flag_rewire_functionX_values = false
           flag_rewire_functionX_repres = false
           flag_rewire_functionX_bridges = false
@@ -458,7 +456,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   def UncurryPhaseName = "uncurry"
   def PostErasurePhaseName = "posterasure"
 
-  private object HijackPhase extends HijackComponent {
+  private object HijackPhase extends {
+    val common = Minibox.this.common
+  } with HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
     override val runsRightAfter = Some(ExtensionMethodsPhaseName)
@@ -468,11 +468,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
       override def transform(tree: Tree) = tree
     }
-
-    val flags = MiniboxingFlags
   }
 
-  private object InteropInjectPhase extends InteropInjectComponent {
+  private object InteropInjectPhase extends {
+    val common = Minibox.this.common
+  } with InteropInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
     override val runsRightAfter = Some(PatternMatcherPhaseName)
@@ -483,12 +483,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopInjectPhase = new Phase(prev)
       interopInjectPhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object PreparePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with PrepareComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -500,12 +499,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       preparePhase = new PreparePhaseImpl(prev)
       preparePhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object InteropBridgePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with InteropBridgeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -517,12 +515,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopBridgePhase = new BridgePhase(prev.asInstanceOf[StdPhase])
       interopBridgePhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object InteropCoercePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with InteropCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -534,12 +531,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopCoercePhase = new CoercePhase(prev)
       interopCoercePhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object InteropCommitPhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with InteropCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -553,11 +549,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       interopCommitPhase = new Phase(prev)
       interopCommitPhase
     }
-
-    val flags = MiniboxingFlags
   }
 
-  private object MiniboxInjectPhase extends MiniboxInjectComponent {
+  private object MiniboxInjectPhase extends {
+    val common = Minibox.this.common
+  } with MiniboxInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
     override val runsRightAfter = Some(PostTyperPhaseName)
@@ -577,12 +573,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         tree1
       }
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object MiniboxBridgePhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val common = Minibox.this.common
   } with MiniboxBridgeComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -594,12 +589,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       mboxBridgePhase = new BridgePhase(prev.asInstanceOf[minibox.Phase])
       mboxBridgePhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object MiniboxCoercePhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val common = Minibox.this.common
   } with MiniboxCoerceComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -611,13 +605,12 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       mboxCoercePhase = new CoercePhase(prev.asInstanceOf[StdPhase])
       mboxCoercePhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object MiniboxCommitPhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with MiniboxCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -629,12 +622,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       mboxCommitPhase = new Phase(prev)
       mboxCommitPhase
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object PreTyperPhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val common = Minibox.this.common
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -650,12 +642,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         minibox.preMiniboxingFlags()
       }
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object PostTyperPhase extends {
     val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
+    val common = Minibox.this.common
   } with PreTyperComponent
     with ScalacVersion {
     val global: Minibox.this.global.type = Minibox.this.global
@@ -672,12 +663,11 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
         minibox.postMiniboxingFlags()
       }
     }
-
-    val flags = MiniboxingFlags
   }
 
   private object TweakErasurePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val common = Minibox.this.common
   } with TweakErasureComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -690,7 +680,5 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
       tweakErasurePhase = new TweakErasurePhase(_prev)
       tweakErasurePhase
     }
-
-    val flags = MiniboxingFlags
   }
 }
