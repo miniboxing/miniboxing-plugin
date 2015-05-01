@@ -1,0 +1,7 @@
+scala> class C[@miniboxed T] { println(MbArray.empty[T](3).getClass) }
+defined class C
+
+scala> new C[Int]
+class miniboxing.runtime.array.MbArray_I
+res0: C[Int] = C$J@<object_id>
+
