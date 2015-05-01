@@ -29,8 +29,8 @@ package miniboxing.tests.compile.mbarray02 {
     private[this] val mba3: MbArray[String] = scala.MbArray.clone[String](new Array[String](10));
     <stable> <accessor> def mba3(): MbArray[String] = Test.this.mba3;
     def foo[@miniboxed T](implicit evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = scala.MbArray.clone[T](evidence$1.newArray(10));
-    def foo_n_D[T](T_TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_D[T](MiniboxArray.this.mbarray_new[T](10, T_TypeTag).asInstanceOf[Array[T]](), T_TypeTag);
-    def foo_n_J[T](T_TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_J[T](MiniboxArray.this.mbarray_new[T](10, T_TypeTag).asInstanceOf[Array[T]](), T_TypeTag);
+    def foo$n$D[T](T$TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_D[T](MiniboxArray.this.mbarray_new[T](10, T$TypeTag).asInstanceOf[Array[T]](), T$TypeTag);
+    def foo$n$J[T](T$TypeTag: Byte, evidence$1: scala.reflect.ClassTag[T]): MbArray[T] = MbArrayOpts.this.mbArray_clone_J[T](MiniboxArray.this.mbarray_new[T](10, T$TypeTag).asInstanceOf[Array[T]](), T$TypeTag);
     private[this] val mba4: MbArray[Any] = scala.MbArray.clone[Any](new Array[Any](10));
     <stable> <accessor> def mba4(): MbArray[Any] = Test.this.mba4;
     private[this] val mba5: MbArray[_] = scala.MbArray.clone[F](ClassTag.apply[F](classOf[java.lang.Object]).newArray(10));

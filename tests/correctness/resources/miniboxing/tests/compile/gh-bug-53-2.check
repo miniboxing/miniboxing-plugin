@@ -13,16 +13,16 @@ package miniboxing.tests.compile.bug53 {
         ()
       };
       abstract trait BUG53[@miniboxed T] extends Object;
-      class BUG53_J[Tsp] extends Object with X.this.BUG53[Tsp] {
-        <paramaccessor> private[this] val miniboxing|tests|compile|bug53|Test2|X|BUG53_J|T_TypeTag: Byte = _;
-        def <init>(miniboxing|tests|compile|bug53|Test2|X|BUG53_J|T_TypeTag: Byte): X.this.BUG53_J[Tsp] = {
-          BUG53_J.super.<init>();
+      class BUG53$J[Tsp] extends Object with X.this.BUG53[Tsp] {
+        <paramaccessor> private[this] val miniboxing|tests|compile|bug53|Test2|X|BUG53$J|T$TypeTag: Byte = _;
+        def <init>(miniboxing|tests|compile|bug53|Test2|X|BUG53$J|T$TypeTag: Byte): X.this.BUG53$J[Tsp] = {
+          BUG53$J.super.<init>();
           ()
         }
       };
-      class BUG53_L[Tsp] extends Object with X.this.BUG53[Tsp] {
-        def <init>(): X.this.BUG53_L[Tsp] = {
-          BUG53_L.super.<init>();
+      class BUG53$L[Tsp] extends Object with X.this.BUG53[Tsp] {
+        def <init>(): X.this.BUG53$L[Tsp] = {
+          BUG53$L.super.<init>();
           ()
         }
       }

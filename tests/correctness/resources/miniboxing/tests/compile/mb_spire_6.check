@@ -7,26 +7,26 @@ newSource1.scala:7: error: Following the miniboxing transformation, this method 
                              ^
   // interface:
   abstract trait TailCallsCrasher[A] extends Object {
+    final def zzz1$J(val A$TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
     final def zzz1(x: A): A
-    final def zzz1_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
+    private[this] def zzz2$J(val A$TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
     private[this] def zzz2(x: A): A
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: A @storage[Long]): A @storage[Long]
   }
   // specialized class:
-  class TailCallsCrasher_J[Asp] extends TailCallsCrasher[Asp] {
-    def <init>(val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher_J[Asp] // is a specialized implementation of constructor TailCallsCrasher
+  class TailCallsCrasher$J[Asp] extends TailCallsCrasher[Asp] {
+    def <init>(val miniboxing|tests|compile|TailCallsCrasher$J|A$TypeTag: Byte): miniboxing.tests.compile.TailCallsCrasher$J[Asp] // is a specialized implementation of constructor TailCallsCrasher
+    final def zzz1$J(val A$TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz1
     final def zzz1(x: Asp): Asp                                            // is a forwarder to the specialized member
-    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz1
+    private[this] def zzz2$J(val A$TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz2
     private[this] def zzz2(x: Asp): Asp                                    // is a forwarder to the specialized member
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a specialized implementation of method zzz2
-    private[this] val miniboxing|tests|compile|TailCallsCrasher_J|A_TypeTag: Byte // is a type tag
+    private[this] val miniboxing|tests|compile|TailCallsCrasher$J|A$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class TailCallsCrasher_L[Asp] extends TailCallsCrasher[Asp] {
-    def <init>(): miniboxing.tests.compile.TailCallsCrasher_L[Asp]         // is a specialized implementation of constructor TailCallsCrasher
+  class TailCallsCrasher$L[Asp] extends TailCallsCrasher[Asp] {
+    def <init>(): miniboxing.tests.compile.TailCallsCrasher$L[Asp]         // is a specialized implementation of constructor TailCallsCrasher
+    final def zzz1$J(val A$TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
     final def zzz1(x: Asp): Asp                                            // is a specialized implementation of method zzz1
-    final def zzz1_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
+    private[this] def zzz2$J(val A$TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
     private[this] def zzz2(x: Asp): Asp                                    // is a specialized implementation of method zzz2
-    private[this] def zzz2_J(val A_TypeTag: Byte,x: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]

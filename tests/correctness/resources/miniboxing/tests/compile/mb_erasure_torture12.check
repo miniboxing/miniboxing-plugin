@@ -14,10 +14,10 @@ package miniboxing.tests.compile.erasure12 {
   a
 else
   b.toString();
-    def foo_n_J[T](T_TypeTag: Byte, a: Long, b: Long): String = MiniboxDispatch.this.mboxed_toString(if (MiniboxDispatch.this.mboxed_eqeq_notag(a, b))
+    def foo$n$J[T](T$TypeTag: Byte, a: Long, b: Long): String = MiniboxDispatch.this.mboxed_toString(if (MiniboxDispatch.this.mboxed_eqeq_notag(a, b))
       a
     else
-      b, T_TypeTag)
+      b, T$TypeTag)
   }
 }
 [Now checking: minibox-commit]

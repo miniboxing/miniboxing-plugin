@@ -66,7 +66,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
         newMbr = member.cloneSymbol(member.owner)
         metadata.miniboxedMemberFlag += newMbr
-        newMbr setName (specializedName(newTermName(member.name.toString + "_n"), variants.typeParamValues(member, pspec)))
+        newMbr setName (specializedName(newTermName(member.name.toString + NameSeparator + "n"), variants.typeParamValues(member, pspec)))
         newMbr modifyInfo (info0 => {
           info0.typeParams.foreach(_.removeAnnotation(MinispecClass))
 

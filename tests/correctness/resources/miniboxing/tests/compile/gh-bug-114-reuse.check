@@ -8,13 +8,13 @@ package miniboxing.tests.compile.bug114.reuse {
     def getId(o: Any): Int = java.this.lang.System.identityHashCode(o);
     def main(args: Array[String]): Unit = {
       val f: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
-          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = t1
+          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = t1
         };
         new anonymous class $anon()
       };

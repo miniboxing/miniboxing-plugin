@@ -4,14 +4,14 @@ Specializing class C...
     class D[U] extends Object
   }
   // specialized class:
-  class C_J[Tsp] extends C[Tsp] {
-    def <init>(val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte,c: Tsp @storage[Long]): miniboxing.tests.compile.nested.C_J[Tsp] // is a specialized implementation of constructor C
+  class C$J[Tsp] extends C[Tsp] {
+    def <init>(val miniboxing|tests|compile|nested|C$J|T$TypeTag: Byte,c: Tsp @storage[Long]): miniboxing.tests.compile.nested.C$J[Tsp] // is a specialized implementation of constructor C
     private[this] val c: Tsp @storage[Long]                                // is a specialized implementation of value c
-    private[this] val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte  // is a type tag
+    private[this] val miniboxing|tests|compile|nested|C$J|T$TypeTag: Byte  // is a type tag
   }
   // specialized class:
-  class C_L[Tsp] extends C[Tsp] {
-    def <init>(c: Tsp): miniboxing.tests.compile.nested.C_L[Tsp]           // is a specialized implementation of constructor C
+  class C$L[Tsp] extends C[Tsp] {
+    def <init>(c: Tsp): miniboxing.tests.compile.nested.C$L[Tsp]           // is a specialized implementation of constructor C
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
 Specializing class D...
@@ -19,14 +19,14 @@ Specializing class D...
   abstract trait D[U] extends Object {
   }
   // specialized class:
-  class D_J[Usp] extends C.this.D[Usp] {
-    def <init>(val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte,d: Usp @storage[Long]): C.this.D_J[Usp] // is a specialized implementation of constructor D
+  class D$J[Usp] extends C.this.D[Usp] {
+    def <init>(val miniboxing|tests|compile|nested|C|D$J|U$TypeTag: Byte,d: Usp @storage[Long]): C.this.D$J[Usp] // is a specialized implementation of constructor D
     private[this] val d: Usp @storage[Long]                                // is a specialized implementation of value d
-    private[this] val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte // is a type tag
+    private[this] val miniboxing|tests|compile|nested|C|D$J|U$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class D_L[Usp] extends C.this.D[Usp] {
-    def <init>(d: Usp): C.this.D_L[Usp]                                    // is a specialized implementation of constructor D
+  class D$L[Usp] extends C.this.D[Usp] {
+    def <init>(d: Usp): C.this.D$L[Usp]                                    // is a specialized implementation of constructor D
     private[this] val d: Usp                                               // is a specialized implementation of value d
   }
 [Now checking: minibox-inject]
@@ -38,34 +38,34 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile.nested {
   abstract trait C[@miniboxed T] extends Object {
     abstract trait D[@miniboxed U] extends Object;
-    class D_J[Usp] extends Object with C.this.D[Usp] {
-      <paramaccessor> private[this] val miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte = _;
+    class D$J[Usp] extends Object with C.this.D[Usp] {
+      <paramaccessor> private[this] val miniboxing|tests|compile|nested|C|D$J|U$TypeTag: Byte = _;
       <paramaccessor> private[this] val d: Long = _;
-      def <init>(miniboxing|tests|compile|nested|C|D_J|U_TypeTag: Byte, d: Long): C.this.D_J[Usp] = {
-        D_J.super.<init>();
+      def <init>(miniboxing|tests|compile|nested|C|D$J|U$TypeTag: Byte, d: Long): C.this.D$J[Usp] = {
+        D$J.super.<init>();
         ()
       }
     };
-    class D_L[Usp] extends Object with C.this.D[Usp] {
+    class D$L[Usp] extends Object with C.this.D[Usp] {
       <paramaccessor> private[this] val d: Usp = _;
-      def <init>(d: Usp): C.this.D_L[Usp] = {
-        D_L.super.<init>();
+      def <init>(d: Usp): C.this.D$L[Usp] = {
+        D$L.super.<init>();
         ()
       }
     }
   };
-  class C_J[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte = _;
+  class C$J[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|nested|C$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val c: Long = _;
-    def <init>(miniboxing|tests|compile|nested|C_J|T_TypeTag: Byte, c: Long): miniboxing.tests.compile.nested.C_J[Tsp] = {
-      C_J.super.<init>();
+    def <init>(miniboxing|tests|compile|nested|C$J|T$TypeTag: Byte, c: Long): miniboxing.tests.compile.nested.C$J[Tsp] = {
+      C$J.super.<init>();
       ()
     }
   };
-  class C_L[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
+  class C$L[Tsp] extends Object with miniboxing.tests.compile.nested.C[Tsp] {
     <paramaccessor> private[this] val c: Tsp = _;
-    def <init>(c: Tsp): miniboxing.tests.compile.nested.C_L[Tsp] = {
-      C_L.super.<init>();
+    def <init>(c: Tsp): miniboxing.tests.compile.nested.C$L[Tsp] = {
+      C$L.super.<init>();
       ()
     }
   }

@@ -4,15 +4,15 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile.spire4.var1 {
   abstract trait Dist[@miniboxed A] extends Object { self: miniboxing.tests.compile.spire4.var1.Dist[A] =>
     def sample[CC[A] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: A): CC[A];
-    def sample_J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long): CC[A]
+    def sample$J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A$TypeTag: Byte, n: Int, a: Long): CC[A]
   };
-  abstract trait Dist_J[Asp] extends Object with miniboxing.tests.compile.spire4.var1.Dist[Asp] {
-    def miniboxing|tests|compile|spire4|var1|Dist_J|A_TypeTag(): Byte;
-    def sample[CC[A] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp): CC[Asp] = Dist_J.this.sample_J[CC](Dist_J.this.miniboxing|tests|compile|spire4|var1|Dist_J|A_TypeTag(), n, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist_J.this.miniboxing|tests|compile|spire4|var1|Dist_J|A_TypeTag()));
-    def sample_J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long): CC[Asp] = scala.this.Predef.???()
+  abstract trait Dist$J[Asp] extends Object with miniboxing.tests.compile.spire4.var1.Dist[Asp] {
+    def miniboxing|tests|compile|spire4|var1|Dist$J|A$TypeTag(): Byte;
+    def sample[CC[A] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp): CC[Asp] = Dist$J.this.sample$J[CC](Dist$J.this.miniboxing|tests|compile|spire4|var1|Dist$J|A$TypeTag(), n, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist$J.this.miniboxing|tests|compile|spire4|var1|Dist$J|A$TypeTag()));
+    def sample$J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A$TypeTag: Byte, n: Int, a: Long): CC[Asp] = scala.this.Predef.???()
   };
-  abstract trait Dist_L[Asp] extends Object with miniboxing.tests.compile.spire4.var1.Dist[Asp] {
+  abstract trait Dist$L[Asp] extends Object with miniboxing.tests.compile.spire4.var1.Dist[Asp] {
     def sample[CC[A] >: [A]Nothing <: [A]Iterable[A]](n: Int, a: Asp): CC[Asp] = scala.this.Predef.???();
-    def sample_J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A_TypeTag: Byte, n: Int, a: Long): CC[Asp] = Dist_L.this.sample[CC](n, MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag))
+    def sample$J[CC[A] >: [A]Nothing <: [A]Iterable[A]](A$TypeTag: Byte, n: Int, a: Long): CC[Asp] = Dist$L.this.sample[CC](n, MiniboxConversions.this.minibox2box[Asp](a, A$TypeTag))
   }
 }

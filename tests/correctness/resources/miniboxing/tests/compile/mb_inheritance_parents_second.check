@@ -3,13 +3,13 @@ Specializing class CC...
   abstract trait CC[T] extends Object {
   }
   // specialized class:
-  class CC_J[Tsp] extends CC[Tsp] {
-    def <init>(val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] // is a specialized implementation of constructor CC
-    private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte // is a type tag
+  class CC$J[Tsp] extends CC[Tsp] {
+    def <init>(val miniboxing|tests|compile|inheritance|CC$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.CC$J[Tsp] // is a specialized implementation of constructor CC
+    private[this] val miniboxing|tests|compile|inheritance|CC$J|T$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class CC_L[Tsp] extends CC[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp]           // is a specialized implementation of constructor CC
+  class CC$L[Tsp] extends CC[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.CC$L[Tsp]           // is a specialized implementation of constructor CC
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -19,20 +19,20 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait CC[@miniboxed T] extends Object;
-  class CC_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|inheritance|CC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CC_J[Tsp] = {
-      CC_J.super.<init>();
+  class CC$J[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CC$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|inheritance|CC$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.CC$J[Tsp] = {
+      CC$J.super.<init>();
       ()
     }
   };
-  class CC_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.CC_L[Tsp] = {
-      CC_L.super.<init>();
+  class CC$L[Tsp] extends Object with miniboxing.tests.compile.inheritance.CC[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.CC$L[Tsp] = {
+      CC$L.super.<init>();
       ()
     }
   };
-  class DC[U] extends miniboxing.tests.compile.inheritance.CC_L[U] {
+  class DC[U] extends miniboxing.tests.compile.inheritance.CC$L[U] {
     def <init>(): miniboxing.tests.compile.inheritance.DC[U] = {
       DC.super.<init>();
       ()

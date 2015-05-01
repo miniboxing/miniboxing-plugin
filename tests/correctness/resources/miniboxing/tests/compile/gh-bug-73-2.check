@@ -1,57 +1,56 @@
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug73.ver2 {
-  abstract trait C1[@miniboxed +A] extends Object {
+  abstract trait C1[@miniboxed A] extends Object {
     def head(): A;
-    def head_D(A_TypeTag: Byte): Double;
-    def head_J(A_TypeTag: Byte): Long
+    def head$D(A$TypeTag: Byte): Double;
+    def head$J(A$TypeTag: Byte): Long
   };
-  abstract trait C1_D[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
-    def miniboxing|tests|compile|bug73|ver2|C1_D|A_TypeTag(): Byte;
-    def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C1_D.this.head_D(C1_D.this.miniboxing|tests|compile|bug73|ver2|C1_D|A_TypeTag()), C1_D.this.miniboxing|tests|compile|bug73|ver2|C1_D|A_TypeTag());
-    def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A_TypeTag);
-    def head_J(A_TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
+  abstract trait C1$D[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
+    def miniboxing|tests|compile|bug73|ver2|C1$D|A$TypeTag(): Byte;
+    def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C1$D.this.head$D(C1$D.this.miniboxing|tests|compile|bug73|ver2|C1$D|A$TypeTag()), C1$D.this.miniboxing|tests|compile|bug73|ver2|C1$D|A$TypeTag());
+    def head$D(A$TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A$TypeTag);
+    def head$J(A$TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
   };
-  abstract trait C1_J[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
-    def miniboxing|tests|compile|bug73|ver2|C1_J|A_TypeTag(): Byte;
-    def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C1_J.this.head_J(C1_J.this.miniboxing|tests|compile|bug73|ver2|C1_J|A_TypeTag()), C1_J.this.miniboxing|tests|compile|bug73|ver2|C1_J|A_TypeTag());
-    def head_D(A_TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
-    def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A_TypeTag)
+  abstract trait C1$J[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
+    def miniboxing|tests|compile|bug73|ver2|C1$J|A$TypeTag(): Byte;
+    def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C1$J.this.head$J(C1$J.this.miniboxing|tests|compile|bug73|ver2|C1$J|A$TypeTag()), C1$J.this.miniboxing|tests|compile|bug73|ver2|C1$J|A$TypeTag());
+    def head$D(A$TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    def head$J(A$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](scala.sys.`package`.error(""), A$TypeTag)
   };
-  abstract trait C1_L[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
+  abstract trait C1$L[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1[Asp] {
     def head(): Asp = scala.sys.`package`.error("");
-    def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C1_L.this.head(), A_TypeTag);
-    def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C1_L.this.head(), A_TypeTag)
+    def head$D(A$TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C1$L.this.head(), A$TypeTag);
+    def head$J(A$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C1$L.this.head(), A$TypeTag)
   };
-  abstract trait C2[@miniboxed +A] extends Object with miniboxing.tests.compile.bug73.ver2.C1[A] {
+  abstract trait C2[@miniboxed A] extends Object with miniboxing.tests.compile.bug73.ver2.C1[A] {
     override def head(): A;
-    override def head_D(A_TypeTag: Byte): Double;
-    override def head_J(A_TypeTag: Byte): Long
+    override def head$D(A$TypeTag: Byte): Double;
+    override def head$J(A$TypeTag: Byte): Long
   };
-  abstract trait C2_D[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1_D[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
-    def miniboxing|tests|compile|bug73|ver2|C2_D|A_TypeTag(): Byte;
-    override def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C2_D.this.head_D(C2_D.this.miniboxing|tests|compile|bug73|ver2|C2_D|A_TypeTag()), C2_D.this.miniboxing|tests|compile|bug73|ver2|C2_D|A_TypeTag());
-    override def head_D(A_TypeTag: Byte): Double = C2_D.this.super$head_D(A_TypeTag);
-    override def head_J(A_TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
+  abstract trait C2$D[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1$D[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
+    def miniboxing|tests|compile|bug73|ver2|C2$D|A$TypeTag(): Byte;
+    override def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C2$D.this.head$D(C2$D.this.miniboxing|tests|compile|bug73|ver2|C2$D|A$TypeTag()), C2$D.this.miniboxing|tests|compile|bug73|ver2|C2$D|A$TypeTag());
+    override def head$D(A$TypeTag: Byte): Double = C2$D.this.super$head$D(A$TypeTag);
+    override def head$J(A$TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
   };
-  abstract trait C2_J[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1_J[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
-    def miniboxing|tests|compile|bug73|ver2|C2_J|A_TypeTag(): Byte;
-    override def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C2_J.this.head_J(C2_J.this.miniboxing|tests|compile|bug73|ver2|C2_J|A_TypeTag()), C2_J.this.miniboxing|tests|compile|bug73|ver2|C2_J|A_TypeTag());
-    override def head_D(A_TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
-    override def head_J(A_TypeTag: Byte): Long = C2_J.this.super$head_J(A_TypeTag)
+  abstract trait C2$J[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1$J[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
+    def miniboxing|tests|compile|bug73|ver2|C2$J|A$TypeTag(): Byte;
+    override def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C2$J.this.head$J(C2$J.this.miniboxing|tests|compile|bug73|ver2|C2$J|A$TypeTag()), C2$J.this.miniboxing|tests|compile|bug73|ver2|C2$J|A$TypeTag());
+    override def head$D(A$TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    override def head$J(A$TypeTag: Byte): Long = C2$J.this.super$head$J(A$TypeTag)
   };
-  abstract trait C2_L[+Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1_L[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
-    override def head(): Asp = C2_L.this.super$head();
-    override def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2_L.this.head(), A_TypeTag);
-    override def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2_L.this.head(), A_TypeTag)
+  abstract trait C2$L[Asp] extends Object with miniboxing.tests.compile.bug73.ver2.C1$L[Asp] with miniboxing.tests.compile.bug73.ver2.C2[Asp] {
+    override def head(): Asp = C2$L.this.super$head();
+    override def head$D(A$TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2$L.this.head(), A$TypeTag);
+    override def head$J(A$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2$L.this.head(), A$TypeTag)
   };
-  class C3 extends Object with miniboxing.tests.compile.bug73.ver2.C2_J[Char] {
-    def miniboxing|tests|compile|bug73|ver2|C1_J|A_TypeTag(): Byte = 4;
-    def miniboxing|tests|compile|bug73|ver2|C2_J|A_TypeTag(): Byte = 4;
+  class C3 extends Object with miniboxing.tests.compile.bug73.ver2.C2$J[Char] {
+    def miniboxing|tests|compile|bug73|ver2|C1$J|A$TypeTag(): Byte = 4;
+    def miniboxing|tests|compile|bug73|ver2|C2$J|A$TypeTag(): Byte = 4;
     def <init>(): miniboxing.tests.compile.bug73.ver2.C3 = {
       C3.super.<init>();
       ()
     }
   }
 }
-
 [Now checking: minibox-commit]

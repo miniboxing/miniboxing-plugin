@@ -3,26 +3,26 @@ package miniboxing.tests.compile.bug993.partial {
   abstract trait C[@miniboxed T] extends Object {
     def foo(): Int;
     def bar(t: T): T;
-    def bar_J(T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long]
+    def bar$J(T$TypeTag: Byte, t: T @storage[Long]): T @storage[Long]
   };
-  class C_J[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C_J[Tsp] = {
-      C_J.super.<init>();
+  class C$J[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug993|partial|C$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug993|partial|C$J|T$TypeTag: Byte): miniboxing.tests.compile.bug993.partial.C$J[Tsp] = {
+      C$J.super.<init>();
       ()
     };
     def foo(): Int = 3;
-    def bar(t: Tsp): Tsp = C_J.this.bar_J(C_J.this.miniboxing|tests|compile|bug993|partial|C_J|T_TypeTag, t);
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = t
+    def bar(t: Tsp): Tsp = C$J.this.bar$J(C$J.this.miniboxing|tests|compile|bug993|partial|C$J|T$TypeTag, t);
+    def bar$J(T$TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = t
   };
-  class C_L[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
-    def <init>(): miniboxing.tests.compile.bug993.partial.C_L[Tsp] = {
-      C_L.super.<init>();
+  class C$L[Tsp] extends Object with miniboxing.tests.compile.bug993.partial.C[Tsp] {
+    def <init>(): miniboxing.tests.compile.bug993.partial.C$L[Tsp] = {
+      C$L.super.<init>();
       ()
     };
     def foo(): Int = 3;
     def bar(t: Tsp): Tsp = t;
-    def bar_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C_L.this.bar(t)
+    def bar$J(T$TypeTag: Byte, t: Tsp @storage[Long]): Tsp @storage[Long] = C$L.this.bar(t)
   }
 }
 Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.

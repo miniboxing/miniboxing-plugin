@@ -7,42 +7,42 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait CCC[@miniboxed T] extends Object {
     <stable> <accessor> <paramaccessor> def t(): T;
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long;
+    <stable> <accessor> def t$J(T$TypeTag: Byte): Long;
     def foo(t1: T, t2: Any): String;
-    def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String
+    def foo$J(T$TypeTag: Byte, t1: Long, t2: Any): String
   };
-  class CCC_J[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|CCC_J|T_TypeTag: Byte = _;
+  class CCC$J[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|CCC$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
-    <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](CCC_J.this.t_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag);
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = CCC_J.this.t;
-    def <init>(miniboxing|tests|compile|CCC_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.CCC_J[Tsp] = {
-      CCC_J.super.<init>();
+    <stable> <accessor> <paramaccessor> def t(): Tsp = MiniboxConversions.this.minibox2box[Tsp](CCC$J.this.t$J(CCC$J.this.miniboxing|tests|compile|CCC$J|T$TypeTag), CCC$J.this.miniboxing|tests|compile|CCC$J|T$TypeTag);
+    <stable> <accessor> def t$J(T$TypeTag: Byte): Long = CCC$J.this.t;
+    def <init>(miniboxing|tests|compile|CCC$J|T$TypeTag: Byte, t: Long): miniboxing.tests.compile.CCC$J[Tsp] = {
+      CCC$J.super.<init>();
       ()
     };
-    def foo(t1: Tsp, t2: Any): String = CCC_J.this.foo_J(CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, CCC_J.this.miniboxing|tests|compile|CCC_J|T_TypeTag), t2);
-    def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String = {
-      MiniboxDispatch.this.mboxed_hashCode(CCC_J.this.t_J(T_TypeTag), T_TypeTag);
-      MiniboxDispatch.this.mboxed_eqeq_notag(CCC_J.this.t_J(T_TypeTag), t1);
-      MiniboxDispatch.this.mboxed_eqeq_other(CCC_J.this.t_J(T_TypeTag), T_TypeTag, t2);
-      MiniboxDispatch.this.mboxed_toString(CCC_J.this.t_J(T_TypeTag), T_TypeTag)
+    def foo(t1: Tsp, t2: Any): String = CCC$J.this.foo$J(CCC$J.this.miniboxing|tests|compile|CCC$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, CCC$J.this.miniboxing|tests|compile|CCC$J|T$TypeTag), t2);
+    def foo$J(T$TypeTag: Byte, t1: Long, t2: Any): String = {
+      MiniboxDispatch.this.mboxed_hashCode(CCC$J.this.t$J(T$TypeTag), T$TypeTag);
+      MiniboxDispatch.this.mboxed_eqeq_notag(CCC$J.this.t$J(T$TypeTag), t1);
+      MiniboxDispatch.this.mboxed_eqeq_other(CCC$J.this.t$J(T$TypeTag), T$TypeTag, t2);
+      MiniboxDispatch.this.mboxed_toString(CCC$J.this.t$J(T$TypeTag), T$TypeTag)
     }
   };
-  class CCC_L[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
+  class CCC$L[Tsp] extends Object with miniboxing.tests.compile.CCC[Tsp] {
     <paramaccessor> private[this] val t: Tsp = _;
-    <stable> <accessor> <paramaccessor> def t(): Tsp = CCC_L.this.t;
-    <stable> <accessor> def t_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](CCC_L.this.t(), T_TypeTag);
-    def <init>(t: Tsp): miniboxing.tests.compile.CCC_L[Tsp] = {
-      CCC_L.super.<init>();
+    <stable> <accessor> <paramaccessor> def t(): Tsp = CCC$L.this.t;
+    <stable> <accessor> def t$J(T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](CCC$L.this.t(), T$TypeTag);
+    def <init>(t: Tsp): miniboxing.tests.compile.CCC$L[Tsp] = {
+      CCC$L.super.<init>();
       ()
     };
     def foo(t1: Tsp, t2: Any): String = {
-      CCC_L.this.t().hashCode();
-      CCC_L.this.t().==(t1);
-      CCC_L.this.t().==(t2);
-      CCC_L.this.t().toString()
+      CCC$L.this.t().hashCode();
+      CCC$L.this.t().==(t1);
+      CCC$L.this.t().==(t2);
+      CCC$L.this.t().toString()
     };
-    def foo_J(T_TypeTag: Byte, t1: Long, t2: Any): String = CCC_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t1, T_TypeTag), t2)
+    def foo$J(T$TypeTag: Byte, t1: Long, t2: Any): String = CCC$L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t1, T$TypeTag), t2)
   }
 }
 [Now checking: minibox-commit]

@@ -6,10 +6,10 @@ package <empty> {
       ()
     };
     private def quicksort[@miniboxed T](a: Array[(T, Double)]): Array[(T, Double)] = a;
-    private def quicksort_n_D[T](T_TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
-    private def quicksort_n_J[T](T_TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
+    private def quicksort$n$D[T](T$TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
+    private def quicksort$n$J[T](T$TypeTag: Byte, a: Array[(T, Double)]): Array[(T, Double)] = a;
     def quicksortByKey[@miniboxed T](arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort[T](arr);
-    def quicksortByKey_n_D[T](T_TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort_n_D[T](T_TypeTag, arr);
-    def quicksortByKey_n_J[T](T_TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort_n_J[T](T_TypeTag, arr)
+    def quicksortByKey$n$D[T](T$TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort$n$D[T](T$TypeTag, arr);
+    def quicksortByKey$n$J[T](T$TypeTag: Byte, arr: Array[(T, Double)]): Array[(T, Double)] = TuplesQuickSort.this.quicksort$n$J[T](T$TypeTag, arr)
   }
 }

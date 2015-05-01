@@ -5,103 +5,103 @@ package miniboxing.tests.bug115 {
       Test.super.<init>();
       ()
     };
-    def foo(f: Int => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, f).apply_JJ(5, 5, MiniboxConversions.this.int2minibox(3))));
+    def foo(f: Int => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, f).apply$JJ(5, 5, MiniboxConversions.this.int2minibox(3))));
     def bar(f: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Unit = Test.this.foo(f.extractFunctionX());
-    def baz1(x: () => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function0_opt_bridge_long[Int](5, x).apply_J(5)));
+    def baz1(x: () => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function0_opt_bridge_long[Int](5, x).apply$J(5)));
     def baz2(x: () => Int): Unit = ();
-    def zab1(x: miniboxing.runtime.MiniboxedFunction0[Int]): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(x.apply_J(5)));
+    def zab1(x: miniboxing.runtime.MiniboxedFunction0[Int]): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(x.apply$J(5)));
     def zab2(x: miniboxing.runtime.MiniboxedFunction0[Int]): Unit = ();
     def main(args: Array[String]): Unit = {
       Test.this.foo({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
-          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
+          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]>().extractFunctionX()
+        new anonymous class $anon().extractFunctionX()
       });
       Test.this.bar({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
-          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
+          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]>()
+        new anonymous class $anon()
       });
       val f: Int => Int = {
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
-          override def apply_JJ(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
+          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1_JJ[Int,Int]>().extractFunctionX()
+        new anonymous class $anon().extractFunctionX()
       };
       Test.this.foo(f);
       Test.this.bar(MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, f));
       Test.this.baz1({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0_J[Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_J(5));
-          override def apply_J(R_TypeTag: Byte): Long = {
+          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval1");
             MiniboxConversions.this.int2minibox(1)
           }
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]>().extractFunctionX()
+        new anonymous class $anon().extractFunctionX()
       });
       Test.this.baz2({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0_J[Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_J(5));
-          override def apply_J(R_TypeTag: Byte): Long = {
+          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval2");
             MiniboxConversions.this.int2minibox(2)
           }
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]>().extractFunctionX()
+        new anonymous class $anon().extractFunctionX()
       });
       Test.this.zab1({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0_J[Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_J(5));
-          override def apply_J(R_TypeTag: Byte): Long = {
+          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval3");
             MiniboxConversions.this.int2minibox(3)
           }
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]>()
+        new anonymous class $anon()
       });
       Test.this.zab2({
-        @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0_J[Int] with Serializable {
-          def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]> = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+          def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply_J(5));
-          override def apply_J(R_TypeTag: Byte): Long = {
+          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval4");
             MiniboxConversions.this.int2minibox(4)
           }
         };
-        new <$anon: miniboxing.runtime.AbstractMiniboxedFunction0_J[Int]>()
+        new anonymous class $anon()
       })
     }
   }

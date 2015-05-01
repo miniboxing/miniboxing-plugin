@@ -8,25 +8,25 @@ package miniboxing.tests.compile.bug69.red2 {
     def foo[@miniboxed T](t: T): T = {
       def bar[@miniboxed U](u: U): U = {
         def baz[@miniboxed V](v: V): V = v;
-        def baz_n_J[V](V_TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
+        def baz$n$J[V](V$TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
         baz[U](u)
       };
-      def bar_n_J[U](U_TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = {
+      def bar$n$J[U](U$TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = {
         def baz[@miniboxed V](v: V): V = v;
-        def baz_n_J[V](V_TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
+        def baz$n$J[V](V$TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
         baz[U](u)
       };
       bar[T](t)
     };
-    def foo_n_J[T](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = {
+    def foo$n$J[T](T$TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = {
       def bar[@miniboxed U](u: U): U = {
         def baz[@miniboxed V](v: V): V = v;
-        def baz_n_J[V](V_TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
+        def baz$n$J[V](V$TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
         baz[U](u)
       };
-      def bar_n_J[U](U_TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = {
+      def bar$n$J[U](U$TypeTag: Byte, u: U @storage[Long]): U @storage[Long] = {
         def baz[@miniboxed V](v: V): V = v;
-        def baz_n_J[V](V_TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
+        def baz$n$J[V](V$TypeTag: Byte, v: V @storage[Long]): V @storage[Long] = v;
         baz[U](u)
       };
       bar[T](t)

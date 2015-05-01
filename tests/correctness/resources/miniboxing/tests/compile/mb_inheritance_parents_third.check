@@ -3,26 +3,26 @@ Specializing class CCC...
   abstract trait CCC[T] extends Object {
   }
   // specialized class:
-  class CCC_J[Tsp] extends CCC[Tsp] {
-    def <init>(val miniboxing|tests|compile|inheritance|CCC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CCC_J[Tsp] // is a specialized implementation of constructor CCC
-    private[this] val miniboxing|tests|compile|inheritance|CCC_J|T_TypeTag: Byte // is a type tag
+  class CCC$J[Tsp] extends CCC[Tsp] {
+    def <init>(val miniboxing|tests|compile|inheritance|CCC$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.CCC$J[Tsp] // is a specialized implementation of constructor CCC
+    private[this] val miniboxing|tests|compile|inheritance|CCC$J|T$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class CCC_L[Tsp] extends CCC[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.CCC_L[Tsp]          // is a specialized implementation of constructor CCC
+  class CCC$L[Tsp] extends CCC[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.CCC$L[Tsp]          // is a specialized implementation of constructor CCC
   }
 Specializing class DDD...
   // interface:
   abstract trait DDD[U] extends CCC[U] {
   }
   // specialized class:
-  class DDD_J[Usp] extends CCC_J[Usp] with DDD[Usp] {
-    def <init>(val miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDD_J[Usp] // is a specialized implementation of constructor DDD
-    private[this] val miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte // is a type tag
+  class DDD$J[Usp] extends CCC$J[Usp] with DDD[Usp] {
+    def <init>(val miniboxing|tests|compile|inheritance|DDD$J|U$TypeTag: Byte): miniboxing.tests.compile.inheritance.DDD$J[Usp] // is a specialized implementation of constructor DDD
+    private[this] val miniboxing|tests|compile|inheritance|DDD$J|U$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class DDD_L[Usp] extends CCC_L[Usp] with DDD[Usp] {
-    def <init>(): miniboxing.tests.compile.inheritance.DDD_L[Usp]          // is a specialized implementation of constructor DDD
+  class DDD$L[Usp] extends CCC$L[Usp] with DDD[Usp] {
+    def <init>(): miniboxing.tests.compile.inheritance.DDD$L[Usp]          // is a specialized implementation of constructor DDD
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -32,30 +32,30 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.inheritance {
   abstract trait CCC[@miniboxed T] extends Object;
-  class CCC_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.CCC[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CCC_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|inheritance|CCC_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.CCC_J[Tsp] = {
-      CCC_J.super.<init>();
+  class CCC$J[Tsp] extends Object with miniboxing.tests.compile.inheritance.CCC[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|CCC$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|inheritance|CCC$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.CCC$J[Tsp] = {
+      CCC$J.super.<init>();
       ()
     }
   };
-  class CCC_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.CCC[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.CCC_L[Tsp] = {
-      CCC_L.super.<init>();
+  class CCC$L[Tsp] extends Object with miniboxing.tests.compile.inheritance.CCC[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.CCC$L[Tsp] = {
+      CCC$L.super.<init>();
       ()
     }
   };
   abstract trait DDD[@miniboxed U] extends Object;
-  class DDD_J[Usp] extends miniboxing.tests.compile.inheritance.CCC_J[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag: Byte): miniboxing.tests.compile.inheritance.DDD_J[Usp] = {
-      DDD_J.super.<init>(miniboxing|tests|compile|inheritance|DDD_J|U_TypeTag);
+  class DDD$J[Usp] extends miniboxing.tests.compile.inheritance.CCC$J[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|DDD$J|U$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|inheritance|DDD$J|U$TypeTag: Byte): miniboxing.tests.compile.inheritance.DDD$J[Usp] = {
+      DDD$J.super.<init>(miniboxing|tests|compile|inheritance|DDD$J|U$TypeTag);
       ()
     }
   };
-  class DDD_L[Usp] extends miniboxing.tests.compile.inheritance.CCC_L[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
-    def <init>(): miniboxing.tests.compile.inheritance.DDD_L[Usp] = {
-      DDD_L.super.<init>();
+  class DDD$L[Usp] extends miniboxing.tests.compile.inheritance.CCC$L[Usp] with miniboxing.tests.compile.inheritance.DDD[Usp] {
+    def <init>(): miniboxing.tests.compile.inheritance.DDD$L[Usp] = {
+      DDD$L.super.<init>();
       ()
     }
   }

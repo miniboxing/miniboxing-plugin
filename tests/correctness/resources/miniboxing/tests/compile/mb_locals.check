@@ -7,26 +7,26 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait LocalValuesHandling[@miniboxed T] extends Object {
     def extend(): Int;
-    def extend_J(T_TypeTag: Byte): Int
+    def extend$J(T$TypeTag: Byte): Int
   };
-  class LocalValuesHandling_J[Tsp] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag: Byte): miniboxing.tests.compile.LocalValuesHandling_J[Tsp] = {
-      LocalValuesHandling_J.super.<init>();
+  class LocalValuesHandling$J[Tsp] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|LocalValuesHandling$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|LocalValuesHandling$J|T$TypeTag: Byte): miniboxing.tests.compile.LocalValuesHandling$J[Tsp] = {
+      LocalValuesHandling$J.super.<init>();
       ()
     };
     private[this] val x: Int = 0;
-    def extend(): Int = LocalValuesHandling_J.this.extend_J(LocalValuesHandling_J.this.miniboxing|tests|compile|LocalValuesHandling_J|T_TypeTag);
-    def extend_J(T_TypeTag: Byte): Int = LocalValuesHandling_J.this.x.+(1)
+    def extend(): Int = LocalValuesHandling$J.this.extend$J(LocalValuesHandling$J.this.miniboxing|tests|compile|LocalValuesHandling$J|T$TypeTag);
+    def extend$J(T$TypeTag: Byte): Int = LocalValuesHandling$J.this.x.+(1)
   };
-  class LocalValuesHandling_L[Tsp] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {
-    def <init>(): miniboxing.tests.compile.LocalValuesHandling_L[Tsp] = {
-      LocalValuesHandling_L.super.<init>();
+  class LocalValuesHandling$L[Tsp] extends Object with miniboxing.tests.compile.LocalValuesHandling[Tsp] {
+    def <init>(): miniboxing.tests.compile.LocalValuesHandling$L[Tsp] = {
+      LocalValuesHandling$L.super.<init>();
       ()
     };
     private[this] val x: Int = 0;
-    def extend(): Int = LocalValuesHandling_L.this.x.+(1);
-    def extend_J(T_TypeTag: Byte): Int = LocalValuesHandling_L.this.extend()
+    def extend(): Int = LocalValuesHandling$L.this.x.+(1);
+    def extend$J(T$TypeTag: Byte): Int = LocalValuesHandling$L.this.extend()
   }
 }
 [Now checking: minibox-commit]

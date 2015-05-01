@@ -6,93 +6,93 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.breeze2 {
   abstract trait TensorLike[@miniboxed K, @miniboxed V, This] extends Object;
-  abstract trait TensorLike_JJ[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
-    def miniboxing|tests|compile|breeze2|TensorLike_JJ|K_TypeTag(): Byte;
-    def miniboxing|tests|compile|breeze2|TensorLike_JJ|V_TypeTag(): Byte
+  abstract trait TensorLike$JJ[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
+    def miniboxing|tests|compile|breeze2|TensorLike$JJ|K$TypeTag(): Byte;
+    def miniboxing|tests|compile|breeze2|TensorLike$JJ|V$TypeTag(): Byte
   };
-  abstract trait TensorLike_JL[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
-    def miniboxing|tests|compile|breeze2|TensorLike_JL|K_TypeTag(): Byte
+  abstract trait TensorLike$JL[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
+    def miniboxing|tests|compile|breeze2|TensorLike$JL|K$TypeTag(): Byte
   };
-  abstract trait TensorLike_LJ[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
-    def miniboxing|tests|compile|breeze2|TensorLike_LJ|V_TypeTag(): Byte
+  abstract trait TensorLike$LJ[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp] {
+    def miniboxing|tests|compile|breeze2|TensorLike$LJ|V$TypeTag(): Byte
   };
-  abstract trait TensorLike_LL[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp];
+  abstract trait TensorLike$LL[Ksp, Vsp, Thissp] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Ksp,Vsp,Thissp];
   abstract trait VectorLike[@miniboxed E, Self <: miniboxing.tests.compile.breeze2.Vector[E]] extends Object with miniboxing.tests.compile.breeze2.TensorLike[Int,E,Self];
-  abstract trait VectorLike_J[Esp, Selfsp <: miniboxing.tests.compile.breeze2.Vector[Esp]] extends Object with miniboxing.tests.compile.breeze2.TensorLike_JJ[Int,Esp,Selfsp] with miniboxing.tests.compile.breeze2.VectorLike[Esp,Selfsp] {
-    def miniboxing|tests|compile|breeze2|VectorLike_J|E_TypeTag(): Byte
+  abstract trait VectorLike$J[Esp, Selfsp <: miniboxing.tests.compile.breeze2.Vector[Esp]] extends Object with miniboxing.tests.compile.breeze2.TensorLike$JJ[Int,Esp,Selfsp] with miniboxing.tests.compile.breeze2.VectorLike[Esp,Selfsp] {
+    def miniboxing|tests|compile|breeze2|VectorLike$J|E$TypeTag(): Byte
   };
-  abstract trait VectorLike_L[Esp, Selfsp <: miniboxing.tests.compile.breeze2.Vector[Esp]] extends Object with miniboxing.tests.compile.breeze2.TensorLike_JL[Int,Esp,Selfsp] with miniboxing.tests.compile.breeze2.VectorLike[Esp,Selfsp];
+  abstract trait VectorLike$L[Esp, Selfsp <: miniboxing.tests.compile.breeze2.Vector[Esp]] extends Object with miniboxing.tests.compile.breeze2.TensorLike$JL[Int,Esp,Selfsp] with miniboxing.tests.compile.breeze2.VectorLike[Esp,Selfsp];
   abstract trait Vector[@miniboxed E] extends Object with miniboxing.tests.compile.breeze2.VectorLike[E,miniboxing.tests.compile.breeze2.Vector[E]] {
     def toDenseVector(): miniboxing.tests.compile.breeze2.DenseVector[E];
     def toArray(): Array[E]
   };
-  abstract trait Vector_J[Esp] extends Object with miniboxing.tests.compile.breeze2.VectorLike_J[Esp,miniboxing.tests.compile.breeze2.Vector[Esp]] with miniboxing.tests.compile.breeze2.Vector[Esp] {
-    def miniboxing|tests|compile|breeze2|Vector_J|E_TypeTag(): Byte;
-    def toDenseVector(): miniboxing.tests.compile.breeze2.DenseVector[Esp] = new miniboxing.tests.compile.breeze2.DenseVector_J[Esp](Vector_J.this.miniboxing|tests|compile|breeze2|Vector_J|E_TypeTag(), Vector_J.this.toArray());
+  abstract trait Vector$J[Esp] extends Object with miniboxing.tests.compile.breeze2.VectorLike$J[Esp,miniboxing.tests.compile.breeze2.Vector[Esp]] with miniboxing.tests.compile.breeze2.Vector[Esp] {
+    def miniboxing|tests|compile|breeze2|Vector$J|E$TypeTag(): Byte;
+    def toDenseVector(): miniboxing.tests.compile.breeze2.DenseVector[Esp] = new miniboxing.tests.compile.breeze2.DenseVector$J[Esp](Vector$J.this.miniboxing|tests|compile|breeze2|Vector$J|E$TypeTag(), Vector$J.this.toArray());
     def toArray(): Array[Esp] = scala.this.Predef.???()
   };
-  abstract trait Vector_L[Esp] extends Object with miniboxing.tests.compile.breeze2.VectorLike_L[Esp,miniboxing.tests.compile.breeze2.Vector[Esp]] with miniboxing.tests.compile.breeze2.Vector[Esp] {
-    def toDenseVector(): miniboxing.tests.compile.breeze2.DenseVector[Esp] = new miniboxing.tests.compile.breeze2.DenseVector_L[Esp](Vector_L.this.toArray());
+  abstract trait Vector$L[Esp] extends Object with miniboxing.tests.compile.breeze2.VectorLike$L[Esp,miniboxing.tests.compile.breeze2.Vector[Esp]] with miniboxing.tests.compile.breeze2.Vector[Esp] {
+    def toDenseVector(): miniboxing.tests.compile.breeze2.DenseVector[Esp] = new miniboxing.tests.compile.breeze2.DenseVector$L[Esp](Vector$L.this.toArray());
     def toArray(): Array[Esp] = scala.this.Predef.???()
   };
   abstract trait Storage[@miniboxed Elem] extends Object;
-  abstract trait Storage_J[Elemsp] extends Object with miniboxing.tests.compile.breeze2.Storage[Elemsp] {
-    def miniboxing|tests|compile|breeze2|Storage_J|Elem_TypeTag(): Byte
+  abstract trait Storage$J[Elemsp] extends Object with miniboxing.tests.compile.breeze2.Storage[Elemsp] {
+    def miniboxing|tests|compile|breeze2|Storage$J|Elem$TypeTag(): Byte
   };
-  abstract trait Storage_L[Elemsp] extends Object with miniboxing.tests.compile.breeze2.Storage[Elemsp];
-  abstract trait StorageVector[E] extends Object with miniboxing.tests.compile.breeze2.Vector_L[E] with miniboxing.tests.compile.breeze2.Storage_L[E];
+  abstract trait Storage$L[Elemsp] extends Object with miniboxing.tests.compile.breeze2.Storage[Elemsp];
+  abstract trait StorageVector[E] extends Object with miniboxing.tests.compile.breeze2.Vector$L[E] with miniboxing.tests.compile.breeze2.Storage$L[E];
   abstract trait DenseVector[@miniboxed E] extends Object with miniboxing.tests.compile.breeze2.StorageVector[E] with miniboxing.tests.compile.breeze2.VectorLike[E,miniboxing.tests.compile.breeze2.DenseVector[E]] with Serializable {
     <stable> <accessor> <paramaccessor> def data(): Array[E];
     <stable> <accessor> <paramaccessor> def offset(): Int;
     <stable> <accessor> <paramaccessor> def stride(): Int;
     <stable> <accessor> <paramaccessor> def length(): Int
   };
-  class DenseVector_J[Esp] extends Object with miniboxing.tests.compile.breeze2.StorageVector[Esp] with miniboxing.tests.compile.breeze2.VectorLike_J[Esp,miniboxing.tests.compile.breeze2.DenseVector[Esp]] with Serializable with miniboxing.tests.compile.breeze2.DenseVector[Esp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag: Byte = _;
-    def miniboxing|tests|compile|breeze2|TensorLike_JJ|K_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|breeze2|TensorLike_JJ|V_TypeTag(): Byte = DenseVector_J.this.miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag;
-    def miniboxing|tests|compile|breeze2|VectorLike_J|E_TypeTag(): Byte = DenseVector_J.this.miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag;
+  class DenseVector$J[Esp] extends Object with miniboxing.tests.compile.breeze2.StorageVector[Esp] with miniboxing.tests.compile.breeze2.VectorLike$J[Esp,miniboxing.tests.compile.breeze2.DenseVector[Esp]] with Serializable with miniboxing.tests.compile.breeze2.DenseVector[Esp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag: Byte = _;
+    def miniboxing|tests|compile|breeze2|TensorLike$JJ|K$TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|breeze2|TensorLike$JJ|V$TypeTag(): Byte = DenseVector$J.this.miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag;
+    def miniboxing|tests|compile|breeze2|VectorLike$J|E$TypeTag(): Byte = DenseVector$J.this.miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag;
     <paramaccessor> private[this] val data: Array[Esp] = _;
-    <stable> <accessor> <paramaccessor> def data(): Array[Esp] = DenseVector_J.this.data;
+    <stable> <accessor> <paramaccessor> def data(): Array[Esp] = DenseVector$J.this.data;
     <paramaccessor> private[this] val offset: Int = _;
-    <stable> <accessor> <paramaccessor> def offset(): Int = DenseVector_J.this.offset;
+    <stable> <accessor> <paramaccessor> def offset(): Int = DenseVector$J.this.offset;
     <paramaccessor> private[this] val stride: Int = _;
-    <stable> <accessor> <paramaccessor> def stride(): Int = DenseVector_J.this.stride;
+    <stable> <accessor> <paramaccessor> def stride(): Int = DenseVector$J.this.stride;
     <paramaccessor> private[this] val length: Int = _;
-    <stable> <accessor> <paramaccessor> def length(): Int = DenseVector_J.this.length;
-    def <init>(miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag: Byte, data: Array[Esp], offset: Int, stride: Int, length: Int): miniboxing.tests.compile.breeze2.DenseVector_J[Esp] = {
-      DenseVector_J.super.<init>();
+    <stable> <accessor> <paramaccessor> def length(): Int = DenseVector$J.this.length;
+    def <init>(miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag: Byte, data: Array[Esp], offset: Int, stride: Int, length: Int): miniboxing.tests.compile.breeze2.DenseVector$J[Esp] = {
+      DenseVector$J.super.<init>();
       ()
     };
-    def <init>(miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag: Byte, data: Array[Esp]): miniboxing.tests.compile.breeze2.DenseVector_J[Esp] = {
-      DenseVector_J.this.<init>(miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag, data, 0, 1, MiniboxArray.this.mbarray_length(data, miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag));
+    def <init>(miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag: Byte, data: Array[Esp]): miniboxing.tests.compile.breeze2.DenseVector$J[Esp] = {
+      DenseVector$J.this.<init>(miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag, data, 0, 1, MiniboxArray.this.mbarray_length(data, miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag));
       ()
     };
-    def <init>(miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag: Byte, data: Array[Esp], offset: Int): miniboxing.tests.compile.breeze2.DenseVector_J[Esp] = {
-      DenseVector_J.this.<init>(miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag, data, offset, 1, MiniboxArray.this.mbarray_length(data, miniboxing|tests|compile|breeze2|DenseVector_J|E_TypeTag));
+    def <init>(miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag: Byte, data: Array[Esp], offset: Int): miniboxing.tests.compile.breeze2.DenseVector$J[Esp] = {
+      DenseVector$J.this.<init>(miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag, data, offset, 1, MiniboxArray.this.mbarray_length(data, miniboxing|tests|compile|breeze2|DenseVector$J|E$TypeTag));
       ()
     }
   };
-  class DenseVector_L[Esp] extends Object with miniboxing.tests.compile.breeze2.StorageVector[Esp] with miniboxing.tests.compile.breeze2.VectorLike_L[Esp,miniboxing.tests.compile.breeze2.DenseVector[Esp]] with Serializable with miniboxing.tests.compile.breeze2.DenseVector[Esp] {
-    def miniboxing|tests|compile|breeze2|TensorLike_JL|K_TypeTag(): Byte = 5;
+  class DenseVector$L[Esp] extends Object with miniboxing.tests.compile.breeze2.StorageVector[Esp] with miniboxing.tests.compile.breeze2.VectorLike$L[Esp,miniboxing.tests.compile.breeze2.DenseVector[Esp]] with Serializable with miniboxing.tests.compile.breeze2.DenseVector[Esp] {
+    def miniboxing|tests|compile|breeze2|TensorLike$JL|K$TypeTag(): Byte = 5;
     <paramaccessor> private[this] val data: Array[Esp] = _;
-    <stable> <accessor> <paramaccessor> def data(): Array[Esp] = DenseVector_L.this.data;
+    <stable> <accessor> <paramaccessor> def data(): Array[Esp] = DenseVector$L.this.data;
     <paramaccessor> private[this] val offset: Int = _;
-    <stable> <accessor> <paramaccessor> def offset(): Int = DenseVector_L.this.offset;
+    <stable> <accessor> <paramaccessor> def offset(): Int = DenseVector$L.this.offset;
     <paramaccessor> private[this] val stride: Int = _;
-    <stable> <accessor> <paramaccessor> def stride(): Int = DenseVector_L.this.stride;
+    <stable> <accessor> <paramaccessor> def stride(): Int = DenseVector$L.this.stride;
     <paramaccessor> private[this] val length: Int = _;
-    <stable> <accessor> <paramaccessor> def length(): Int = DenseVector_L.this.length;
-    def <init>(data: Array[Esp], offset: Int, stride: Int, length: Int): miniboxing.tests.compile.breeze2.DenseVector_L[Esp] = {
-      DenseVector_L.super.<init>();
+    <stable> <accessor> <paramaccessor> def length(): Int = DenseVector$L.this.length;
+    def <init>(data: Array[Esp], offset: Int, stride: Int, length: Int): miniboxing.tests.compile.breeze2.DenseVector$L[Esp] = {
+      DenseVector$L.super.<init>();
       ()
     };
-    def <init>(data: Array[Esp]): miniboxing.tests.compile.breeze2.DenseVector_L[Esp] = {
-      DenseVector_L.this.<init>(data, 0, 1, data.length());
+    def <init>(data: Array[Esp]): miniboxing.tests.compile.breeze2.DenseVector$L[Esp] = {
+      DenseVector$L.this.<init>(data, 0, 1, data.length());
       ()
     };
-    def <init>(data: Array[Esp], offset: Int): miniboxing.tests.compile.breeze2.DenseVector_L[Esp] = {
-      DenseVector_L.this.<init>(data, offset, 1, data.length());
+    def <init>(data: Array[Esp], offset: Int): miniboxing.tests.compile.breeze2.DenseVector$L[Esp] = {
+      DenseVector$L.this.<init>(data, offset, 1, data.length());
       ()
     }
   }

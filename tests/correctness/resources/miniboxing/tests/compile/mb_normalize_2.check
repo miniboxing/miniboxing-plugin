@@ -1,27 +1,27 @@
 Specializing class SpCls2...
   // interface:
   abstract trait SpCls2[S] extends Object {
+    def normalizeMe$J$n$J[T](val T$TypeTag: Byte,val S$TypeTag: Byte,s: S @storage[Long],t: T @storage[Long]): T @storage[Long]
+    def normalizeMe$J[T](val S$TypeTag: Byte,s: S @storage[Long],t: T): T
+    def normalizeMe$n$J[T](val T$TypeTag: Byte,s: S,t: T @storage[Long]): T @storage[Long]
     def normalizeMe[T](s: S,t: T): T
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: S @storage[Long],t: T): T
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: S @storage[Long],t: T @storage[Long]): T @storage[Long]
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: S,t: T @storage[Long]): T @storage[Long]
   }
   // specialized class:
-  class SpCls2_J[Ssp] extends SpCls2[Ssp] {
-    def <init>(val miniboxing|tests|correctness|SpCls2_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls2_J[Ssp] // is a specialized implementation of constructor SpCls2
+  class SpCls2$J[Ssp] extends SpCls2[Ssp] {
+    def <init>(val miniboxing|tests|correctness|SpCls2$J|S$TypeTag: Byte): miniboxing.tests.correctness.SpCls2$J[Ssp] // is a specialized implementation of constructor SpCls2
+    def normalizeMe$J$n$J[T](val T$TypeTag: Byte,val S$TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe
+    def normalizeMe$J[T](val S$TypeTag: Byte,s: Ssp @storage[Long],t: T): T // is a specialized implementation of method normalizeMe
+    def normalizeMe$n$J[T](val T$TypeTag: Byte,s: Ssp,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
     def normalizeMe[T](s: Ssp,t: T): T                                     // is a forwarder to the specialized member
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): T // is a specialized implementation of method normalizeMe
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
-    private[this] val miniboxing|tests|correctness|SpCls2_J|S_TypeTag: Byte // is a type tag
+    private[this] val miniboxing|tests|correctness|SpCls2$J|S$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class SpCls2_L[Ssp] extends SpCls2[Ssp] {
-    def <init>(): miniboxing.tests.correctness.SpCls2_L[Ssp]               // is a specialized implementation of constructor SpCls2
+  class SpCls2$L[Ssp] extends SpCls2[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls2$L[Ssp]               // is a specialized implementation of constructor SpCls2
+    def normalizeMe$J$n$J[T](val T$TypeTag: Byte,val S$TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
+    def normalizeMe$J[T](val S$TypeTag: Byte,s: Ssp @storage[Long],t: T): T // is a forwarder to the specialized member
+    def normalizeMe$n$J[T](val T$TypeTag: Byte,s: Ssp,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe
     def normalizeMe[T](s: Ssp,t: T): T                                     // is a specialized implementation of method normalizeMe
-    def normalizeMe_J[T](val S_TypeTag: Byte,s: Ssp @storage[Long],t: T): T // is a forwarder to the specialized member
-    def normalizeMe_J_n_J[T](val T_TypeTag: Byte,val S_TypeTag: Byte,s: Ssp @storage[Long],t: T @storage[Long]): T @storage[Long] // is a forwarder to the specialized member
-    def normalizeMe_n_J[T](val T_TypeTag: Byte,s: Ssp,t: T @storage[Long]): T @storage[Long] // is a specialized implementation of method normalizeMe
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -32,30 +32,30 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.correctness {
   abstract trait SpCls2[@miniboxed S] extends Object {
     def normalizeMe[@miniboxed T](s: S, t: T): T;
-    def normalizeMe_n_J[T](T_TypeTag: Byte, s: S, t: Long): Long;
-    def normalizeMe_J[@miniboxed T](S_TypeTag: Byte, s: Long, t: T): T;
-    def normalizeMe_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, s: Long, t: Long): Long
+    def normalizeMe$n$J[T](T$TypeTag: Byte, s: S, t: Long): Long;
+    def normalizeMe$J[@miniboxed T](S$TypeTag: Byte, s: Long, t: T): T;
+    def normalizeMe$J$n$J[T](T$TypeTag: Byte, S$TypeTag: Byte, s: Long, t: Long): Long
   };
-  class SpCls2_J[Ssp] extends Object with miniboxing.tests.correctness.SpCls2[Ssp] {
-    <paramaccessor> private[this] val miniboxing|tests|correctness|SpCls2_J|S_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|correctness|SpCls2_J|S_TypeTag: Byte): miniboxing.tests.correctness.SpCls2_J[Ssp] = {
-      SpCls2_J.super.<init>();
+  class SpCls2$J[Ssp] extends Object with miniboxing.tests.correctness.SpCls2[Ssp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|SpCls2$J|S$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|correctness|SpCls2$J|S$TypeTag: Byte): miniboxing.tests.correctness.SpCls2$J[Ssp] = {
+      SpCls2$J.super.<init>();
       ()
     };
-    def normalizeMe[@miniboxed T](s: Ssp, t: T): T = SpCls2_J.this.normalizeMe_J[T](SpCls2_J.this.miniboxing|tests|correctness|SpCls2_J|S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls2_J.this.miniboxing|tests|correctness|SpCls2_J|S_TypeTag), t);
-    def normalizeMe_n_J[T](T_TypeTag: Byte, s: Ssp, t: Long): Long = SpCls2_J.this.normalizeMe_J_n_J[T](T_TypeTag, SpCls2_J.this.miniboxing|tests|correctness|SpCls2_J|S_TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls2_J.this.miniboxing|tests|correctness|SpCls2_J|S_TypeTag), t);
-    def normalizeMe_J[@miniboxed T](S_TypeTag: Byte, s: Long, t: T): T = t;
-    def normalizeMe_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, s: Long, t: Long): Long = t
+    def normalizeMe[@miniboxed T](s: Ssp, t: T): T = SpCls2$J.this.normalizeMe$J[T](SpCls2$J.this.miniboxing|tests|correctness|SpCls2$J|S$TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls2$J.this.miniboxing|tests|correctness|SpCls2$J|S$TypeTag), t);
+    def normalizeMe$n$J[T](T$TypeTag: Byte, s: Ssp, t: Long): Long = SpCls2$J.this.normalizeMe$J$n$J[T](T$TypeTag, SpCls2$J.this.miniboxing|tests|correctness|SpCls2$J|S$TypeTag, MiniboxConversions.this.box2minibox_tt[Ssp](s, SpCls2$J.this.miniboxing|tests|correctness|SpCls2$J|S$TypeTag), t);
+    def normalizeMe$J[@miniboxed T](S$TypeTag: Byte, s: Long, t: T): T = t;
+    def normalizeMe$J$n$J[T](T$TypeTag: Byte, S$TypeTag: Byte, s: Long, t: Long): Long = t
   };
-  class SpCls2_L[Ssp] extends Object with miniboxing.tests.correctness.SpCls2[Ssp] {
-    def <init>(): miniboxing.tests.correctness.SpCls2_L[Ssp] = {
-      SpCls2_L.super.<init>();
+  class SpCls2$L[Ssp] extends Object with miniboxing.tests.correctness.SpCls2[Ssp] {
+    def <init>(): miniboxing.tests.correctness.SpCls2$L[Ssp] = {
+      SpCls2$L.super.<init>();
       ()
     };
     def normalizeMe[@miniboxed T](s: Ssp, t: T): T = t;
-    def normalizeMe_n_J[T](T_TypeTag: Byte, s: Ssp, t: Long): Long = t;
-    def normalizeMe_J[@miniboxed T](S_TypeTag: Byte, s: Long, t: T): T = SpCls2_L.this.normalizeMe[T](MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag), t);
-    def normalizeMe_J_n_J[T](T_TypeTag: Byte, S_TypeTag: Byte, s: Long, t: Long): Long = SpCls2_L.this.normalizeMe_n_J[T](T_TypeTag, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag), t)
+    def normalizeMe$n$J[T](T$TypeTag: Byte, s: Ssp, t: Long): Long = t;
+    def normalizeMe$J[@miniboxed T](S$TypeTag: Byte, s: Long, t: T): T = SpCls2$L.this.normalizeMe[T](MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag), t);
+    def normalizeMe$J$n$J[T](T$TypeTag: Byte, S$TypeTag: Byte, s: Long, t: Long): Long = SpCls2$L.this.normalizeMe$n$J[T](T$TypeTag, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag), t)
   }
 }
 [Now checking: minibox-commit]

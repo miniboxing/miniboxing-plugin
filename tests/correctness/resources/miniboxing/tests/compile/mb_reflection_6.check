@@ -6,13 +6,13 @@ package miniboxing.tests.compile.bug171.test6 {
       ()
     };
     def foo[@miniboxed T, @miniboxed U](): Unit = scala.this.Predef.println("other");
-    def foo_n_DD[T, U](T_TypeTag: Byte, U_TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
-    def foo_n_DJ[T, U](T_TypeTag: Byte, U_TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
-    def foo_n_DL[T, U](T_TypeTag: Byte): Unit = scala.this.Predef.println("other");
-    def foo_n_JD[T, U](T_TypeTag: Byte, U_TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
-    def foo_n_JJ[T, U](T_TypeTag: Byte, U_TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
-    def foo_n_JL[T, U](T_TypeTag: Byte): Unit = scala.this.Predef.println("other");
-    def foo_n_LD[T, U](U_TypeTag: Byte): Unit = scala.this.Predef.println("other");
-    def foo_n_LJ[T, U](U_TypeTag: Byte): Unit = scala.this.Predef.println("other")
+    def foo$n$DD[T, U](T$TypeTag: Byte, U$TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
+    def foo$n$DJ[T, U](T$TypeTag: Byte, U$TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
+    def foo$n$DL[T, U](T$TypeTag: Byte): Unit = scala.this.Predef.println("other");
+    def foo$n$JD[T, U](T$TypeTag: Byte, U$TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
+    def foo$n$JJ[T, U](T$TypeTag: Byte, U$TypeTag: Byte): Unit = scala.this.Predef.println("miniboxed");
+    def foo$n$JL[T, U](T$TypeTag: Byte): Unit = scala.this.Predef.println("other");
+    def foo$n$LD[T, U](U$TypeTag: Byte): Unit = scala.this.Predef.println("other");
+    def foo$n$LJ[T, U](U$TypeTag: Byte): Unit = scala.this.Predef.println("other")
   }
 }

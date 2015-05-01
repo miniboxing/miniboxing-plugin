@@ -21,8 +21,8 @@ package miniboxing.tests.compile.mbarray02 {
     private[this] val mba3: MbArray[String] = scala.MbArray.empty[String](10);
     <stable> <accessor> def mba3(): MbArray[String] = Test.this.mba3;
     def foo[@miniboxed T](): MbArray[T] = scala.MbArray.empty[T](10);
-    def foo_n_D[T](T_TypeTag: Byte): MbArray[T] = MbArrayOpts.this.mbArray_empty_D[T](10, T_TypeTag);
-    def foo_n_J[T](T_TypeTag: Byte): MbArray[T] = MbArrayOpts.this.mbArray_empty_J[T](10, T_TypeTag);
+    def foo$n$D[T](T$TypeTag: Byte): MbArray[T] = MbArrayOpts.this.mbArray_empty_D[T](10, T$TypeTag);
+    def foo$n$J[T](T$TypeTag: Byte): MbArray[T] = MbArrayOpts.this.mbArray_empty_J[T](10, T$TypeTag);
     private[this] val mba4: MbArray[Any] = scala.MbArray.empty[Any](10);
     <stable> <accessor> def mba4(): MbArray[Any] = Test.this.mba4;
     private[this] val mba5: MbArray[F forSome { type F }] = scala.MbArray.empty[F forSome { type F }](10);

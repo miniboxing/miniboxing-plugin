@@ -19,15 +19,15 @@ package miniboxing.tests.compile.bug171.test2 {
       scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(9));
       scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(9))
     };
-    def foo_n_D[T](T_TypeTag: Byte): Unit = {
+    def foo$n$D[T](T$TypeTag: Byte): Unit = {
       scala.this.Predef.println(true);
-      scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(T_TypeTag));
-      scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(T_TypeTag))
+      scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(T$TypeTag));
+      scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(T$TypeTag))
     };
-    def foo_n_J[T](T_TypeTag: Byte): Unit = {
+    def foo$n$J[T](T$TypeTag: Byte): Unit = {
       scala.this.Predef.println(true);
-      scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(T_TypeTag));
-      scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(T_TypeTag))
+      scala.this.Predef.println(MbReflectionImpl.this.reifiedTypeImpl(T$TypeTag));
+      scala.this.Predef.println(MbReflectionImpl.this.storageTypeImpl(T$TypeTag))
     };
     def bar[T](): Unit = {
       scala.this.Predef.println(false);

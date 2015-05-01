@@ -1,47 +1,47 @@
 Specializing class TR3...
   // interface:
   abstract trait TR3[T, Z] extends Object {
+    def bar$J[X, Y](val T$TypeTag: Byte,t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T @storage[Long]
     def bar[X, Y](t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[T,Z],x: X,y: Y): T @storage[Long]
+    def foo$J[X, Y](val T$TypeTag: Byte,t: T @storage[Long],x: X,y: Y): T @storage[Long]
     def foo[X, Y](t: T,x: X,y: Y): T
-    def foo_J[X, Y](val T_TypeTag: Byte,t: T @storage[Long],x: X,y: Y): T @storage[Long]
   }
   // specialized class:
-  class TR3_J[Tsp, Zsp] extends TR3[Tsp,Zsp] {
-    def <init>(val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte): miniboxing.tests.compile.TR3_J[Tsp,Zsp] // is a specialized implementation of constructor TR3
+  class TR3$J[Tsp, Zsp] extends TR3[Tsp,Zsp] {
+    def <init>(val miniboxing|tests|compile|TR3$J|T$TypeTag: Byte): miniboxing.tests.compile.TR3$J[Tsp,Zsp] // is a specialized implementation of constructor TR3
+    def bar$J[X, Y](val T$TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method bar
     def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp // is a forwarder to the specialized member
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method bar
+    def foo$J[X, Y](val T$TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method foo
     def foo[X, Y](t: Tsp,x: X,y: Y): Tsp                                   // is a forwarder to the specialized member
-    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a specialized implementation of method foo
-    private[this] val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte       // is a type tag
+    private[this] val miniboxing|tests|compile|TR3$J|T$TypeTag: Byte       // is a type tag
   }
   // specialized class:
-  class TR3_L[Tsp, Zsp] extends TR3[Tsp,Zsp] {
-    def <init>(): miniboxing.tests.compile.TR3_L[Tsp,Zsp]                  // is a specialized implementation of constructor TR3
+  class TR3$L[Tsp, Zsp] extends TR3[Tsp,Zsp] {
+    def <init>(): miniboxing.tests.compile.TR3$L[Tsp,Zsp]                  // is a specialized implementation of constructor TR3
+    def bar$J[X, Y](val T$TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
     def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp // is a specialized implementation of method bar
-    def bar_J[X, Y](val T_TypeTag: Byte,t: miniboxing.tests.compile.TR3[Tsp,Zsp],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
+    def foo$J[X, Y](val T$TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
     def foo[X, Y](t: Tsp,x: X,y: Y): Tsp                                   // is a specialized implementation of method foo
-    def foo_J[X, Y](val T_TypeTag: Byte,t: Tsp @storage[Long],x: X,y: Y): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 Specializing class RT3...
   // interface:
   abstract trait RT3[U, G] extends Object {
+    def test$J(val U$TypeTag: Byte,u: U @storage[Long]): U @storage[Long]
     def test(u: U): U
-    def test_J(val U_TypeTag: Byte,u: U @storage[Long]): U @storage[Long]
   }
   // specialized class:
-  class RT3_J[Usp, Gsp] extends RT3[Usp,Gsp] {
-    def <init>(val miniboxing|tests|compile|RT3_J|U_TypeTag: Byte,g: Gsp): miniboxing.tests.compile.RT3_J[Usp,Gsp] // is a specialized implementation of constructor RT3
+  class RT3$J[Usp, Gsp] extends RT3[Usp,Gsp] {
+    def <init>(val miniboxing|tests|compile|RT3$J|U$TypeTag: Byte,g: Gsp): miniboxing.tests.compile.RT3$J[Usp,Gsp] // is a specialized implementation of constructor RT3
+    def test$J(val U$TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a specialized implementation of method test
     def test(u: Usp): Usp                                                  // is a forwarder to the specialized member
-    def test_J(val U_TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a specialized implementation of method test
     private[this] val g: Gsp                                               // is a specialized implementation of value g
-    private[this] val miniboxing|tests|compile|RT3_J|U_TypeTag: Byte       // is a type tag
+    private[this] val miniboxing|tests|compile|RT3$J|U$TypeTag: Byte       // is a type tag
   }
   // specialized class:
-  class RT3_L[Usp, Gsp] extends RT3[Usp,Gsp] {
-    def <init>(g: Gsp): miniboxing.tests.compile.RT3_L[Usp,Gsp]            // is a specialized implementation of constructor RT3
+  class RT3$L[Usp, Gsp] extends RT3[Usp,Gsp] {
+    def <init>(g: Gsp): miniboxing.tests.compile.RT3$L[Usp,Gsp]            // is a specialized implementation of constructor RT3
+    def test$J(val U$TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a forwarder to the specialized member
     def test(u: Usp): Usp                                                  // is a specialized implementation of method test
-    def test_J(val U_TypeTag: Byte,u: Usp @storage[Long]): Usp @storage[Long] // is a forwarder to the specialized member
     private[this] val g: Gsp                                               // is a specialized implementation of value g
   }
 [Now checking: minibox-inject]
@@ -53,59 +53,59 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait TR3[@miniboxed T, Z] extends Object {
     def foo[X, Y](t: T, x: X, y: Y): T;
-    def foo_J[X, Y](T_TypeTag: Byte, t: Long, x: X, y: Y): Long;
+    def foo$J[X, Y](T$TypeTag: Byte, t: Long, x: X, y: Y): Long;
     def bar[X, Y](t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): T;
-    def bar_J[X, Y](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): Long
+    def bar$J[X, Y](T$TypeTag: Byte, t: miniboxing.tests.compile.TR3[T,Z], x: X, y: Y): Long
   };
-  class TR3_J[Tsp, Zsp] extends Object with miniboxing.tests.compile.TR3[Tsp,Zsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|TR3_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|TR3_J|T_TypeTag: Byte): miniboxing.tests.compile.TR3_J[Tsp,Zsp] = {
-      TR3_J.super.<init>();
+  class TR3$J[Tsp, Zsp] extends Object with miniboxing.tests.compile.TR3[Tsp,Zsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|TR3$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|TR3$J|T$TypeTag: Byte): miniboxing.tests.compile.TR3$J[Tsp,Zsp] = {
+      TR3$J.super.<init>();
       ()
     };
-    def foo[X, Y](t: Tsp, x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3_J.this.foo_J[X, Y](TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag), x, y), TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag);
-    def foo_J[X, Y](T_TypeTag: Byte, t: Long, x: X, y: Y): Long = TR3_J.this.foo_J[Y, X](T_TypeTag, t, y, x);
-    def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3_J.this.bar_J[X, Y](TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag, t, x, y), TR3_J.this.miniboxing|tests|compile|TR3_J|T_TypeTag);
-    def bar_J[X, Y](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = t.foo_J[X, Y](T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag), x, y)
+    def foo[X, Y](t: Tsp, x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3$J.this.foo$J[X, Y](TR3$J.this.miniboxing|tests|compile|TR3$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, TR3$J.this.miniboxing|tests|compile|TR3$J|T$TypeTag), x, y), TR3$J.this.miniboxing|tests|compile|TR3$J|T$TypeTag);
+    def foo$J[X, Y](T$TypeTag: Byte, t: Long, x: X, y: Y): Long = TR3$J.this.foo$J[Y, X](T$TypeTag, t, y, x);
+    def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Tsp = MiniboxConversions.this.minibox2box[Tsp](TR3$J.this.bar$J[X, Y](TR3$J.this.miniboxing|tests|compile|TR3$J|T$TypeTag, t, x, y), TR3$J.this.miniboxing|tests|compile|TR3$J|T$TypeTag);
+    def bar$J[X, Y](T$TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = t.foo$J[X, Y](T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T$TypeTag), x, y)
   };
-  class TR3_L[Tsp, Zsp] extends Object with miniboxing.tests.compile.TR3[Tsp,Zsp] {
-    def <init>(): miniboxing.tests.compile.TR3_L[Tsp,Zsp] = {
-      TR3_L.super.<init>();
+  class TR3$L[Tsp, Zsp] extends Object with miniboxing.tests.compile.TR3[Tsp,Zsp] {
+    def <init>(): miniboxing.tests.compile.TR3$L[Tsp,Zsp] = {
+      TR3$L.super.<init>();
       ()
     };
-    def foo[X, Y](t: Tsp, x: X, y: Y): Tsp = TR3_L.this.foo[Y, X](t, y, x);
-    def foo_J[X, Y](T_TypeTag: Byte, t: Long, x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3_L.this.foo[X, Y](MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), x, y), T_TypeTag);
+    def foo[X, Y](t: Tsp, x: X, y: Y): Tsp = TR3$L.this.foo[Y, X](t, y, x);
+    def foo$J[X, Y](T$TypeTag: Byte, t: Long, x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3$L.this.foo[X, Y](MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), x, y), T$TypeTag);
     def bar[X, Y](t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Tsp = t.foo[X, Y](scala.this.Predef.???(), x, y);
-    def bar_J[X, Y](T_TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3_L.this.bar[X, Y](t, x, y), T_TypeTag)
+    def bar$J[X, Y](T$TypeTag: Byte, t: miniboxing.tests.compile.TR3[Tsp,Zsp], x: X, y: Y): Long = MiniboxConversions.this.box2minibox_tt[Tsp](TR3$L.this.bar[X, Y](t, x, y), T$TypeTag)
   };
   abstract trait RT3[@miniboxed U, G] extends Object {
     def test(u: U): U;
-    def test_J(U_TypeTag: Byte, u: Long): Long
+    def test$J(U$TypeTag: Byte, u: Long): Long
   };
-  class RT3_J[Usp, Gsp] extends Object with miniboxing.tests.compile.RT3[Usp,Gsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|RT3_J|U_TypeTag: Byte = _;
+  class RT3$J[Usp, Gsp] extends Object with miniboxing.tests.compile.RT3[Usp,Gsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|RT3$J|U$TypeTag: Byte = _;
     <paramaccessor> private[this] val g: Gsp = _;
-    def <init>(miniboxing|tests|compile|RT3_J|U_TypeTag: Byte, g: Gsp): miniboxing.tests.compile.RT3_J[Usp,Gsp] = {
-      RT3_J.super.<init>();
+    def <init>(miniboxing|tests|compile|RT3$J|U$TypeTag: Byte, g: Gsp): miniboxing.tests.compile.RT3$J[Usp,Gsp] = {
+      RT3$J.super.<init>();
       ()
     };
-    def test(u: Usp): Usp = MiniboxConversions.this.minibox2box[Usp](RT3_J.this.test_J(RT3_J.this.miniboxing|tests|compile|RT3_J|U_TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, RT3_J.this.miniboxing|tests|compile|RT3_J|U_TypeTag)), RT3_J.this.miniboxing|tests|compile|RT3_J|U_TypeTag);
-    def test_J(U_TypeTag: Byte, u: Long): Long = {
-      val tr: miniboxing.tests.compile.TR3[Usp,Int] = new miniboxing.tests.compile.TR3_J[Usp,Int](U_TypeTag);
-      tr.foo_J[Gsp, Any](U_TypeTag, u, RT3_J.this.g, RT3_J.this.g)
+    def test(u: Usp): Usp = MiniboxConversions.this.minibox2box[Usp](RT3$J.this.test$J(RT3$J.this.miniboxing|tests|compile|RT3$J|U$TypeTag, MiniboxConversions.this.box2minibox_tt[Usp](u, RT3$J.this.miniboxing|tests|compile|RT3$J|U$TypeTag)), RT3$J.this.miniboxing|tests|compile|RT3$J|U$TypeTag);
+    def test$J(U$TypeTag: Byte, u: Long): Long = {
+      val tr: miniboxing.tests.compile.TR3[Usp,Int] = new miniboxing.tests.compile.TR3$J[Usp,Int](U$TypeTag);
+      tr.foo$J[Gsp, Any](U$TypeTag, u, RT3$J.this.g, RT3$J.this.g)
     }
   };
-  class RT3_L[Usp, Gsp] extends Object with miniboxing.tests.compile.RT3[Usp,Gsp] {
+  class RT3$L[Usp, Gsp] extends Object with miniboxing.tests.compile.RT3[Usp,Gsp] {
     <paramaccessor> private[this] val g: Gsp = _;
-    def <init>(g: Gsp): miniboxing.tests.compile.RT3_L[Usp,Gsp] = {
-      RT3_L.super.<init>();
+    def <init>(g: Gsp): miniboxing.tests.compile.RT3$L[Usp,Gsp] = {
+      RT3$L.super.<init>();
       ()
     };
     def test(u: Usp): Usp = {
-      val tr: miniboxing.tests.compile.TR3[Usp,Int] = new miniboxing.tests.compile.TR3_L[Usp,Int]();
-      tr.foo[Gsp, Any](u, RT3_L.this.g, RT3_L.this.g)
+      val tr: miniboxing.tests.compile.TR3[Usp,Int] = new miniboxing.tests.compile.TR3$L[Usp,Int]();
+      tr.foo[Gsp, Any](u, RT3$L.this.g, RT3$L.this.g)
     };
-    def test_J(U_TypeTag: Byte, u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT3_L.this.test(MiniboxConversions.this.minibox2box[Usp](u, U_TypeTag)), U_TypeTag)
+    def test$J(U$TypeTag: Byte, u: Long): Long = MiniboxConversions.this.box2minibox_tt[Usp](RT3$L.this.test(MiniboxConversions.this.minibox2box[Usp](u, U$TypeTag)), U$TypeTag)
   };
   object Test3 extends Object {
     def <init>(): miniboxing.tests.compile.Test3.type = {
@@ -113,9 +113,9 @@ package miniboxing.tests.compile {
       ()
     };
     def test[T, A](a: A): T = {
-      new miniboxing.tests.compile.TR3_J[Int,String](5).foo_J[A, A](5, MiniboxConversions.this.int2minibox(3), a, a);
-      new miniboxing.tests.compile.TR3_L[String,Int]().foo[A, Int]("xxx", a, 4);
-      new miniboxing.tests.compile.TR3_L[T,Long]().foo[Int, Any](scala.this.Predef.???(), 2, 3)
+      new miniboxing.tests.compile.TR3$J[Int,String](5).foo$J[A, A](5, MiniboxConversions.this.int2minibox(3), a, a);
+      new miniboxing.tests.compile.TR3$L[String,Int]().foo[A, Int]("xxx", a, 4);
+      new miniboxing.tests.compile.TR3$L[T,Long]().foo[Int, Any](scala.this.Predef.???(), 2, 3)
     }
   }
 }

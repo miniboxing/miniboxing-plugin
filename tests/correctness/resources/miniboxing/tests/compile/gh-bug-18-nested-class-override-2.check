@@ -7,39 +7,39 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait Dist2[@miniboxed A] extends Object {
     def apply(a: A): A;
-    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def apply$J(A$TypeTag: Byte, a: Long): Long;
     def iterateUntil(): miniboxing.tests.compile.Dist2[A]
   };
-  abstract class Dist2_J[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|Dist2_J|A_TypeTag: Byte): miniboxing.tests.compile.Dist2_J[Asp] = {
-      Dist2_J.super.<init>();
+  abstract class Dist2$J[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|Dist2$J|A$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|Dist2$J|A$TypeTag: Byte): miniboxing.tests.compile.Dist2$J[Asp] = {
+      Dist2$J.super.<init>();
       ()
     };
-    def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Dist2_J.this.apply_J(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
-    def apply_J(A_TypeTag: Byte, a: Long): Long;
+    def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp](Dist2$J.this.apply$J(Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag)), Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag);
+    def apply$J(A$TypeTag: Byte, a: Long): Long;
     def iterateUntil(): miniboxing.tests.compile.Dist2[Asp] = {
-      final class $anon extends miniboxing.tests.compile.Dist2_J[Asp] {
+      final class $anon extends miniboxing.tests.compile.Dist2$J[Asp] {
         def <init>(): anonymous class $anon = {
-          $anon.super.<init>(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
+          $anon.super.<init>(Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag);
           ()
         };
         protected def loop(a: Long): Long = a;
-        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply_J(Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag)), Dist2_J.this.miniboxing|tests|compile|Dist2_J|A_TypeTag);
-        override protected def apply_J(A_TypeTag: Byte, a: Long): Long = $anon.this.loop(a)
+        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply$J(Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag)), Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag);
+        override protected def apply$J(A$TypeTag: Byte, a: Long): Long = $anon.this.loop(a)
       };
       new anonymous class $anon()
     }
   };
-  abstract class Dist2_L[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
-    def <init>(): miniboxing.tests.compile.Dist2_L[Asp] = {
-      Dist2_L.super.<init>();
+  abstract class Dist2$L[Asp] extends Object with miniboxing.tests.compile.Dist2[Asp] {
+    def <init>(): miniboxing.tests.compile.Dist2$L[Asp] = {
+      Dist2$L.super.<init>();
       ()
     };
     def apply(a: Asp): Asp;
-    def apply_J(A_TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](Dist2_L.this.apply(MiniboxConversions.this.minibox2box[Asp](a, A_TypeTag)), A_TypeTag);
+    def apply$J(A$TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](Dist2$L.this.apply(MiniboxConversions.this.minibox2box[Asp](a, A$TypeTag)), A$TypeTag);
     def iterateUntil(): miniboxing.tests.compile.Dist2[Asp] = {
-      final class $anon extends miniboxing.tests.compile.Dist2_L[Asp] {
+      final class $anon extends miniboxing.tests.compile.Dist2$L[Asp] {
         def <init>(): anonymous class $anon = {
           $anon.super.<init>();
           ()

@@ -24,6 +24,9 @@ trait MiniboxNameUtils {
   import definitions._
   import scala.collection.immutable
 
+  final val NameSeparator = "$"
+  final val TypeTagSuffix = "TypeTag"
+
   /**
    * Specialize name for the two list of types.
    */
@@ -35,7 +38,7 @@ trait MiniboxNameUtils {
     else if (nme.isLocalName(name))
       specializedName(name.toTermName.getterName, types).localName
     else {
-      newTermName(name.toString + "_" + types.map(t => definitions.abbrvTag(t.typeSymbol)).mkString(""))
+      newTermName(name.toString + NameSeparator + types.map(t => definitions.abbrvTag(t.typeSymbol)).mkString(""))
     }
   }
 
@@ -48,10 +51,10 @@ trait MiniboxNameUtils {
     newTermName(clazz.fullName('|') + "|" + shortTypeTagName(tparam))
 
   def shortTypeTagName(tparam: Symbol): TermName =
-    newTermName(tparam.name.toString + "_TypeTag")
+    newTermName(tparam.name.toString + NameSeparator + TypeTagSuffix)
 
   def isTypeTagField(field: Symbol): Boolean = {
-    field.name.endsWith("_TypeTag")
+    field.name.endsWith(NameSeparator + TypeTagSuffix)
   }
 
   def localMethodName(local: Symbol) =

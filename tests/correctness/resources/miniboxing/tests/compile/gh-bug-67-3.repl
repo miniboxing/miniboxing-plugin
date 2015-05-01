@@ -1,14 +1,10 @@
 scala> trait C[@miniboxed T]
 defined trait C
-
 scala> class D extends C[Int]
 defined class D
-
 scala> new D
 res0: D = D@<object_id>
-
 scala> class E[@miniboxed T] extends C[T]
 defined class E
-
 scala> new E
-res1: E[Nothing] = E_L@<object_id>
+res1: E[Nothing] = E$L@<object_id>

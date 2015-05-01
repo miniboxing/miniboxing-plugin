@@ -1,76 +1,76 @@
 Specializing trait Base21...
   // interface:
   abstract trait Base21[T, S] extends Object {
+    def overrideMe$J(val T$TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
     def overrideMe(t: T,s: S): T
-    def overrideMe_J(val T_TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
   }
   // specialized class:
-  abstract trait Base21_J[Tsp, Ssp] extends Base21[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base21_J|T_TypeTag(): Byte                // is a type tag
+  abstract trait Base21$J[Tsp, Ssp] extends Base21[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base21$J|T$TypeTag(): Byte                // is a type tag
+    def overrideMe$J(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_J(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
   }
   // specialized class:
-  abstract trait Base21_L[Tsp, Ssp] extends Base21[Tsp,Ssp] {
+  abstract trait Base21$L[Tsp, Ssp] extends Base21[Tsp,Ssp] {
+    def overrideMe$J(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a specialized implementation of method overrideMe
-    def overrideMe_J(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 Specializing trait Base22...
   // interface:
   abstract trait Base22[T, S] extends Object {
+    def overrideMe$J(val T$TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
     def overrideMe(t: T,s: S): T
-    def overrideMe_J(val T_TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
   }
   // specialized class:
-  abstract trait Base22_J[Tsp, Ssp] extends Base22[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte                // is a type tag
+  abstract trait Base22$J[Tsp, Ssp] extends Base22[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base22$J|T$TypeTag(): Byte                // is a type tag
+    def overrideMe$J(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_J(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
   }
   // specialized class:
-  abstract trait Base22_L[Tsp, Ssp] extends Base22[Tsp,Ssp] {
+  abstract trait Base22$L[Tsp, Ssp] extends Base22[Tsp,Ssp] {
+    def overrideMe$J(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a specialized implementation of method overrideMe
-    def overrideMe_J(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 Specializing trait Base23...
   // interface:
   abstract trait Base23[T, S] extends Object {
+    def overrideMe$JJ(val T$TypeTag: Byte,val S$TypeTag: Byte,t: T @storage[Long],s: S @storage[Long]): T @storage[Long]
+    def overrideMe$JL(val T$TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
+    def overrideMe$LJ(val S$TypeTag: Byte,t: T,s: S @storage[Long]): T
     def overrideMe(t: T,s: S): T
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: T @storage[Long],s: S @storage[Long]): T @storage[Long]
-    def overrideMe_JL(val T_TypeTag: Byte,t: T @storage[Long],s: S): T @storage[Long]
-    def overrideMe_LJ(val S_TypeTag: Byte,t: T,s: S @storage[Long]): T
   }
   // specialized class:
-  abstract trait Base23_JJ[Tsp, Ssp] extends Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte               // is a type tag
-    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte               // is a type tag
+  abstract trait Base23$JJ[Tsp, Ssp] extends Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$JJ|S$TypeTag(): Byte               // is a type tag
+    def miniboxing|tests|compile|Base23$JJ|T$TypeTag(): Byte               // is a type tag
+    def overrideMe$JJ(val T$TypeTag: Byte,val S$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    def overrideMe$JL(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$LJ(val S$TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method overrideMe
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
   }
   // specialized class:
-  abstract trait Base23_LJ[Tsp, Ssp] extends Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_LJ|S_TypeTag(): Byte               // is a type tag
+  abstract trait Base23$LJ[Tsp, Ssp] extends Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$LJ|S$TypeTag(): Byte               // is a type tag
+    def overrideMe$JJ(val T$TypeTag: Byte,val S$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$JL(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$LJ(val S$TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a specialized implementation of method overrideMe
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a specialized implementation of method overrideMe
   }
   // specialized class:
-  abstract trait Base23_JL[Tsp, Ssp] extends Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_JL|T_TypeTag(): Byte               // is a type tag
+  abstract trait Base23$JL[Tsp, Ssp] extends Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$JL|T$TypeTag(): Byte               // is a type tag
+    def overrideMe$JJ(val T$TypeTag: Byte,val S$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$JL(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    def overrideMe$LJ(val S$TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a forwarder to the specialized member
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
   }
   // specialized class:
-  abstract trait Base23_LL[Tsp, Ssp] extends Base23[Tsp,Ssp] {
+  abstract trait Base23$LL[Tsp, Ssp] extends Base23[Tsp,Ssp] {
+    def overrideMe$JJ(val T$TypeTag: Byte,val S$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$JL(val T$TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
+    def overrideMe$LJ(val S$TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
     def overrideMe(t: Tsp,s: Ssp): Tsp                                     // is a specialized implementation of method overrideMe
-    def overrideMe_JJ(val T_TypeTag: Byte,val S_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_JL(val T_TypeTag: Byte,t: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a forwarder to the specialized member
-    def overrideMe_LJ(val S_TypeTag: Byte,t: Tsp,s: Ssp @storage[Long]): Tsp // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -81,75 +81,75 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait Base21[@miniboxed T, S] extends Object {
     def overrideMe(t: T, s: S): T;
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: S): Long
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: S): Long
   };
-  abstract trait Base21_J[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base21[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base21_J|T_TypeTag(): Byte;
-    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base21_J.this.overrideMe_J(Base21_J.this.miniboxing|tests|compile|Base21_J|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base21_J.this.miniboxing|tests|compile|Base21_J|T_TypeTag()), s), Base21_J.this.miniboxing|tests|compile|Base21_J|T_TypeTag());
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: Ssp): Long = t
+  abstract trait Base21$J[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base21[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base21$J|T$TypeTag(): Byte;
+    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base21$J.this.overrideMe$J(Base21$J.this.miniboxing|tests|compile|Base21$J|T$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base21$J.this.miniboxing|tests|compile|Base21$J|T$TypeTag()), s), Base21$J.this.miniboxing|tests|compile|Base21$J|T$TypeTag());
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: Ssp): Long = t
   };
-  abstract trait Base21_L[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base21[Tsp,Ssp] {
+  abstract trait Base21$L[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base21[Tsp,Ssp] {
     def overrideMe(t: Tsp, s: Ssp): Tsp = t;
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base21_L.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), s), T_TypeTag)
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base21$L.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), s), T$TypeTag)
   };
   abstract trait Base22[@miniboxed T, S] extends Object {
     def overrideMe(t: T, s: S): T;
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: S): Long
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: S): Long
   };
-  abstract trait Base22_J[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base22[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte;
-    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base22_J.this.overrideMe_J(Base22_J.this.miniboxing|tests|compile|Base22_J|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base22_J.this.miniboxing|tests|compile|Base22_J|T_TypeTag()), s), Base22_J.this.miniboxing|tests|compile|Base22_J|T_TypeTag());
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: Ssp): Long = t
+  abstract trait Base22$J[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base22[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base22$J|T$TypeTag(): Byte;
+    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base22$J.this.overrideMe$J(Base22$J.this.miniboxing|tests|compile|Base22$J|T$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base22$J.this.miniboxing|tests|compile|Base22$J|T$TypeTag()), s), Base22$J.this.miniboxing|tests|compile|Base22$J|T$TypeTag());
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: Ssp): Long = t
   };
-  abstract trait Base22_L[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base22[Tsp,Ssp] {
+  abstract trait Base22$L[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base22[Tsp,Ssp] {
     def overrideMe(t: Tsp, s: Ssp): Tsp = t;
-    def overrideMe_J(T_TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base22_L.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), s), T_TypeTag)
+    def overrideMe$J(T$TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base22$L.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), s), T$TypeTag)
   };
   abstract trait Base23[@miniboxed T, @miniboxed S] extends Object {
     def overrideMe(t: T, s: S): T;
-    def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long;
-    def overrideMe_JL(T_TypeTag: Byte, t: Long, s: S): Long;
-    def overrideMe_LJ(S_TypeTag: Byte, t: T, s: Long): T
+    def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long;
+    def overrideMe$JL(T$TypeTag: Byte, t: Long, s: S): Long;
+    def overrideMe$LJ(S$TypeTag: Byte, t: T, s: Long): T
   };
-  abstract trait Base23_JJ[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte;
-    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte;
-    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23_JJ.this.overrideMe_JJ(Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag(), Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag()), MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag())), Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag());
-    def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = t;
-    def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = Base23_JJ.this.overrideMe_JJ(T_TypeTag, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag(), t, MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|S_TypeTag()));
-    def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23_JJ.this.overrideMe_JJ(Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag(), S_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag()), s), Base23_JJ.this.miniboxing|tests|compile|Base23_JJ|T_TypeTag())
+  abstract trait Base23$JJ[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$JJ|S$TypeTag(): Byte;
+    def miniboxing|tests|compile|Base23$JJ|T$TypeTag(): Byte;
+    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23$JJ.this.overrideMe$JJ(Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag(), Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|S$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag()), MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|S$TypeTag())), Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag());
+    def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = t;
+    def overrideMe$JL(T$TypeTag: Byte, t: Long, s: Ssp): Long = Base23$JJ.this.overrideMe$JJ(T$TypeTag, Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|S$TypeTag(), t, MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|S$TypeTag()));
+    def overrideMe$LJ(S$TypeTag: Byte, t: Tsp, s: Long): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23$JJ.this.overrideMe$JJ(Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag(), S$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag()), s), Base23$JJ.this.miniboxing|tests|compile|Base23$JJ|T$TypeTag())
   };
-  abstract trait Base23_JL[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_JL|T_TypeTag(): Byte;
-    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23_JL.this.overrideMe_JL(Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag()), s), Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag());
-    def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = Base23_JL.this.overrideMe_JL(T_TypeTag, t, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag));
-    def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = t;
-    def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23_JL.this.overrideMe_JL(Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag()), MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag)), Base23_JL.this.miniboxing|tests|compile|Base23_JL|T_TypeTag())
+  abstract trait Base23$JL[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$JL|T$TypeTag(): Byte;
+    def overrideMe(t: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23$JL.this.overrideMe$JL(Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag()), s), Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag());
+    def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = Base23$JL.this.overrideMe$JL(T$TypeTag, t, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag));
+    def overrideMe$JL(T$TypeTag: Byte, t: Long, s: Ssp): Long = t;
+    def overrideMe$LJ(S$TypeTag: Byte, t: Tsp, s: Long): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base23$JL.this.overrideMe$JL(Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag()), MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag)), Base23$JL.this.miniboxing|tests|compile|Base23$JL|T$TypeTag())
   };
-  abstract trait Base23_LJ[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
-    def miniboxing|tests|compile|Base23_LJ|S_TypeTag(): Byte;
-    def overrideMe(t: Tsp, s: Ssp): Tsp = Base23_LJ.this.overrideMe_LJ(Base23_LJ.this.miniboxing|tests|compile|Base23_LJ|S_TypeTag(), t, MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_LJ.this.miniboxing|tests|compile|Base23_LJ|S_TypeTag()));
-    def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23_LJ.this.overrideMe_LJ(S_TypeTag, MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), s), T_TypeTag);
-    def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23_LJ.this.overrideMe_LJ(Base23_LJ.this.miniboxing|tests|compile|Base23_LJ|S_TypeTag(), MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23_LJ.this.miniboxing|tests|compile|Base23_LJ|S_TypeTag())), T_TypeTag);
-    def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = t
+  abstract trait Base23$LJ[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
+    def miniboxing|tests|compile|Base23$LJ|S$TypeTag(): Byte;
+    def overrideMe(t: Tsp, s: Ssp): Tsp = Base23$LJ.this.overrideMe$LJ(Base23$LJ.this.miniboxing|tests|compile|Base23$LJ|S$TypeTag(), t, MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23$LJ.this.miniboxing|tests|compile|Base23$LJ|S$TypeTag()));
+    def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23$LJ.this.overrideMe$LJ(S$TypeTag, MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), s), T$TypeTag);
+    def overrideMe$JL(T$TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23$LJ.this.overrideMe$LJ(Base23$LJ.this.miniboxing|tests|compile|Base23$LJ|S$TypeTag(), MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), MiniboxConversions.this.box2minibox_tt[Ssp](s, Base23$LJ.this.miniboxing|tests|compile|Base23$LJ|S$TypeTag())), T$TypeTag);
+    def overrideMe$LJ(S$TypeTag: Byte, t: Tsp, s: Long): Tsp = t
   };
-  abstract trait Base23_LL[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
+  abstract trait Base23$LL[Tsp, Ssp] extends Object with miniboxing.tests.compile.Base23[Tsp,Ssp] {
     def overrideMe(t: Tsp, s: Ssp): Tsp = t;
-    def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag)), T_TypeTag);
-    def overrideMe_JL(T_TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23_LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag), s), T_TypeTag);
-    def overrideMe_LJ(S_TypeTag: Byte, t: Tsp, s: Long): Tsp = Base23_LL.this.overrideMe(t, MiniboxConversions.this.minibox2box[Ssp](s, S_TypeTag))
+    def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23$LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag)), T$TypeTag);
+    def overrideMe$JL(T$TypeTag: Byte, t: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base23$LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag), s), T$TypeTag);
+    def overrideMe$LJ(S$TypeTag: Byte, t: Tsp, s: Long): Tsp = Base23$LL.this.overrideMe(t, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag))
   };
-  class LongIsBase21Base22andBase23 extends Object with miniboxing.tests.compile.Base21_J[Long,Long] with miniboxing.tests.compile.Base22_J[Long,Long] with miniboxing.tests.compile.Base23_JJ[Long,Long] {
-    def miniboxing|tests|compile|Base21_J|T_TypeTag(): Byte = 6;
-    def miniboxing|tests|compile|Base22_J|T_TypeTag(): Byte = 6;
-    def miniboxing|tests|compile|Base23_JJ|S_TypeTag(): Byte = 6;
-    def miniboxing|tests|compile|Base23_JJ|T_TypeTag(): Byte = 6;
+  class LongIsBase21Base22andBase23 extends Object with miniboxing.tests.compile.Base21$J[Long,Long] with miniboxing.tests.compile.Base22$J[Long,Long] with miniboxing.tests.compile.Base23$JJ[Long,Long] {
+    def miniboxing|tests|compile|Base21$J|T$TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base22$J|T$TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base23$JJ|S$TypeTag(): Byte = 6;
+    def miniboxing|tests|compile|Base23$JJ|T$TypeTag(): Byte = 6;
     def <init>(): miniboxing.tests.compile.LongIsBase21Base22andBase23 = {
       LongIsBase21Base22andBase23.super.<init>();
       ()
     };
-    override def overrideMe(t: Long, s: Long): Long = MiniboxConversions.this.minibox2long(LongIsBase21Base22andBase23.this.overrideMe_JJ(6, 6, MiniboxConversions.this.long2minibox(t), MiniboxConversions.this.long2minibox(s)));
-    override def overrideMe_JJ(T_TypeTag: Byte, S_TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???())
+    override def overrideMe(t: Long, s: Long): Long = MiniboxConversions.this.minibox2long(LongIsBase21Base22andBase23.this.overrideMe$JJ(6, 6, MiniboxConversions.this.long2minibox(t), MiniboxConversions.this.long2minibox(s)));
+    override def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???())
   }
 }
 [Now checking: minibox-commit]

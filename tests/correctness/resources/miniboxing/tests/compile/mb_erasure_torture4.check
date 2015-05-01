@@ -7,28 +7,28 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.correctness.erasure.torture4 {
   abstract trait A[@miniboxed T <: Int] extends Object {
     def foo(c: T): Any;
-    def foo_J(T_TypeTag: Byte, c: Long): Any
+    def foo$J(T$TypeTag: Byte, c: Long): Any
   };
-  class A_J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture4.A[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture4.A_J[Tsp] = {
-      A_J.super.<init>();
+  class A$J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture4.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture4|A$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|correctness|erasure|torture4|A$J|T$TypeTag: Byte): miniboxing.tests.correctness.erasure.torture4.A$J[Tsp] = {
+      A$J.super.<init>();
       ()
     };
-    def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture4|A_J|T_TypeTag));
-    def foo_J(T_TypeTag: Byte, c: Long): Any = {
-      val x: Int = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag);
-      val y: Int = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag).+(x);
-      val z: Int = x.+(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag));
+    def foo(c: Tsp): Any = A$J.this.foo$J(A$J.this.miniboxing|tests|correctness|erasure|torture4|A$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A$J.this.miniboxing|tests|correctness|erasure|torture4|A$J|T$TypeTag));
+    def foo$J(T$TypeTag: Byte, c: Long): Any = {
+      val x: Int = MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag);
+      val y: Int = MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag).+(x);
+      val z: Int = x.+(MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag));
       scala.this.Predef.println(x);
       scala.this.Predef.println(y);
       scala.this.Predef.println(z);
-      scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+      scala.this.Predef.println(MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag))
     }
   };
-  class A_L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture4.A[Tsp] {
-    def <init>(): miniboxing.tests.correctness.erasure.torture4.A_L[Tsp] = {
-      A_L.super.<init>();
+  class A$L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture4.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture4.A$L[Tsp] = {
+      A$L.super.<init>();
       ()
     };
     def foo(c: Tsp): Any = {
@@ -40,7 +40,7 @@ package miniboxing.tests.correctness.erasure.torture4 {
       scala.this.Predef.println(z);
       scala.this.Predef.println(c)
     };
-    def foo_J(T_TypeTag: Byte, c: Long): Any = A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+    def foo$J(T$TypeTag: Byte, c: Long): Any = A$L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag))
   }
 }
 [Now checking: minibox-commit]

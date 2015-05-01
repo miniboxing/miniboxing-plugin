@@ -7,26 +7,26 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.correctness.erasure.torture3 {
   abstract trait A[@miniboxed T] extends Object {
     def foo(c: T): Any;
-    def foo_J(T_TypeTag: Byte, c: Long): Any
+    def foo$J(T$TypeTag: Byte, c: Long): Any
   };
-  class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture3.A_J[Tsp] = {
-      A_J.super.<init>();
+  class A$J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture3|A$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|correctness|erasure|torture3|A$J|T$TypeTag: Byte): miniboxing.tests.correctness.erasure.torture3.A$J[Tsp] = {
+      A$J.super.<init>();
       ()
     };
-    def foo(c: Tsp): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture3|A_J|T_TypeTag));
-    def foo_J(T_TypeTag: Byte, c: Long): Any = {
-      val x: Any = MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag);
-      val hc: Int = MiniboxDispatch.this.mboxed_hashCode(c, T_TypeTag);
-      val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, T_TypeTag, 3);
-      val ts: String = MiniboxDispatch.this.mboxed_toString(c, T_TypeTag);
+    def foo(c: Tsp): Any = A$J.this.foo$J(A$J.this.miniboxing|tests|correctness|erasure|torture3|A$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A$J.this.miniboxing|tests|correctness|erasure|torture3|A$J|T$TypeTag));
+    def foo$J(T$TypeTag: Byte, c: Long): Any = {
+      val x: Any = MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag);
+      val hc: Int = MiniboxDispatch.this.mboxed_hashCode(c, T$TypeTag);
+      val eq: Boolean = MiniboxDispatch.this.mboxed_eqeq_other(c, T$TypeTag, 3);
+      val ts: String = MiniboxDispatch.this.mboxed_toString(c, T$TypeTag);
       ()
     }
   };
-  class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
-    def <init>(): miniboxing.tests.correctness.erasure.torture3.A_L[Tsp] = {
-      A_L.super.<init>();
+  class A$L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture3.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture3.A$L[Tsp] = {
+      A$L.super.<init>();
       ()
     };
     def foo(c: Tsp): Any = {
@@ -36,7 +36,7 @@ package miniboxing.tests.correctness.erasure.torture3 {
       val ts: String = c.toString();
       ()
     };
-    def foo_J(T_TypeTag: Byte, c: Long): Any = A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag))
+    def foo$J(T$TypeTag: Byte, c: Long): Any = A$L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag))
   }
 }
 [Now checking: minibox-commit]

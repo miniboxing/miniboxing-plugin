@@ -2,18 +2,18 @@ Specializing class C...
   // interface:
   abstract trait C[T] extends Product with Serializable {
     def canEqual(x$1: Any): Boolean
+    def copy$default$1$D$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Double]
+    def copy$default$1$D$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Double]
+    def copy$default$1$D[T](val T$TypeTag: Byte): T @storage[Double]
+    def copy$default$1$J$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$1$J[T](val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$1$n$D[T](val T$TypeTag: Byte): T
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): T
     def copy$default$1[T](): T
-    def copy$default$1_D[T](val T_TypeTag: Byte): T @storage[Double]
-    def copy$default$1_D_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Double]
-    def copy$default$1_D_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Double]
-    def copy$default$1_J[T](val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$1_J_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$1_n_D[T](val T_TypeTag: Byte): T
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): T
+    def copy$n$D[T](val T$TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T]
+    def copy$n$J[T](val T$TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T]
     def copy[T](t: T): miniboxing.tests.compile.bug129.C[T]
-    def copy_n_D[T](val T_TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T]
-    def copy_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T]
     def productArity(): Int
     def productElement(x$1: Int): Any
     override def equals(x$1: Any): Boolean
@@ -21,25 +21,25 @@ Specializing class C...
     override def productIterator(): Iterator[Any]
     override def productPrefix(): String
     override def toString(): String
+    val t$D(val T$TypeTag: Byte): T @storage[Double]
+    val t$J(val T$TypeTag: Byte): T @storage[Long]
     val t(): T
-    val t_D(val T_TypeTag: Byte): T @storage[Double]
-    val t_J(val T_TypeTag: Byte): T @storage[Long]
   }
   // specialized class:
-  case class C_J[Tsp] extends Product with Serializable with C[Tsp] {
-    def <init>(val miniboxing|tests|compile|bug129|C_J|T_TypeTag: Byte,t: Tsp @storage[Long]): miniboxing.tests.compile.bug129.C_J[Tsp] // is a specialized implementation of constructor C
+  case class C$J[Tsp] extends Product with Serializable with C[Tsp] {
+    def <init>(val miniboxing|tests|compile|bug129|C$J|T$TypeTag: Byte,t: Tsp @storage[Long]): miniboxing.tests.compile.bug129.C$J[Tsp] // is a specialized implementation of constructor C
+    def copy$default$1$D$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
+    def copy$default$1$D$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
+    def copy$default$1$D[T](val T$TypeTag: Byte): Tsp @storage[Double]     // is a forwarder to the specialized member
+    def copy$default$1$J$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
+    def copy$default$1$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$1
+    def copy$default$1$n$D[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
     def copy$default$1[T](): Tsp                                           // is a forwarder to the specialized member
-    def copy$default$1_D[T](val T_TypeTag: Byte): Tsp @storage[Double]     // is a forwarder to the specialized member
-    def copy$default$1_D_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
-    def copy$default$1_D_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
-    def copy$default$1_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$1
-    def copy$default$1_J_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
-    def copy$default$1_n_D[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$n$D[T](val T$TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
+    def copy$n$J[T](val T$TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def copy[T](t: T): miniboxing.tests.compile.bug129.C[T]                // is a specialized implementation of method copy
-    def copy_n_D[T](val T_TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
-    def copy_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def productArity(): Int                                                // is a specialized implementation of method productArity
     def productElement(x$1: Int): Any                                      // is a specialized implementation of method productElement
     override def equals(x$1: Any): Boolean                                 // is a specialized implementation of method equals
@@ -47,27 +47,27 @@ Specializing class C...
     override def productIterator(): Iterator[Any]                          // is a specialized implementation of method productIterator
     override def productPrefix(): String                                   // is a specialized implementation of method productPrefix
     override def toString(): String                                        // is a specialized implementation of method toString
-    private[this] val miniboxing|tests|compile|bug129|C_J|T_TypeTag: Byte  // is a type tag
+    private[this] val miniboxing|tests|compile|bug129|C$J|T$TypeTag: Byte  // is a type tag
     private[this] val t: Tsp @storage[Long]                                // is a specialized implementation of value t
+    val t$D(val T$TypeTag: Byte): Tsp @storage[Double]                     // is a forwarder to the specialized member
+    val t$J(val T$TypeTag: Byte): Tsp @storage[Long]                       // is a setter or getter for value t
     val t(): Tsp                                                           // is a forwarder to the specialized member
-    val t_D(val T_TypeTag: Byte): Tsp @storage[Double]                     // is a forwarder to the specialized member
-    val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a setter or getter for value t
   }
   // specialized class:
-  case class C_D[Tsp] extends Product with Serializable with C[Tsp] {
-    def <init>(val miniboxing|tests|compile|bug129|C_D|T_TypeTag: Byte,t: Tsp @storage[Double]): miniboxing.tests.compile.bug129.C_D[Tsp] // is a specialized implementation of constructor C
+  case class C$D[Tsp] extends Product with Serializable with C[Tsp] {
+    def <init>(val miniboxing|tests|compile|bug129|C$D|T$TypeTag: Byte,t: Tsp @storage[Double]): miniboxing.tests.compile.bug129.C$D[Tsp] // is a specialized implementation of constructor C
+    def copy$default$1$D$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a specialized implementation of method copy$default$1
+    def copy$default$1$D$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a specialized implementation of method copy$default$1
+    def copy$default$1$D[T](val T$TypeTag: Byte): Tsp @storage[Double]     // is a specialized implementation of method copy$default$1
+    def copy$default$1$J$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$1$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
+    def copy$default$1$n$D[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
     def copy$default$1[T](): Tsp                                           // is a forwarder to the specialized member
-    def copy$default$1_D[T](val T_TypeTag: Byte): Tsp @storage[Double]     // is a specialized implementation of method copy$default$1
-    def copy$default$1_D_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a specialized implementation of method copy$default$1
-    def copy$default$1_D_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a specialized implementation of method copy$default$1
-    def copy$default$1_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
-    def copy$default$1_J_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$1_n_D[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$n$D[T](val T$TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
+    def copy$n$J[T](val T$TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def copy[T](t: T): miniboxing.tests.compile.bug129.C[T]                // is a specialized implementation of method copy
-    def copy_n_D[T](val T_TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
-    def copy_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def productArity(): Int                                                // is a specialized implementation of method productArity
     def productElement(x$1: Int): Any                                      // is a specialized implementation of method productElement
     override def equals(x$1: Any): Boolean                                 // is a specialized implementation of method equals
@@ -75,27 +75,27 @@ Specializing class C...
     override def productIterator(): Iterator[Any]                          // is a specialized implementation of method productIterator
     override def productPrefix(): String                                   // is a specialized implementation of method productPrefix
     override def toString(): String                                        // is a specialized implementation of method toString
-    private[this] val miniboxing|tests|compile|bug129|C_D|T_TypeTag: Byte  // is a type tag
+    private[this] val miniboxing|tests|compile|bug129|C$D|T$TypeTag: Byte  // is a type tag
     private[this] val t: Tsp @storage[Double]                              // is a specialized implementation of value t
+    val t$D(val T$TypeTag: Byte): Tsp @storage[Double]                     // is a setter or getter for value t
+    val t$J(val T$TypeTag: Byte): Tsp @storage[Long]                       // is a forwarder to the specialized member
     val t(): Tsp                                                           // is a forwarder to the specialized member
-    val t_D(val T_TypeTag: Byte): Tsp @storage[Double]                     // is a setter or getter for value t
-    val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a forwarder to the specialized member
   }
   // specialized class:
-  case class C_L[Tsp] extends Product with Serializable with C[Tsp] {
-    def <init>(t: Tsp): miniboxing.tests.compile.bug129.C_L[Tsp]           // is a specialized implementation of constructor C
+  case class C$L[Tsp] extends Product with Serializable with C[Tsp] {
+    def <init>(t: Tsp): miniboxing.tests.compile.bug129.C$L[Tsp]           // is a specialized implementation of constructor C
+    def copy$default$1$D$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
+    def copy$default$1$D$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
+    def copy$default$1$D[T](val T$TypeTag: Byte): Tsp @storage[Double]     // is a forwarder to the specialized member
+    def copy$default$1$J$n$D[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$1$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
+    def copy$default$1$n$D[T](val T$TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
     def copy$default$1[T](): Tsp                                           // is a specialized implementation of method copy$default$1
-    def copy$default$1_D[T](val T_TypeTag: Byte): Tsp @storage[Double]     // is a forwarder to the specialized member
-    def copy$default$1_D_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
-    def copy$default$1_D_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Double] // is a forwarder to the specialized member
-    def copy$default$1_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
-    def copy$default$1_J_n_D[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$1_n_D[T](val T_TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
+    def copy$n$D[T](val T$TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
+    def copy$n$J[T](val T$TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def copy[T](t: T): miniboxing.tests.compile.bug129.C[T]                // is a specialized implementation of method copy
-    def copy_n_D[T](val T_TypeTag: Byte,t: T @storage[Double]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
-    def copy_n_J[T](val T_TypeTag: Byte,t: T @storage[Long]): miniboxing.tests.compile.bug129.C[T] // is a specialized implementation of method copy
     def productArity(): Int                                                // is a specialized implementation of method productArity
     def productElement(x$1: Int): Any                                      // is a specialized implementation of method productElement
     override def equals(x$1: Any): Boolean                                 // is a specialized implementation of method equals
@@ -104,7 +104,7 @@ Specializing class C...
     override def productPrefix(): String                                   // is a specialized implementation of method productPrefix
     override def toString(): String                                        // is a specialized implementation of method toString
     private[this] val t: Tsp                                               // is a specialized implementation of value t
+    val t$D(val T$TypeTag: Byte): Tsp @storage[Double]                     // is a forwarder to the specialized member
+    val t$J(val T$TypeTag: Byte): Tsp @storage[Long]                       // is a forwarder to the specialized member
     val t(): Tsp                                                           // is a setter or getter for value t
-    val t_D(val T_TypeTag: Byte): Tsp @storage[Double]                     // is a forwarder to the specialized member
-    val t_J(val T_TypeTag: Byte): Tsp @storage[Long]                       // is a forwarder to the specialized member
   }

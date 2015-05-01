@@ -12,28 +12,28 @@ package miniboxing.tests.compile.bug73.ver1 {
   };
   abstract trait C2[@miniboxed A] extends Object with miniboxing.tests.compile.bug73.ver1.C1[A] {
     override def head(): A;
-    override def head_D(A_TypeTag: Byte): Double;
-    override def head_J(A_TypeTag: Byte): Long
+    override def head$D(A$TypeTag: Byte): Double;
+    override def head$J(A$TypeTag: Byte): Long
   };
-  abstract trait C2_D[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
-    def miniboxing|tests|compile|bug73|ver1|C2_D|A_TypeTag(): Byte;
-    override def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C2_D.this.head_D(C2_D.this.miniboxing|tests|compile|bug73|ver1|C2_D|A_TypeTag()), C2_D.this.miniboxing|tests|compile|bug73|ver1|C2_D|A_TypeTag());
-    override def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2_D.this.super$head(), A_TypeTag);
-    override def head_J(A_TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
+  abstract trait C2$D[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
+    def miniboxing|tests|compile|bug73|ver1|C2$D|A$TypeTag(): Byte;
+    override def head(): Asp = MiniboxConversionsDouble.this.minibox2box[Asp](C2$D.this.head$D(C2$D.this.miniboxing|tests|compile|bug73|ver1|C2$D|A$TypeTag()), C2$D.this.miniboxing|tests|compile|bug73|ver1|C2$D|A$TypeTag());
+    override def head$D(A$TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2$D.this.super$head(), A$TypeTag);
+    override def head$J(A$TypeTag: Byte): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long")
   };
-  abstract trait C2_J[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
-    def miniboxing|tests|compile|bug73|ver1|C2_J|A_TypeTag(): Byte;
-    override def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C2_J.this.head_J(C2_J.this.miniboxing|tests|compile|bug73|ver1|C2_J|A_TypeTag()), C2_J.this.miniboxing|tests|compile|bug73|ver1|C2_J|A_TypeTag());
-    override def head_D(A_TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
-    override def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2_J.this.super$head(), A_TypeTag)
+  abstract trait C2$J[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
+    def miniboxing|tests|compile|bug73|ver1|C2$J|A$TypeTag(): Byte;
+    override def head(): Asp = MiniboxConversionsLong.this.minibox2box[Asp](C2$J.this.head$J(C2$J.this.miniboxing|tests|compile|bug73|ver1|C2$J|A$TypeTag()), C2$J.this.miniboxing|tests|compile|bug73|ver1|C2$J|A$TypeTag());
+    override def head$D(A$TypeTag: Byte): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    override def head$J(A$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2$J.this.super$head(), A$TypeTag)
   };
-  abstract trait C2_L[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
-    override def head(): Asp = C2_L.this.super$head();
-    override def head_D(A_TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2_L.this.head(), A_TypeTag);
-    override def head_J(A_TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2_L.this.head(), A_TypeTag)
+  abstract trait C2$L[Asp] extends Object with miniboxing.tests.compile.bug73.ver1.C1[Asp] with miniboxing.tests.compile.bug73.ver1.C2[Asp] {
+    override def head(): Asp = C2$L.this.super$head();
+    override def head$D(A$TypeTag: Byte): Double = MiniboxConversionsDouble.this.box2minibox_tt[Asp](C2$L.this.head(), A$TypeTag);
+    override def head$J(A$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Asp](C2$L.this.head(), A$TypeTag)
   };
-  class C3 extends Object with miniboxing.tests.compile.bug73.ver1.C2_J[Char] {
-    def miniboxing|tests|compile|bug73|ver1|C2_J|A_TypeTag(): Byte = 4;
+  class C3 extends Object with miniboxing.tests.compile.bug73.ver1.C2$J[Char] {
+    def miniboxing|tests|compile|bug73|ver1|C2$J|A$TypeTag(): Byte = 4;
     def <init>(): miniboxing.tests.compile.bug73.ver1.C3 = {
       C3.super.<init>();
       ()

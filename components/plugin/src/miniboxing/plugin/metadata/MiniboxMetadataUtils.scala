@@ -315,7 +315,7 @@ trait MiniboxMetadataUtils {
 
   object tagUtils {
     def separateTypeTagArgsInTree(args: List[Tree]): (List[Tree], List[Tree]) = args match {
-      case ttarg :: rest if ttarg.symbol.name.toString.endsWith("_TypeTag") =>
+      case ttarg :: rest if isTypeTagField(ttarg.symbol) =>
         val (ttargs, args) = separateTypeTagArgsInTree(rest)
         (ttarg :: ttargs, args)
       case _ => (Nil, args)
@@ -331,7 +331,7 @@ trait MiniboxMetadataUtils {
     }
 
     def separateTypeTagArgsInArgs(args: List[Symbol]): (List[Symbol], List[Symbol]) = args match {
-      case ttarg :: rest if ttarg.name.toString.endsWith("_TypeTag") =>
+      case ttarg :: rest if isTypeTagField(ttarg) =>
         val (ttargs, args) = separateTypeTagArgsInArgs(rest)
         (ttarg :: ttargs, args)
       case _ => (Nil, args)

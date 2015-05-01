@@ -7,38 +7,38 @@ package miniboxing.tests.compile.bug150.warn6 {
     };
     def test[@miniboxed X](t: X): Object{def foo(): X} = {
       final class $anon extends Object {
-        def <init>(): <$anon: Object> = {
+        def <init>(): anonymous class $anon = {
           $anon.super.<init>();
           ()
         };
         protected def foo(): X = t;
         override def toString(): String = "anon class for ".+($anon.this.foo())
       };
-      new <$anon: Object>()
+      new anonymous class $anon()
     };
-    def test_n_D[X](X_TypeTag: Byte, t: Double): Object{def foo(): Double} = {
+    def test$n$D[X](X$TypeTag: Byte, t: Double): Object{def foo(): Double} = {
       final class $anon extends Object {
-        def <init>(): <$anon: Object> = {
+        def <init>(): anonymous class $anon = {
           $anon.super.<init>();
           ()
         };
         protected def foo(): Double = t;
-        override def toString(): String = "anon class for ".+(MiniboxConversionsDouble.this.minibox2box[X]($anon.this.foo(), X_TypeTag))
+        override def toString(): String = "anon class for ".+(MiniboxConversionsDouble.this.minibox2box[X]($anon.this.foo(), X$TypeTag))
       };
-      new <$anon: Object>()
+      new anonymous class $anon()
     };
-    def test_n_J[X](X_TypeTag: Byte, t: Long): Object{def foo(): Long} = {
+    def test$n$J[X](X$TypeTag: Byte, t: Long): Object{def foo(): Long} = {
       final class $anon extends Object {
-        def <init>(): <$anon: Object> = {
+        def <init>(): anonymous class $anon = {
           $anon.super.<init>();
           ()
         };
         protected def foo(): Long = t;
-        override def toString(): String = "anon class for ".+(MiniboxConversionsLong.this.minibox2box[X]($anon.this.foo(), X_TypeTag))
+        override def toString(): String = "anon class for ".+(MiniboxConversionsLong.this.minibox2box[X]($anon.this.foo(), X$TypeTag))
       };
-      new <$anon: Object>()
+      new anonymous class $anon()
     };
-    def main(args: Array[String]): Unit = scala.this.Predef.println(Test.this.test_n_J[Int](5, MiniboxConversions.this.int2minibox(3)).toString())
+    def main(args: Array[String]): Unit = scala.this.Predef.println(Test.this.test$n$J[Int](5, MiniboxConversions.this.int2minibox(3)).toString())
   }
 }
 anon class for 3

@@ -5,20 +5,20 @@ Specializing class C...
     override def toString(): String
   }
   // specialized class:
-  class C_J[Tsp] extends C[Tsp] {
-    def <init>(val $line3|$read|$iw|$iw|C_J|T_TypeTag: Byte): C_J[Tsp]     // is a specialized implementation of constructor C
+  class C$J[Tsp] extends C[Tsp] {
+    def <init>(val $line3|$read|$iw|$iw|C$J|T$TypeTag: Byte): C$J[Tsp]     // is a specialized implementation of constructor C
     override def toString(): String                                        // is a specialized implementation of method toString
-    private[this] val $line3|$read|$iw|$iw|C_J|T_TypeTag: Byte             // is a type tag
+    private[this] val $line3|$read|$iw|$iw|C$J|T$TypeTag: Byte             // is a type tag
   }
   // specialized class:
-  class C_D[Tsp] extends C[Tsp] {
-    def <init>(val $line3|$read|$iw|$iw|C_D|T_TypeTag: Byte): C_D[Tsp]     // is a specialized implementation of constructor C
+  class C$D[Tsp] extends C[Tsp] {
+    def <init>(val $line3|$read|$iw|$iw|C$D|T$TypeTag: Byte): C$D[Tsp]     // is a specialized implementation of constructor C
     override def toString(): String                                        // is a specialized implementation of method toString
-    private[this] val $line3|$read|$iw|$iw|C_D|T_TypeTag: Byte             // is a type tag
+    private[this] val $line3|$read|$iw|$iw|C$D|T$TypeTag: Byte             // is a type tag
   }
   // specialized class:
-  class C_L[Tsp] extends C[Tsp] {
-    def <init>(): C_L[Tsp]                                                 // is a specialized implementation of constructor C
+  class C$L[Tsp] extends C[Tsp] {
+    def <init>(): C$L[Tsp]                                                 // is a specialized implementation of constructor C
     override def toString(): String                                        // is a specialized implementation of method toString
   }
 defined class C

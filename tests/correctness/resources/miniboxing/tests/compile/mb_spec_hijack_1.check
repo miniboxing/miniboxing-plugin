@@ -3,13 +3,13 @@ Specializing class HijackMe...
   abstract trait HijackMe[T] extends Object {
   }
   // specialized class:
-  class HijackMe_J[Tsp] extends HijackMe[Tsp] {
-    def <init>(val miniboxing|tests|compile|HijackMe_J|T_TypeTag: Byte): miniboxing.tests.compile.HijackMe_J[Tsp] // is a specialized implementation of constructor HijackMe
-    private[this] val miniboxing|tests|compile|HijackMe_J|T_TypeTag: Byte  // is a type tag
+  class HijackMe$J[Tsp] extends HijackMe[Tsp] {
+    def <init>(val miniboxing|tests|compile|HijackMe$J|T$TypeTag: Byte): miniboxing.tests.compile.HijackMe$J[Tsp] // is a specialized implementation of constructor HijackMe
+    private[this] val miniboxing|tests|compile|HijackMe$J|T$TypeTag: Byte  // is a type tag
   }
   // specialized class:
-  class HijackMe_L[Tsp] extends HijackMe[Tsp] {
-    def <init>(): miniboxing.tests.compile.HijackMe_L[Tsp]                 // is a specialized implementation of constructor HijackMe
+  class HijackMe$L[Tsp] extends HijackMe[Tsp] {
+    def <init>(): miniboxing.tests.compile.HijackMe$L[Tsp]                 // is a specialized implementation of constructor HijackMe
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -19,16 +19,16 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait HijackMe[@miniboxed T] extends Object;
-  class HijackMe_J[Tsp] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|HijackMe_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|HijackMe_J|T_TypeTag: Byte): miniboxing.tests.compile.HijackMe_J[Tsp] = {
-      HijackMe_J.super.<init>();
+  class HijackMe$J[Tsp] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|HijackMe$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|HijackMe$J|T$TypeTag: Byte): miniboxing.tests.compile.HijackMe$J[Tsp] = {
+      HijackMe$J.super.<init>();
       ()
     }
   };
-  class HijackMe_L[Tsp] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
-    def <init>(): miniboxing.tests.compile.HijackMe_L[Tsp] = {
-      HijackMe_L.super.<init>();
+  class HijackMe$L[Tsp] extends Object with miniboxing.tests.compile.HijackMe[Tsp] {
+    def <init>(): miniboxing.tests.compile.HijackMe$L[Tsp] = {
+      HijackMe$L.super.<init>();
       ()
     }
   }

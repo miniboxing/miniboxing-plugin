@@ -1,62 +1,62 @@
 Specializing trait F1...
   // interface:
   abstract trait F1[A, B] extends Object {
+    def andThen$n$J[C](val C$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
-    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[B,C]): miniboxing.tests.compile.bug85.full.F1[A,C]
+    def apply$JJ(val A$TypeTag: Byte,val B$TypeTag: Byte,a: A @storage[Long]): B @storage[Long]
+    def apply$JL(val A$TypeTag: Byte,a: A @storage[Long]): B
+    def apply$LJ(val B$TypeTag: Byte,a: A): B @storage[Long]
     def apply(a: A): B
-    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: A @storage[Long]): B @storage[Long]
-    def apply_JL(val A_TypeTag: Byte,a: A @storage[Long]): B
-    def apply_LJ(val B_TypeTag: Byte,a: A): B @storage[Long]
+    def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
-    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,A]): miniboxing.tests.compile.bug85.full.F1[Z,B]
   }
   // specialized class:
-  abstract trait F1_JJ[Asp, Bsp] extends F1[Asp,Bsp] {
+  abstract trait F1$JJ[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen$n$J[C](val C$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
-    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply$JJ(val A$TypeTag: Byte,val B$TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is an interface method
+    def apply$JL(val A$TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
+    def apply$LJ(val B$TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
     def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
-    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is an interface method
-    def apply_JL(val A_TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
-    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
+    def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def miniboxing|tests|compile|bug85|full|F1_JJ|A_TypeTag(): Byte        // is a type tag
-    def miniboxing|tests|compile|bug85|full|F1_JJ|B_TypeTag(): Byte        // is a type tag
+    def miniboxing|tests|compile|bug85|full|F1$JJ|A$TypeTag(): Byte        // is a type tag
+    def miniboxing|tests|compile|bug85|full|F1$JJ|B$TypeTag(): Byte        // is a type tag
   }
   // specialized class:
-  abstract trait F1_LJ[Asp, Bsp] extends F1[Asp,Bsp] {
+  abstract trait F1$LJ[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen$n$J[C](val C$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
-    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply$JJ(val A$TypeTag: Byte,val B$TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
+    def apply$JL(val A$TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
+    def apply$LJ(val B$TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is an interface method
     def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
-    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
-    def apply_JL(val A_TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
-    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is an interface method
+    def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def miniboxing|tests|compile|bug85|full|F1_LJ|B_TypeTag(): Byte        // is a type tag
+    def miniboxing|tests|compile|bug85|full|F1$LJ|B$TypeTag(): Byte        // is a type tag
   }
   // specialized class:
-  abstract trait F1_JL[Asp, Bsp] extends F1[Asp,Bsp] {
+  abstract trait F1$JL[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen$n$J[C](val C$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
-    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply$JJ(val A$TypeTag: Byte,val B$TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
+    def apply$JL(val A$TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is an interface method
+    def apply$LJ(val B$TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
     def apply(a: Asp): Bsp                                                 // is a forwarder to the specialized member
-    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
-    def apply_JL(val A_TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is an interface method
-    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
+    def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def miniboxing|tests|compile|bug85|full|F1_JL|A_TypeTag(): Byte        // is a type tag
+    def miniboxing|tests|compile|bug85|full|F1$JL|A$TypeTag(): Byte        // is a type tag
   }
   // specialized class:
-  abstract trait F1_LL[Asp, Bsp] extends F1[Asp,Bsp] {
+  abstract trait F1$LL[Asp, Bsp] extends F1[Asp,Bsp] {
+    def andThen$n$J[C](val C$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
     def andThen[C](f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
-    def andThen_n_J[C](val C_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Bsp,C]): miniboxing.tests.compile.bug85.full.F1[Asp,C] // is a specialized implementation of method andThen
+    def apply$JJ(val A$TypeTag: Byte,val B$TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
+    def apply$JL(val A$TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
+    def apply$LJ(val B$TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
     def apply(a: Asp): Bsp                                                 // is an interface method
-    def apply_JJ(val A_TypeTag: Byte,val B_TypeTag: Byte,a: Asp @storage[Long]): Bsp @storage[Long] // is a forwarder to the specialized member
-    def apply_JL(val A_TypeTag: Byte,a: Asp @storage[Long]): Bsp           // is a forwarder to the specialized member
-    def apply_LJ(val B_TypeTag: Byte,a: Asp): Bsp @storage[Long]           // is a forwarder to the specialized member
+    def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
-    def compose_n_J[Z](val Z_TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
   }
 Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.

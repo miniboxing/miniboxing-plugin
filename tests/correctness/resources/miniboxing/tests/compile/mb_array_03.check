@@ -3,51 +3,51 @@ package miniboxing.tests.compile.mbarray03 {
   abstract trait Vec[@miniboxed T] extends Object {
     def foo(): Unit
   };
-  class Vec_D[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag: Byte = _;
+  class Vec$D[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val mbArray: MbArray[Tsp] = _;
-    def <init>(miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag: Byte, mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec_D[Tsp] = {
-      Vec_D.super.<init>();
+    def <init>(miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag: Byte, mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec$D[Tsp] = {
+      Vec$D.super.<init>();
       ()
     };
     def foo(): Unit = {
-      val t0: Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.mbArray, 0, Vec_D.this.miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag);
-      val t1: Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.mbArray, 1, Vec_D.this.miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag);
-      MbArrayOpts.this.mbArray_update_D[Tsp](Vec_D.this.mbArray, 0, t1, Vec_D.this.miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag);
-      MbArrayOpts.this.mbArray_update_D[Tsp](Vec_D.this.mbArray, 1, t0, Vec_D.this.miniboxing|tests|compile|mbarray03|Vec_D|T_TypeTag);
-      scala.this.Predef.println(Vec_D.this.mbArray.apply(0));
-      scala.this.Predef.println(Vec_D.this.mbArray.apply(1))
+      val t0: Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.mbArray, 0, Vec$D.this.miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag);
+      val t1: Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.mbArray, 1, Vec$D.this.miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag);
+      MbArrayOpts.this.mbArray_update_D[Tsp](Vec$D.this.mbArray, 0, t1, Vec$D.this.miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag);
+      MbArrayOpts.this.mbArray_update_D[Tsp](Vec$D.this.mbArray, 1, t0, Vec$D.this.miniboxing|tests|compile|mbarray03|Vec$D|T$TypeTag);
+      scala.this.Predef.println(Vec$D.this.mbArray.apply(0));
+      scala.this.Predef.println(Vec$D.this.mbArray.apply(1))
     }
   };
-  class Vec_J[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag: Byte = _;
+  class Vec$J[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val mbArray: MbArray[Tsp] = _;
-    def <init>(miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag: Byte, mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec_J[Tsp] = {
-      Vec_J.super.<init>();
+    def <init>(miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag: Byte, mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec$J[Tsp] = {
+      Vec$J.super.<init>();
       ()
     };
     def foo(): Unit = {
-      val t0: Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.mbArray, 0, Vec_J.this.miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag);
-      val t1: Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.mbArray, 1, Vec_J.this.miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag);
-      MbArrayOpts.this.mbArray_update_J[Tsp](Vec_J.this.mbArray, 0, t1, Vec_J.this.miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag);
-      MbArrayOpts.this.mbArray_update_J[Tsp](Vec_J.this.mbArray, 1, t0, Vec_J.this.miniboxing|tests|compile|mbarray03|Vec_J|T_TypeTag);
-      scala.this.Predef.println(Vec_J.this.mbArray.apply(0));
-      scala.this.Predef.println(Vec_J.this.mbArray.apply(1))
+      val t0: Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.mbArray, 0, Vec$J.this.miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag);
+      val t1: Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.mbArray, 1, Vec$J.this.miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag);
+      MbArrayOpts.this.mbArray_update_J[Tsp](Vec$J.this.mbArray, 0, t1, Vec$J.this.miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag);
+      MbArrayOpts.this.mbArray_update_J[Tsp](Vec$J.this.mbArray, 1, t0, Vec$J.this.miniboxing|tests|compile|mbarray03|Vec$J|T$TypeTag);
+      scala.this.Predef.println(Vec$J.this.mbArray.apply(0));
+      scala.this.Predef.println(Vec$J.this.mbArray.apply(1))
     }
   };
-  class Vec_L[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
+  class Vec$L[Tsp] extends Object with miniboxing.tests.compile.mbarray03.Vec[Tsp] {
     <paramaccessor> private[this] val mbArray: MbArray[Tsp] = _;
-    def <init>(mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec_L[Tsp] = {
-      Vec_L.super.<init>();
+    def <init>(mbArray: MbArray[Tsp]): miniboxing.tests.compile.mbarray03.Vec$L[Tsp] = {
+      Vec$L.super.<init>();
       ()
     };
     def foo(): Unit = {
-      val t0: Tsp = Vec_L.this.mbArray.apply(0);
-      val t1: Tsp = Vec_L.this.mbArray.apply(1);
-      Vec_L.this.mbArray.update(0, t1);
-      Vec_L.this.mbArray.update(1, t0);
-      scala.this.Predef.println(Vec_L.this.mbArray.apply(0));
-      scala.this.Predef.println(Vec_L.this.mbArray.apply(1))
+      val t0: Tsp = Vec$L.this.mbArray.apply(0);
+      val t1: Tsp = Vec$L.this.mbArray.apply(1);
+      Vec$L.this.mbArray.update(0, t1);
+      Vec$L.this.mbArray.update(1, t0);
+      scala.this.Predef.println(Vec$L.this.mbArray.apply(0));
+      scala.this.Predef.println(Vec$L.this.mbArray.apply(1))
     }
   };
   object Vec extends Object {
@@ -55,19 +55,19 @@ package miniboxing.tests.compile.mbarray03 {
       Vec.super.<init>();
       ()
     };
-    def apply[@miniboxed T](array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_L[T](scala.MbArray.clone[T](array));
-    def apply_n_D[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_D[T](T_TypeTag, MbArrayOpts.this.mbArray_clone_D[T](array, T_TypeTag));
-    def apply_n_J[T](T_TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec_J[T](T_TypeTag, MbArrayOpts.this.mbArray_clone_J[T](array, T_TypeTag))
+    def apply[@miniboxed T](array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec$L[T](scala.MbArray.clone[T](array));
+    def apply$n$D[T](T$TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec$D[T](T$TypeTag, MbArrayOpts.this.mbArray_clone_D[T](array, T$TypeTag));
+    def apply$n$J[T](T$TypeTag: Byte, array: Array[T]): miniboxing.tests.compile.mbarray03.Vec[T] = new miniboxing.tests.compile.mbarray03.Vec$J[T](T$TypeTag, MbArrayOpts.this.mbArray_clone_J[T](array, T$TypeTag))
   };
   object Test extends Object with App {
     def <init>(): miniboxing.tests.compile.mbarray03.Test.type = {
       Test.super.<init>();
       ()
     };
-    Vec.apply_n_J[Int](5, scala.Array.apply(1, scala.this.Predef.wrapIntArray(Array[Int]{2, 3, 4, 5}))).foo();
+    Vec.apply$n$J[Int](5, scala.Array.apply(1, scala.this.Predef.wrapIntArray(Array[Int]{2, 3, 4, 5}))).foo();
     Vec.apply[String](scala.Array.apply[String](scala.this.Predef.wrapRefArray[String](Array[String]{"x", "y", "z"}), ClassTag.apply[String](classOf[java.lang.String]))).foo();
-    Vec.apply_n_D[Double](8, scala.Array.apply(1.0, scala.this.Predef.wrapDoubleArray(Array[Double]{2.0, 3.0}))).foo();
-    Vec.apply_n_J[Boolean](1, scala.Array.apply(true, scala.this.Predef.wrapBooleanArray(Array[Boolean]{false}))).foo()
+    Vec.apply$n$D[Double](8, scala.Array.apply(1.0, scala.this.Predef.wrapDoubleArray(Array[Double]{2.0, 3.0}))).foo();
+    Vec.apply$n$J[Boolean](1, scala.Array.apply(true, scala.this.Predef.wrapBooleanArray(Array[Boolean]{false}))).foo()
   }
 }
 2

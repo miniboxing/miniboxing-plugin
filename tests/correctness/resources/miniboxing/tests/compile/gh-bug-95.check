@@ -11,10 +11,10 @@ package miniboxing.tests.compile.bug95 {
       val t2: T = t;
       ()
     };
-    def foo_n_J[T](T_TypeTag: Byte, t: Long): Unit = {
+    def foo$n$J[T](T$TypeTag: Byte, t: Long): Unit = {
       val t2: Long = t;
       ()
     };
-    def main(args: Array[String]): Unit = Test.this.foo_n_J[Int](5, MiniboxConversions.this.int2minibox(3))
+    def main(args: Array[String]): Unit = Test.this.foo$n$J[Int](5, MiniboxConversions.this.int2minibox(3))
   }
 }

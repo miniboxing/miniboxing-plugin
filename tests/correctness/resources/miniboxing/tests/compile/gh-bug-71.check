@@ -1,4 +1,4 @@
-newSource1.scala:4: error: [ occured while creating miniboxed method foo_J in class Test_J ]
+newSource1.scala:4: error: [ occured while creating miniboxed method foo$J in class Test$J ]
 method id in object Test cannot be accessed in object miniboxing.tests.compile.bug71.Test
   def foo(t: T): T = Test.id(t)
                           ^

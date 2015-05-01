@@ -11,14 +11,14 @@ package <empty> {
       val t3: (Double,) = new (Double,)(1.1);
       ()
     };
-    def MbTuple1Constructor_n_D[X](X_TypeTag: Byte, x: Double): Unit = {
-      val t1: (X,) = MiniboxedTuple.this.newTuple1_double[X](X_TypeTag, x);
+    def MbTuple1Constructor$n$D[X](X$TypeTag: Byte, x: Double): Unit = {
+      val t1: (X,) = MiniboxedTuple.this.newTuple1_double[X](X$TypeTag, x);
       val t2: (Int,) = new (Int,)(1);
       val t3: (Double,) = new (Double,)(1.1);
       ()
     };
-    def MbTuple1Constructor_n_J[X](X_TypeTag: Byte, x: Long): Unit = {
-      val t1: (X,) = MiniboxedTuple.this.newTuple1_long[X](X_TypeTag, x);
+    def MbTuple1Constructor$n$J[X](X$TypeTag: Byte, x: Long): Unit = {
+      val t1: (X,) = MiniboxedTuple.this.newTuple1_long[X](X$TypeTag, x);
       val t2: (Int,) = new (Int,)(1);
       val t3: (Double,) = new (Double,)(1.1);
       ()
@@ -34,91 +34,91 @@ package <empty> {
       val t9: (X, Double) = new (X, Double)(x, 1.1);
       ()
     };
-    def MbTuple2constructor_n_DD[X, Y](X_TypeTag: Byte, Y_TypeTag: Byte, x: Double, y: Double): Unit = {
+    def MbTuple2constructor$n$DD[X, Y](X$TypeTag: Byte, Y$TypeTag: Byte, x: Double, y: Double): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_double_double[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_double_double[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_double_double[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_double_double[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_DJ[X, Y](X_TypeTag: Byte, Y_TypeTag: Byte, x: Double, y: Long): Unit = {
+    def MbTuple2constructor$n$DJ[X, Y](X$TypeTag: Byte, Y$TypeTag: Byte, x: Double, y: Long): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_double_long[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_double_long[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_double_long[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_double_long[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_DL[X, Y](X_TypeTag: Byte, x: Double, y: Y): Unit = {
+    def MbTuple2constructor$n$DL[X, Y](X$TypeTag: Byte, x: Double, y: Y): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = new (X, Y)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), y);
+      val t2: (X, Y) = new (X, Y)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), y);
       val t3: (Int, Y) = new (Int, Y)(1, y);
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = new (X, Y)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), y);
+      val t7: (X, Y) = new (X, Y)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), y);
       val t8: (Int, Y) = new (Int, Y)(1, y);
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_JD[X, Y](X_TypeTag: Byte, Y_TypeTag: Byte, x: Long, y: Double): Unit = {
+    def MbTuple2constructor$n$JD[X, Y](X$TypeTag: Byte, Y$TypeTag: Byte, x: Long, y: Double): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_long_double[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_long_double[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_long_double[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_long_double[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_JJ[X, Y](X_TypeTag: Byte, Y_TypeTag: Byte, x: Long, y: Long): Unit = {
+    def MbTuple2constructor$n$JJ[X, Y](X$TypeTag: Byte, Y$TypeTag: Byte, x: Long, y: Long): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_long_long[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t2: (X, Y) = MiniboxedTuple.this.newTuple2_long_long[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_long_long[X, Y](X_TypeTag, Y_TypeTag, x, y);
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t7: (X, Y) = MiniboxedTuple.this.newTuple2_long_long[X, Y](X$TypeTag, Y$TypeTag, x, y);
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_JL[X, Y](X_TypeTag: Byte, x: Long, y: Y): Unit = {
+    def MbTuple2constructor$n$JL[X, Y](X$TypeTag: Byte, x: Long, y: Y): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = new (X, Y)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), y);
+      val t2: (X, Y) = new (X, Y)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), y);
       val t3: (Int, Y) = new (Int, Y)(1, y);
-      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t4: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = new (X, Y)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), y);
+      val t7: (X, Y) = new (X, Y)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), y);
       val t8: (Int, Y) = new (Int, Y)(1, y);
-      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag), 1.1);
+      val t9: (X, Double) = new (X, Double)(MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag), 1.1);
       ()
     };
-    def MbTuple2constructor_n_LD[X, Y](Y_TypeTag: Byte, x: X, y: Double): Unit = {
+    def MbTuple2constructor$n$LD[X, Y](Y$TypeTag: Byte, x: X, y: Double): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = new (X, Y)(x, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
+      val t2: (X, Y) = new (X, Y)(x, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
       val t4: (X, Double) = new (X, Double)(x, 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = new (X, Y)(x, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y_TypeTag));
+      val t7: (X, Y) = new (X, Y)(x, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsDouble.this.minibox2box[Y](y, Y$TypeTag));
       val t9: (X, Double) = new (X, Double)(x, 1.1);
       ()
     };
-    def MbTuple2constructor_n_LJ[X, Y](Y_TypeTag: Byte, x: X, y: Long): Unit = {
+    def MbTuple2constructor$n$LJ[X, Y](Y$TypeTag: Byte, x: X, y: Long): Unit = {
       val t1: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t2: (X, Y) = new (X, Y)(x, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
+      val t2: (X, Y) = new (X, Y)(x, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t3: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
       val t4: (X, Double) = new (X, Double)(x, 1.1);
       val t6: (Int, Double) = new (Int, Double)(1, 1.1);
-      val t7: (X, Y) = new (X, Y)(x, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
-      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y_TypeTag));
+      val t7: (X, Y) = new (X, Y)(x, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
+      val t8: (Int, Y) = new (Int, Y)(1, MiniboxConversionsLong.this.minibox2box[Y](y, Y$TypeTag));
       val t9: (X, Double) = new (X, Double)(x, 1.1);
       ()
     };
@@ -135,30 +135,30 @@ package <empty> {
       val t6: X = tuple4._2();
       ()
     };
-    def MbTupleAccessors_n_D[X](X_TypeTag: Byte, x: Double): Unit = {
-      val tuple1: (X,) = MiniboxedTuple.this.newTuple1_double[X](X_TypeTag, x);
-      val tuple2: (X, X) = MiniboxedTuple.this.newTuple2_double_double[X, X](X_TypeTag, X_TypeTag, x, x);
-      val t1: Double = MiniboxedTuple.this.tuple1_accessor_1_double[X](X_TypeTag, tuple1);
-      val t2: Double = MiniboxedTuple.this.tuple2_accessor_1_double[X, X](X_TypeTag, tuple2);
-      val t3: Double = MiniboxedTuple.this.tuple2_accessor_2_double[X, X](X_TypeTag, tuple2);
+    def MbTupleAccessors$n$D[X](X$TypeTag: Byte, x: Double): Unit = {
+      val tuple1: (X,) = MiniboxedTuple.this.newTuple1_double[X](X$TypeTag, x);
+      val tuple2: (X, X) = MiniboxedTuple.this.newTuple2_double_double[X, X](X$TypeTag, X$TypeTag, x, x);
+      val t1: Double = MiniboxedTuple.this.tuple1_accessor_1_double[X](X$TypeTag, tuple1);
+      val t2: Double = MiniboxedTuple.this.tuple2_accessor_1_double[X, X](X$TypeTag, tuple2);
+      val t3: Double = MiniboxedTuple.this.tuple2_accessor_2_double[X, X](X$TypeTag, tuple2);
       val tuple3: (Int,) = new (Int,)(1);
-      val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsDouble.this.minibox2box[X](x, X_TypeTag));
+      val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsDouble.this.minibox2box[X](x, X$TypeTag));
       val t4: Int = tuple3._1();
       val t5: Double = tuple4._1();
-      val t6: Double = MiniboxedTuple.this.tuple2_accessor_2_double[Double, X](X_TypeTag, tuple4);
+      val t6: Double = MiniboxedTuple.this.tuple2_accessor_2_double[Double, X](X$TypeTag, tuple4);
       ()
     };
-    def MbTupleAccessors_n_J[X](X_TypeTag: Byte, x: Long): Unit = {
-      val tuple1: (X,) = MiniboxedTuple.this.newTuple1_long[X](X_TypeTag, x);
-      val tuple2: (X, X) = MiniboxedTuple.this.newTuple2_long_long[X, X](X_TypeTag, X_TypeTag, x, x);
-      val t1: Long = MiniboxedTuple.this.tuple1_accessor_1_long[X](X_TypeTag, tuple1);
-      val t2: Long = MiniboxedTuple.this.tuple2_accessor_1_long[X, X](X_TypeTag, tuple2);
-      val t3: Long = MiniboxedTuple.this.tuple2_accessor_2_long[X, X](X_TypeTag, tuple2);
+    def MbTupleAccessors$n$J[X](X$TypeTag: Byte, x: Long): Unit = {
+      val tuple1: (X,) = MiniboxedTuple.this.newTuple1_long[X](X$TypeTag, x);
+      val tuple2: (X, X) = MiniboxedTuple.this.newTuple2_long_long[X, X](X$TypeTag, X$TypeTag, x, x);
+      val t1: Long = MiniboxedTuple.this.tuple1_accessor_1_long[X](X$TypeTag, tuple1);
+      val t2: Long = MiniboxedTuple.this.tuple2_accessor_1_long[X, X](X$TypeTag, tuple2);
+      val t3: Long = MiniboxedTuple.this.tuple2_accessor_2_long[X, X](X$TypeTag, tuple2);
       val tuple3: (Int,) = new (Int,)(1);
-      val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsLong.this.minibox2box[X](x, X_TypeTag));
+      val tuple4: (Double, X) = new (Double, X)(2.2, MiniboxConversionsLong.this.minibox2box[X](x, X$TypeTag));
       val t4: Int = tuple3._1();
       val t5: Double = tuple4._1();
-      val t6: Long = MiniboxedTuple.this.tuple2_accessor_2_long[Double, X](X_TypeTag, tuple4);
+      val t6: Long = MiniboxedTuple.this.tuple2_accessor_2_long[Double, X](X$TypeTag, tuple4);
       ()
     }
   }

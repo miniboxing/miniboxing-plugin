@@ -11,54 +11,53 @@ package mbhashmap {
       val tup: (V, U) = new (V, U)(u, v);
       tup
     };
-    def builder_n_DD[U, V](U_TypeTag: Byte, V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V_TypeTag, x);
-      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U_TypeTag, x);
-      val tup: (V, U) = MiniboxedTuple.this.newTuple2_double_double[V, U](V_TypeTag, U_TypeTag, u, v);
+    def builder$n$DD[U, V](U$TypeTag: Byte, V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V$TypeTag, x);
+      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U$TypeTag, x);
+      val tup: (V, U) = MiniboxedTuple.this.newTuple2_double_double[V, U](V$TypeTag, U$TypeTag, u, v);
       tup
     };
-    def builder_n_DJ[U, V](U_TypeTag: Byte, V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V_TypeTag, x);
-      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U_TypeTag, x);
-      val tup: (V, U) = MiniboxedTuple.this.newTuple2_long_double[V, U](V_TypeTag, U_TypeTag, u, v);
+    def builder$n$DJ[U, V](U$TypeTag: Byte, V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V$TypeTag, x);
+      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U$TypeTag, x);
+      val tup: (V, U) = MiniboxedTuple.this.newTuple2_long_double[V, U](V$TypeTag, U$TypeTag, u, v);
       tup
     };
-    def builder_n_DL[U, V](U_TypeTag: Byte, x: (U, V)): (V, U) = {
+    def builder$n$DL[U, V](U$TypeTag: Byte, x: (U, V)): (V, U) = {
       val u: V = x._2();
-      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U_TypeTag, x);
-      val tup: (V, U) = new (V, U)(u, MiniboxConversionsDouble.this.minibox2box[U](v, U_TypeTag));
+      val v: Double = MiniboxedTuple.this.tuple2_accessor_1_double[U, V](U$TypeTag, x);
+      val tup: (V, U) = new (V, U)(u, MiniboxConversionsDouble.this.minibox2box[U](v, U$TypeTag));
       tup
     };
-    def builder_n_JD[U, V](U_TypeTag: Byte, V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V_TypeTag, x);
-      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U_TypeTag, x);
-      val tup: (V, U) = MiniboxedTuple.this.newTuple2_double_long[V, U](V_TypeTag, U_TypeTag, u, v);
+    def builder$n$JD[U, V](U$TypeTag: Byte, V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V$TypeTag, x);
+      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U$TypeTag, x);
+      val tup: (V, U) = MiniboxedTuple.this.newTuple2_double_long[V, U](V$TypeTag, U$TypeTag, u, v);
       tup
     };
-    def builder_n_JJ[U, V](U_TypeTag: Byte, V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V_TypeTag, x);
-      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U_TypeTag, x);
-      val tup: (V, U) = MiniboxedTuple.this.newTuple2_long_long[V, U](V_TypeTag, U_TypeTag, u, v);
+    def builder$n$JJ[U, V](U$TypeTag: Byte, V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V$TypeTag, x);
+      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U$TypeTag, x);
+      val tup: (V, U) = MiniboxedTuple.this.newTuple2_long_long[V, U](V$TypeTag, U$TypeTag, u, v);
       tup
     };
-    def builder_n_JL[U, V](U_TypeTag: Byte, x: (U, V)): (V, U) = {
+    def builder$n$JL[U, V](U$TypeTag: Byte, x: (U, V)): (V, U) = {
       val u: V = x._2();
-      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U_TypeTag, x);
-      val tup: (V, U) = new (V, U)(u, MiniboxConversionsLong.this.minibox2box[U](v, U_TypeTag));
+      val v: Long = MiniboxedTuple.this.tuple2_accessor_1_long[U, V](U$TypeTag, x);
+      val tup: (V, U) = new (V, U)(u, MiniboxConversionsLong.this.minibox2box[U](v, U$TypeTag));
       tup
     };
-    def builder_n_LD[U, V](V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V_TypeTag, x);
+    def builder$n$LD[U, V](V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Double = MiniboxedTuple.this.tuple2_accessor_2_double[U, V](V$TypeTag, x);
       val v: U = x._1();
-      val tup: (V, U) = new (V, U)(MiniboxConversionsDouble.this.minibox2box[V](u, V_TypeTag), v);
+      val tup: (V, U) = new (V, U)(MiniboxConversionsDouble.this.minibox2box[V](u, V$TypeTag), v);
       tup
     };
-    def builder_n_LJ[U, V](V_TypeTag: Byte, x: (U, V)): (V, U) = {
-      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V_TypeTag, x);
+    def builder$n$LJ[U, V](V$TypeTag: Byte, x: (U, V)): (V, U) = {
+      val u: Long = MiniboxedTuple.this.tuple2_accessor_2_long[U, V](V$TypeTag, x);
       val v: U = x._1();
-      val tup: (V, U) = new (V, U)(MiniboxConversionsLong.this.minibox2box[V](u, V_TypeTag), v);
+      val tup: (V, U) = new (V, U)(MiniboxConversionsLong.this.minibox2box[V](u, V$TypeTag), v);
       tup
     }
   }
 }
-

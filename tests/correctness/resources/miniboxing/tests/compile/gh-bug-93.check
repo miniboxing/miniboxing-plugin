@@ -7,7 +7,7 @@ package miniboxing.tests.compile.bug93 {
     };
     def bar(): Unit = {
       def baz[@miniboxed T](t: T): T = t;
-      def baz_n_J[T](T_TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
+      def baz$n$J[T](T$TypeTag: Byte, t: T @storage[Long]): T @storage[Long] = t;
       ()
     }
   }

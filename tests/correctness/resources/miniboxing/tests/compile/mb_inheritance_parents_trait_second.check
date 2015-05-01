@@ -1,45 +1,45 @@
 Specializing trait CC...
   // interface:
   abstract trait CC[T] extends Object {
+    def foo$J(val T$TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
     def foo(t: T): T
-    def foo_J(val T_TypeTag: Byte,t: T @storage[Long]): T @storage[Long]
   }
   // specialized class:
-  abstract trait CC_J[Tsp] extends CC[Tsp] {
+  abstract trait CC$J[Tsp] extends CC[Tsp] {
+    def foo$J(val T$TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method foo
     def foo(t: Tsp): Tsp                                                   // is a forwarder to the specialized member
-    def foo_J(val T_TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a specialized implementation of method foo
-    def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte // is a type tag
+    def miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(): Byte // is a type tag
   }
   // specialized class:
-  abstract trait CC_L[Tsp] extends CC[Tsp] {
+  abstract trait CC$L[Tsp] extends CC[Tsp] {
+    def foo$J(val T$TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
     def foo(t: Tsp): Tsp                                                   // is a specialized implementation of method foo
-    def foo_J(val T_TypeTag: Byte,t: Tsp @storage[Long]): Tsp @storage[Long] // is a forwarder to the specialized member
   }
 Specializing trait DD...
   // interface:
   abstract trait DD[T] extends CC[T] {
   }
   // specialized class:
-  abstract trait DD_J[Tsp] extends CC_J[Tsp] with DD[Tsp] {
-    def miniboxing|tests|compile|inheritance|traits|DD_J|T_TypeTag(): Byte // is a type tag
+  abstract trait DD$J[Tsp] extends CC$J[Tsp] with DD[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|DD$J|T$TypeTag(): Byte // is a type tag
   }
   // specialized class:
-  abstract trait DD_L[Tsp] extends CC_L[Tsp] with DD[Tsp] {
+  abstract trait DD$L[Tsp] extends CC$L[Tsp] with DD[Tsp] {
   }
 Specializing class EE...
   // interface:
   abstract trait EE[T] extends DD[T] {
   }
   // specialized class:
-  class EE_J[Tsp] extends DD_J[Tsp] with EE[Tsp] {
-    def <init>(val miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.traits.EE_J[Tsp] // is a specialized implementation of constructor EE
-    def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte // is the type tag of an inherited trait
-    def miniboxing|tests|compile|inheritance|traits|DD_J|T_TypeTag(): Byte // is the type tag of an inherited trait
-    private[this] val miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag: Byte // is a type tag
+  class EE$J[Tsp] extends DD$J[Tsp] with EE[Tsp] {
+    def <init>(val miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.traits.EE$J[Tsp] // is a specialized implementation of constructor EE
+    def miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(): Byte // is the type tag of an inherited trait
+    def miniboxing|tests|compile|inheritance|traits|DD$J|T$TypeTag(): Byte // is the type tag of an inherited trait
+    private[this] val miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag: Byte // is a type tag
   }
   // specialized class:
-  class EE_L[Tsp] extends DD_L[Tsp] with EE[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.traits.EE_L[Tsp]    // is a specialized implementation of constructor EE
+  class EE$L[Tsp] extends DD$L[Tsp] with EE[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.traits.EE$L[Tsp]    // is a specialized implementation of constructor EE
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -50,41 +50,41 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile.inheritance.traits {
   abstract trait CC[@miniboxed T] extends Object {
     def foo(t: T): T;
-    def foo_J(T_TypeTag: Byte, t: Long): Long
+    def foo$J(T$TypeTag: Byte, t: Long): Long
   };
-  abstract trait CC_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {
-    def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte;
-    def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](CC_J.this.foo_J(CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag())), CC_J.this.miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag());
-    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T_TypeTag)
+  abstract trait CC$J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(): Byte;
+    def foo(t: Tsp): Tsp = MiniboxConversions.this.minibox2box[Tsp](CC$J.this.foo$J(CC$J.this.miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(), MiniboxConversions.this.box2minibox_tt[Tsp](t, CC$J.this.miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag())), CC$J.this.miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag());
+    def foo$J(T$TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](scala.this.Predef.???(), T$TypeTag)
   };
-  abstract trait CC_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {
+  abstract trait CC$L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC[Tsp] {
     def foo(t: Tsp): Tsp = scala.this.Predef.???();
-    def foo_J(T_TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](CC_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T_TypeTag)), T_TypeTag)
+    def foo$J(T$TypeTag: Byte, t: Long): Long = MiniboxConversions.this.box2minibox_tt[Tsp](CC$L.this.foo(MiniboxConversions.this.minibox2box[Tsp](t, T$TypeTag)), T$TypeTag)
   };
   abstract trait DD[@miniboxed T] extends Object with miniboxing.tests.compile.inheritance.traits.CC[T];
-  abstract trait DD_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC_J[Tsp] with miniboxing.tests.compile.inheritance.traits.DD[Tsp] {
-    def miniboxing|tests|compile|inheritance|traits|DD_J|T_TypeTag(): Byte
+  abstract trait DD$J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC$J[Tsp] with miniboxing.tests.compile.inheritance.traits.DD[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|DD$J|T$TypeTag(): Byte
   };
-  abstract trait DD_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC_L[Tsp] with miniboxing.tests.compile.inheritance.traits.DD[Tsp];
+  abstract trait DD$L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.CC$L[Tsp] with miniboxing.tests.compile.inheritance.traits.DD[Tsp];
   abstract trait EE[@miniboxed T] extends Object with miniboxing.tests.compile.inheritance.traits.DD[T];
-  class EE_J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.DD_J[Tsp] with miniboxing.tests.compile.inheritance.traits.EE[Tsp] {
-    def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte = EE_J.this.miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag;
-    def miniboxing|tests|compile|inheritance|traits|DD_J|T_TypeTag(): Byte = EE_J.this.miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag;
-    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|inheritance|traits|EE_J|T_TypeTag: Byte): miniboxing.tests.compile.inheritance.traits.EE_J[Tsp] = {
-      EE_J.super.<init>();
+  class EE$J[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.DD$J[Tsp] with miniboxing.tests.compile.inheritance.traits.EE[Tsp] {
+    def miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(): Byte = EE$J.this.miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag;
+    def miniboxing|tests|compile|inheritance|traits|DD$J|T$TypeTag(): Byte = EE$J.this.miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag;
+    <paramaccessor> private[this] val miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|inheritance|traits|EE$J|T$TypeTag: Byte): miniboxing.tests.compile.inheritance.traits.EE$J[Tsp] = {
+      EE$J.super.<init>();
       ()
     }
   };
-  class EE_L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.DD_L[Tsp] with miniboxing.tests.compile.inheritance.traits.EE[Tsp] {
-    def <init>(): miniboxing.tests.compile.inheritance.traits.EE_L[Tsp] = {
-      EE_L.super.<init>();
+  class EE$L[Tsp] extends Object with miniboxing.tests.compile.inheritance.traits.DD$L[Tsp] with miniboxing.tests.compile.inheritance.traits.EE[Tsp] {
+    def <init>(): miniboxing.tests.compile.inheritance.traits.EE$L[Tsp] = {
+      EE$L.super.<init>();
       ()
     }
   };
-  class FF extends Object with miniboxing.tests.compile.inheritance.traits.DD_J[Int] {
-    def miniboxing|tests|compile|inheritance|traits|CC_J|T_TypeTag(): Byte = 5;
-    def miniboxing|tests|compile|inheritance|traits|DD_J|T_TypeTag(): Byte = 5;
+  class FF extends Object with miniboxing.tests.compile.inheritance.traits.DD$J[Int] {
+    def miniboxing|tests|compile|inheritance|traits|CC$J|T$TypeTag(): Byte = 5;
+    def miniboxing|tests|compile|inheritance|traits|DD$J|T$TypeTag(): Byte = 5;
     def <init>(): miniboxing.tests.compile.inheritance.traits.FF = {
       FF.super.<init>();
       ()

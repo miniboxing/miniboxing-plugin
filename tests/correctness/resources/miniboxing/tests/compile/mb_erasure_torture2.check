@@ -9,48 +9,48 @@ package miniboxing.tests.correctness.erasure.torture2 {
     <stable> <accessor> <paramaccessor> def a(): Array[T];
     def foo(c: Boolean): Any
   };
-  class A_J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag: Byte = _;
+  class A$J[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val a: Array[Tsp] = _;
-    <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A_J.this.a;
-    def <init>(miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag: Byte, a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A_J[Tsp] = {
-      A_J.super.<init>();
+    <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A$J.this.a;
+    def <init>(miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag: Byte, a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A$J[Tsp] = {
+      A$J.super.<init>();
       ()
     };
     def foo(c: Boolean): Any = {
       val x: Long = if (c)
-        MiniboxArray.this.mbarray_apply_minibox(A_J.this.a(), 0, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag)
+        MiniboxArray.this.mbarray_apply_minibox(A$J.this.a(), 0, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag)
       else
-        MiniboxArray.this.mbarray_apply_minibox(A_J.this.a(), 1, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag);
+        MiniboxArray.this.mbarray_apply_minibox(A$J.this.a(), 1, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag);
       val y: List[Tsp] = {
-        <synthetic> val x$2: Long = MiniboxArray.this.mbarray_apply_minibox(A_J.this.a(), 0, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag);
+        <synthetic> val x$2: Long = MiniboxArray.this.mbarray_apply_minibox(A$J.this.a(), 0, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag);
         {
-  <synthetic> val x$1: Long = MiniboxArray.this.mbarray_apply_minibox(A_J.this.a(), 1, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag);
-  immutable.this.Nil.::[Tsp](MiniboxConversions.this.minibox2box[Tsp](x$1, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag))
-}.::[Tsp](MiniboxConversions.this.minibox2box[Tsp](x$2, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag))
+  <synthetic> val x$1: Long = MiniboxArray.this.mbarray_apply_minibox(A$J.this.a(), 1, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag);
+  immutable.this.Nil.::[Tsp](MiniboxConversions.this.minibox2box[Tsp](x$1, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag))
+}.::[Tsp](MiniboxConversions.this.minibox2box[Tsp](x$2, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag))
       };
       if (c)
-        MiniboxConversions.this.minibox2box[Tsp](x, A_J.this.miniboxing|tests|correctness|erasure|torture2|A_J|T_TypeTag)
+        MiniboxConversions.this.minibox2box[Tsp](x, A$J.this.miniboxing|tests|correctness|erasure|torture2|A$J|T$TypeTag)
       else
         y
     }
   };
-  class A_L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
+  class A$L[Tsp] extends Object with miniboxing.tests.correctness.erasure.torture2.A[Tsp] {
     <paramaccessor> private[this] val a: Array[Tsp] = _;
-    <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A_L.this.a;
-    def <init>(a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A_L[Tsp] = {
-      A_L.super.<init>();
+    <stable> <accessor> <paramaccessor> def a(): Array[Tsp] = A$L.this.a;
+    def <init>(a: Array[Tsp]): miniboxing.tests.correctness.erasure.torture2.A$L[Tsp] = {
+      A$L.super.<init>();
       ()
     };
     def foo(c: Boolean): Any = {
       val x: Tsp = if (c)
-        A_L.this.a().apply(0)
+        A$L.this.a().apply(0)
       else
-        A_L.this.a().apply(1);
+        A$L.this.a().apply(1);
       val y: List[Tsp] = {
-        <synthetic> val x$2: Tsp = A_L.this.a().apply(0);
+        <synthetic> val x$2: Tsp = A$L.this.a().apply(0);
         {
-  <synthetic> val x$1: Tsp = A_L.this.a().apply(1);
+  <synthetic> val x$1: Tsp = A$L.this.a().apply(1);
   immutable.this.Nil.::[Tsp](x$1)
 }.::[Tsp](x$2)
       };

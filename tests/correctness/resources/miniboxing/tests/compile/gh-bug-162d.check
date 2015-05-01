@@ -11,26 +11,26 @@ package miniboxing.tests.compile.bug162d {
     }
   };
   abstract trait B[@miniboxed T] extends AnyRef;
-  class B_D[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B_D|T_TypeTag: Byte = _;
+  class B$D[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B$D|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Double = _;
-    def <init>(miniboxing|tests|compile|bug162d|B_D|T_TypeTag: Byte, t: Double): miniboxing.tests.compile.bug162d.B_D[Tsp] = {
-      B_D.super.<init>(3);
+    def <init>(miniboxing|tests|compile|bug162d|B$D|T$TypeTag: Byte, t: Double): miniboxing.tests.compile.bug162d.B$D[Tsp] = {
+      B$D.super.<init>(3);
       ()
     }
   };
-  class B_J[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B_J|T_TypeTag: Byte = _;
+  class B$J[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug162d|B$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val t: Long = _;
-    def <init>(miniboxing|tests|compile|bug162d|B_J|T_TypeTag: Byte, t: Long): miniboxing.tests.compile.bug162d.B_J[Tsp] = {
-      B_J.super.<init>(3);
+    def <init>(miniboxing|tests|compile|bug162d|B$J|T$TypeTag: Byte, t: Long): miniboxing.tests.compile.bug162d.B$J[Tsp] = {
+      B$J.super.<init>(3);
       ()
     }
   };
-  class B_L[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
+  class B$L[Tsp] extends miniboxing.tests.compile.bug162d.A with miniboxing.tests.compile.bug162d.B[Tsp] {
     <paramaccessor> private[this] val t: Tsp = _;
-    def <init>(t: Tsp): miniboxing.tests.compile.bug162d.B_L[Tsp] = {
-      B_L.super.<init>(3);
+    def <init>(t: Tsp): miniboxing.tests.compile.bug162d.B$L[Tsp] = {
+      B$L.super.<init>(3);
       ()
     }
   }

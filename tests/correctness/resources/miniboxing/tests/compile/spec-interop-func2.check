@@ -16,9 +16,9 @@ package miniboxing.tests.compile.spec.interop.functions2 {
         };
         MiniboxedFunctionBridge.this.function1_bridge[Int, Int]((new anonymous class $anon(): Int => Int))
       };
-      f1.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(4));
+      f1.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(4));
       val f2: miniboxing.runtime.MiniboxedFunction1[Int,Int] = Fuctions2.this.foo();
-      f2.apply_JJ(5, 5, MiniboxConversions.this.int2minibox(3));
+      f2.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(3));
       val fl: List[Int => Int] = immutable.this.List.apply[Int => Int](scala.this.Predef.wrapRefArray[Int => Int](Array[Int => Int]{f2.extractFunctionX()}));
       {
         fl.apply(0).apply(3);

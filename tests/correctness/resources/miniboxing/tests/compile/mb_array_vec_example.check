@@ -6,31 +6,31 @@ package respec {
   abstract trait Vec[@miniboxed T] extends Object {
     def size(): Int;
     def apply(i: Int): T;
-    def apply_D(T_TypeTag: Byte, i: Int): Double;
-    def apply_J(T_TypeTag: Byte, i: Int): Long;
+    def apply$D(T$TypeTag: Byte, i: Int): Double;
+    def apply$J(T$TypeTag: Byte, i: Int): Long;
     def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B];
-    def map_n_D[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B];
-    def map_n_J[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B]
+    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B];
+    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B]
   };
-  final class Vec_D[Tsp] extends Object with respec.Vec[Tsp] {
-    <paramaccessor> private[this] val respec|Vec_D|T_TypeTag: Byte = _;
+  final class Vec$D[Tsp] extends Object with respec.Vec[Tsp] {
+    <paramaccessor> private[this] val respec|Vec$D|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val elems: MbArray[Tsp] = _;
-    def <init>(respec|Vec_D|T_TypeTag: Byte, elems: MbArray[Tsp]): respec.Vec_D[Tsp] = {
-      Vec_D.super.<init>();
+    def <init>(respec|Vec$D|T$TypeTag: Byte, elems: MbArray[Tsp]): respec.Vec$D[Tsp] = {
+      Vec$D.super.<init>();
       ()
     };
-    def size(): Int = Vec_D.this.elems.length();
-    def apply(i: Int): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](Vec_D.this.apply_D(Vec_D.this.respec|Vec_D|T_TypeTag, i), Vec_D.this.respec|Vec_D|T_TypeTag);
-    def apply_D(T_TypeTag: Byte, i: Int): Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.elems, i, T_TypeTag);
-    def apply_J(T_TypeTag: Byte, i: Int): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long");
+    def size(): Int = Vec$D.this.elems.length();
+    def apply(i: Int): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](Vec$D.this.apply$D(Vec$D.this.respec|Vec$D|T$TypeTag, i), Vec$D.this.respec|Vec$D|T$TypeTag);
+    def apply$D(T$TypeTag: Byte, i: Int): Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.elems, i, T$TypeTag);
+    def apply$J(T$TypeTag: Byte, i: Int): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long");
     def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = scala.MbArray.empty[B](Vec_D.this.elems.length());
+      val a: MbArray[B] = scala.MbArray.empty[B](Vec$D.this.elems.length());
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_D.this.elems.length()))
+        if (i.<(Vec$D.this.elems.length()))
           {
             {
-              a.update(i, f.apply_DL(Vec_D.this.respec|Vec_D|T_TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.elems, i, Vec_D.this.respec|Vec_D|T_TypeTag)));
+              a.update(i, f.apply$DL(Vec$D.this.respec|Vec$D|T$TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.elems, i, Vec$D.this.respec|Vec$D|T$TypeTag)));
               i = i.+(1)
             };
             while$1()
@@ -38,16 +38,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_L[B](a)
+      new respec.Vec$L[B](a)
     };
-    def map_n_D[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec_D.this.elems.length(), B_TypeTag);
+    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$D.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_D.this.elems.length()))
+        if (i.<(Vec$D.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply_DD(Vec_D.this.respec|Vec_D|T_TypeTag, B_TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.elems, i, Vec_D.this.respec|Vec_D|T_TypeTag)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply$DD(Vec$D.this.respec|Vec$D|T$TypeTag, B$TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.elems, i, Vec$D.this.respec|Vec$D|T$TypeTag)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -55,16 +55,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_D[B](B_TypeTag, a)
+      new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map_n_J[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec_D.this.elems.length(), B_TypeTag);
+    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$D.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_D.this.elems.length()))
+        if (i.<(Vec$D.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply_DJ(Vec_D.this.respec|Vec_D|T_TypeTag, B_TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec_D.this.elems, i, Vec_D.this.respec|Vec_D|T_TypeTag)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply$DJ(Vec$D.this.respec|Vec$D|T$TypeTag, B$TypeTag, MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.elems, i, Vec$D.this.respec|Vec$D|T$TypeTag)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -72,28 +72,28 @@ package respec {
         else
           ()
       };
-      new respec.Vec_J[B](B_TypeTag, a)
+      new respec.Vec$J[B](B$TypeTag, a)
     }
   };
-  final class Vec_J[Tsp] extends Object with respec.Vec[Tsp] {
-    <paramaccessor> private[this] val respec|Vec_J|T_TypeTag: Byte = _;
+  final class Vec$J[Tsp] extends Object with respec.Vec[Tsp] {
+    <paramaccessor> private[this] val respec|Vec$J|T$TypeTag: Byte = _;
     <paramaccessor> private[this] val elems: MbArray[Tsp] = _;
-    def <init>(respec|Vec_J|T_TypeTag: Byte, elems: MbArray[Tsp]): respec.Vec_J[Tsp] = {
-      Vec_J.super.<init>();
+    def <init>(respec|Vec$J|T$TypeTag: Byte, elems: MbArray[Tsp]): respec.Vec$J[Tsp] = {
+      Vec$J.super.<init>();
       ()
     };
-    def size(): Int = Vec_J.this.elems.length();
-    def apply(i: Int): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](Vec_J.this.apply_J(Vec_J.this.respec|Vec_J|T_TypeTag, i), Vec_J.this.respec|Vec_J|T_TypeTag);
-    def apply_D(T_TypeTag: Byte, i: Int): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
-    def apply_J(T_TypeTag: Byte, i: Int): Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.elems, i, T_TypeTag);
+    def size(): Int = Vec$J.this.elems.length();
+    def apply(i: Int): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](Vec$J.this.apply$J(Vec$J.this.respec|Vec$J|T$TypeTag, i), Vec$J.this.respec|Vec$J|T$TypeTag);
+    def apply$D(T$TypeTag: Byte, i: Int): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
+    def apply$J(T$TypeTag: Byte, i: Int): Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.elems, i, T$TypeTag);
     def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = scala.MbArray.empty[B](Vec_J.this.elems.length());
+      val a: MbArray[B] = scala.MbArray.empty[B](Vec$J.this.elems.length());
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_J.this.elems.length()))
+        if (i.<(Vec$J.this.elems.length()))
           {
             {
-              a.update(i, f.apply_JL(Vec_J.this.respec|Vec_J|T_TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.elems, i, Vec_J.this.respec|Vec_J|T_TypeTag)));
+              a.update(i, f.apply$JL(Vec$J.this.respec|Vec$J|T$TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.elems, i, Vec$J.this.respec|Vec$J|T$TypeTag)));
               i = i.+(1)
             };
             while$1()
@@ -101,16 +101,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_L[B](a)
+      new respec.Vec$L[B](a)
     };
-    def map_n_D[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec_J.this.elems.length(), B_TypeTag);
+    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$J.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_J.this.elems.length()))
+        if (i.<(Vec$J.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply_JD(Vec_J.this.respec|Vec_J|T_TypeTag, B_TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.elems, i, Vec_J.this.respec|Vec_J|T_TypeTag)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply$JD(Vec$J.this.respec|Vec$J|T$TypeTag, B$TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.elems, i, Vec$J.this.respec|Vec$J|T$TypeTag)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -118,16 +118,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_D[B](B_TypeTag, a)
+      new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map_n_J[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec_J.this.elems.length(), B_TypeTag);
+    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$J.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_J.this.elems.length()))
+        if (i.<(Vec$J.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply_JJ(Vec_J.this.respec|Vec_J|T_TypeTag, B_TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec_J.this.elems, i, Vec_J.this.respec|Vec_J|T_TypeTag)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply$JJ(Vec$J.this.respec|Vec$J|T$TypeTag, B$TypeTag, MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.elems, i, Vec$J.this.respec|Vec$J|T$TypeTag)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -135,27 +135,27 @@ package respec {
         else
           ()
       };
-      new respec.Vec_J[B](B_TypeTag, a)
+      new respec.Vec$J[B](B$TypeTag, a)
     }
   };
-  final class Vec_L[Tsp] extends Object with respec.Vec[Tsp] {
+  final class Vec$L[Tsp] extends Object with respec.Vec[Tsp] {
     <paramaccessor> private[this] val elems: MbArray[Tsp] = _;
-    def <init>(elems: MbArray[Tsp]): respec.Vec_L[Tsp] = {
-      Vec_L.super.<init>();
+    def <init>(elems: MbArray[Tsp]): respec.Vec$L[Tsp] = {
+      Vec$L.super.<init>();
       ()
     };
-    def size(): Int = Vec_L.this.elems.length();
-    def apply(i: Int): Tsp = Vec_L.this.elems.apply(i);
-    def apply_D(T_TypeTag: Byte, i: Int): Double = MiniboxConversionsDouble.this.box2minibox_tt[Tsp](Vec_L.this.apply(i), T_TypeTag);
-    def apply_J(T_TypeTag: Byte, i: Int): Long = MiniboxConversionsLong.this.box2minibox_tt[Tsp](Vec_L.this.apply(i), T_TypeTag);
+    def size(): Int = Vec$L.this.elems.length();
+    def apply(i: Int): Tsp = Vec$L.this.elems.apply(i);
+    def apply$D(T$TypeTag: Byte, i: Int): Double = MiniboxConversionsDouble.this.box2minibox_tt[Tsp](Vec$L.this.apply(i), T$TypeTag);
+    def apply$J(T$TypeTag: Byte, i: Int): Long = MiniboxConversionsLong.this.box2minibox_tt[Tsp](Vec$L.this.apply(i), T$TypeTag);
     def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = scala.MbArray.empty[B](Vec_L.this.elems.length());
+      val a: MbArray[B] = scala.MbArray.empty[B](Vec$L.this.elems.length());
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_L.this.elems.length()))
+        if (i.<(Vec$L.this.elems.length()))
           {
             {
-              a.update(i, f.apply(Vec_L.this.elems.apply(i)));
+              a.update(i, f.apply(Vec$L.this.elems.apply(i)));
               i = i.+(1)
             };
             while$1()
@@ -163,16 +163,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_L[B](a)
+      new respec.Vec$L[B](a)
     };
-    def map_n_D[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec_L.this.elems.length(), B_TypeTag);
+    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$L.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_L.this.elems.length()))
+        if (i.<(Vec$L.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply_LD(B_TypeTag, Vec_L.this.elems.apply(i)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_D[B](a, i, f.apply$LD(B$TypeTag, Vec$L.this.elems.apply(i)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -180,16 +180,16 @@ package respec {
         else
           ()
       };
-      new respec.Vec_D[B](B_TypeTag, a)
+      new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map_n_J[B](B_TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
-      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec_L.this.elems.length(), B_TypeTag);
+    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+      val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$L.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
-        if (i.<(Vec_L.this.elems.length()))
+        if (i.<(Vec$L.this.elems.length()))
           {
             {
-              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply_LJ(B_TypeTag, Vec_L.this.elems.apply(i)), B_TypeTag);
+              MbArrayOpts.this.mbArray_update_J[B](a, i, f.apply$LJ(B$TypeTag, Vec$L.this.elems.apply(i)), B$TypeTag);
               i = i.+(1)
             };
             while$1()
@@ -197,7 +197,7 @@ package respec {
         else
           ()
       };
-      new respec.Vec_J[B](B_TypeTag, a)
+      new respec.Vec$J[B](B$TypeTag, a)
     }
   };
   object Vec extends Object {
@@ -205,9 +205,9 @@ package respec {
       Vec.super.<init>();
       ()
     };
-    def apply[@miniboxed A](elems: Array[A]): respec.Vec[A] = new respec.Vec_L[A](scala.MbArray.clone[A](elems));
-    def apply_n_D[A](A_TypeTag: Byte, elems: Array[A]): respec.Vec[A] = new respec.Vec_D[A](A_TypeTag, MbArrayOpts.this.mbArray_clone_D[A](elems, A_TypeTag));
-    def apply_n_J[A](A_TypeTag: Byte, elems: Array[A]): respec.Vec[A] = new respec.Vec_J[A](A_TypeTag, MbArrayOpts.this.mbArray_clone_J[A](elems, A_TypeTag))
+    def apply[@miniboxed A](elems: Array[A]): respec.Vec[A] = new respec.Vec$L[A](scala.MbArray.clone[A](elems));
+    def apply$n$D[A](A$TypeTag: Byte, elems: Array[A]): respec.Vec[A] = new respec.Vec$D[A](A$TypeTag, MbArrayOpts.this.mbArray_clone_D[A](elems, A$TypeTag));
+    def apply$n$J[A](A$TypeTag: Byte, elems: Array[A]): respec.Vec[A] = new respec.Vec$J[A](A$TypeTag, MbArrayOpts.this.mbArray_clone_J[A](elems, A$TypeTag))
   };
   object Test extends Object with App {
     def <init>(): respec.Test.type = {
@@ -220,17 +220,17 @@ package respec {
     <stable> <accessor> def rng(): scala.util.Random = Test.this.rng;
     private[this] val doubleData: Array[Double] = new Array[Double](Test.this.size());
     <stable> <accessor> def doubleData(): Array[Double] = Test.this.doubleData;
-    private[this] val doubleVec: respec.Vec[Double] = Vec.apply_n_D[Double](8, Test.this.doubleData());
+    private[this] val doubleVec: respec.Vec[Double] = Vec.apply$n$D[Double](8, Test.this.doubleData());
     <stable> <accessor> def doubleVec(): respec.Vec[Double] = Test.this.doubleVec;
     scala.this.Predef.println("benchmark");
-    Test.this.doubleVec().map_n_D[Double](8, {
-      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1_DD[Double,Double] with Serializable {
+    Test.this.doubleVec().map$n$D[Double](8, {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$DD[Double,Double] with Serializable {
         def <init>(): anonymous class $anon = {
           $anonfun.super.<init>(8, 8);
           ()
         };
-        final def apply(x: Double): Double = MiniboxConversionsDouble.this.minibox2double($anonfun.this.apply_DD(8, 8, MiniboxConversionsDouble.this.double2minibox(x)));
-        override def apply_DD(T1_TypeTag: Byte, R_TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(MiniboxConversionsDouble.this.minibox2double(t1).*(MiniboxConversionsDouble.this.minibox2double(t1)))
+        final def apply(x: Double): Double = MiniboxConversionsDouble.this.minibox2double($anonfun.this.apply$DD(8, 8, MiniboxConversionsDouble.this.double2minibox(x)));
+        override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(MiniboxConversionsDouble.this.minibox2double(t1).*(MiniboxConversionsDouble.this.minibox2double(t1)))
       };
       new anonymous class $anon()
     })

@@ -2,16 +2,16 @@ Specializing class Complex...
   // interface:
   abstract trait Complex[T] extends Product with Serializable {
     def canEqual(x$1: Any): Boolean
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$1$J[T](val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): T
     def copy$default$1[T](): T
-    def copy$default$1_J[T](val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): T
+    def copy$default$2$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$2$J[T](val T$TypeTag: Byte): T @storage[Long]
+    def copy$default$2$n$J[T](val T$TypeTag: Byte): T
     def copy$default$2[T](): T
-    def copy$default$2_J[T](val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$2_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): T @storage[Long]
-    def copy$default$2_n_J[T](val T_TypeTag: Byte): T
+    def copy$n$J[T](val T$TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T]
     def copy[T](t1: T,t2: T): miniboxing.tests.compile.Complex[T]
-    def copy_n_J[T](val T_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T]
     def productArity(): Int
     def productElement(x$1: Int): Any
     override def equals(x$1: Any): Boolean
@@ -19,24 +19,24 @@ Specializing class Complex...
     override def productIterator(): Iterator[Any]
     override def productPrefix(): String
     override def toString(): String
+    val t1$J(val T$TypeTag: Byte): T @storage[Long]
     val t1(): T
-    val t1_J(val T_TypeTag: Byte): T @storage[Long]
+    val t2$J(val T$TypeTag: Byte): T @storage[Long]
     val t2(): T
-    val t2_J(val T_TypeTag: Byte): T @storage[Long]
   }
   // specialized class:
-  case class Complex_J[Tsp] extends Product with Serializable with Complex[Tsp] {
-    def <init>(val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long]): miniboxing.tests.compile.Complex_J[Tsp] // is a specialized implementation of constructor Complex
+  case class Complex$J[Tsp] extends Product with Serializable with Complex[Tsp] {
+    def <init>(val miniboxing|tests|compile|Complex$J|T$TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long]): miniboxing.tests.compile.Complex$J[Tsp] // is a specialized implementation of constructor Complex
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
+    def copy$default$1$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$1
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
     def copy$default$1[T](): Tsp                                           // is a forwarder to the specialized member
-    def copy$default$1_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$1
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$1
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$default$2$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$2
+    def copy$default$2$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$2
+    def copy$default$2$n$J[T](val T$TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
     def copy$default$2[T](): Tsp                                           // is a forwarder to the specialized member
-    def copy$default$2_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a specialized implementation of method copy$default$2
-    def copy$default$2_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a specialized implementation of method copy$default$2
-    def copy$default$2_n_J[T](val T_TypeTag: Byte): Tsp                    // is a forwarder to the specialized member
+    def copy$n$J[T](val T$TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T] // is a specialized implementation of method copy
     def copy[T](t1: T,t2: T): miniboxing.tests.compile.Complex[T]          // is a specialized implementation of method copy
-    def copy_n_J[T](val T_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T] // is a specialized implementation of method copy
     def productArity(): Int                                                // is a specialized implementation of method productArity
     def productElement(x$1: Int): Any                                      // is a specialized implementation of method productElement
     override def equals(x$1: Any): Boolean                                 // is a specialized implementation of method equals
@@ -44,27 +44,27 @@ Specializing class Complex...
     override def productIterator(): Iterator[Any]                          // is a specialized implementation of method productIterator
     override def productPrefix(): String                                   // is a specialized implementation of method productPrefix
     override def toString(): String                                        // is a specialized implementation of method toString
-    private[this] val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte   // is a type tag
+    private[this] val miniboxing|tests|compile|Complex$J|T$TypeTag: Byte   // is a type tag
     private[this] val t1: Tsp @storage[Long]                               // is a specialized implementation of value t1
     private[this] val t2: Tsp @storage[Long]                               // is a specialized implementation of value t2
+    val t1$J(val T$TypeTag: Byte): Tsp @storage[Long]                      // is a setter or getter for value t1
     val t1(): Tsp                                                          // is a forwarder to the specialized member
-    val t1_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a setter or getter for value t1
+    val t2$J(val T$TypeTag: Byte): Tsp @storage[Long]                      // is a setter or getter for value t2
     val t2(): Tsp                                                          // is a forwarder to the specialized member
-    val t2_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a setter or getter for value t2
   }
   // specialized class:
-  case class Complex_L[Tsp] extends Product with Serializable with Complex[Tsp] {
-    def <init>(t1: Tsp,t2: Tsp): miniboxing.tests.compile.Complex_L[Tsp]   // is a specialized implementation of constructor Complex
+  case class Complex$L[Tsp] extends Product with Serializable with Complex[Tsp] {
+    def <init>(t1: Tsp,t2: Tsp): miniboxing.tests.compile.Complex$L[Tsp]   // is a specialized implementation of constructor Complex
+    def copy$default$1$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$1$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
+    def copy$default$1$n$J[T](val T$TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
     def copy$default$1[T](): Tsp                                           // is a specialized implementation of method copy$default$1
-    def copy$default$1_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
-    def copy$default$1_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$1_n_J[T](val T_TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$1
+    def copy$default$2$J$n$J[T](val T$TypeTag: Byte,val T$TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
+    def copy$default$2$J[T](val T$TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
+    def copy$default$2$n$J[T](val T$TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$2
     def copy$default$2[T](): Tsp                                           // is a specialized implementation of method copy$default$2
-    def copy$default$2_J[T](val T_TypeTag: Byte): Tsp @storage[Long]       // is a forwarder to the specialized member
-    def copy$default$2_J_n_J[T](val T_TypeTag: Byte,val T_TypeTag: Byte): Tsp @storage[Long] // is a forwarder to the specialized member
-    def copy$default$2_n_J[T](val T_TypeTag: Byte): Tsp                    // is a specialized implementation of method copy$default$2
+    def copy$n$J[T](val T$TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T] // is a specialized implementation of method copy
     def copy[T](t1: T,t2: T): miniboxing.tests.compile.Complex[T]          // is a specialized implementation of method copy
-    def copy_n_J[T](val T_TypeTag: Byte,t1: T @storage[Long],t2: T @storage[Long]): miniboxing.tests.compile.Complex[T] // is a specialized implementation of method copy
     def productArity(): Int                                                // is a specialized implementation of method productArity
     def productElement(x$1: Int): Any                                      // is a specialized implementation of method productElement
     override def equals(x$1: Any): Boolean                                 // is a specialized implementation of method equals
@@ -74,10 +74,10 @@ Specializing class Complex...
     override def toString(): String                                        // is a specialized implementation of method toString
     private[this] val t1: Tsp                                              // is a specialized implementation of value t1
     private[this] val t2: Tsp                                              // is a specialized implementation of value t2
+    val t1$J(val T$TypeTag: Byte): Tsp @storage[Long]                      // is a forwarder to the specialized member
     val t1(): Tsp                                                          // is a setter or getter for value t1
-    val t1_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a forwarder to the specialized member
+    val t2$J(val T$TypeTag: Byte): Tsp @storage[Long]                      // is a forwarder to the specialized member
     val t2(): Tsp                                                          // is a setter or getter for value t2
-    val t2_J(val T_TypeTag: Byte): Tsp @storage[Long]                      // is a forwarder to the specialized member
   }
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
@@ -88,19 +88,19 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.compile {
   abstract trait Complex[@miniboxed T] extends Object with Product with Serializable {
     <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): T;
-    <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long;
+    <stable> <caseaccessor> <accessor> def t1$J(T$TypeTag: Byte): Long;
     <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): T;
-    <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long;
+    <stable> <caseaccessor> <accessor> def t2$J(T$TypeTag: Byte): Long;
     <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T];
-    <synthetic> def copy_n_J[T](T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T];
+    <synthetic> def copy$n$J[T](T$TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T];
     <synthetic> def copy$default$1[@miniboxed T](): T;
-    <synthetic> def copy$default$1_n_J[T](T_TypeTag: Byte): T;
-    <synthetic> def copy$default$1_J[@miniboxed T](T_TypeTag: Byte): Long;
-    <synthetic> def copy$default$1_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long;
+    <synthetic> def copy$default$1$n$J[T](T$TypeTag: Byte): T;
+    <synthetic> def copy$default$1$J[@miniboxed T](T$TypeTag: Byte): Long;
+    <synthetic> def copy$default$1$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long;
     <synthetic> def copy$default$2[@miniboxed T](): T;
-    <synthetic> def copy$default$2_n_J[T](T_TypeTag: Byte): T;
-    <synthetic> def copy$default$2_J[@miniboxed T](T_TypeTag: Byte): Long;
-    <synthetic> def copy$default$2_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long;
+    <synthetic> def copy$default$2$n$J[T](T$TypeTag: Byte): T;
+    <synthetic> def copy$default$2$J[@miniboxed T](T$TypeTag: Byte): Long;
+    <synthetic> def copy$default$2$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long;
     override <synthetic> def productPrefix(): String;
     <synthetic> def productArity(): Int;
     <synthetic> def productElement(x$1: Int): Any;
@@ -110,42 +110,42 @@ package miniboxing.tests.compile {
     override <synthetic> def toString(): String;
     override <synthetic> def equals(x$1: Any): Boolean
   };
-  case class Complex_J[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|Complex_J|T_TypeTag: Byte = _;
+  case class Complex$J[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|Complex$J|T$TypeTag: Byte = _;
     <caseaccessor> <paramaccessor> private[this] val t1: Long = _;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t1_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long = Complex_J.this.t1;
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.t1$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <stable> <caseaccessor> <accessor> def t1$J(T$TypeTag: Byte): Long = Complex$J.this.t1;
     <caseaccessor> <paramaccessor> private[this] val t2: Long = _;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long = Complex_J.this.t2;
-    def <init>(miniboxing|tests|compile|Complex_J|T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex_J[Tsp] = {
-      Complex_J.super.<init>();
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.t2$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <stable> <caseaccessor> <accessor> def t2$J(T$TypeTag: Byte): Long = Complex$J.this.t2;
+    def <init>(miniboxing|tests|compile|Complex$J|T$TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex$J[Tsp] = {
+      Complex$J.super.<init>();
       ()
     };
-    <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    <synthetic> def copy_n_J[T](T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_J[T](T_TypeTag, t1, t2);
-    <synthetic> def copy$default$1[@miniboxed T](): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.copy$default$1_J[T](Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <synthetic> def copy$default$1_n_J[T](T_TypeTag: Byte): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.copy$default$1_J_n_J[T](T_TypeTag, Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <synthetic> def copy$default$1_J[@miniboxed T](T_TypeTag: Byte): Long = Complex_J.this.t1_J(T_TypeTag);
-    <synthetic> def copy$default$1_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long = Complex_J.this.t1_J(T_TypeTag);
-    <synthetic> def copy$default$2[@miniboxed T](): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.copy$default$2_J[T](Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <synthetic> def copy$default$2_n_J[T](T_TypeTag: Byte): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.copy$default$2_J_n_J[T](T_TypeTag, Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag);
-    <synthetic> def copy$default$2_J[@miniboxed T](T_TypeTag: Byte): Long = Complex_J.this.t2_J(T_TypeTag);
-    <synthetic> def copy$default$2_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long = Complex_J.this.t2_J(T_TypeTag);
+    <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$L[T](t1, t2);
+    <synthetic> def copy$n$J[T](T$TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$J[T](T$TypeTag, t1, t2);
+    <synthetic> def copy$default$1[@miniboxed T](): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.copy$default$1$J[T](Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <synthetic> def copy$default$1$n$J[T](T$TypeTag: Byte): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.copy$default$1$J$n$J[T](T$TypeTag, Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <synthetic> def copy$default$1$J[@miniboxed T](T$TypeTag: Byte): Long = Complex$J.this.t1$J(T$TypeTag);
+    <synthetic> def copy$default$1$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long = Complex$J.this.t1$J(T$TypeTag);
+    <synthetic> def copy$default$2[@miniboxed T](): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.copy$default$2$J[T](Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <synthetic> def copy$default$2$n$J[T](T$TypeTag: Byte): Tsp = MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.copy$default$2$J$n$J[T](T$TypeTag, Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag);
+    <synthetic> def copy$default$2$J[@miniboxed T](T$TypeTag: Byte): Long = Complex$J.this.t2$J(T$TypeTag);
+    <synthetic> def copy$default$2$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long = Complex$J.this.t2$J(T$TypeTag);
     override <synthetic> def productPrefix(): String = "Complex";
     <synthetic> def productArity(): Int = 2;
     <synthetic> def productElement(x$1: Int): Any = {
       case <synthetic> val x1: Int = x$1;
       x1 match {
-        case 0 => MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t1_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag)
-        case 1 => MiniboxConversions.this.minibox2box[Tsp](Complex_J.this.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag)
+        case 0 => MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.t1$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag)
+        case 1 => MiniboxConversions.this.minibox2box[Tsp](Complex$J.this.t2$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag)
         case _ => throw new IndexOutOfBoundsException(x$1.toString())
       }
     };
-    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](Complex_J.this);
-    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(Complex_J.this);
-    override <synthetic> def toString(): String = ScalaRunTime.this._toString(Complex_J.this);
-    override <synthetic> def equals(x$1: Any): Boolean = Complex_J.this.eq(x$1.asInstanceOf[Object]()).||({
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](Complex$J.this);
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(Complex$J.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(Complex$J.this);
+    override <synthetic> def equals(x$1: Any): Boolean = Complex$J.this.eq(x$1.asInstanceOf[Object]()).||({
   case <synthetic> val x1: Any = x$1;
   case5(){
     if (x1.isInstanceOf[miniboxing.tests.compile.Complex[Tsp]]())
@@ -161,44 +161,44 @@ package miniboxing.tests.compile {
   }
 }.&&({
       <synthetic> val Complex$1: miniboxing.tests.compile.Complex[Tsp] = x$1.asInstanceOf[miniboxing.tests.compile.Complex[Tsp]]();
-      MiniboxDispatch.this.mboxed_eqeq_notag(Complex_J.this.t1_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex$1.t1_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag)).&&(MiniboxDispatch.this.mboxed_eqeq_notag(Complex_J.this.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag), Complex$1.t2_J(Complex_J.this.miniboxing|tests|compile|Complex_J|T_TypeTag))).&&(Complex$1.canEqual(Complex_J.this))
+      MiniboxDispatch.this.mboxed_eqeq_notag(Complex$J.this.t1$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$1.t1$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag)).&&(MiniboxDispatch.this.mboxed_eqeq_notag(Complex$J.this.t2$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag), Complex$1.t2$J(Complex$J.this.miniboxing|tests|compile|Complex$J|T$TypeTag))).&&(Complex$1.canEqual(Complex$J.this))
     }))
   };
-  case class Complex_L[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
+  case class Complex$L[Tsp] extends Object with Product with Serializable with miniboxing.tests.compile.Complex[Tsp] {
     <caseaccessor> <paramaccessor> private[this] val t1: Tsp = _;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = Complex_L.this.t1;
-    <stable> <caseaccessor> <accessor> def t1_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.t1(), T_TypeTag);
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t1(): Tsp = Complex$L.this.t1;
+    <stable> <caseaccessor> <accessor> def t1$J(T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.t1(), T$TypeTag);
     <caseaccessor> <paramaccessor> private[this] val t2: Tsp = _;
-    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = Complex_L.this.t2;
-    <stable> <caseaccessor> <accessor> def t2_J(T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.t2(), T_TypeTag);
-    def <init>(t1: Tsp, t2: Tsp): miniboxing.tests.compile.Complex_L[Tsp] = {
-      Complex_L.super.<init>();
+    <stable> <caseaccessor> <accessor> <paramaccessor> def t2(): Tsp = Complex$L.this.t2;
+    <stable> <caseaccessor> <accessor> def t2$J(T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.t2(), T$TypeTag);
+    def <init>(t1: Tsp, t2: Tsp): miniboxing.tests.compile.Complex$L[Tsp] = {
+      Complex$L.super.<init>();
       ()
     };
-    <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    <synthetic> def copy_n_J[T](T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_J[T](T_TypeTag, t1, t2);
-    <synthetic> def copy$default$1[@miniboxed T](): Tsp = Complex_L.this.t1();
-    <synthetic> def copy$default$1_n_J[T](T_TypeTag: Byte): Tsp = Complex_L.this.t1();
-    <synthetic> def copy$default$1_J[@miniboxed T](T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.copy$default$1[T](), T_TypeTag);
-    <synthetic> def copy$default$1_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.copy$default$1_n_J[T](T_TypeTag), T_TypeTag);
-    <synthetic> def copy$default$2[@miniboxed T](): Tsp = Complex_L.this.t2();
-    <synthetic> def copy$default$2_n_J[T](T_TypeTag: Byte): Tsp = Complex_L.this.t2();
-    <synthetic> def copy$default$2_J[@miniboxed T](T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.copy$default$2[T](), T_TypeTag);
-    <synthetic> def copy$default$2_J_n_J[T](T_TypeTag: Byte, T_TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex_L.this.copy$default$2_n_J[T](T_TypeTag), T_TypeTag);
+    <synthetic> def copy[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$L[T](t1, t2);
+    <synthetic> def copy$n$J[T](T$TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$J[T](T$TypeTag, t1, t2);
+    <synthetic> def copy$default$1[@miniboxed T](): Tsp = Complex$L.this.t1();
+    <synthetic> def copy$default$1$n$J[T](T$TypeTag: Byte): Tsp = Complex$L.this.t1();
+    <synthetic> def copy$default$1$J[@miniboxed T](T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.copy$default$1[T](), T$TypeTag);
+    <synthetic> def copy$default$1$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.copy$default$1$n$J[T](T$TypeTag), T$TypeTag);
+    <synthetic> def copy$default$2[@miniboxed T](): Tsp = Complex$L.this.t2();
+    <synthetic> def copy$default$2$n$J[T](T$TypeTag: Byte): Tsp = Complex$L.this.t2();
+    <synthetic> def copy$default$2$J[@miniboxed T](T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.copy$default$2[T](), T$TypeTag);
+    <synthetic> def copy$default$2$J$n$J[T](T$TypeTag: Byte, T$TypeTag: Byte): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Complex$L.this.copy$default$2$n$J[T](T$TypeTag), T$TypeTag);
     override <synthetic> def productPrefix(): String = "Complex";
     <synthetic> def productArity(): Int = 2;
     <synthetic> def productElement(x$1: Int): Any = {
       case <synthetic> val x1: Int = x$1;
       x1 match {
-        case 0 => Complex_L.this.t1()
-        case 1 => Complex_L.this.t2()
+        case 0 => Complex$L.this.t1()
+        case 1 => Complex$L.this.t2()
         case _ => throw new IndexOutOfBoundsException(x$1.toString())
       }
     };
-    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](Complex_L.this);
-    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(Complex_L.this);
-    override <synthetic> def toString(): String = ScalaRunTime.this._toString(Complex_L.this);
-    override <synthetic> def equals(x$1: Any): Boolean = Complex_L.this.eq(x$1.asInstanceOf[Object]()).||({
+    override <synthetic> def productIterator(): Iterator[Any] = runtime.this.ScalaRunTime.typedProductIterator[Any](Complex$L.this);
+    override <synthetic> def hashCode(): Int = ScalaRunTime.this._hashCode(Complex$L.this);
+    override <synthetic> def toString(): String = ScalaRunTime.this._toString(Complex$L.this);
+    override <synthetic> def equals(x$1: Any): Boolean = Complex$L.this.eq(x$1.asInstanceOf[Object]()).||({
   case <synthetic> val x1: Any = x$1;
   case5(){
     if (x1.isInstanceOf[miniboxing.tests.compile.Complex[Tsp]]())
@@ -214,7 +214,7 @@ package miniboxing.tests.compile {
   }
 }.&&({
       <synthetic> val Complex$1: miniboxing.tests.compile.Complex[Tsp] = x$1.asInstanceOf[miniboxing.tests.compile.Complex[Tsp]]();
-      Complex_L.this.t1().==(Complex$1.t1()).&&(Complex_L.this.t2().==(Complex$1.t2())).&&(Complex$1.canEqual(Complex_L.this))
+      Complex$L.this.t1().==(Complex$1.t1()).&&(Complex$L.this.t2().==(Complex$1.t2())).&&(Complex$1.canEqual(Complex$L.this))
     }))
   };
   <synthetic> object Complex extends Object with Serializable {
@@ -223,16 +223,16 @@ package miniboxing.tests.compile {
       ()
     };
     final override <synthetic> def toString(): String = "Complex";
-    case <synthetic> def apply[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_L[T](t1, t2);
-    case <synthetic> def apply_n_J[T](T_TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex_J[T](T_TypeTag, t1, t2);
+    case <synthetic> def apply[@miniboxed T](t1: T, t2: T): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$L[T](t1, t2);
+    case <synthetic> def apply$n$J[T](T$TypeTag: Byte, t1: Long, t2: Long): miniboxing.tests.compile.Complex[T] = new miniboxing.tests.compile.Complex$J[T](T$TypeTag, t1, t2);
     case <synthetic> def unapply[@miniboxed T](x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
       scala.this.None
     else
       new Some[(T, T)](new (T, T)(x$0.t1(), x$0.t2()));
-    case <synthetic> def unapply_n_J[T](T_TypeTag: Byte, x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
+    case <synthetic> def unapply$n$J[T](T$TypeTag: Byte, x$0: miniboxing.tests.compile.Complex[T]): Option[(T, T)] = if (x$0.==(null))
       scala.this.None
     else
-      new Some[(T, T)](new (T, T)(MiniboxConversions.this.minibox2box[T](x$0.t1_J(T_TypeTag), T_TypeTag), MiniboxConversions.this.minibox2box[T](x$0.t2_J(T_TypeTag), T_TypeTag)));
+      new Some[(T, T)](new (T, T)(MiniboxConversions.this.minibox2box[T](x$0.t1$J(T$TypeTag), T$TypeTag), MiniboxConversions.this.minibox2box[T](x$0.t2$J(T$TypeTag), T$TypeTag)));
     <synthetic> private def readResolve(): Object = compile.this.Complex
   }
 }

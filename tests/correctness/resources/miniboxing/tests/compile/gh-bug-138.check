@@ -9,19 +9,19 @@ package miniboxing.tests.compile.bug138 {
       def apply(t: T): R = scala.this.Predef.???()
     };
     def foo(t: T): Unit;
-    def foo_D(T_TypeTag: Byte, t: T @storage[Double]): Unit;
-    def foo_J(T_TypeTag: Byte, t: T @storage[Long]): Unit
+    def foo$D(T$TypeTag: Byte, t: T @storage[Double]): Unit;
+    def foo$J(T$TypeTag: Byte, t: T @storage[Long]): Unit
   };
-  class Mb_D[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_D[Tsp] = {
-      Mb_D.super.<init>();
+  class Mb$D[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb$D|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb$D|T$TypeTag: Byte): miniboxing.tests.compile.bug138.Mb$D[Tsp] = {
+      Mb$D.super.<init>();
       ()
     };
-    def foo(t: Tsp): Unit = Mb_D.this.foo_D(Mb_D.this.miniboxing|tests|compile|bug138|Mb_D|T_TypeTag, t);
-    def foo_D(T_TypeTag: Byte, t: Tsp @storage[Double]): Unit = {
+    def foo(t: Tsp): Unit = Mb$D.this.foo$D(Mb$D.this.miniboxing|tests|compile|bug138|Mb$D|T$TypeTag, t);
+    def foo$D(T$TypeTag: Byte, t: Tsp @storage[Double]): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_D.this.Fun1[Tsp] {
+        class Fun2 extends Mb$D.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -29,25 +29,25 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_D.this.Fun1[Tsp] = f2;
+        val f1: Mb$D.this.Fun1[Tsp] = f2;
         scala.this.Predef.println(f2.apply(t));
         scala.this.Predef.println(f1.apply(t))
       };
       bar()
     };
-    def foo_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Unit = Mb_D.this.foo_D(T_TypeTag, t)
+    def foo$J(T$TypeTag: Byte, t: Tsp @storage[Long]): Unit = Mb$D.this.foo$D(T$TypeTag, t)
   };
-  class Mb_J[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_J[Tsp] = {
-      Mb_J.super.<init>();
+  class Mb$J[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb$J|T$TypeTag: Byte): miniboxing.tests.compile.bug138.Mb$J[Tsp] = {
+      Mb$J.super.<init>();
       ()
     };
-    def foo(t: Tsp): Unit = Mb_J.this.foo_J(Mb_J.this.miniboxing|tests|compile|bug138|Mb_J|T_TypeTag, t);
-    def foo_D(T_TypeTag: Byte, t: Tsp @storage[Double]): Unit = Mb_J.this.foo_J(T_TypeTag, t);
-    def foo_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Unit = {
+    def foo(t: Tsp): Unit = Mb$J.this.foo$J(Mb$J.this.miniboxing|tests|compile|bug138|Mb$J|T$TypeTag, t);
+    def foo$D(T$TypeTag: Byte, t: Tsp @storage[Double]): Unit = Mb$J.this.foo$J(T$TypeTag, t);
+    def foo$J(T$TypeTag: Byte, t: Tsp @storage[Long]): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_J.this.Fun1[Tsp] {
+        class Fun2 extends Mb$J.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -55,21 +55,21 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_J.this.Fun1[Tsp] = f2;
+        val f1: Mb$J.this.Fun1[Tsp] = f2;
         scala.this.Predef.println(f2.apply(t));
         scala.this.Predef.println(f1.apply(t))
       };
       bar()
     }
   };
-  class Mb_L[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    def <init>(): miniboxing.tests.compile.bug138.Mb_L[Tsp] = {
-      Mb_L.super.<init>();
+  class Mb$L[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    def <init>(): miniboxing.tests.compile.bug138.Mb$L[Tsp] = {
+      Mb$L.super.<init>();
       ()
     };
     def foo(t: Tsp): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_L.this.Fun1[Tsp] {
+        class Fun2 extends Mb$L.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -77,14 +77,14 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_L.this.Fun1[Tsp] = f2;
+        val f1: Mb$L.this.Fun1[Tsp] = f2;
         scala.this.Predef.println(f2.apply(t));
         scala.this.Predef.println(f1.apply(t))
       };
       bar()
     };
-    def foo_D(T_TypeTag: Byte, t: Tsp @storage[Double]): Unit = Mb_L.this.foo(t);
-    def foo_J(T_TypeTag: Byte, t: Tsp @storage[Long]): Unit = Mb_L.this.foo(t)
+    def foo$D(T$TypeTag: Byte, t: Tsp @storage[Double]): Unit = Mb$L.this.foo(t);
+    def foo$J(T$TypeTag: Byte, t: Tsp @storage[Long]): Unit = Mb$L.this.foo(t)
   };
   object Test extends Object {
     def <init>(): miniboxing.tests.compile.bug138.Test.type = {
@@ -92,9 +92,9 @@ package miniboxing.tests.compile.bug138 {
       ()
     };
     def main(args: Array[String]): Unit = {
-      new miniboxing.tests.compile.bug138.Mb_J[Int](5).foo_J(5, 4);
-      new miniboxing.tests.compile.bug138.Mb_L[String]().foo("x");
-      new miniboxing.tests.compile.bug138.Mb_D[Double](8).foo_D(8, 3.0)
+      new miniboxing.tests.compile.bug138.Mb$J[Int](5).foo$J(5, 4);
+      new miniboxing.tests.compile.bug138.Mb$L[String]().foo("x");
+      new miniboxing.tests.compile.bug138.Mb$D[Double](8).foo$D(8, 3.0)
     }
   }
 }
@@ -109,19 +109,19 @@ package miniboxing.tests.compile.bug138 {
       def apply(t: T): R = scala.this.Predef.???()
     };
     def foo(t: T): Unit;
-    def foo_D(T_TypeTag: Byte, t: Double): Unit;
-    def foo_J(T_TypeTag: Byte, t: Long): Unit
+    def foo$D(T$TypeTag: Byte, t: Double): Unit;
+    def foo$J(T$TypeTag: Byte, t: Long): Unit
   };
-  class Mb_D[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|bug138|Mb_D|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_D[Tsp] = {
-      Mb_D.super.<init>();
+  class Mb$D[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb$D|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb$D|T$TypeTag: Byte): miniboxing.tests.compile.bug138.Mb$D[Tsp] = {
+      Mb$D.super.<init>();
       ()
     };
-    def foo(t: Tsp): Unit = Mb_D.this.foo_D(Mb_D.this.miniboxing|tests|compile|bug138|Mb_D|T_TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Tsp](t, Mb_D.this.miniboxing|tests|compile|bug138|Mb_D|T_TypeTag));
-    def foo_D(T_TypeTag: Byte, t: Double): Unit = {
+    def foo(t: Tsp): Unit = Mb$D.this.foo$D(Mb$D.this.miniboxing|tests|compile|bug138|Mb$D|T$TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Tsp](t, Mb$D.this.miniboxing|tests|compile|bug138|Mb$D|T$TypeTag));
+    def foo$D(T$TypeTag: Byte, t: Double): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_D.this.Fun1[Tsp] {
+        class Fun2 extends Mb$D.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -129,25 +129,25 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_D.this.Fun1[Tsp] = f2;
-        scala.this.Predef.println(f2.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag)));
-        scala.this.Predef.println(f1.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag)))
+        val f1: Mb$D.this.Fun1[Tsp] = f2;
+        scala.this.Predef.println(f2.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T$TypeTag)));
+        scala.this.Predef.println(f1.apply(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T$TypeTag)))
       };
       bar()
     };
-    def foo_J(T_TypeTag: Byte, t: Long): Unit = Mb_D.this.foo_D(T_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double"))
+    def foo$J(T$TypeTag: Byte, t: Long): Unit = Mb$D.this.foo$D(T$TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double"))
   };
-  class Mb_J[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|compile|bug138|Mb_J|T_TypeTag: Byte): miniboxing.tests.compile.bug138.Mb_J[Tsp] = {
-      Mb_J.super.<init>();
+  class Mb$J[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|compile|bug138|Mb$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|compile|bug138|Mb$J|T$TypeTag: Byte): miniboxing.tests.compile.bug138.Mb$J[Tsp] = {
+      Mb$J.super.<init>();
       ()
     };
-    def foo(t: Tsp): Unit = Mb_J.this.foo_J(Mb_J.this.miniboxing|tests|compile|bug138|Mb_J|T_TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Tsp](t, Mb_J.this.miniboxing|tests|compile|bug138|Mb_J|T_TypeTag));
-    def foo_D(T_TypeTag: Byte, t: Double): Unit = Mb_J.this.foo_J(T_TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
-    def foo_J(T_TypeTag: Byte, t: Long): Unit = {
+    def foo(t: Tsp): Unit = Mb$J.this.foo$J(Mb$J.this.miniboxing|tests|compile|bug138|Mb$J|T$TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Tsp](t, Mb$J.this.miniboxing|tests|compile|bug138|Mb$J|T$TypeTag));
+    def foo$D(T$TypeTag: Byte, t: Double): Unit = Mb$J.this.foo$J(T$TypeTag, MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long"));
+    def foo$J(T$TypeTag: Byte, t: Long): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_J.this.Fun1[Tsp] {
+        class Fun2 extends Mb$J.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -155,21 +155,21 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_J.this.Fun1[Tsp] = f2;
-        scala.this.Predef.println(f2.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag)));
-        scala.this.Predef.println(f1.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag)))
+        val f1: Mb$J.this.Fun1[Tsp] = f2;
+        scala.this.Predef.println(f2.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T$TypeTag)));
+        scala.this.Predef.println(f1.apply(MiniboxConversionsLong.this.minibox2box[Tsp](t, T$TypeTag)))
       };
       bar()
     }
   };
-  class Mb_L[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
-    def <init>(): miniboxing.tests.compile.bug138.Mb_L[Tsp] = {
-      Mb_L.super.<init>();
+  class Mb$L[Tsp] extends Object with miniboxing.tests.compile.bug138.Mb[Tsp] {
+    def <init>(): miniboxing.tests.compile.bug138.Mb$L[Tsp] = {
+      Mb$L.super.<init>();
       ()
     };
     def foo(t: Tsp): Unit = {
       def bar(): Unit = {
-        class Fun2 extends Mb_L.this.Fun1[Tsp] {
+        class Fun2 extends Mb$L.this.Fun1[Tsp] {
           def <init>(): Fun2 = {
             Fun2.super.<init>();
             ()
@@ -177,14 +177,14 @@ package miniboxing.tests.compile.bug138 {
           override def apply(t: Tsp): Tsp = t
         };
         val f2: Fun2 = new Fun2();
-        val f1: Mb_L.this.Fun1[Tsp] = f2;
+        val f1: Mb$L.this.Fun1[Tsp] = f2;
         scala.this.Predef.println(f2.apply(t));
         scala.this.Predef.println(f1.apply(t))
       };
       bar()
     };
-    def foo_D(T_TypeTag: Byte, t: Double): Unit = Mb_L.this.foo(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T_TypeTag));
-    def foo_J(T_TypeTag: Byte, t: Long): Unit = Mb_L.this.foo(MiniboxConversionsLong.this.minibox2box[Tsp](t, T_TypeTag))
+    def foo$D(T$TypeTag: Byte, t: Double): Unit = Mb$L.this.foo(MiniboxConversionsDouble.this.minibox2box[Tsp](t, T$TypeTag));
+    def foo$J(T$TypeTag: Byte, t: Long): Unit = Mb$L.this.foo(MiniboxConversionsLong.this.minibox2box[Tsp](t, T$TypeTag))
   };
   object Test extends Object {
     def <init>(): miniboxing.tests.compile.bug138.Test.type = {
@@ -192,9 +192,9 @@ package miniboxing.tests.compile.bug138 {
       ()
     };
     def main(args: Array[String]): Unit = {
-      new miniboxing.tests.compile.bug138.Mb_J[Int](5).foo_J(5, MiniboxConversions.this.int2minibox(4));
-      new miniboxing.tests.compile.bug138.Mb_L[String]().foo("x");
-      new miniboxing.tests.compile.bug138.Mb_D[Double](8).foo_D(8, MiniboxConversionsDouble.this.double2minibox(3.0))
+      new miniboxing.tests.compile.bug138.Mb$J[Int](5).foo$J(5, MiniboxConversions.this.int2minibox(4));
+      new miniboxing.tests.compile.bug138.Mb$L[String]().foo("x");
+      new miniboxing.tests.compile.bug138.Mb$D[Double](8).foo$D(8, MiniboxConversionsDouble.this.double2minibox(3.0))
     }
   }
 }

@@ -10,25 +10,25 @@ Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow th
 package miniboxing.tests.correctness.erasure.torture8 {
   abstract trait A[@miniboxed T <: Int] extends Object {
     def foo(c: T, cond: Boolean): Any;
-    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Any
+    def foo$J(T$TypeTag: Byte, c: Long, cond: Boolean): Any
   };
-  class A_J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
-    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte = _;
-    def <init>(miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag: Byte): miniboxing.tests.correctness.erasure.torture8.A_J[Tsp] = {
-      A_J.super.<init>();
+  class A$J[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
+    <paramaccessor> private[this] val miniboxing|tests|correctness|erasure|torture8|A$J|T$TypeTag: Byte = _;
+    def <init>(miniboxing|tests|correctness|erasure|torture8|A$J|T$TypeTag: Byte): miniboxing.tests.correctness.erasure.torture8.A$J[Tsp] = {
+      A$J.super.<init>();
       ()
     };
-    def foo(c: Tsp, cond: Boolean): Any = A_J.this.foo_J(A_J.this.miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A_J.this.miniboxing|tests|correctness|erasure|torture8|A_J|T_TypeTag), cond);
-    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Any = {
+    def foo(c: Tsp, cond: Boolean): Any = A$J.this.foo$J(A$J.this.miniboxing|tests|correctness|erasure|torture8|A$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](c, A$J.this.miniboxing|tests|correctness|erasure|torture8|A$J|T$TypeTag), cond);
+    def foo$J(T$TypeTag: Byte, c: Long, cond: Boolean): Any = {
       scala.this.Predef.println("hello");
       c;
       scala.this.Predef.println("world");
-      MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag)
+      MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag)
     }
   };
-  class A_L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
-    def <init>(): miniboxing.tests.correctness.erasure.torture8.A_L[Tsp] = {
-      A_L.super.<init>();
+  class A$L[Tsp <: Int] extends Object with miniboxing.tests.correctness.erasure.torture8.A[Tsp] {
+    def <init>(): miniboxing.tests.correctness.erasure.torture8.A$L[Tsp] = {
+      A$L.super.<init>();
       ()
     };
     def foo(c: Tsp, cond: Boolean): Any = {
@@ -37,7 +37,7 @@ package miniboxing.tests.correctness.erasure.torture8 {
       scala.this.Predef.println("world");
       c
     };
-    def foo_J(T_TypeTag: Byte, c: Long, cond: Boolean): Any = A_L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T_TypeTag), cond)
+    def foo$J(T$TypeTag: Byte, c: Long, cond: Boolean): Any = A$L.this.foo(MiniboxConversions.this.minibox2box[Tsp](c, T$TypeTag), cond)
   }
 }
 [Now checking: minibox-commit]
