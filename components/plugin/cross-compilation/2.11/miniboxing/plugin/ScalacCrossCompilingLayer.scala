@@ -70,7 +70,3 @@ trait ScalacVersion {
   lazy val supportedMinor = 11
   lazy val supportedRevision = 6
 }
-
-object SupportedScalaVersion {
-  // Supported Scala version:
-}
