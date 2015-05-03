@@ -14,7 +14,7 @@ import sbtassembly.Plugin._
 import AssemblyKeys._
 import xerial.sbt.Sonatype._ 
 import SonatypeKeys._
-import scoverage._
+// import scoverage._
 
 object MiniboxingBuild extends Build {
 
@@ -47,21 +47,21 @@ object MiniboxingBuild extends Build {
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
         Some("releases"  at nexus + "service/local/staging/deploy/maven2")
-    },
+    }
 
     // scoverage:
-    ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := 
-      List(
-        "<empty>",
-        "scala\\..*",
-        "miniboxing\\.benchmarks\\..*",
-        "miniboxing\\.runtime\\..*",
-        "miniboxing\\.classloader\\..*",
-        "miniboxing\\.tools\\.asm\\.*",
-        "miniboxing\\.infrastructure\\..*"
-      ).mkString(";"),
+    // ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := 
+    //    List(
+    //     "<empty>",
+    //     "scala\\..*",
+    //     "miniboxing\\.benchmarks\\..*",
+    //     "miniboxing\\.runtime\\..*",
+    //     "miniboxing\\.classloader\\..*",
+    //     "miniboxing\\.tools\\.asm\\.*",
+    //     "miniboxing\\.infrastructure\\..*"
+    //   ).mkString(";"),
  
-    com.codacy.CodacyCoveragePlugin.autoImport.codacyProjectToken := sys.env.get("CODACY_REPO_CODE")
+    // com.codacy.CodacyCoveragePlugin.autoImport.codacyProjectToken := sys.env.get("CODACY_REPO_CODE")
   )
 
   val crossCompilationLayer = Seq(
@@ -197,13 +197,13 @@ object MiniboxingBuild extends Build {
         )
       } else {
         Seq(
-          "org.scala-lang.modules" %% "scala-partest" % "1.0.0",
+          "org.scala-lang.modules" %% "scala-partest" % "1.0.7",
           "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
         )
       }
-    ),
+    )
     // I want the ScalaTest library around:
-    libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4"
+    //libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.4"
   )
 
   val recursiveDeps = {
@@ -227,11 +227,11 @@ object MiniboxingBuild extends Build {
     }
   }
 
-  lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
+  lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin)
   lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps ++ recursiveDeps)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps ++ crossCompilationLayer) dependsOn(runtime)
-  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
-  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
-  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
-  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter ++ pluginCompilationDeps /* ++ runtimeDeps */) dependsOn (plugin, runtime)
+//  lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
+  lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime)
+//  lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
+//  lazy val lib_bench   = Project(id = "miniboxing-lib-bench",   base = file("tests/lib-bench"),        settings = defaults ++ nopublishDeps ++ scalaMeter ++ pluginCompilationDeps /* ++ runtimeDeps */) dependsOn (plugin, runtime)
 }

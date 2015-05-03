@@ -291,8 +291,8 @@ object VersionChecker {
              ", while the current Scala compiler version is " + actualVersion + ".")
       else if (actualRevision != supportedRevision)
         Some("The miniboxing plugin does not match the Scala revision. If you encounter errors, please use the " +
-             "Scala compiler version " + supportedVersion.scalaVersion + " or update the miniboxing plugin to a " +
-             "version which supports Scala " + actualVersion + ".")
+             "Scala compiler version " + supportedVersion.scalaVersion + " or switch to a version of the miniboxing " +
+             "plugin that supports Scala " + actualVersion + " (which you are using now).")
       else
         None
     } catch {
