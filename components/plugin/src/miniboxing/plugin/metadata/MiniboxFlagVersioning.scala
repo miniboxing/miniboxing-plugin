@@ -139,7 +139,7 @@ trait MiniboxFlagVersioning extends ScalacVersion {
   def refreshTypeHistory(): Unit = {
     // for 2.11, we need to reset flags for miniboxed stem classes, since the type transformer
     // will revisit them (https://github.com/scala/scala/commit/24a0777219d647ec310a0b6da305f619f69950cd)
-    if (scalaBinaryVersion == "2.11") { // TODO: Refine the condition, now it's too coarse
+    if (scalaVersionMinor >= 11) { // TODO: Refine the condition, now it's too coarse
       preMiniboxingFlags()
       for (stem <- metadata.allStemClasses)
         // force the updated info on the symbol

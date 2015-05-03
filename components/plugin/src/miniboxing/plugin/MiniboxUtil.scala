@@ -268,9 +268,9 @@ object VersionChecker {
   def versionMessage(): Option[String] = {
     try {
       val supportedVersion = new ScalacVersion {}
-      val supportedMajor = supportedVersion.supportedMajor
-      val supportedMinor = supportedVersion.supportedMinor
-      val supportedRevision = supportedVersion.supportedRevision
+      val supportedMajor = supportedVersion.scalaVersionMajor
+      val supportedMinor = supportedVersion.scalaVersionMinor
+      val supportedRevision = supportedVersion.scalaVersionRevision
 
       val actualVersion = scala.util.Properties.versionString.replaceAll("version ", "")
       val versionComponents = actualVersion.split("\\.")
