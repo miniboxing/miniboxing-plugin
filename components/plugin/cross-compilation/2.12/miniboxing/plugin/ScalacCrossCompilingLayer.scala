@@ -33,3 +33,10 @@ trait ScalacVersion {
   lazy val scalaVersion = "2.12.0-SNAPSHOT"
 }
 
+trait ScalacVersion {
+  lazy val scalaBinaryVersion = scalaVersionMajor + "." + scalaVersionMinor + ".0-M1" // just for M1
+  lazy val scalaVersion = scalaVersionMajor + "." + scalaVersionMinor + "." + scalaVersionRevision
+  lazy val scalaVersionMajor = 2
+  lazy val scalaVersionMinor = 12
+  lazy val scalaVersionRevision = 0
+}

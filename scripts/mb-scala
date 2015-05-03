@@ -10,11 +10,19 @@ then
   shift
 fi
 
+if [ "$1" == "-2.12" ]
+then
+  SCALA_VERSION=2.12.0-M1 # for now, M1
+  SCALA_PATH=$SCALA_PATH_212
+  shift
+fi
+
 if [ "$MINIBOXING_PATH" == "" ] 
 then 
   MINIBOXING_PATH="`dirname \"$0\"`"              # relative
   MINIBOXING_PATH="`( cd \"$MINIBOXING_PATH\" && pwd )`"  # absolutized and normalized
 fi
+
 if [ "$SCALA_PATH" == "" ] 
 then
   SCALA_PATH="`dirname $(which scalac)`"

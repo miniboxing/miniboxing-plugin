@@ -64,9 +64,9 @@ trait TweakedDuplicator extends Analyzer {
 }
 
 trait ScalacVersion {
-  lazy val scalaBinaryVersion = supportedMajor + "." + supportedMinor
-  lazy val scalaVersion = supportedMajor + "." + supportedMinor + "." + supportedRevision
-  lazy val supportedMajor = 2
-  lazy val supportedMinor = 11
-  lazy val supportedRevision = 6
+  lazy val scalaBinaryVersion = scalaVersionMajor + "." + scalaVersionMinor
+  lazy val scalaVersion = scalaVersionMajor + "." + scalaVersionMinor + "." + scalaVersionRevision
+  lazy val scalaVersionMajor = 2
+  lazy val scalaVersionMinor = 11
+  lazy val scalaVersionRevision = 6
 }
