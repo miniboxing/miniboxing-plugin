@@ -126,8 +126,8 @@ object MiniboxedNumeric {
   trait FloatAsIfMbIntegral extends FloatIsMbConflicted with MiniboxedIntegral[Float] {
     val extractNumeric: Numeric[Float] = Numeric.FloatAsIfIntegral
     val extractIntegral: Integral[Float] = Numeric.FloatAsIfIntegral
-    def quot(x: Float, y: Float): Float = (BigDecimal(x) / BigDecimal(y)).floatValue
-    def rem(x: Float, y: Float): Float = (BigDecimal(x) remainder BigDecimal(y)).floatValue
+    def quot(x: Float, y: Float): Float = (BigDecimal(x.toDouble) / BigDecimal(y.toDouble)).floatValue
+    def rem(x: Float, y: Float): Float = (BigDecimal(x.toDouble) remainder BigDecimal(y.toDouble)).floatValue
   }
   implicit object FloatIsMbFractional extends FloatIsMbFractional with MiniboxedOrdering.FloatMbOrdering
   object FloatAsIfMbIntegral extends FloatAsIfMbIntegral with MiniboxedOrdering.FloatMbOrdering 
