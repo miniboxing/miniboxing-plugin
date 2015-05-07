@@ -378,12 +378,6 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
           case If(Literal(Constant(cond: Boolean)), thenb, elseb) =>
             if (cond) thenb else elseb
 
-          case _ if (TypeClasses.contains(tree0.symbol)) =>
-            val targs  = tree0.tpe.dealiasWiden.typeArgs
-            assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)
-            suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol.tweakedToString + "[" + targs(0) + "]" + " to " + TypeClasses(tree0.symbol).tweakedToString + "[" + targs(0) + "] and benefit from miniboxing specialization. " , tree0.symbol.isGenericAnnotated)
-            super.transform(tree0)
-
           case _ =>
             super.transform(tree0)
         }
