@@ -1,0 +1,9 @@
+newSource1.scala:1: warning: Upgrade from class Numeric[Gsp] to class MiniboxedNumeric[Gsp] and benefit from miniboxing specialization.
+class X[@miniboxed G](implicit n: Numeric[G]) {}
+                               ^
+newSource1.scala:5: warning: Upgrade from class Numeric[T] to class MiniboxedNumeric[T] and benefit from miniboxing specialization.
+  def square[@miniboxed T](a:T, x: Int)(implicit n: Numeric[T]): T = {
+                                                    ^
+newSource1.scala:5: warning: Upgrade from class Numeric[T] to class MiniboxedNumeric[T] and benefit from miniboxing specialization.
+  def square[@miniboxed T](a:T, x: Int)(implicit n: Numeric[T]): T = {
+                                                 ^

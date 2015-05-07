@@ -299,7 +299,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             localTyper.typed(tree1)
 
           // Tuple accessor (both _1 and _2)
-           case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
+          case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
             val targs = tuple.tpe.widen.typeArgs
             assert(targs.length == numberOfTargsForTupleXClass(tuple.tpe.typeSymbol), "targs don't match for " + tree0 + ": " + targs)
             val targ = if (field == nme._1) targs(0) else targs(1)
@@ -377,6 +377,12 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
           // Warning: this may not be correct!
           case If(Literal(Constant(cond: Boolean)), thenb, elseb) =>
             if (cond) thenb else elseb
+
+          case _ if (TypeClasses.contains(tree0.symbol)) =>
+            val targs  = tree0.tpe.dealiasWiden.typeArgs
+            assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)
+            suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol.tweakedToString + "[" + targs(0) + "]" + " to " + TypeClasses(tree0.symbol).tweakedToString + "[" + targs(0) + "] and benefit from miniboxing specialization. " , tree0.symbol.isGenericAnnotated)
+            super.transform(tree0)
 
           case _ =>
             super.transform(tree0)
