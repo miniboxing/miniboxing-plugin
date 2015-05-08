@@ -13,30 +13,30 @@ class ImplicitIntegral[@miniboxed G](implicit n: Integral[G]) {}
 newSource1.scala:5: warning: Upgrade from trait Fractional[G] to class MiniboxedFractional[G] to benefit from miniboxing specialization.
 class ImplicitFractional[@miniboxed G](implicit n: Fractional[G]) {}
                                                    ^
-newSource1.scala:7: warning: Upgrade from trait Numeric[Z] to class MiniboxedNumeric[Z] to benefit from miniboxing specialization.
+newSource1.scala:13: warning: Upgrade from trait Numeric[Z] to class MiniboxedNumeric[Z] to benefit from miniboxing specialization.
 abstract class MyNumeric[@miniboxed Z] extends Numeric[Z] {}
                                                ^
-newSource1.scala:8: warning: Upgrade from trait Ordering[Z] to class MiniboxedOrdering[Z] to benefit from miniboxing specialization.
+newSource1.scala:14: warning: Upgrade from trait Ordering[Z] to class MiniboxedOrdering[Z] to benefit from miniboxing specialization.
 abstract class MyOrdering[@miniboxed Z] extends Ordering[Z] {}
                                                 ^
-newSource1.scala:9: warning: Upgrade from trait Ordered[Z] to class MiniboxedOrdered[Z] to benefit from miniboxing specialization.
+newSource1.scala:15: warning: Upgrade from trait Ordered[Z] to class MiniboxedOrdered[Z] to benefit from miniboxing specialization.
 abstract class MyOrdered[@miniboxed Z] extends Ordered[Z] {}
                                                ^
-newSource1.scala:10: warning: Upgrade from trait Integral[Z] to class MiniboxedIntegral[Z] to benefit from miniboxing specialization.
+newSource1.scala:16: warning: Upgrade from trait Integral[Z] to class MiniboxedIntegral[Z] to benefit from miniboxing specialization.
 abstract class MyIntegral[@miniboxed Z] extends Integral[Z] {}
                                                 ^
-newSource1.scala:11: warning: Upgrade from trait Fractional[Z] to class MiniboxedFractional[Z] to benefit from miniboxing specialization.
+newSource1.scala:17: warning: Upgrade from trait Fractional[Z] to class MiniboxedFractional[Z] to benefit from miniboxing specialization.
 abstract class MyFractional[@miniboxed Z] extends Fractional[Z] {}
                                                   ^
-newSource1.scala:15: warning: Upgrade from trait Numeric[T] to class MiniboxedNumeric[T] to benefit from miniboxing specialization.
+newSource1.scala:21: warning: Upgrade from trait Numeric[T] to class MiniboxedNumeric[T] to benefit from miniboxing specialization.
   def square1[@miniboxed T](a:T)(implicit n: Numeric[T]): T = {
                                              ^
-newSource1.scala:19: warning: Upgrade from trait Ordering[T] to class MiniboxedOrdering[T] to benefit from miniboxing specialization.
+newSource1.scala:25: warning: Upgrade from trait Ordering[T] to class MiniboxedOrdering[T] to benefit from miniboxing specialization.
   def less1[@miniboxed T](a:T, b: T)(implicit o: Ordering[T]): Boolean = {
                                                  ^
-newSource1.scala:23: warning: Upgrade from trait Integral[T] to class MiniboxedIntegral[T] to benefit from miniboxing specialization.
+newSource1.scala:29: warning: Upgrade from trait Integral[T] to class MiniboxedIntegral[T] to benefit from miniboxing specialization.
   def square2[@miniboxed T](a:T)(implicit n: Integral[T]): T = {
                                              ^
-newSource1.scala:27: warning: Upgrade from trait Fractional[T] to class MiniboxedFractional[T] to benefit from miniboxing specialization.
+newSource1.scala:33: warning: Upgrade from trait Fractional[T] to class MiniboxedFractional[T] to benefit from miniboxing specialization.
   def square3[@miniboxed T](a:T)(implicit n: Fractional[T]): T = {
                                              ^

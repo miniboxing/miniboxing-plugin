@@ -283,27 +283,6 @@ trait MiniboxDefinitions {
         )
     )
 
-  // Type classes
-
-  lazy val MiniboxedNumericClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedNumeric")
-  lazy val MiniboxedOrderingClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdering")
-  lazy val MiniboxedOrderedClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdered")
-  lazy val MiniboxedIntegralClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedIntegral")
-  lazy val MiniboxedFractionalClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedFractional")
-  lazy val NumericClass = global.rootMirror.getRequiredClass("scala.math.Numeric")
-  lazy val OrderingClass = global.rootMirror.getRequiredClass("scala.math.Ordering")
-  lazy val OrderedClass = global.rootMirror.getRequiredClass("scala.math.Ordered")
-  lazy val IntegralClass = global.rootMirror.getRequiredClass("scala.math.Integral")
-  lazy val FractionalClass = global.rootMirror.getRequiredClass("scala.math.Fractional")
-  lazy val TypeClasses: Map[Symbol, Symbol] =
-    Map (
-      NumericClass    -> MiniboxedNumericClass,
-      OrderingClass   -> MiniboxedOrderingClass,
-      OrderedClass    -> MiniboxedOrderedClass,
-      IntegralClass   -> MiniboxedIntegralClass,
-      FractionalClass -> MiniboxedFractionalClass
-    )
-
   // filled in from outside
   def flags: Flags
 }

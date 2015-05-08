@@ -4,6 +4,12 @@ class ImplicitOrdered[@miniboxed G](implicit n: Ordered[G]) {}
 class ImplicitIntegral[@miniboxed G](implicit n: Integral[G]) {}
 class ImplicitFractional[@miniboxed G](implicit n: Fractional[G]) {}
 
+class ImplicitNumeric1[G](implicit n: Numeric[G]) {}
+class ImplicitOrdering1[G](implicit n: Ordering[G]) {}
+class ImplicitOrdered1[G](implicit n: Ordered[G]) {}
+class ImplicitIntegral1[G](implicit n: Integral[G]) {}
+class ImplicitFractional1[G](implicit n: Fractional[G]) {}
+
 abstract class MyNumeric[@miniboxed Z] extends Numeric[Z] {}
 abstract class MyOrdering[@miniboxed Z] extends Ordering[Z] {}
 abstract class MyOrdered[@miniboxed Z] extends Ordered[Z] {}

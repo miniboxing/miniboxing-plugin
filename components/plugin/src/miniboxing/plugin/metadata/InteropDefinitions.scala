@@ -24,6 +24,7 @@ trait InteropDefinitions {
 
   lazy val mbFunctionClass = global.rootMirror.getRequiredClass("miniboxing.mbFunction")
   lazy val apiClass = global.rootMirror.getRequiredClass("scala.api")
+  lazy val MiniboxedClass = global.rootMirror.getRequiredClass("scala.miniboxed")
 
   lazy val Function0Class = global.definitions.FunctionClass(0)
   lazy val Function1Class = global.definitions.FunctionClass(1)
