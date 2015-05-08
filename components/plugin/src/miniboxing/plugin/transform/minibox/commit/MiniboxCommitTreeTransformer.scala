@@ -299,7 +299,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             localTyper.typed(tree1)
 
           // Tuple accessor (both _1 and _2)
-           case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
+          case BoxToMinibox(tree@Apply(Select(tuple, field), _), _, repr) if mbTuple_transform && tupleAccessorSymbols.contains(tree.symbol) && tupleFieldNames.contains(field) =>
             val targs = tuple.tpe.widen.typeArgs
             assert(targs.length == numberOfTargsForTupleXClass(tuple.tpe.typeSymbol), "targs don't match for " + tree0 + ": " + targs)
             val targ = if (field == nme._1) targs(0) else targs(1)

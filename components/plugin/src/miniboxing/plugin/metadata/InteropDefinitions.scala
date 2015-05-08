@@ -24,6 +24,7 @@ trait InteropDefinitions {
 
   lazy val mbFunctionClass = global.rootMirror.getRequiredClass("miniboxing.mbFunction")
   lazy val apiClass = global.rootMirror.getRequiredClass("scala.api")
+  lazy val MiniboxedClass = global.rootMirror.getRequiredClass("scala.miniboxed")
 
   lazy val Function0Class = global.definitions.FunctionClass(0)
   lazy val Function1Class = global.definitions.FunctionClass(1)
@@ -156,4 +157,25 @@ trait InteropDefinitions {
 
   lazy val nobridgeClass = global.rootMirror.getRequiredClass("miniboxing.runtime.nobridge")
   lazy val nobridgeTpe = nobridgeClass.tpe
+
+  // Type classes
+
+  lazy val MiniboxedNumericClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedNumeric")
+  lazy val MiniboxedOrderingClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdering")
+  lazy val MiniboxedOrderedClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdered")
+  lazy val MiniboxedIntegralClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedIntegral")
+  lazy val MiniboxedFractionalClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedFractional")
+  lazy val NumericClass = global.rootMirror.getRequiredClass("scala.math.Numeric")
+  lazy val OrderingClass = global.rootMirror.getRequiredClass("scala.math.Ordering")
+  lazy val OrderedClass = global.rootMirror.getRequiredClass("scala.math.Ordered")
+  lazy val IntegralClass = global.rootMirror.getRequiredClass("scala.math.Integral")
+  lazy val FractionalClass = global.rootMirror.getRequiredClass("scala.math.Fractional")
+  lazy val TypeClasses: Map[Symbol, Symbol] =
+    Map (
+      NumericClass    -> MiniboxedNumericClass,
+      OrderingClass   -> MiniboxedOrderingClass,
+      OrderedClass    -> MiniboxedOrderedClass,
+      IntegralClass   -> MiniboxedIntegralClass,
+      FractionalClass -> MiniboxedFractionalClass
+    )
 }
