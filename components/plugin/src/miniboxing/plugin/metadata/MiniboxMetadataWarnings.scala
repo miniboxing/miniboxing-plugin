@@ -22,10 +22,10 @@ trait MiniboxMetadataWarnings {
   import definitions._
 
   case class ForwardWarning(pos: Position, mboxedTypeParam: Symbol, nonMboxedType: Type) {
-		def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
-			(mboxedTypeParam, nonMboxedType) match {
-				case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
-					(p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
+    def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
+      (mboxedTypeParam, nonMboxedType) match {
+        case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
+	  (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
 
         case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
           mboxedTpars.get(tpar.deSkolemize) match {
@@ -45,14 +45,14 @@ trait MiniboxMetadataWarnings {
 
         case (p, tpe) =>
           (new ForwardWarningForNotSpecificEnoughTypeParam(p, tpe, pos)).warn()
-        (p, Boxed)
-			}
-		}
+          (p, Boxed)
+      }
+    }
   }
 
   case class BackwardWarning(pos: Position, nonMboxedTypeParam: Symbol, mboxedType: Type) {
-		def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
-			(nonMboxedTypeParam, mboxedType) match {
+    def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
+      (nonMboxedTypeParam, mboxedType) match {
         case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
           (new BackwardWarningForPrimitiveType(p, tpe, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
           (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
@@ -68,9 +68,9 @@ trait MiniboxMetadataWarnings {
           }
 
         case (p, tpe) =>
-					(p, Boxed)
+	  (p, Boxed)
       }
-		}
+    }
   }
 
   abstract class MiniboxWarning(p: Symbol, pos: Position, inLibrary: Boolean) {
