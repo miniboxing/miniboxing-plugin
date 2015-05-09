@@ -138,6 +138,7 @@ trait InteropCommitComponent extends
 trait MiniboxInjectComponent extends
     PluginComponent
     with MiniboxLogging
+    with MiniboxMetadataWarnings
     with MiniboxDefinitions
     with MbArrayDefinitions
     with MbReflectionDefinitions
