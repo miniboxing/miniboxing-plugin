@@ -128,37 +128,13 @@ trait MiniboxMetadataUtils {
 
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec: List[(Symbol, SpecInfo)] =
-        instantiation.map({ (pair: (Symbol, Type)) =>
-          val res: (Symbol, SpecInfo) =
-            (pair._1, pair._2.withoutAnnotations) match {
-
-              case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
-                (new BackwardWarningForPrimitiveType(p, tpe, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
-                (p, Miniboxed(valueClassRepresentation(tpe.typeSymbol)))
-
-              case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
-
-                mboxedTpars.get(tpar.deSkolemize) match {
-                  case Some(spec: SpecInfo) =>
-                    (new BackwardWarningForMiniboxedTypeParam(p, tpar, spec, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
-                    (p, spec)
-
-                  case None =>
-                    (new BackwardWarningForStemClass(p, tpar, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
-                    (new BackwardWarningForInnerClass(p, tpar, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
-                    (p, Boxed)
-                }
-
-              case (p, tpe) if tpe <:< AnyRefTpe =>
-
-                (p, Boxed)
-
-              case (p, tpe) =>
-
-                (new ForwardWarningForNotSpecificEnoughTypeParam(p, tpe, pos)).warn()
-              (p, Boxed)
-            }
-          res
+        instantiation.map({ (pair): (Symbol, Type) =>
+          val p = pair._1
+          val tpe = pair._2.withoutAnnotations
+          if (metadata.miniboxedTParamFlag(p))
+            (new ForwardWarning(pos, p, tpe)).warnAndGetSpecInfo(mboxedTpars)
+          else
+            (new BackwardWarning(pos, p, tpe)).warnAndGetSpecInfo(mboxedTpars)
       })
       spec.toMap
     }

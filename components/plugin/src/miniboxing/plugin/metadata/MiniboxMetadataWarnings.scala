@@ -21,6 +21,58 @@ trait MiniboxMetadataWarnings {
   import global._
   import definitions._
 
+  case class ForwardWarning(pos: Position, mboxedTypeParam: Symbol, nonMboxedType: Type) {
+		def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
+			(mboxedTypeParam, nonMboxedType) match {
+				case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
+					(p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
+
+        case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
+          mboxedTpars.get(tpar.deSkolemize) match {
+            case Some(spec: SpecInfo) =>
+              (p, spec)
+
+            case None =>
+              if (metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod)
+								(new ForwardWarningForStemClass(p, tpar, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
+              else
+								(new ForwardWarningForInnerClass(p, tpar, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
+              (p, Boxed)
+          }
+
+        case (p, tpe) if tpe <:< AnyRefTpe =>
+          (p, Boxed)
+
+        case (p, tpe) =>
+          (new ForwardWarningForNotSpecificEnoughTypeParam(p, tpe, pos)).warn()
+        (p, Boxed)
+			}
+		}
+  }
+
+  case class BackwardWarning(pos: Position, nonMboxedTypeParam: Symbol, mboxedType: Type) {
+		def warnAndGetSpecInfo(mboxedTpars: Map[Symbol, SpecInfo]): (Symbol, SpecInfo) = {
+			(nonMboxedTypeParam, mboxedType) match {
+        case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
+          (new BackwardWarningForPrimitiveType(p, tpe, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
+          (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
+
+        case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
+          mboxedTpars.get(tpar.deSkolemize) match {
+            case Some(spec: SpecInfo) =>
+              (new BackwardWarningForMiniboxedTypeParam(p, tpar, spec, pos, inLibrary = !common.isCompiledInCurrentBatch(p))).warn()
+              (p, spec)
+
+            case None =>
+              (p, Boxed)
+          }
+
+        case (p, tpe) =>
+					(p, Boxed)
+      }
+		}
+  }
+
   abstract class MiniboxWarning(p: Symbol, pos: Position, inLibrary: Boolean) {
 
     def msg(): String
@@ -56,14 +108,12 @@ trait MiniboxMetadataWarnings {
     }
   }
 
-
   class BackwardWarningForPrimitiveType(p: Symbol, tpe: Type, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {
 
     override def msg: String = s"The ${p.owner.tweakedFullString} would benefit from miniboxing type " +
                                s"parameter ${p.nameString}, since it is instantiated by a primitive type."
 
     override def shouldWarn(): Boolean = {
-      !metadata.miniboxedTParamFlag(p) &&
       !isUselessWarning(p.owner) &&
       !isOwnerArray(p, tpe, pos) &&
       !isSpecialized(p, pos, inLibrary)
@@ -78,7 +128,6 @@ trait MiniboxMetadataWarnings {
 				                       s"${metadata.getStem(tpar.owner).tweakedToString}."
 
     override def shouldWarn(): Boolean = {
-      !metadata.miniboxedTParamFlag(p) &&
       spec != Boxed &&
       !isUselessWarning(p.owner) &&
       !isOwnerArray(p, tpar.tpe, pos) &&
@@ -86,18 +135,16 @@ trait MiniboxMetadataWarnings {
     }
   }
 
-  class BackwardWarningForStemClass(p: Symbol, tpar: Symbol, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {
+  class ForwardWarningForStemClass(p: Symbol, tpar: Symbol, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {
 
     override def msg: String = "The following code could benefit from miniboxing specialization (the reason was explained before)."
 
     override def shouldWarn(): Boolean = {
-      metadata.miniboxedTParamFlag(tpar.deSkolemize) &&
-      metadata.isClassStem(tpar.deSkolemize.owner) &&
-      !p.isMbArrayMethod
+			!isUselessWarning(p.owner)
     }
   }
 
-  class BackwardWarningForInnerClass(p: Symbol, tpar: Symbol, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {
+  class ForwardWarningForInnerClass(p: Symbol, tpar: Symbol, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {
 
     override def msg: String = s"The following code could benefit from miniboxing specialization " +
                                s"if the type parameter ${tpar.name} of ${tpar.owner.tweakedToString} " +
@@ -105,8 +152,6 @@ trait MiniboxMetadataWarnings {
                                s"instantiate miniboxed type parameter ${p.name} of ${p.owner.tweakedToString})"
 
     override def shouldWarn(): Boolean = {
-      !(metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod) &&
-      metadata.miniboxedTParamFlag(p) &&
       !isUselessWarning(p.owner) &&
       !isSpecialized(p, pos, inLibrary)
     }
@@ -121,7 +166,6 @@ trait MiniboxMetadataWarnings {
                                s"specialization:"
 
     override def shouldWarn(): Boolean = {
-      metadata.miniboxedTParamFlag(p) &&
       !isUselessWarning(p.owner) &&
       !isSpecialized(p, pos, inLibrary)
     }
