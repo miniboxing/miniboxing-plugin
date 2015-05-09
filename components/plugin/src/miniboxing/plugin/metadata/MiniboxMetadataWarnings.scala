@@ -129,7 +129,9 @@ trait MiniboxMetadataWarnings {
 
   class UseMbArrayInsteadOfArrayWarning(p: Symbol, tpe: Type, pos: Position, inLibrary: Boolean = false) extends MiniboxWarning(p, pos, inLibrary) {
 
-    override def msg: String = "Use MbArray instead of Array and benefit from miniboxing specialization"
+    override def msg: String = "Use MbArray instead of Array and benefit from miniboxing specialization. " +
+															 "For more details about MbArrays, please check the following link: " +
+															 "http://scala-miniboxing.org/arrays.html"
 
     override def shouldWarn(): Boolean = {
       flags.flag_warn_mbarrays &&

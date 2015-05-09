@@ -1,4 +1,4 @@
-newSource1.scala:24: warning: Use MbArray instead of Array and benefit from miniboxing specialization
+newSource1.scala:24: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
   val doubleData: Array[Double] = new Array[Double](size)
                                   ^
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
