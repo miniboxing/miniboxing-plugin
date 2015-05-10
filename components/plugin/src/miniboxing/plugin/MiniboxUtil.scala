@@ -263,6 +263,28 @@ trait TweakErasureComponent extends
   def flags = common /* common contains the flags as well */
 }
 
+/** Adds @compileTimeOnly annotation to all classes with @miniboxed type parameters */
+trait CompileTimeOnlyAddTagsComponent extends
+    PluginComponent
+    with MiniboxCompileTimeOnlyAddTags
+    with MiniboxDefinitions
+    with ScalacCrossCompilingLayer {
+
+  val common: CommonDefinitions { val global: CompileTimeOnlyAddTagsComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
+}
+
+/** Removes @compileTimeOnly annotation added in CompileTimeOnlyAddTagsPhase */
+trait CompileTimeOnlyRemoveTagsComponent extends
+    PluginComponent
+    with MiniboxCompileTimeOnlyRemoveTags
+    with MiniboxDefinitions
+    with ScalacCrossCompilingLayer {
+
+  val common: CommonDefinitions { val global: CompileTimeOnlyRemoveTagsComponent.this.global.type }
+  def flags = common /* common contains the flags as well */
+}
+
 
 object VersionChecker {
 

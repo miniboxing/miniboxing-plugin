@@ -1,0 +1,4 @@
+newSource1.scala:5: error: Reference to class C in package bug185 should not have survived past type checking,
+it should have been processed and eliminated during expansion of an enclosing macro.
+    val c = new C[Int] // unless the miniboxing plugin is attached, this is incorrect bytecode
+                ^
