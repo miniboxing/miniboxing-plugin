@@ -101,7 +101,12 @@ class TestSuite extends ScalacVersion {
 
       // source code:
       val code = File(source).slurp
-      val flags = pluginFlag + " " + slurp(replaceExtension(source, "flags"))
+      // just add -no-plugin to your file's name (before the .scala or .repl extension
+      // and it will be compiled without the miniboxing plugin
+      // also, if you want to refer to a miniboxed class, you can refer to MiniboxedFunctionX
+      // and the other classes in the miniboxing runtime :)
+      val pluginFlagOpt = if (source.getName().contains("-no-plugin")) "" else pluginFlag
+      val flags = pluginFlagOpt + " " + slurp(replaceExtension(source, "flags"))
       val check_file = if (!isRepl) replaceExtension(source, "check") else source
       var expect = if (!isRepl) slurp(check_file) else code
       val launch_file = replaceExtension(source, "launch")
