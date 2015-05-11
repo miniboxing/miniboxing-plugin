@@ -1,0 +1,9 @@
+[[syntax trees at end of                specialize]] // newSource1.scala
+package <empty> {
+  class C[@miniboxed T] extends Object {
+    def <init>(): C[T] = {
+      C.super.<init>();
+      ()
+    }
+  }
+}
