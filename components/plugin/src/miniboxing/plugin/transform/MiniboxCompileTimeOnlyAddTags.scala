@@ -15,6 +15,7 @@ package transform
 package hijack
 
 import scala.tools.nsc.transform.InfoTransform
+import scala.collection.immutable.ListMap
 
 trait MiniboxCompileTimeOnlyAddTags extends InfoTransform {
   this: CompileTimeOnlyAddTagsComponent =>
@@ -25,7 +26,7 @@ trait MiniboxCompileTimeOnlyAddTags extends InfoTransform {
 
   def transformInfo(sym: Symbol, tpe: Type): Type = {
     if (sym.isTypeParameter && sym.owner.isClass && currentRun.compiles(sym) && sym.hasAnnotation(MinispecClass)) {
-      sym.owner.addAnnotation(CompileTimeOnlyClass)
+      sym.owner.withAnnotations(List(Annotation.apply(CompileTimeOnlyClass.tpe, List(Literal(Constant("use the miniboxing plugin!"))), ListMap.empty)))
     }
     tpe
   }

@@ -1,0 +1,4 @@
+newSource1.scala:5: error: use the miniboxing plugin!
+    val c = new C[Int]
+                ^
+                
