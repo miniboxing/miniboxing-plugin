@@ -80,6 +80,7 @@ class TestSuite extends ScalacVersion {
     }
 
   @Test def testCompileOutput() = {
+    val run_id = Math.abs(scala.util.Random.nextLong())
     var failed = false
     var totalTests = 0
     var failedTests = 0
@@ -118,7 +119,8 @@ class TestSuite extends ScalacVersion {
             val code_only = code.lines.filter(_ startsWith prompt).map(_ drop prompt.length).mkString("\n")
             new ReplTest(code_only, flags).replOutput()
           case false =>
-            new CompileTest(code, flags, launch).compilationOutput()
+            val file_id = source.getName().replaceAll("\\+[0-9]*(\\-no\\-plugin)?\\.scala$", "").hashCode()
+            new CompileTest(math.abs(file_id), run_id, code, flags, launch).compilationOutput()
         }
       for ((regex, replace) <- scalaPrinterCompatibility) {
         output = output.replaceAll(regex, replace)

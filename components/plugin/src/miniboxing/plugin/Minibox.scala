@@ -468,8 +468,19 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(HijackPhaseName)
     val phaseName = CompileTimeOnlyAddTagsPhaseName
 
+    var addCompileOnlyPhase: Phase = _
+
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      addCompileOnlyPhase = new Phase(prev)
+      addCompileOnlyPhase
+    }
+
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-      override def transform(tree: Tree) = tree
+      override def transform(tree: Tree) = {
+        if (tree.hasSymbolField)
+          afterAddCompileOnly(tree.symbol.info)
+        super.transform(tree)
+      }
     }
   }
 
@@ -481,8 +492,20 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     override val runsRightAfter = Some(PicklerPhaseName)
     val phaseName = CompileTimeOnlyRemoveTagsPhaseName
 
+
+    var removeCompileOnlyPhase: Phase = _
+
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      removeCompileOnlyPhase = new Phase(prev)
+      removeCompileOnlyPhase
+    }
+
     override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
-      override def transform(tree: Tree) = tree
+      override def transform(tree: Tree) = {
+        if (tree.hasSymbolField)
+          afterRemoveCompileOnly(tree.symbol.info)
+        super.transform(tree)
+      }
     }
   }
 }

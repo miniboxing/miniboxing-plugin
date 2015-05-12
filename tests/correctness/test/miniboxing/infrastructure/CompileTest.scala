@@ -13,26 +13,21 @@ import java.net.URLClassLoader
  * Using the Partest tool in Scala:
  * [[https://github.com/scala/scala/blob/master/src/partest/scala/tools/partest/DirectTest.scala]]
  */
-class CompileTest(val code: String, flags: String, launch: String) extends DirectTest {
+class CompileTest(val file_id: Int, val run_id: Long, val code: String, flags: String, launch: String) extends DirectTest {
 
   lazy val jfile = {
     var root: JFile = null
-    while (root == null) {
-      val rand = scala.util.Random.nextLong()
-      val rand_pos = if (rand < 0) -rand else rand
-      val path = System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + rand_pos
-      root = new JFile(path)
-      if (root.exists() && root.isDirectory())
-        root = null
-    }
-    root.mkdirs()
-    //root.deleteOnExit()
+    val dir_suffix = file_id + "_" + run_id
+    val path = System.getProperty("java.io.tmpdir") + "/" + "miniboxing-" + dir_suffix
+    root = new JFile(path)
+    if (!root.exists())
+      root.mkdirs()
     root
   }
   override lazy val testPath = File(jfile)
   override lazy val testOutput = Directory(jfile)
 
-  override def extraSettings = flags
+  override def extraSettings = flags.trim() + " -classpath " + testOutput.path
 
   def show() = compilationOutput()
   def compilationOutput(): String = {
