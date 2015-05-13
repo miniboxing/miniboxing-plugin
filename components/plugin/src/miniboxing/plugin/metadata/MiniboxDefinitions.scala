@@ -18,7 +18,7 @@ import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
 import miniboxing.runtime.MiniboxConstants._
 
-trait MiniboxDefinitions {
+trait MiniboxDefinitions extends ScalacVersion {
   this: PluginComponent =>
 
   import global._
@@ -66,7 +66,13 @@ trait MiniboxDefinitions {
 
   lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
 
-  lazy val CompileTimeOnlyClass = rootMirror.getRequiredClass("scala.annotation.compileTimeOnly")
+  lazy val CompileTimeOnlyClass =
+    if (scalaVersionMinor == 10)
+      // see https://github.com/scala/scala/blob/2.10.x/src/reflect/scala/reflect/internal/annotations/compileTimeOnly.scala
+      rootMirror.getRequiredClass("scala.reflect.internal.annotations.compileTimeOnly")
+    else
+      // see https://github.com/scala/scala/blob/2.11.x/src/library/scala/annotation/compileTimeOnly.scala
+      rootMirror.getRequiredClass("scala.annotation.compileTimeOnly")
 
 //  lazy val MangledNameClass = {
 //    val AnnotationName = "scala.annotation.Annotation"

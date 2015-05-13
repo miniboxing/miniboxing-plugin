@@ -1,3 +1,6 @@
-newSource1.scala:5: error: use the miniboxing plugin!
+newSource1.scala:6: error: use the miniboxing plugin!
     val c = new C[Int]
-                ^
+            ^
+newSource1.scala:7: error: use the miniboxing plugin!
+    object O extends C[String]
+                     ^

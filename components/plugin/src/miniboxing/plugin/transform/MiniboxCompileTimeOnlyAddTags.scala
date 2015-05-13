@@ -25,9 +25,15 @@ trait MiniboxCompileTimeOnlyAddTags extends InfoTransform {
   import scala.reflect.internal.Flags._
 
   def transformInfo(sym: Symbol, tpe: Type): Type = {
-    if (sym.isTypeParameter && sym.owner.isClass && currentRun.compiles(sym) && sym.hasAnnotation(MinispecClass)) {
-      sym.owner.withAnnotations(List(Annotation.apply(CompileTimeOnlyClass.tpe, List(Literal(Constant("use the miniboxing plugin!"))), ListMap.empty)))
-    }
+
+    if (currentRun.compiles(sym) &&
+        sym.name == nme.CONSTRUCTOR &&
+        (sym.owner.isClass || sym.owner.isTrait) &&
+        sym.owner.typeParams.exists(_.hasAnnotation(MinispecClass)))
+
+      // Annotate the constructor with @compileTimeOnly:
+      sym.addAnnotation(Annotation(CompileTimeOnlyClass.tpe, List(Literal(Constant("use the miniboxing plugin!"))), ListMap.empty))
+
     tpe
   }
 }
