@@ -488,8 +488,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with CompileTimeOnlyRemoveTagsComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(PicklerPhaseName)
+    val runsAfter = List(PicklerPhaseName)
+    override val runsRightAfter = None
     val phaseName = CompileTimeOnlyRemoveTagsPhaseName
 
 
