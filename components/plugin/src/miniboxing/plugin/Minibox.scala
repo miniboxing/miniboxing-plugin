@@ -57,7 +57,9 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
                           MiniboxBridgePhase,
                           MiniboxCoercePhase,
                           MiniboxCommitPhase,
-                          TweakErasurePhase)
+                          TweakErasurePhase,
+                          CompileTimeOnlyAddTagsPhase,
+                          CompileTimeOnlyRemoveTagsPhase)
   }
 
   // LDL Coercions
@@ -220,6 +222,8 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   def PreTyperPhaseName = "mb-ext-pre-tpe"
   def HijackPhaseName = "mb-ext-hijacker"
   def TweakErasurePhaseName = "mb-tweak-erasure"
+  def CompileTimeOnlyAddTagsPhaseName = "mb-compile-time-only-add-tags"
+  def CompileTimeOnlyRemoveTagsPhaseName = "mb-compile-time-only-remove-tags"
 
   // outside phases:
   def TyperPhaseName = "typer"
@@ -228,6 +232,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   def ParserPhaseName = "parser"
   def UncurryPhaseName = "uncurry"
   def PostErasurePhaseName = "posterasure"
+  def PicklerPhaseName = "pickler"
 
   private object HijackPhase extends {
     val common = Minibox.this.common
@@ -452,6 +457,55 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     def newPhase(_prev: Phase) = {
       tweakErasurePhase = new TweakErasurePhase(_prev)
       tweakErasurePhase
+    }
+  }
+
+  private object CompileTimeOnlyAddTagsPhase extends {
+    val common = Minibox.this.common
+  } with CompileTimeOnlyAddTagsComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = Nil
+    override val runsRightAfter = Some(HijackPhaseName)
+    val phaseName = CompileTimeOnlyAddTagsPhaseName
+
+    var addCompileOnlyPhase: Phase = _
+
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      addCompileOnlyPhase = new Phase(prev)
+      addCompileOnlyPhase
+    }
+
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = {
+        if (tree.hasSymbolField)
+          afterAddCompileOnly(tree.symbol.info)
+        super.transform(tree)
+      }
+    }
+  }
+
+  private object CompileTimeOnlyRemoveTagsPhase extends {
+    val common = Minibox.this.common
+  } with CompileTimeOnlyRemoveTagsComponent {
+    val global: Minibox.this.global.type = Minibox.this.global
+    val runsAfter = Nil
+    override val runsRightAfter = Some(PicklerPhaseName)
+    val phaseName = CompileTimeOnlyRemoveTagsPhaseName
+
+
+    var removeCompileOnlyPhase: Phase = _
+
+    override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
+      removeCompileOnlyPhase = new Phase(prev)
+      removeCompileOnlyPhase
+    }
+
+    override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
+      override def transform(tree: Tree) = {
+        if (tree.hasSymbolField)
+          afterRemoveCompileOnly(tree.symbol.info)
+        super.transform(tree)
+      }
     }
   }
 }

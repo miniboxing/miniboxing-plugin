@@ -66,6 +66,8 @@ trait MiniboxDefinitions {
 
   lazy val GenericClass = rootMirror.getRequiredClass("scala.generic")
 
+  lazy val CompileTimeOnlyClass = rootMirror.getRequiredClass("scala.annotation.compileTimeOnly")
+
 //  lazy val MangledNameClass = {
 //    val AnnotationName = "scala.annotation.Annotation"
 //    val AnnotationTpe = rootMirror.getRequiredClass(AnnotationName).tpe
