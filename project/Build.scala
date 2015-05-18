@@ -131,6 +131,18 @@ object MiniboxingBuild extends Build {
     libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value
   )
 
+  // on 2.10, the miniboxing plugin depends on reflect, for the @compileTimeOnly
+  // annotation, which is automatically added to the miniboxed classes to prevent
+  // compilation without the plugin installed
+  val reflectDeps = Seq(
+    libraryDependencies ++= (
+      if (scalaBinaryVersion.value.toString == "2.10")
+        Seq("org.scala-lang" % "scala-reflect" % scalaVersion.value)
+      else
+        Seq()
+    )
+  )
+
   val classloaderDeps = Seq(
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm" % "4.0",
@@ -228,8 +240,8 @@ object MiniboxingBuild extends Build {
   }
 
   lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
-  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps ++ recursiveDeps)
-  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps ++ crossCompilationLayer) dependsOn(runtime)
+  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ reflectDeps ++ publishDeps ++ recursiveDeps)
+  lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ reflectDeps ++ publishDeps ++ pluginDeps ++ crossCompilationLayer) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
   lazy val benchmarks  = Project(id = "miniboxing-benchmarks",  base = file("tests/benchmarks"),       settings = defaults ++ nopublishDeps ++ classloaderDeps ++ runtimeDeps ++ scalaMeter) dependsOn(plugin, runtime, classloader)
