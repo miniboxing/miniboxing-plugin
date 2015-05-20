@@ -25,3 +25,4 @@ bin/
 
 # sbt publish
 /sbt-publish
+/sbt-release
