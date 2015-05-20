@@ -131,6 +131,11 @@ object MiniboxingBuild extends Build {
     libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value
   )
 
+  val libraryDeps = Seq(
+    libraryDependencies += "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+    libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
+  )
+
   val classloaderDeps = Seq(
     libraryDependencies ++= Seq(
       "org.ow2.asm" % "asm" % "4.0",
@@ -207,7 +212,7 @@ object MiniboxingBuild extends Build {
   )
 
   val recursiveDeps = {
-    val ver = "0.4-SNAPSHOT"
+    val ver = "0.4-M3"
     val bootstrap = sys.props.getOrElse("miniboxing.bootstrap", "no")
     bootstrap match {
       case "stage1" =>
@@ -228,7 +233,7 @@ object MiniboxingBuild extends Build {
   }
 
   lazy val _mboxing    = Project(id = "miniboxing",             base = file("."),                      settings = defaults ++ nopublishDeps) aggregate (runtime, plugin, classloader, tests, benchmarks)
-  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps ++ recursiveDeps)
+  lazy val runtime     = Project(id = "miniboxing-runtime",     base = file("components/runtime"),     settings = defaults ++ publishDeps ++ libraryDeps ++ recursiveDeps)
   lazy val plugin      = Project(id = "miniboxing-plugin",      base = file("components/plugin"),      settings = defaults ++ publishDeps ++ pluginDeps ++ crossCompilationLayer) dependsOn(runtime)
   lazy val classloader = Project(id = "miniboxing-classloader", base = file("components/classloader"), settings = defaults ++ nopublishDeps ++ classloaderDeps ++ junitDeps)
   lazy val tests       = Project(id = "miniboxing-tests",       base = file("tests/correctness"),      settings = defaults ++ nopublishDeps ++ classloaderDeps ++ pluginDeps ++ testsDeps) dependsOn(plugin, runtime, classloader)
