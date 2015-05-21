@@ -164,6 +164,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                   else
                     tree1
                 stats("rewrote array new: " + tree + " ==> " + tree1)
+                new UseMbArrayInsteadOfArrayWarning(newArray.symbol, tpe, newArray.pos).warn()
                 tree2
               case _ =>
                 super.transform(tree)

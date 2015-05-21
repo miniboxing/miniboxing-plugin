@@ -164,8 +164,7 @@ trait MiniboxMetadataWarnings {
 
     override def shouldWarn(): Boolean = {
       flags.flag_warn_mbarrays &&
-      p.owner.isArray &&
-      (ScalaValueClasses.contains(tpe.typeSymbol) || tpe.typeSymbol.deSkolemize.hasAnnotation(MinispecClass))
+      ((p.owner.isArray && (ScalaValueClasses.contains(tpe.typeSymbol) || tpe.typeSymbol.deSkolemize.hasAnnotation(MinispecClass))) || p.owner.isClassTag)
     }
   }
 
