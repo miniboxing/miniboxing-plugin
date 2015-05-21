@@ -128,13 +128,37 @@ trait MiniboxMetadataUtils {
 
       val mboxedTpars = specializationsFromOwnerChain(currentOwner).toMap ++ pspec
       val spec: List[(Symbol, SpecInfo)] =
-        instantiation.map({ (pair): (Symbol, Type) =>
-          val p = pair._1
-          val tpe = pair._2.withoutAnnotations
-          if (metadata.miniboxedTParamFlag(p))
-            (new ForwardWarning(pos, p, tpe)).warnAndGetSpecInfo(mboxedTpars)
-          else
-            (new BackwardWarning(pos, p, tpe)).warnAndGetSpecInfo(mboxedTpars)
+        instantiation.map({ (pair: (Symbol, Type)) =>
+          val res: (Symbol, SpecInfo) =
+            (pair._1, pair._2.withoutAnnotations) match {
+
+              case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
+                (new BackwardWarning(p, tpe, pos).warn(BackwardWarningEnum.PrimitiveType, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
+
+              case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
+                mboxedTpars.get(tpar.deSkolemize) match {
+                  case Some(spec: SpecInfo) =>
+                    if (spec != Boxed)
+                      (new BackwardWarning(p, tpar.tpe, pos).warn(BackwardWarningEnum.MiniboxedTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                    (p, spec)
+
+                  case None =>
+                    if (metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod)
+                      (new ForwardWarning(p, tpar.tpe, pos).warn(ForwardWarningEnum.StemClass, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                    else
+                      (new ForwardWarning(p, tpar.tpe, pos).warn(ForwardWarningEnum.InnerClass, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                    (p, Boxed)
+                }
+
+              case (p, tpe) if tpe <:< AnyRefTpe =>
+                (p, Boxed)
+
+              case (p, tpe) =>
+                (new ForwardWarning(p, tpe, pos).warn(ForwardWarningEnum.NotSpecificEnoughTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                (p, Boxed)
+            }
+          res
       })
       spec.toMap
     }
