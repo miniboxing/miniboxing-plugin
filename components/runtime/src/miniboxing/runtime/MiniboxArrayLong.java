@@ -29,10 +29,6 @@ public class MiniboxArrayLong {
         return ((char[])array)[idx];
       case MiniboxConstants.INT:
         return ((int[])array)[idx];
-      case MiniboxConstants.FLOAT:
-        return Float.floatToIntBits(((float[])array)[idx]);
-      case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits(((double[])array)[idx]);
       default:
         return ((long[])array)[idx];
     }

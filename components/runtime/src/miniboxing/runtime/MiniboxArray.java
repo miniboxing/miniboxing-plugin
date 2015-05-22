@@ -58,9 +58,9 @@ public class MiniboxArray {
       case MiniboxConstants.INT:
         return ((int[])array)[idx];
       case MiniboxConstants.FLOAT:
-        return Float.floatToIntBits(((float[])array)[idx]);
+        return Float.floatToRawIntBits(((float[])array)[idx]);
       case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits(((double[])array)[idx]);
+        return Double.doubleToRawLongBits(((double[])array)[idx]);
       default:
         return ((long[])array)[idx];
     }
@@ -83,9 +83,9 @@ public class MiniboxArray {
       case MiniboxConstants.INT:
         return ((int[])array)[idx];
       case MiniboxConstants.FLOAT:
-        return Float.floatToIntBits(((float[])array)[idx]);
+        return Float.floatToRawIntBits(((float[])array)[idx]);
       case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits(((double[])array)[idx]);
+        return Double.doubleToRawLongBits(((double[])array)[idx]);
       default:
         return ((long[])array)[idx];
     }
