@@ -82,11 +82,11 @@ public class MiniboxConversions {
   }
 
   public final static long float2minibox(float f) {
-    return (long) Float.floatToIntBits(f);
+    return (long) Float.floatToRawIntBits(f);
   }
 
   public final static long double2minibox(double f) {
-    return (long) Double.doubleToLongBits(f);
+    return (long) Double.doubleToRawLongBits(f);
   }
 
   /**
@@ -170,9 +170,9 @@ public class MiniboxConversions {
       case MiniboxConstants.INT:
         return (java.lang.Integer)a;
       case MiniboxConstants.FLOAT:
-        return Float.floatToIntBits((java.lang.Float)a);
+        return Float.floatToRawIntBits((java.lang.Float)a);
       case MiniboxConstants.DOUBLE:
-        return Double.doubleToLongBits((java.lang.Double)a);
+        return Double.doubleToRawLongBits((java.lang.Double)a);
       default:
         return (java.lang.Long)a;
     }
