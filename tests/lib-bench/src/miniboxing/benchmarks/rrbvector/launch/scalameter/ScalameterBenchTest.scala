@@ -91,7 +91,6 @@ trait ScalameterBenchTest extends PerformanceTest
         using(sizes) config (exec.independentSamples -> sampleCount,
                              exec.jvmcmd -> javaCommand,
                              Key.preJDK7 -> javaPreJDK7,
-                             exec.independentSamples -> 9,
                              exec.jvmflags -> extraJVMFlags.mkString(" ")) setUp {
           size => testSize = size; System.gc(); setup(size); System.gc();
         } tearDown {

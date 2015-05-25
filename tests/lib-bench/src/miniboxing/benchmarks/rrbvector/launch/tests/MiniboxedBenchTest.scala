@@ -6,33 +6,33 @@ import scala.collection.immutable.mbrrbvector._
 
 trait MiniboxedBenchTest extends BaseTest {
 
-  def testMiniboxed(len: Int, lenReverse: Int) = {
+  def testMiniboxed() = {
     val rrbVectorBuilder = RRBVector.newBuilder[Int]
-    for (i <- 0 to len) {
+    for (i <- 0 to testSize) {
       rrbVectorBuilder += Random.nextInt()
     }
     val rrbVector = rrbVectorBuilder.result()
-    
+
     val rrbVectorBuilderRev = RRBVector.newBuilder[Int]
-    for (i <- 0 to lenReverse) {
+    for (i <- 0 to testSize) {
       rrbVectorBuilderRev += Random.nextInt()
     }
     val rrbVectorRev = rrbVectorBuilderRev.result()
-    
+
     test(
       "miniboxed",
       "builder",
       _ => {},
       {
         val rrbVectorBuilder = RRBVector.newBuilder[Int]
-        for (i <- 0 to len) {
+        for (i <- 0 to testSize) {
           rrbVectorBuilder += Random.nextInt()
         }
         rrbVectorBuilder.result()
       },
       () => {}
     )
-    
+
     test(
       "miniboxed",
       "map",
@@ -42,7 +42,7 @@ trait MiniboxedBenchTest extends BaseTest {
       },
       () => {}
     )
-    
+
     test(
       "miniboxed",
       "fold",
@@ -52,7 +52,7 @@ trait MiniboxedBenchTest extends BaseTest {
       },
       () => {}
     )
-    
+
     test(
       "miniboxed",
       "reverse",
