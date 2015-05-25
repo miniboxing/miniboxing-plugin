@@ -31,7 +31,7 @@ import miniboxing.runtime.array.MbArray_L;
  * plugin will warn (don't forget to add the `-P:minibox:warn` flag to your build!)
  * **Avoid the warnings at your own risk: You will lose the locality and unboxing guarantees!**
  */
-abstract class MbArray[T] {
+abstract class MbArray[T] extends Serializable {
 
   /** Get an element from the array. */
   def apply(idx: Int): T
