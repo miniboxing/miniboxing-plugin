@@ -51,7 +51,7 @@ final class RRBVector[@miniboxed +A] private[immutable](override private[immutab
         it.initIteratorFrom(this)
         it
     }
-    
+
     def reverse: RRBVector[A] = {
       val reverted = RRBVector.newBuilder[A]
       val iter = reverseIterator
@@ -61,7 +61,7 @@ final class RRBVector[@miniboxed +A] private[immutable](override private[immutab
       }
       reverted.result
     }
-    
+
     def foreach[@miniboxed B](f: A => B): Unit = {
       val iter = iterator
       while (iter.hasNext) {
@@ -111,7 +111,7 @@ final class RRBVectorBuilder[@miniboxed A] extends Builder[A, RRBVector[A]] /*wi
     private final var depth = 1
     private final var blockIndex = 0
     private final var lo = 0
-    
+
     def finalise: RRBVector[A] = result
 
 
@@ -227,7 +227,7 @@ final class RRBVectorBuilder[@miniboxed A] extends Builder[A, RRBVector[A]] /*wi
         newArray(indexOfLastChild) = lastChild
         newArray
     }
-    
+
     private final def clearCurrent(): Unit = {
         display0 = MbArray.empty[A](32)
         display1 = null
@@ -848,9 +848,9 @@ private[immutable] trait RRBVectorPointer[@miniboxed A] {
     }
 
 
-    
 
-    
+
+
     private[immutable] final def getElem(index: Int, xor: Int): A = {
         if (xor < 32) return getElem0(display0, index)
         else if (xor < 1024) return getElem1(display1, index)
@@ -984,7 +984,7 @@ private[immutable] trait RRBVectorPointer[@miniboxed A] {
             display2 = d2
             val d1 = d2(31).asInstanceOf[Array[AnyRef]]
             display1 = d1
-            display0 = d3(31).asInstanceOf[MbArray[A]]
+            display0 = d1(31).asInstanceOf[MbArray[A]]
             return
         } else if (xor < 1073741824) {
             val d4 = display5((index >> 25) & 31).asInstanceOf[Array[AnyRef]]
@@ -1047,7 +1047,7 @@ private[immutable] trait RRBVectorPointer[@miniboxed A] {
         }
     }
 
-   
+
 
     private final def copyDisplaysAndStabilizeDisplayPath(_depth: Int, _focus: Int): Unit = {
         _depth match {
@@ -1171,10 +1171,10 @@ private[immutable] trait RRBVectorPointer[@miniboxed A] {
         //                }
     }
 
-    
 
 
-   
+
+
     private[immutable] final def copyOf(array: Array[AnyRef]) = {
         if (RRBVector.compileAssertions) {
             assert(array != null)
@@ -1271,9 +1271,9 @@ trait TraversableLike[@miniboxed +T, @miniboxed +Repr] {
   def foldLeft[@miniboxed B](z: B)(op: (B, T) => B): B = {
     var result = z
     this foreach (x => result = op(result, x))
-    result  
+    result
   }
-  
+
   def fold[@miniboxed A1 >: T](z: A1)(op: (A1, A1) => A1): A1 = foldLeft(z)(op)
 }
 
