@@ -1,7 +1,7 @@
 package miniboxing.benchmarks.rrbvector.launch.tests
 
 import scala.util.Random
-import scala.collection.immutable.genrrbvector._
+import miniboxing.benchmarks.rrbvector.erased._
 
 trait GenericBenchTest extends BaseTest {
 
@@ -25,8 +25,10 @@ trait GenericBenchTest extends BaseTest {
       _ => {},
       {
         val rrbVectorBuilder = RRBVector.newBuilder[Int]
-        for (i <- 0 to testSize) {
-          rrbVectorBuilder += Random.nextInt()
+        var i = 0
+        while (i < testSize) {
+          rrbVectorBuilder += i
+          i += 1
         }
         rrbVectorBuilder.result()
       },
