@@ -1261,6 +1261,11 @@ trait TraversableLike[ +T, +Repr] {
 
   def foreach[U](f: T => U): Unit
 
+  def sum[B >: T](implicit n : Numeric[B]): B =
+    foldLeft(n.zero) {
+      (b, t) => n.plus(b, t)
+    }
+
   def foldLeft[ B](z: B)(op: (B, T) =>  B): B = {
     var result = z
     this foreach (x => result = op(result, x))

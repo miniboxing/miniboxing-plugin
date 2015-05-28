@@ -6,17 +6,15 @@ import miniboxing.benchmarks.rrbvector.miniboxed._
 trait MiniboxedBenchTest extends BaseTest {
 
   def testMiniboxed() = {
-    val rrbVectorBuilder = RRBVector.newBuilder[Int]
-    for (i <- 0 to testSize) {
-      rrbVectorBuilder += Random.nextInt()
-    }
-    val rrbVector = rrbVectorBuilder.result()
 
-    val rrbVectorBuilderRev = RRBVector.newBuilder[Int]
+    val rrbVectorBuilderInt = RRBVector.newBuilder[Int]
+    val rrbVectorBuilderDouble = RRBVector.newBuilder[Double]
     for (i <- 0 to testSize) {
-      rrbVectorBuilderRev += Random.nextInt()
+      rrbVectorBuilderInt += Random.nextInt()
+      rrbVectorBuilderDouble += Random.nextDouble()
     }
-    val rrbVectorRev = rrbVectorBuilderRev.result()
+    val rrbVectorInt = rrbVectorBuilderInt.result()
+    val rrbVectorDouble = rrbVectorBuilderDouble.result()
 
     test(
       "miniboxed",
@@ -39,7 +37,7 @@ trait MiniboxedBenchTest extends BaseTest {
       "map",
       _ => {},
       {
-        rrbVector.map { x => x + 1 }
+        rrbVectorInt.map { x => x + 1 }
       },
       () => {}
     )
@@ -49,7 +47,7 @@ trait MiniboxedBenchTest extends BaseTest {
       "fold",
       _ => {},
       {
-        rrbVector.fold(0)((r, c) => r + c)
+        rrbVectorInt.fold(0)((r, c) => r + c)
       },
       () => {}
     )
@@ -59,7 +57,18 @@ trait MiniboxedBenchTest extends BaseTest {
       "reverse",
       _ => {},
       {
-        rrbVectorRev.reverse
+        rrbVectorInt.reverse
+      },
+      () => {}
+    )
+
+    test(
+      "miniboxed",
+      "llsr",
+      _ => {},
+      {
+       val llsr = new MbLLSRegression(rrbVectorDouble, rrbVectorDouble)
+       llsr.calc_y(100.0)
       },
       () => {}
     )

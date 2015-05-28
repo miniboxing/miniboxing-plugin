@@ -2,6 +2,7 @@ package miniboxing.benchmarks.rrbvector.miniboxed
 
 import scala.collection.generic._
 import scala.annotation.unchecked.uncheckedVariance
+import miniboxing.runtime.math.MiniboxedNumeric
 
 object RRBVector {
     def newBuilder[@miniboxed A]: Builder[A, RRBVector[A]] = new RRBVectorBuilder[A]()
@@ -859,22 +860,24 @@ private[rrbvector] trait RRBVectorPointer[@miniboxed A] {
     }
 
     private final def getElem0(display: MbArray[A], index: Int): A =
-        display(index & 31).asInstanceOf[A]
+        display(index & 31)
 
-    private final def getElem1(display: Array[AnyRef], index: Int): A =
-        display((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[A]
+    private final def getElem1(display: Array[AnyRef], index: Int): A = {
+        val x = display((index >> 5) & 31).asInstanceOf[MbArray[A]]
+        x(index & 31).asInstanceOf[A]
+    }
 
     private final def getElem2(display: Array[AnyRef], index: Int): A =
-        display((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[A]
+        display((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[MbArray[A]](index & 31)
 
     private final def getElem3(display: Array[AnyRef], index: Int): A =
-        display((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[A]
+        display((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[MbArray[A]](index & 31)
 
     private final def getElem4(display: Array[AnyRef], index: Int): A =
-        display((index >> 20) & 31).asInstanceOf[Array[AnyRef]]((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[A]
+        display((index >> 20) & 31).asInstanceOf[Array[AnyRef]]((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[MbArray[A]](index & 31)
 
     private final def getElem5(display: Array[AnyRef], index: Int): A =
-        display((index >> 25) & 31).asInstanceOf[Array[AnyRef]]((index >> 20) & 31).asInstanceOf[Array[AnyRef]]((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[Array[AnyRef]](index & 31).asInstanceOf[A]
+        display((index >> 25) & 31).asInstanceOf[Array[AnyRef]]((index >> 20) & 31).asInstanceOf[Array[AnyRef]]((index >> 15) & 31).asInstanceOf[Array[AnyRef]]((index >> 10) & 31).asInstanceOf[Array[AnyRef]]((index >> 5) & 31).asInstanceOf[MbArray[A]](index & 31)
 
     private[rrbvector] final def gotoPos(index: Int, xor: Int): Unit = {
         if (xor < 32)
@@ -1262,6 +1265,11 @@ trait TraversableLike[@miniboxed +T, @miniboxed +Repr] {
   }
 
   def map[@miniboxed U, @miniboxed That](f: T => U)(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
+
+  def sum[@miniboxed B >: T](implicit n : MiniboxedNumeric[B]): B =
+    foldLeft(n.zero) {
+      (b, t) => n.plus(b, t)
+    }
 
   def foreach[@miniboxed U](f: T => U): Unit
 

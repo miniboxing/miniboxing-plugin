@@ -7,17 +7,14 @@ trait GenericBenchTest extends BaseTest {
 
   def testGeneric() = {
 
-    val rrbVectorBuilder = RRBVector.newBuilder[Int]
+    val rrbVectorBuilderInt = RRBVector.newBuilder[Int]
+    val rrbVectorBuilderDouble = RRBVector.newBuilder[Double]
     for (i <- 0 to testSize) {
-      rrbVectorBuilder += Random.nextInt()
+      rrbVectorBuilderInt += Random.nextInt()
+      rrbVectorBuilderDouble += Random.nextDouble()
     }
-    val rrbVector = rrbVectorBuilder.result()
-
-    val rrbVectorBuilderRev = RRBVector.newBuilder[Int]
-    for (i <- 0 to testSize) {
-      rrbVectorBuilderRev += Random.nextInt()
-    }
-    val rrbVectorRev = rrbVectorBuilderRev.result()
+    val rrbVectorInt = rrbVectorBuilderInt.result()
+    val rrbVectorDouble = rrbVectorBuilderDouble.result()
 
     test(
       "generic",
@@ -40,7 +37,7 @@ trait GenericBenchTest extends BaseTest {
       "map",
       _ => {},
       {
-        rrbVector.map { x => x + 1 }
+        rrbVectorInt.map { x => x + 1 }
       },
       () => {}
     )
@@ -50,7 +47,7 @@ trait GenericBenchTest extends BaseTest {
       "fold",
       _ => {},
       {
-        rrbVector.fold(0)((r, c) => r + c)
+        rrbVectorInt.fold(0)((r, c) => r + c)
       },
       () => {}
     )
@@ -60,7 +57,18 @@ trait GenericBenchTest extends BaseTest {
       "reverse",
       _ => {},
       {
-        rrbVectorRev.reverse
+        rrbVectorInt.reverse
+      },
+      () => {}
+    )
+
+    test(
+      "generic",
+      "llsr",
+      _ => {},
+      {
+       val llsr = new LLSRegression(rrbVectorDouble, rrbVectorDouble)
+       llsr.calc_y(100.0)
       },
       () => {}
     )
