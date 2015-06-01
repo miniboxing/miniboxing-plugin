@@ -1295,5 +1295,15 @@ trait Iterable[@miniboxed +T] extends Traversable[T] {
 
 trait IterableLike[@miniboxed +T, @miniboxed +Repr] extends Traversable[T] {
   def iterator: Iterator[T]
+
+  def zipTo[@miniboxed B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
+    val these = this.iterator
+    val those = that.iterator
+    while (these.hasNext && those.hasNext)
+      b += (new Tuple2(these.next, those.next))
+    b.finalise
+  }
+
+  def zip[@miniboxed U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
 

@@ -1,48 +1,30 @@
 package miniboxing.benchmarks.rrbvector.miniboxed
 
 import miniboxing.runtime.math.MiniboxedFractional
+import scala.language.postfixOps
 
 // Learn Least Square Regression using RRBVector
-class MbLLSRegression[@miniboxed A](val x: RRBVector[A], val y: RRBVector[A])(implicit numeric: MiniboxedFractional[A]) {
-  def sum_x: A = x.sum
-  def sum_y: A = y.sum
-  def sum_xy: A = {
-    var sum = numeric.zero
-    var i = 0
-    while (i < x.length) {
-      sum = numeric.plus(sum, numeric.times(x(i), y(i)))
-      i = i + 1
-    }
-    sum
-  }
-  def sum_xx: A = {
-    var sum = numeric.zero
-    var i = 0
-    while (i < x.length) {
-      sum = numeric.plus(sum, numeric.times(x(i), x(i)))
-      i = i + 1
-    }
-    sum
+class MbLLSRegression(val x: RRBVector[Double], val y: RRBVector[Double]) {
+  def sum_x: Double = x.sum
+  def sum_y: Double = y.sum
+  def sum_xy: Double = x zip y map { case (x, y) => x * y } sum
+  def sum_xx: Double = x zip x map { case (x, y) => x * y } sum
+
+  def b: Double = {
+    val a = x.length * sum_xy
+    val b = sum_x * sum_y
+    val c = sum_x * sum_x
+    val d = x.length * sum_xx
+
+    val e = a - b
+    val f = d - c
+
+    e / f
   }
 
-  def b: A = {
-    val a = numeric.times(numeric.fromInt(x.length), sum_xy)
-    val b = numeric.times(sum_x, sum_y)
-    val c = numeric.times(sum_x, sum_x)
-    val d = numeric.times(numeric.fromInt(x.length), sum_xx)
+  def a: Double = (sum_y - b * sum_x) / x.length
 
-    val e = numeric.minus(a, b)
-    val f = numeric.minus(d, c)
-
-    numeric.div(e, f)
-  }
-
-  def a: A = {
-    val m = numeric.times(b, sum_x)
-    numeric.div(numeric.minus(sum_y, m), numeric.fromInt(x.length))
-  }
-
-  def calc_y(for_x: A): A = {
-    numeric.plus(a, numeric.times(b, for_x))
+  def calc_y(for_x: Double): Double = {
+    a + b * for_x
   }
 }
