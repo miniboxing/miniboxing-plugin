@@ -3,6 +3,7 @@ package miniboxing.benchmarks.rrbvector.erased
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.generic._
 
+
 object RRBVector {
     def newBuilder[A]: Builder[A, RRBVector[A]] = new RRBVectorBuilder[A]()
 
@@ -1261,6 +1262,11 @@ trait TraversableLike[ +T, +Repr] {
 
   def foreach[U](f: T => U): Unit
 
+  def sum[B >: T](implicit n : Numeric[B]): B =
+    foldLeft(n.zero) {
+      (b, t) => n.plus(b, t)
+    }
+
   def foldLeft[ B](z: B)(op: (B, T) =>  B): B = {
     var result = z
     this foreach (x => result = op(result, x))
@@ -1277,4 +1283,14 @@ trait Iterable[+T] extends Traversable[T] {
 
 trait IterableLike[ +T, +Repr] extends Traversable[T] {
   def iterator: Iterator[T]
+
+  def zipTo[B, To](that: Iterable[B])(b: Builder[Tuple2[T, B], To]): To = {
+    val these = this.iterator
+    val those = that.iterator
+    while (these.hasNext && those.hasNext)
+      b += (new Tuple2(these.next, those.next))
+    b.finalise
+  }
+
+  def zip[U, That](that: Iterable[U])(implicit cbf: CanBuildFrom[Repr, Tuple2[T, U], That]): That = zipTo[U, That](that)(cbf())
 }
