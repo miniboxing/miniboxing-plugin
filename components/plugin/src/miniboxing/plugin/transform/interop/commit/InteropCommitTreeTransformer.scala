@@ -165,7 +165,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             val targ = targs(0)
             // warn only if the type parameter is either a primitive type or a miniboxed type parameter
             if (ScalaValueClasses.contains(targ.typeSymbol) || targ.typeSymbol.deSkolemize.hasAnnotation(MiniboxedClass))
-              minibox.suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol + "[" + targ + "]" + " to " + TypeClasses(tree0.symbol) + "[" + targ + "] to benefit from miniboxing specialization. " )
+              minibox.suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol.fullName + "[" + targ + "]" + " to " + TypeClasses(tree0.symbol).fullName + "[" + targ + "] to benefit from miniboxing specialization. " )
             super.transform(tree0)
 
           case _ =>
