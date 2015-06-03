@@ -238,8 +238,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with HijackComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(ExtensionMethodsPhaseName)
+    val runsAfter = List(ExtensionMethodsPhaseName)
     val phaseName = HijackPhaseName
 
     // no change
@@ -252,8 +251,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with InteropInjectComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(PatternMatcherPhaseName)
+    val runsAfter = List(PatternMatcherPhaseName)
     val phaseName = InteropInjectPhaseName
 
     var interopInjectPhase : StdPhase = _
@@ -268,8 +266,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with PrepareComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(UncurryPhaseName)
+    val runsAfter = List(UncurryPhaseName)
     val phaseName = PreparePhaseName
 
     var preparePhase : StdPhase = _
@@ -407,8 +404,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with PreTyperComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(ParserPhaseName)
+    val runsAfter = List(ParserPhaseName)
     val phaseName = PreTyperPhaseName
 
     def newPhase(_prev: Phase) = new StdPhase(_prev) {
@@ -448,8 +444,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val common = Minibox.this.common
   } with TweakErasureComponent {
     val global: Minibox.this.global.type = Minibox.this.global
-    val runsAfter = Nil
-    override val runsRightAfter = Some(PostErasurePhaseName)
+    val runsAfter = List(PostErasurePhaseName)
     val phaseName = TweakErasurePhaseName
 
     var tweakErasurePhase: Phase = _
@@ -489,7 +484,6 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   } with CompileTimeOnlyRemoveTagsComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(PicklerPhaseName)
-    override val runsRightAfter = None
     val phaseName = CompileTimeOnlyRemoveTagsPhaseName
 
 
