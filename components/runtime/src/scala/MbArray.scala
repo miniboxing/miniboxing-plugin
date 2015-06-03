@@ -10,6 +10,7 @@
 // Authors:
 //    * Vlad Ureche
 //    * Nicolas Stucki
+//    * Milos Stojanovic
 //
 package scala
 
@@ -63,6 +64,14 @@ object MbArray {
   /** Create an empty MbArray of `size` */
   def empty[T](size: Int): MbArray[T] =
     new miniboxing.runtime.array.MbArray_L[T](size);
+
+  /** Element-by-element constructor */
+  def apply[T](xs: T*): MbArray[T] = {
+    val mb_array = MbArray.empty[T](xs.length)
+    var i = 0
+    for (x <- xs.iterator) { mb_array.update(i, x); i += 1 }
+    mb_array
+  }
 
   /** Clone an array into a MbArray */
   def clone[T](array: Array[T]): MbArray[T] =

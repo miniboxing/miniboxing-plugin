@@ -1,9 +1,3 @@
-newSource1.scala:8: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
-  val mba1 = MbArray.clone(new Array[Int](10))
-                           ^
-newSource1.scala:9: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
-  val mba2 = MbArray.clone(new Array[Double](10))
-                           ^
 newSource1.scala:11: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
   def foo[@miniboxed T: ClassTag] = MbArray.clone(new Array[T](10))
                                                   ^
