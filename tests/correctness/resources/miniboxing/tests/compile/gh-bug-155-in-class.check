@@ -1,0 +1,58 @@
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package <empty> {
+  abstract trait C[@miniboxed T] extends Object {
+    @miniboxing.runtime.nobridge def f(): miniboxing.runtime.MiniboxedFunction1[(T, T),T]
+  };
+  class C$D[Tsp] extends Object with C[Tsp] {
+    <paramaccessor> private[this] val C$D|T$TypeTag: Byte = _;
+    def <init>(C$D|T$TypeTag: Byte): C$D[Tsp] = {
+      C$D.super.<init>();
+      ()
+    };
+    @miniboxing.runtime.nobridge def f(): miniboxing.runtime.MiniboxedFunction1[(Tsp, Tsp),Tsp] = {
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$LD[(Tsp, Tsp),Tsp] with Serializable {
+        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LD[(Tsp, Tsp),Tsp]> = {
+          $anonfun.super.<init>(C$D.this.C$D|T$TypeTag);
+          ()
+        };
+        final def apply(p: (Tsp, Tsp)): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp]($anonfun.this.apply$LD(C$D.this.C$D|T$TypeTag, p), C$D.this.C$D|T$TypeTag);
+        override def apply$LD(R$TypeTag: Byte, t1: (Tsp, Tsp)): Double = MiniboxedTuple.this.tuple2_accessor_1_double[Tsp, Tsp](R$TypeTag, t1)
+      };
+      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LD[(Tsp, Tsp),Tsp]>()
+    }
+  };
+  class C$J[Tsp] extends Object with C[Tsp] {
+    <paramaccessor> private[this] val C$J|T$TypeTag: Byte = _;
+    def <init>(C$J|T$TypeTag: Byte): C$J[Tsp] = {
+      C$J.super.<init>();
+      ()
+    };
+    @miniboxing.runtime.nobridge def f(): miniboxing.runtime.MiniboxedFunction1[(Tsp, Tsp),Tsp] = {
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$LJ[(Tsp, Tsp),Tsp] with Serializable {
+        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LJ[(Tsp, Tsp),Tsp]> = {
+          $anonfun.super.<init>(C$J.this.C$J|T$TypeTag);
+          ()
+        };
+        final def apply(p: (Tsp, Tsp)): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp]($anonfun.this.apply$LJ(C$J.this.C$J|T$TypeTag, p), C$J.this.C$J|T$TypeTag);
+        override def apply$LJ(R$TypeTag: Byte, t1: (Tsp, Tsp)): Long = MiniboxedTuple.this.tuple2_accessor_1_long[Tsp, Tsp](R$TypeTag, t1)
+      };
+      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LJ[(Tsp, Tsp),Tsp]>()
+    }
+  };
+  class C$L[Tsp] extends Object with C[Tsp] {
+    def <init>(): C$L[Tsp] = {
+      C$L.super.<init>();
+      ()
+    };
+    @miniboxing.runtime.nobridge def f(): miniboxing.runtime.MiniboxedFunction1[(Tsp, Tsp),Tsp] = {
+      @SerialVersionUID(value = 0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$LL[(Tsp, Tsp),Tsp] with Serializable {
+        def <init>(): <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LL[(Tsp, Tsp),Tsp]> = {
+          $anonfun.super.<init>();
+          ()
+        };
+        final def apply(p: (Tsp, Tsp)): Tsp = p._1()
+      };
+      new <$anon: miniboxing.runtime.AbstractMiniboxedFunction1$LL[(Tsp, Tsp),Tsp]>()
+    }
+  }
+}
