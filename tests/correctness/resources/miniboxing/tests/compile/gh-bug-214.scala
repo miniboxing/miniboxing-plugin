@@ -1,10 +1,16 @@
 import scala.reflect._
 
 object Test {
-  def baz[@miniboxed T : ClassTag](t: T) = {
+  def foo1[@miniboxed T : ClassTag](t: T) = {
     new Array[T](42) // should warn
     Array[T](t,t,t,t,t) // should warn
   }
+
+  def foo2[T](t: T) = {
+    MbArray[T](t,t,t,t) // should warn T should be miniboxed
+    MbArray.empty[T](10)  // should warn again
+  }
+
   def bar[T : ClassTag](t: T) = {
     new Array[T](42)
     Array[T](t,t,t,t,t)
