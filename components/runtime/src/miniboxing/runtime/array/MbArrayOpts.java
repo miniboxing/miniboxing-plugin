@@ -1,8 +1,10 @@
 package miniboxing.runtime.array;
 
-import miniboxing.runtime.*;
 import miniboxing.runtime.MiniboxConstants;
+import miniboxing.runtime.MiniboxConversionsDouble;
+import miniboxing.runtime.MiniboxConversionsLong;
 import scala.MbArray;
+import scala.collection.mutable.WrappedArray;
 
 public class MbArrayOpts {
 
@@ -203,5 +205,49 @@ public class MbArrayOpts {
       default:
         return new MbArray_L<T>(array);
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static final <T> MbArray<T> mbArray_apply_constr_J(Object array, byte T_Tag) {
+	switch(T_Tag) {
+      case MiniboxConstants.LONG:
+        return new MbArray_J<T>((WrappedArray)array);
+      case MiniboxConstants.INT:
+        return new MbArray_I<T>((WrappedArray)array);
+      case MiniboxConstants.SHORT:
+        return new MbArray_S<T>((WrappedArray)array);
+      case MiniboxConstants.CHAR:
+        return new MbArray_C<T>((WrappedArray)array);
+      case MiniboxConstants.BYTE:
+        return new MbArray_B<T>((WrappedArray)array);
+      case MiniboxConstants.BOOLEAN:
+        return new MbArray_Z<T>((WrappedArray)array);
+      case MiniboxConstants.UNIT:
+        return new MbArray_V<T>((WrappedArray)array);
+      default:
+        return new MbArray_L<T>((WrappedArray)array);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static final <T> MbArray<T> mbArray_apply_constr_D(Object array, byte T_Tag) {
+	switch(T_Tag){
+      case MiniboxConstants.DOUBLE:
+        return new MbArray_D<T>((WrappedArray)array);
+      case MiniboxConstants.FLOAT:
+        return new MbArray_F<T>((WrappedArray)array);
+      default:
+        return new MbArray_L<T>((WrappedArray)array);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static final <T> MbArray<T> mbArray_apply_constr_prim_J(Object array, byte T_Tag) {
+	return mbArray_clone_J(((WrappedArray)array).array(), T_Tag);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static final <T> MbArray<T> mbArray_apply_constr_prim_D(Object array, byte T_Tag) {
+	return mbArray_clone_D(((WrappedArray)array).array(), T_Tag);
   }
 }

@@ -1,9 +1,6 @@
-newSource1.scala:8: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
-  val mba1 = MbArray.clone(new Array[Int](10))
-                           ^
-newSource1.scala:9: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
-  val mba2 = MbArray.clone(new Array[Double](10))
-                           ^
+newSource1.scala:11: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+  def foo[@miniboxed T: ClassTag] = MbArray.clone(new Array[T](10))
+                                                  ^
 newSource1.scala:13: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
   val mba4 = MbArray.clone(new Array[Any](10))
                      ^

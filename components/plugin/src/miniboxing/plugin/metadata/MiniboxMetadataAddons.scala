@@ -52,6 +52,7 @@ trait MiniboxMetadataAddons {
     def isField = sym.isValue && !sym.isMethod
     def isMbArrayMethod: Boolean = isSymbolMbArrayMethod(sym)
     def isArray: Boolean = sym == ArrayClass
+    def isClassTag: Boolean = sym == ClassTagClass
     def isImplicitlyPredefMethod: Boolean = isPredefMemberNamed(sym, nme.implicitly)
     def isCastSymbol: Boolean = definitions.isCastSymbol(sym)
     def isIsInstanceOfAnyMethod: Boolean = sym == Any_isInstanceOf

@@ -1,0 +1,25 @@
+newSource1.scala:6: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+    Array[T](t,t,t,t,t) // should warn
+            ^
+newSource1.scala:5: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+    new Array[T](42) // should warn
+    ^
+newSource1.scala:10: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
+           MbArray[T](t,t,t,t) // should warn T should be miniboxed
+           ^
+newSource1.scala:11: warning: The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:
+           MbArray.empty[T](10)  // should warn again
+                   ^
+class miniboxing.runtime.array.MbArray_I
+class miniboxing.runtime.array.MbArray_D
+class miniboxing.runtime.array.MbArray_L
+class miniboxing.runtime.array.MbArray_Z
+class miniboxing.runtime.array.MbArray_C
+class miniboxing.runtime.array.MbArray_I
+class miniboxing.runtime.array.MbArray_J
+class miniboxing.runtime.array.MbArray_C
+class miniboxing.runtime.array.MbArray_S
+class miniboxing.runtime.array.MbArray_B
+class miniboxing.runtime.array.MbArray_Z
+class miniboxing.runtime.array.MbArray_D
+class miniboxing.runtime.array.MbArray_L

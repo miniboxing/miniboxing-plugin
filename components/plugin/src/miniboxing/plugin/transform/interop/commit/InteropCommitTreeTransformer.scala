@@ -159,6 +159,15 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             val res = localTyper.typedOperator(tree2)
              res
 
+          case tree@Apply(apply, List(_ ,evidence)) if apply.symbol == ArrayModule_genericApply =>
+            val targs = tree.tpe.widen.typeArgs
+            if (targs.length == 1) {
+              val targ = targs.head
+              if (flags.flag_warn_mbarrays && targ.typeSymbol.deSkolemize.hasAnnotation(MiniboxedClass))
+                minibox.suboptimalCodeWarning(tree0.pos, minibox.UseMbArrayInsteadOfArrayWarning.msg)
+            }
+            super.transform(tree0)
+
           case _ if (TypeClasses.contains(tree0.symbol)) =>
             val targs  = tree0.tpe.dealiasWiden.typeArgs
             assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)

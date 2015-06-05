@@ -1,6 +1,3 @@
-newSource1.scala:43: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
-    val c = new Array[Int](len)
-            ^
 class [Ljava.lang.Object;
 class miniboxing.runtime.array.MbArray_I
 class [I

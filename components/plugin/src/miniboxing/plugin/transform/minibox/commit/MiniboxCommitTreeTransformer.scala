@@ -164,6 +164,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                   else
                     tree1
                 stats("rewrote array new: " + tree + " ==> " + tree1)
+                new UseMbArrayInsteadOfArrayWarning(newArray.symbol, tpe, newArray.pos).warn()
                 tree2
               case _ =>
                 super.transform(tree)
@@ -252,24 +253,30 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree2 = gen.mkMethodCall(MbArrayOpts_update(repr), List(tree.tpe.dealiasWiden), transform(array) :: transform(index) :: tree1 :: tag1 :: Nil)
             localTyper.typed(tree2)
 
-          // MbArray transformations: MbArray.empty and MbArray.clone
-          case tree@Apply(TypeApply(fun, List(targ)), List(arg)) if (fun.symbol == MbArray_empty || fun.symbol == MbArray_clone) && mbArray_transform =>
+          // MbArray transformations: MbArray.empty,  MbArray.clone and MbArray.apply[T](t: T*)
+          case tree@Apply(TypeApply(fun, List(targ)), List(arg)) if (fun.symbol == MbArray_empty || fun.symbol == MbArray_clone || fun.symbol == MbArray_applyconstructor) && mbArray_transform =>
             val pspec = PartialSpec.specializationsFromOwnerChain(currentOwner).toMap
             val tpe1 = targ.tpe
             val typeSymbol = tpe1.dealiasWiden.typeSymbol.deSkolemize
 
-            def specialize(repr: Symbol): Tree = {
+            def specialize(repr: Symbol, primType: Boolean): Tree = {
               val tags = minibox.typeTagTrees(currentOwner)
               val tag1 = tags(typeSymbol)
-              val tree1 = gen.mkMethodCall(MbArrayOpts_alternatives(fun.symbol)(repr), List(tpe1), transform(arg) :: tag1 :: Nil)
-              localTyper.typed(tree1)
+              if (fun.symbol == MbArray_applyconstructor) {
+                val tree1 = gen.mkMethodCall(MbArrayOpts_applyconstr_alternatives(repr)(primType), List(tpe1), transform(arg) :: tag1 :: Nil)
+                localTyper.typed(tree1)
+              }
+              else {
+                val tree1 = gen.mkMethodCall(MbArrayOpts_alternatives(fun.symbol)(repr), List(tpe1), transform(arg) :: tag1 :: Nil)
+                localTyper.typed(tree1)
+              }
             }
 
             pspec.get(typeSymbol) match {
-              case Some(minibox.Miniboxed(repr))                  => specialize(repr)
+              case Some(minibox.Miniboxed(repr))                  => specialize(repr, false)
               case Some(minibox.Boxed)                            => super.transform(tree)
               case None if tpe1 <:< AnyRefTpe                     => super.transform(tree)
-              case None if ScalaValueClasses.contains(typeSymbol) => specialize(PartialSpec.valueClassRepresentation(typeSymbol))
+              case None if ScalaValueClasses.contains(typeSymbol) => specialize(PartialSpec.valueClassRepresentation(typeSymbol), true)
               case _ =>
                 var pos = tree.pos
                 if (pos == NoPosition) pos = fun.pos
