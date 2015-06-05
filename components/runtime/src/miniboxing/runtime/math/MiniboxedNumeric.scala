@@ -159,6 +159,35 @@ object MiniboxedNumeric {
   
   implicit object DoubleIsMbFractional extends DoubleIsMbFractional with MiniboxedOrdering.DoubleMbOrdering 
   object DoubleAsIfMbIntegral extends DoubleAsIfMbIntegral with MiniboxedOrdering.DoubleMbOrdering
+
+  implicit def createMiniboxedNumeric[T](implicit num: Numeric[T]): MiniboxedNumeric[T]  =
+    ((num) match {
+      case scala.math.Numeric.IntIsIntegral => IntIsMbIntegral
+      case scala.math.Numeric.ShortIsIntegral => ShortIsMbIntegral
+      case scala.math.Numeric.ByteIsIntegral => ByteIsMbIntegral
+      case scala.math.Numeric.CharIsIntegral => CharIsMbIntegral
+      case scala.math.Numeric.LongIsIntegral => LongIsMbIntegral
+      case scala.math.Numeric.FloatAsIfIntegral => FloatAsIfMbIntegral
+      case scala.math.Numeric.FloatIsFractional => FloatIsMbFractional
+      case scala.math.Numeric.DoubleAsIfIntegral => DoubleAsIfMbIntegral
+      case scala.math.Numeric.DoubleIsFractional => DoubleIsMbFractional
+      case _ =>
+        new MiniboxedNumeric[T] {
+          override val extractNumeric: Numeric[T] = num
+          override def plus(x: T, y: T): T = num.plus(x, y)
+          override def minus(x: T, y: T): T = num.minus(x, y)
+          override def times(x: T, y: T): T = num.times(x, y)
+          override def negate(x: T): T = num.negate(x)
+          override def fromInt(x: Int): T = num.fromInt(x)
+          override def toInt(x: T): Int = num.toInt(x)
+          override def toLong(x: T): Long = num.toLong(x)
+          override def toFloat(x: T): Float = num.toFloat(x)
+          override def toDouble(x: T): Double = num.toDouble(x)
+
+          override val extractOrdering: Ordering[T] = num
+          override def compare(x: T, y: T): Int = num.compare(x, y)
+        }
+    }).asInstanceOf[MiniboxedNumeric[T]]
 }
 
 
