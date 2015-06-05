@@ -31,7 +31,8 @@ trait MbArrayDefinitions {
   lazy val MbArray_clone  = definitions.getMember(MbArrayModule, newTermName("clone")).
                               // filter Object.clone out, we don't want that:
                               alternatives.find(_.owner == MbArrayModule.moduleClass).get
-  lazy val MbArray_arraycopy  = definitions.getMember(MbArrayModule, newTermName("arraycopy"))                      
+  lazy val MbArray_arraycopy  = definitions.getMember(MbArrayModule, newTermName("arraycopy"))
+  lazy val MbArray_applyconstructor  = definitions.getMember(MbArrayModule, newTermName("apply"))
 
   // optimized alternatives:
   lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.runtime.array.MbArrayOpts")
@@ -47,13 +48,20 @@ trait MbArrayDefinitions {
               DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_empty_D"))),
         MbArray_clone ->
           Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_J")),
-              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D")))) 
-              
-  def isSymbolMbArrayMethod(sym: Symbol): Boolean = 
-    sym.equals(MbArray_apply) || 
+              DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_clone_D"))))
+  lazy val MbArrayOpts_applyconstr_alternatives: Map[Symbol, Map[Boolean, Symbol]] =
+    Map(LongClass   ->
+          Map(true  -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_constr_prim_J")),
+              false -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_constr_J"))),
+        DoubleClass ->
+          Map(true  -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_constr_prim_D")),
+              false -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_constr_D"))))
+
+  def isSymbolMbArrayMethod(sym: Symbol): Boolean =
+    sym.equals(MbArray_apply) ||
     sym.equals(MbArray_update) ||
     sym.equals(MbArray_length) ||
-    sym.equals(MbArray_empty) || 
+    sym.equals(MbArray_empty) ||
     sym.equals(MbArray_clone) ||
     sym.equals(MbArray_arraycopy)
 }
