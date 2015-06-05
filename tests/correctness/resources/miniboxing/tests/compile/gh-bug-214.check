@@ -1,7 +1,7 @@
-newSource1.scala:6: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+newSource1.scala:6: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
     Array[T](t,t,t,t,t) // should warn
             ^
-newSource1.scala:5: warning: Use MbArray instead of Array and benefit from miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+newSource1.scala:5: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
     new Array[T](42) // should warn
     ^
 class miniboxing.runtime.array.MbArray_I
