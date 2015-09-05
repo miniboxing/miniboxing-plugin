@@ -43,7 +43,9 @@ class TestSuite extends ScalacVersion {
     "scala> :quit" -> "",
     "scala> $" -> "",
     // random object addresses:
-    "@[0-9a-f]{1,8}" -> "@<object_id>"
+    "@[0-9a-f]{1,8}" -> "@<object_id>",
+    // line number changes for 2.11.7:
+    "<console>:\\d+:" -> "console:<line>:"
   )
 
   implicit class JFileExt(jfile: JFile) {
