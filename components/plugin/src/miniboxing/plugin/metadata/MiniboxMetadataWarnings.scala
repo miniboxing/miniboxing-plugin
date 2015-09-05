@@ -59,12 +59,21 @@ trait MiniboxMetadataWarnings {
     val PrimitiveType, MiniboxedTypeParam = Value
   }
 
-  abstract class MiniboxWarning(p: Symbol, pos: Position, inLibrary: Boolean) {
+  abstract class MiniboxWarning(typeParam: Symbol, pos: Position, inLibrary: Boolean) {
 
     def msg(): String
     def shouldWarn(): Boolean
 
-    def warn(): Unit = if (shouldWarn) suboptimalCodeWarning(pos, msg, p.isGenericAnnotated, inLibrary)
+    def warn(): Unit =
+      if (shouldWarn && !alreadyWarned)
+        suboptimalCodeWarning(pos, msg, typeParam.isGenericAnnotated, inLibrary)
+
+    lazy val alreadyWarned = {
+      // Don't warn twice
+      val res = metadata.warningTypeParameters.contains(typeParam)
+      metadata.warningTypeParameters += typeParam
+      false
+    }
 
     def isUselessWarning(p: Symbol): Boolean = {
       p.isMbArrayMethod ||
@@ -79,16 +88,18 @@ trait MiniboxMetadataWarnings {
       p.owner == FunctionClass(2)
     }
 
-    def isOwnerArray(p: Symbol, tpe: Type, pos: Position): Boolean = {
-      if (p.owner.isArray) {
-        (new UseMbArrayInsteadOfArrayWarning(p, tpe: Type, pos)).warn()
+    // TODO: These guys should not be hijackers -- the control flow becomes too difficult to follow:
+    def isOwnerArray(typeParam: Symbol, typeArg: Type, pos: Position): Boolean = {
+      if (typeParam.owner.isArray) {
+        (new UseMbArrayInsteadOfArrayWarning(typeParam, typeArg, pos)).warn()
         true
       } else false
     }
 
-    def isSpecialized(p: Symbol, pos: Position, inLibrary: Boolean): Boolean = {
-      if (p.hasAnnotation(SpecializedClass)) {
-        (new ReplaceSpecializedWithMiniboxedWarning(p, pos, inLibrary)).warn()
+    // TODO: These guys should not be hijackers -- the control flow becomes too difficult to follow:
+    def isSpecialized(typeParam: Symbol, pos: Position, inLibrary: Boolean): Boolean = {
+      if (typeParam.hasAnnotation(SpecializedClass)) {
+        (new ReplaceSpecializedWithMiniboxedWarning(typeParam, pos, inLibrary)).warn()
         true
       } else false
     }
@@ -109,9 +120,9 @@ trait MiniboxMetadataWarnings {
   class BackwardWarningForMiniboxedTypeParam(nonMboxedTypeParam: Symbol, mboxedType: Type, pos: Position, inLibrary: Boolean) extends MiniboxWarning(nonMboxedTypeParam, pos, inLibrary) {
 
     override def msg: String = s"The ${nonMboxedTypeParam.owner.tweakedFullString} would benefit from miniboxing type " +
-				                       s"parameter ${nonMboxedTypeParam.nameString}, since it is instantiated by miniboxed " +
-				                       s"type parameter ${mboxedType.typeSymbol.nameString.stripSuffix("sp")} of " +
-				                       s"${metadata.getStem(mboxedType.typeSymbol.owner).tweakedToString}."
+                               s"parameter ${nonMboxedTypeParam.nameString}, since it is instantiated by miniboxed " +
+                               s"type parameter ${mboxedType.typeSymbol.nameString.stripSuffix("sp")} of " +
+                               s"${metadata.getStem(mboxedType.typeSymbol.owner).tweakedToString}."
 
     override def shouldWarn(): Boolean = {
       !isUselessWarning(nonMboxedTypeParam.owner) &&
@@ -156,21 +167,21 @@ trait MiniboxMetadataWarnings {
     }
   }
 
-  class UseMbArrayInsteadOfArrayWarning(p: Symbol, tpe: Type, pos: Position, inLibrary: Boolean = false) extends MiniboxWarning(p, pos, inLibrary) {
+  class UseMbArrayInsteadOfArrayWarning(typeParam: Symbol, typeArg: Type, pos: Position, inLibrary: Boolean = false) extends MiniboxWarning(typeParam, pos, inLibrary) {
 
-    override def msg: String = UseMbArrayInsteadOfArrayWarning.msg
+    override def msg: String = "Use MbArray instead of Array to eliminate the need for ClassTags and " +
+                               "benefit from seamless interoperability with the miniboxing specialization. " +
+                               "For more details about MbArrays, please check the following link: " +
+                               "http://scala-miniboxing.org/arrays.html"
+
+    // alternative: use the position
+    override lazy val alreadyWarned = false
 
     override def shouldWarn(): Boolean = {
       flags.flag_warn_mbarrays &&
-      ((p.owner.isArray || (p == ArrayModule_genericApply)) && tpe.typeSymbol.deSkolemize.hasAnnotation(MinispecClass) || p.owner.isClassTag)
+      ((typeParam.owner.isArray || (typeParam.owner == ArrayModule_genericApply)) &&
+      typeArg.typeSymbol.deSkolemize.hasAnnotation(MinispecClass) || typeParam.owner.isClassTag)
     }
-  }
-
-  object UseMbArrayInsteadOfArrayWarning {
-    def msg: String = "Use MbArray instead of Array to eliminate the need for ClassTags and " +
-                      "benefit from seamless interoperability with the miniboxing specialization. " +
-                      "For more details about MbArrays, please check the following link: " +
-                      "http://scala-miniboxing.org/arrays.html"
   }
 
   class ReplaceSpecializedWithMiniboxedWarning(p: Symbol, pos: Position, inLibrary: Boolean) extends MiniboxWarning(p, pos, inLibrary) {

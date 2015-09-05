@@ -392,14 +392,4 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
       tree1.setType(newTpe)
     }
   }
-
-  class OptimizeTransformer(unit: CompilationUnit) extends TypingTransformer(unit) {
-
-    import global._
-    import minibox._
-
-//    override
-
-  }
-
 }

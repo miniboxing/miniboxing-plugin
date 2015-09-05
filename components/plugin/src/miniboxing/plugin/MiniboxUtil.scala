@@ -122,7 +122,7 @@ trait InteropCommitComponent extends
     with InteropCommitTreeTransformer
     with ScalacCrossCompilingLayer {
 
-  def minibox: MiniboxInjectComponent
+  val minibox: MiniboxInjectComponent { val global: InteropCommitComponent.this.global.type }
   val interop: InteropInjectComponent { val global: InteropCommitComponent.this.global.type }
 
   def interopCommitPhase: StdPhase

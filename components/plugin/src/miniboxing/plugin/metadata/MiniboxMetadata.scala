@@ -124,6 +124,10 @@ trait MiniboxMetadata {
     /** Stem class can have a class parent (see bug #162) */
     val stemClassParent = mutable.HashMap[Symbol, Symbol]()
 
+    /** Warnings de-duplication */
+    val warningTypeParameters = global.perRunCaches.newSet[Symbol]()
+
+
 
     // Accessors:
 

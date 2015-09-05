@@ -310,14 +310,13 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
   private object InteropCommitPhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
     val common = Minibox.this.common
   } with InteropCommitComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
     override val runsRightAfter = Some(InteropCoercePhaseName)
     val phaseName = InteropCommitPhaseName
-
-    def minibox = MiniboxInjectPhase
 
     var interopCommitPhase : StdPhase = _
     override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = {
