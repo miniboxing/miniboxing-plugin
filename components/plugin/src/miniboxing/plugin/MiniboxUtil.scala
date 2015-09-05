@@ -252,6 +252,7 @@ trait TweakErasureComponent extends
     with TweakErasureTreeTransformer
     with ScalacCrossCompilingLayer {
 
+  val minibox: MiniboxInjectComponent { val global: TweakErasureComponent.this.global.type }
   val interop: InteropInjectComponent { val global: TweakErasureComponent.this.global.type }
 
   def tweakErasurePhase: Phase

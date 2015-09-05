@@ -17,6 +17,10 @@ trait TweakErasureTreeTransformer extends TreeRewriters with ScalacCrossCompilin
     def apply(unit: CompilationUnit): Unit = {
       val transformer = new TweakErasureTransformer(unit)
       transformer.transformUnit(unit)
+
+      // 2.10 doesn't clear perRunCaches properly:
+      minibox.metadata.warningPositions.clear()
+      minibox.metadata.warningTypeParameters.clear()
     }
   }
 

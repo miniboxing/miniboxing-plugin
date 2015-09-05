@@ -2,7 +2,4 @@ newSource1.scala:8: warning: The method head in trait C1 is called from trait C2
 For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/73:
   override def head: B = super.head
                                ^
-newSource1.scala:7: warning: The trait miniboxing.tests.compile.bug73.ver5.C1 would benefit from miniboxing type parameter B, since it is instantiated by miniboxed type parameter B of class C2.
-trait C2[@miniboxed A, @miniboxed B] extends C1[A, B] {
-      ^
 [Now checking: minibox-commit]

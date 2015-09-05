@@ -440,6 +440,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
   private object TweakErasurePhase extends {
     val interop: InteropInjectPhase.type = InteropInjectPhase
+    val minibox: MiniboxInjectPhase.type = MiniboxInjectPhase
     val common = Minibox.this.common
   } with TweakErasureComponent {
     val global: Minibox.this.global.type = Minibox.this.global

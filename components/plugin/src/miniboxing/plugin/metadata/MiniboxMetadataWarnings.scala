@@ -65,15 +65,17 @@ trait MiniboxMetadataWarnings {
     def shouldWarn(): Boolean
 
     def warn(): Unit =
-      if (shouldWarn && !alreadyWarned)
+      if (shouldWarn && !alreadyWarnedTypeParam && !alreadyWarnedPosition) {
+        metadata.warningTypeParameters += typeParam
+        metadata.warningPositions += pos
         suboptimalCodeWarning(pos, msg, typeParam.isGenericAnnotated, inLibrary)
+      }
 
-    lazy val alreadyWarned = {
-      // Don't warn twice
-      val res = metadata.warningTypeParameters.contains(typeParam)
-      metadata.warningTypeParameters += typeParam
-      false
-    }
+    lazy val alreadyWarnedTypeParam: Boolean =
+      metadata.warningTypeParameters.contains(typeParam)
+
+    lazy val alreadyWarnedPosition: Boolean =
+      metadata.warningPositions.contains(pos)
 
     def isUselessWarning(p: Symbol): Boolean = {
       p.isMbArrayMethod ||
@@ -175,7 +177,7 @@ trait MiniboxMetadataWarnings {
                                "http://scala-miniboxing.org/arrays.html"
 
     // alternative: use the position
-    override lazy val alreadyWarned = false
+    override lazy val alreadyWarnedTypeParam = false
 
     override def shouldWarn(): Boolean = {
       flags.flag_warn_mbarrays &&

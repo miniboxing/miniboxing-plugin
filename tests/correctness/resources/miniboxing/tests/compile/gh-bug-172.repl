@@ -1,0 +1,12 @@
+scala> class C[@miniboxed T] { def foo(t: T): T = t }
+defined class C
+scala> val c: C[Any] = new C[Any]
+<console>:8: warning: Using the type argument "Any" for the miniboxed type parameter T of class C is not specific enough, as it could mean either a primitive or a reference type. Although class C is miniboxed, it won't benefit from specialization:
+       val c: C[Any] = new C[Any]
+                       ^
+c: C[Any] = C$L@<object_id>
+scala> c.foo(3)
+<console>:10: warning: Using the type argument "Any" for the miniboxed type parameter T of class C is not specific enough, as it could mean either a primitive or a reference type. Although class C is miniboxed, it won't benefit from specialization:
+              c.foo(3)
+              ^
+res0: Any = 3

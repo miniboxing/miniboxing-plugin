@@ -124,9 +124,16 @@ trait MiniboxMetadata {
     /** Stem class can have a class parent (see bug #162) */
     val stemClassParent = mutable.HashMap[Symbol, Symbol]()
 
-    /** Warnings de-duplication */
+
+
+    // NOTE: The following two fields are cleared in tweakErasure
+    // since 2.10 does not clear perRunCaches properly:
+
+    /** Warnings de-duplication based on type parameter */
     val warningTypeParameters = global.perRunCaches.newSet[Symbol]()
 
+    /** Warnings de-duplication based on position */
+    val warningPositions = global.perRunCaches.newSet[Position]()
 
 
     // Accessors:

@@ -4,21 +4,6 @@ object NoKeyObserver extends KeyObserver[Any]
 newSource1.scala:20: warning: Using the type argument "Any" for the miniboxed type parameter A of trait TestX is not specific enough, as it could mean either a primitive or a reference type. Although trait TestX is miniboxed, it won't benefit from specialization:
     new TestX[Any]{ def lala = 3; def obs = NoKeyObserver }.test()
         ^
-newSource1.scala:20: warning: Using the type argument "Any" for the miniboxed type parameter A of trait TestX is not specific enough, as it could mean either a primitive or a reference type. Although trait TestX is miniboxed, it won't benefit from specialization:
-    new TestX[Any]{ def lala = 3; def obs = NoKeyObserver }.test()
-                                                            ^
-newSource1.scala:21: warning: Using the type argument "Any" for the miniboxed type parameter A of trait KeyObserver is not specific enough, as it could mean either a primitive or a reference type. Although trait KeyObserver is miniboxed, it won't benefit from specialization:
-    new TestX[Int]{ def lala = 3; def obs = new KeyObserver[Any]{} }.test()
-                                                ^
-newSource1.scala:23: warning: Using the type argument "Any" for the miniboxed type parameter A of trait TestX is not specific enough, as it could mean either a primitive or a reference type. Although trait TestX is miniboxed, it won't benefit from specialization:
-    new TestX[Any]{ def lala = 3; def obs = new KeyObserver[Any]{} }.test()
-        ^
-newSource1.scala:23: warning: Using the type argument "Any" for the miniboxed type parameter A of trait KeyObserver is not specific enough, as it could mean either a primitive or a reference type. Although trait KeyObserver is miniboxed, it won't benefit from specialization:
-    new TestX[Any]{ def lala = 3; def obs = new KeyObserver[Any]{} }.test()
-                                                ^
-newSource1.scala:23: warning: Using the type argument "Any" for the miniboxed type parameter A of trait TestX is not specific enough, as it could mean either a primitive or a reference type. Although trait TestX is miniboxed, it won't benefit from specialization:
-    new TestX[Any]{ def lala = 3; def obs = new KeyObserver[Any]{} }.test()
-                                                                     ^
 in miniboxing.tests.compile.bug130a.KeyObserver$L$class.keyUp(newSource1.scala:5)
 	at miniboxing.tests.compile.bug130a.NoKeyObserver$.keyUp(newSource1.scala:8)
 	at miniboxing.tests.compile.bug130a.KeyObserver$L$class.keyUp$J(newSource1.scala)
