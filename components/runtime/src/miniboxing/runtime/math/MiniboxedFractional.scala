@@ -42,7 +42,7 @@ object MiniboxedFractional {
           def div(x: T, y: T): T = frac.div(x, y)
 
           val extractNumeric: Numeric[T] = frac
-          def plus(x: T, y: T): T = frac.minus(x, y)
+          def plus(x: T, y: T): T = frac.plus(x, y)
           def minus(x: T, y: T): T = frac.minus(x, y)
           def times(x: T, y: T): T = frac.times(x, y)
           def negate(x: T): T = frac.negate(x)

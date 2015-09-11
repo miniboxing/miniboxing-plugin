@@ -24,7 +24,7 @@ object MiniboxedIntegralBridge {
       def rem(x: T, y: T): T = _int.rem(x, y)
       
       val extractNumeric: Numeric[T] = _int
-      def plus(x: T, y: T): T = _int.minus(x, y)
+      def plus(x: T, y: T): T = _int.plus(x, y)
       def minus(x: T, y: T): T = _int.minus(x, y)
       def times(x: T, y: T): T = _int.times(x, y)
       def negate(x: T): T = _int.negate(x)
