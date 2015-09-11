@@ -50,7 +50,7 @@ object MiniboxedIntegral {
           def rem(x: T, y: T): T = int.rem(x, y)
 
           val extractNumeric: Numeric[T] = int
-          def plus(x: T, y: T): T = int.minus(x, y)
+          def plus(x: T, y: T): T = int.plus(x, y)
           def minus(x: T, y: T): T = int.minus(x, y)
           def times(x: T, y: T): T = int.times(x, y)
           def negate(x: T): T = int.negate(x)
