@@ -17,12 +17,12 @@ import scala.language.{implicitConversions, higherKinds}
 import scala.math.Ordering.DoubleOrdering
 
 trait MiniboxedOrdering[@miniboxed T] extends Serializable {
-  outer => 
-    
+  outer =>
+
   val extractOrdering: Ordering[T]
-  
+
   def tryCompare(x: T, y: T) = Some(compare(x, y))
-  
+
   def compare(x: T, y: T): Int
   def lteq(x: T, y: T): Boolean = compare(x, y) <= 0
   def gteq(x: T, y: T): Boolean = compare(x, y) >= 0
@@ -31,7 +31,7 @@ trait MiniboxedOrdering[@miniboxed T] extends Serializable {
   def equiv(x: T, y: T): Boolean = compare(x, y) == 0
   def max(x: T, y: T): T = if (gteq(x, y)) x else y
   def min(x: T, y: T): T = if (lteq(x, y)) x else y
-  
+
   def reverse: MiniboxedOrdering[T] = new MiniboxedOrdering[T] {
     override def reverse = outer
     override val extractOrdering: Ordering[T] = new Ordering[T] {
@@ -39,27 +39,26 @@ trait MiniboxedOrdering[@miniboxed T] extends Serializable {
     }
     override def compare(x: T, y: T) = outer.compare(y, x)
   }
-  
+
   def on[@miniboxed U](f: U => T): MiniboxedOrdering[U] = new MiniboxedOrdering[U] {
     override val extractOrdering: Ordering[U] = new Ordering[U] {
       override def compare(x: U, y: U) = outer.compare(f(x), f(y))
     }
     override def compare(x: U, y: U) = outer.compare(f(x), f(y))
   }
-  
-  class MiniboxedOps(lhs: T) {
-    def <(rhs: T) = lt(lhs, rhs)
-    def <=(rhs: T) = lteq(lhs, rhs)
-    def >(rhs: T) = gt(lhs, rhs)
-    def >=(rhs: T) = gteq(lhs, rhs)
-    def equiv(rhs: T) = MiniboxedOrdering.this.equiv(lhs, rhs)
-    def max(rhs: T): T = MiniboxedOrdering.this.max(lhs, rhs)
-    def min(rhs: T): T = MiniboxedOrdering.this.min(lhs, rhs)
-  }
-  
-  implicit def mkOrderingOps(lhs: T): MiniboxedOps = new MiniboxedOps(lhs)
-} 
 
+  implicit def mkOrderingOps(lhs: T): MiniboxedOps[T] = new MiniboxedOps[T](lhs)(this)
+}
+
+class MiniboxedOps[@miniboxed T](lhs: T)(implicit ord: MiniboxedOrdering[T]) {
+  def <(rhs: T) = ord.lt(lhs, rhs)
+  def <=(rhs: T) = ord.lteq(lhs, rhs)
+  def >(rhs: T) = ord.gt(lhs, rhs)
+  def >=(rhs: T) = ord.gteq(lhs, rhs)
+  def equiv(rhs: T) = ord.equiv(lhs, rhs)
+  def max(rhs: T): T = ord.max(lhs, rhs)
+  def min(rhs: T): T = ord.min(lhs, rhs)
+}
 
 trait LowPriorityMbOrderingImplicits {
   implicit def ordered[@miniboxed A <% Comparable[A]]: MiniboxedOrdering[A] = new MiniboxedOrdering[A] {
@@ -87,13 +86,13 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
           override def compare(x: CC[T], y: CC[T]): Int = {
             val xe = x.iterator
             val ye = y.iterator
-  
+
             while (xe.hasNext && ye.hasNext) {
               val res = ord.compare(xe.next(), ye.next())
               if (res != 0) return res
             }
-  
-            MiniboxedOrdering.Boolean.compare(xe.hasNext, ye.hasNext)
+
+            MiniboxedOrdering.BooleanMbOrdering.compare(xe.hasNext, ye.hasNext)
           }
         }
         override def compare(x: CC[T], y: CC[T]): Int = {
@@ -105,11 +104,11 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
             if (res != 0) return res
           }
 
-          MiniboxedOrdering.Boolean.compare(xe.hasNext, ye.hasNext)
+          MiniboxedOrdering.BooleanMbOrdering.compare(xe.hasNext, ye.hasNext)
         }
       }
 
-    implicit def infixOrderingOps[@miniboxed T](x: T)(implicit ord: MiniboxedOrdering[T]): MiniboxedOrdering[T]#MiniboxedOps = new ord.MiniboxedOps(x)
+    implicit def infixOrderingOps[@miniboxed T](x: T)(implicit ord: MiniboxedOrdering[T]): MiniboxedOps[T] = new MiniboxedOps(x)(ord)
   }
 
   object Implicits extends ExtraImplicits { }
@@ -125,7 +124,7 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
     override def gteq(x: T, y: T): Boolean = !cmp(x, y)
     override def lteq(x: T, y: T): Boolean = !cmp(y, x)
   }
-  
+
   def by[@miniboxed T, @miniboxed S](f: T => S)(implicit ord: MiniboxedOrdering[S]): MiniboxedOrdering[T] =
     fromLessThan((x, y) => ord.lt(f(x), f(y)))
 
@@ -133,7 +132,7 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
     override val extractOrdering: Ordering[Unit] = Ordering.Unit
     override def compare(x: Unit, y: Unit) = 0
   }
-  implicit object Unit extends UnitMbOrdering
+  object UnitMbOrdering extends UnitMbOrdering
 
   trait BooleanMbOrdering extends MiniboxedOrdering[Boolean] {
     override val extractOrdering: Ordering[Boolean] = Ordering.Boolean
@@ -143,25 +142,25 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
       case _ => 0
     }
   }
-  implicit object Boolean extends BooleanMbOrdering
+  object BooleanMbOrdering extends BooleanMbOrdering
 
   trait ByteMbOrdering extends MiniboxedOrdering[Byte] {
     override val extractOrdering: Ordering[Byte] = Ordering.Byte
     override def compare(x: Byte, y: Byte) = x.toInt - y.toInt
   }
-  implicit object Byte extends ByteMbOrdering
+  object ByteMbOrdering extends ByteMbOrdering
 
   trait CharMbOrdering extends MiniboxedOrdering[Char] {
     override val extractOrdering: Ordering[Char] = Ordering.Char
     override def compare(x: Char, y: Char) = x.toInt - y.toInt
   }
-  implicit object Char extends CharMbOrdering
+  object CharMbOrdering extends CharMbOrdering
 
   trait ShortMbOrdering extends MiniboxedOrdering[Short] {
     override val extractOrdering: Ordering[Short] = Ordering.Short
     override def compare(x: Short, y: Short) = x.toInt - y.toInt
   }
-  implicit object Short extends ShortMbOrdering
+  object ShortMbOrdering extends ShortMbOrdering
 
   trait IntMbOrdering extends MiniboxedOrdering[Int] {
     override val extractOrdering: Ordering[Int] = Ordering.Int
@@ -170,7 +169,7 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
       else if (x == y) 0
       else 1
   }
-  implicit object Int extends IntMbOrdering
+  object IntMbOrdering extends IntMbOrdering
 
   trait LongMbOrdering extends MiniboxedOrdering[Long] {
     override val extractOrdering: Ordering[Long] = Ordering.Long
@@ -179,11 +178,11 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
       else if (x == y) 0
       else 1
   }
-  implicit object Long extends LongMbOrdering
+  object LongMbOrdering extends LongMbOrdering
 
   trait FloatMbOrdering extends MiniboxedOrdering[Float] {
     outer =>
-      
+
     override val extractOrdering: Ordering[Float] = Ordering.Float
 
     override def compare(x: Float, y: Float) = java.lang.Float.compare(x, y)
@@ -209,11 +208,11 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
 
     }
   }
-  implicit object Float extends FloatMbOrdering
+  object FloatMbOrdering extends FloatMbOrdering
 
   trait DoubleMbOrdering extends MiniboxedOrdering[Double] {
     outer =>
-      
+
     override val extractOrdering: Ordering[Double] = Ordering.Double
 
     override def compare(x: Double, y: Double) = java.lang.Double.compare(x, y)
@@ -238,25 +237,23 @@ object MiniboxedOrdering extends LowPriorityMbOrderingImplicits {
       override def max(x: Double, y: Double): Double = outer.min(x, y)
     }
   }
-  implicit object Double extends DoubleMbOrdering
+  object DoubleMbOrdering extends DoubleMbOrdering
 
-//  implicit def Tuple2[@miniboxed T1, @miniboxed T2](implicit ord1: MiniboxedOrdering[T1], ord2: MiniboxedOrdering[T2]): MiniboxedOrdering[(T1, T2)] =
-//    new MiniboxedOrdering[(T1, T2)]{
-//      override val extractOrdering: Ordering[(T1, T2)] = new Ordering[(T1, T2)] {
-//        override def compare(x: (T1, T2), y: (T1, T2)): Int = {
-//          val compare1 = ord1.compare(x._1, y._1)
-//          if (compare1 != 0) return compare1
-//          val compare2 = ord2.compare(x._2, y._2)
-//          if (compare2 != 0) return compare2
-//          0
-//        }
-//      }
-//      override def compare(x: (T1, T2), y: (T1, T2)): Int = {
-//        val compare1 = ord1.compare(x._1, y._1)
-//        if (compare1 != 0) return compare1
-//        val compare2 = ord2.compare(x._2, y._2)
-//        if (compare2 != 0) return compare2
-//        0
-//      }
-//    }
+  implicit def fromOrdering[T](implicit _ord: Ordering[T]): MiniboxedOrdering[T] =
+    ((_ord) match {
+      case Ordering.Unit => UnitMbOrdering
+      case Ordering.Boolean => BooleanMbOrdering
+      case Ordering.Byte => ByteMbOrdering
+      case Ordering.Short => ShortMbOrdering
+      case Ordering.Char => CharMbOrdering
+      case Ordering.Int => IntMbOrdering
+      case Ordering.Long => LongMbOrdering
+      case Ordering.Float => FloatMbOrdering
+      case Ordering.Double => DoubleMbOrdering
+      case _ =>
+        new MiniboxedOrdering[T] {
+          val extractOrdering: Ordering[T] = _ord
+          def compare(x: T, y: T): Int = _ord.compare(x, y)
+        }
+    }).asInstanceOf[MiniboxedOrdering[T]]
 }

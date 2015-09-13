@@ -35,7 +35,7 @@ object MiniboxedNumeric {
     def toFloat(x: Int): Float = x.toFloat
     def toDouble(x: Int): Double = x.toDouble
   }
-  implicit object IntIsMbIntegral extends IntIsMbIntegral with MiniboxedOrdering.IntMbOrdering
+  object IntIsMbIntegral extends IntIsMbIntegral with MiniboxedOrdering.IntMbOrdering
 
   trait ShortIsMbIntegral extends MiniboxedIntegral[Short] {
     val extractNumeric: Numeric[Short] = Numeric.ShortIsIntegral
@@ -52,7 +52,7 @@ object MiniboxedNumeric {
     def toFloat(x: Short): Float = x.toFloat
     def toDouble(x: Short): Double = x.toDouble
   }
-  implicit object ShortIsMbIntegral extends ShortIsMbIntegral with MiniboxedOrdering.ShortMbOrdering
+  object ShortIsMbIntegral extends ShortIsMbIntegral with MiniboxedOrdering.ShortMbOrdering
 
   trait ByteIsMbIntegral extends MiniboxedIntegral[Byte] {
     val extractNumeric: Numeric[Byte] = Numeric.ByteIsIntegral
@@ -69,7 +69,7 @@ object MiniboxedNumeric {
     def toFloat(x: Byte): Float = x.toFloat
     def toDouble(x: Byte): Double = x.toDouble
   }
-  implicit object ByteIsMbIntegral extends ByteIsMbIntegral with MiniboxedOrdering.ByteMbOrdering
+  object ByteIsMbIntegral extends ByteIsMbIntegral with MiniboxedOrdering.ByteMbOrdering
 
   trait CharIsMbIntegral extends MiniboxedIntegral[Char] {
     val extractNumeric: Numeric[Char] = Numeric.CharIsIntegral
@@ -86,7 +86,7 @@ object MiniboxedNumeric {
     def toFloat(x: Char): Float = x.toFloat
     def toDouble(x: Char): Double = x.toDouble
   }
-  implicit object CharIsMbIntegral extends CharIsMbIntegral with MiniboxedOrdering.CharMbOrdering
+  object CharIsMbIntegral extends CharIsMbIntegral with MiniboxedOrdering.CharMbOrdering
 
   trait LongIsMbIntegral extends MiniboxedIntegral[Long] {
     val extractNumeric: Numeric[Long] = Numeric.LongIsIntegral
@@ -103,7 +103,7 @@ object MiniboxedNumeric {
     def toFloat(x: Long): Float = x.toFloat
     def toDouble(x: Long): Double = x.toDouble
   }
-  implicit object LongIsMbIntegral extends LongIsMbIntegral with MiniboxedOrdering.LongMbOrdering
+  object LongIsMbIntegral extends LongIsMbIntegral with MiniboxedOrdering.LongMbOrdering
 
   trait FloatIsMbConflicted extends MiniboxedNumeric[Float] {
     def plus(x: Float, y: Float): Float = x + y
@@ -129,8 +129,8 @@ object MiniboxedNumeric {
     def quot(x: Float, y: Float): Float = (BigDecimal(x.toDouble) / BigDecimal(y.toDouble)).floatValue
     def rem(x: Float, y: Float): Float = (BigDecimal(x.toDouble) remainder BigDecimal(y.toDouble)).floatValue
   }
-  implicit object FloatIsMbFractional extends FloatIsMbFractional with MiniboxedOrdering.FloatMbOrdering
-  object FloatAsIfMbIntegral extends FloatAsIfMbIntegral with MiniboxedOrdering.FloatMbOrdering 
+  object FloatIsMbFractional extends FloatIsMbFractional with MiniboxedOrdering.FloatMbOrdering
+  object FloatAsIfMbIntegral extends FloatAsIfMbIntegral with MiniboxedOrdering.FloatMbOrdering
 
   trait DoubleIsMbConflicted extends MiniboxedNumeric[Double] {
     def plus(x: Double, y: Double): Double = x + y
@@ -156,8 +156,8 @@ object MiniboxedNumeric {
     def quot(x: Double, y: Double): Double = (BigDecimal(x) / BigDecimal(y)).doubleValue
     def rem(x: Double, y: Double): Double = (BigDecimal(x) remainder BigDecimal(y)).doubleValue
   }
-  
-  implicit object DoubleIsMbFractional extends DoubleIsMbFractional with MiniboxedOrdering.DoubleMbOrdering 
+
+  object DoubleIsMbFractional extends DoubleIsMbFractional with MiniboxedOrdering.DoubleMbOrdering
   object DoubleAsIfMbIntegral extends DoubleAsIfMbIntegral with MiniboxedOrdering.DoubleMbOrdering
 
   implicit def createMiniboxedNumeric[T](implicit num: Numeric[T]): MiniboxedNumeric[T]  =
@@ -203,7 +203,7 @@ trait MiniboxedNumeric[@miniboxed T] extends MiniboxedOrdering[T] {
   def toLong(x: T): Long
   def toFloat(x: T): Float
   def toDouble(x: T): Double
-  
+
   def zero = fromInt(0)
   def one = fromInt(1)
 
@@ -212,7 +212,7 @@ trait MiniboxedNumeric[@miniboxed T] extends MiniboxedOrdering[T] {
     if (lt(x, zero)) -1
     else if (gt(x, zero)) 1
     else 0
-    
+
   class Ops(lhs: T) {
     def +(rhs: T) = plus(lhs, rhs)
     def -(rhs: T) = minus(lhs, rhs)
