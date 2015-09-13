@@ -110,8 +110,10 @@ trait InteropDefinitions {
     def withoutApiAnnotations: Type = tpe.filterAnnotations(_.tpe.typeSymbol != apiClass)
 
     def isMbFunction: Boolean = tpe.dealiasWiden.annotations.exists(_.tpe.typeSymbol == mbFunctionClass)
-    def withMbFunction: Type = tpe.withAnnotations(List(Annotation.apply(mbFunctionClass.tpe, Nil, ListMap.empty)))
-    def withoutMbFunction: Type = tpe.filterAnnotations(_.tpe.typeSymbol != mbFunctionClass)
+
+    // note: make sure we don't introduce more than one mbFunction annotation
+    def withMbFunction: Type = tpe.filterAnnotations(!_.matches(mbFunctionClass)).withAnnotations(List(Annotation.apply(mbFunctionClass.tpe, Nil, ListMap.empty)))
+    def withoutMbFunction: Type = tpe.filterAnnotations(!_.matches(mbFunctionClass))
   }
 
   implicit class RichTree(tree: Tree) {

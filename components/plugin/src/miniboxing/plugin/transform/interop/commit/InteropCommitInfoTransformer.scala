@@ -49,22 +49,53 @@ trait InteropCommitInfoTransformer extends InfoTransform {
 
   object deepTransformation extends TypeMap {
 
-    var symbol: Symbol = NoSymbol
+    var lastSym: Symbol = NoSymbol
+    var lastTree: Tree = EmptyTree
+    var lastTpe: Type = NoType
+    var lastPos: Position = NoPosition
 
-    def apply(tpe: Type) = transform(NoSymbol, tpe)
+    def apply(tpe: Type): Type = mapOver(tpe)
+
+    def transform(tree: Tree, tpe: Type) = {
+      val oldTree = lastTree
+      val oldSym = lastSym
+      val oldPos = lastPos
+      val oldTpe = lastTpe
+      lastTree = tree
+      lastSym = NoSymbol
+      lastTpe = tpe
+      lastPos = tree.pos
+      val res = mapOver(tpe)
+      lastTree = oldTree
+      lastSym = oldSym
+      lastTpe = oldTpe
+      lastPos = oldPos
+      res
+    }
 
     def transform(sym: Symbol, tpe: Type): Type = {
-      symbol = sym
+      val oldTree = lastTree
+      val oldSym = lastSym
+      val oldPos = lastPos
+      val oldTpe = lastTpe
+      lastTree = EmptyTree
+      lastSym = sym
+      lastTpe = tpe
+      lastPos = sym.pos
       val res = mapOver(tpe)
-      symbol = NoSymbol
+      lastTree = oldTree
+      lastSym = oldSym
+      lastTpe = oldTpe
+      lastPos = oldPos
       res
     }
 
     override def mapOver(tpe: Type): Type = tpe match {
       case tpe if tpe.annotations.exists(ann => ann.tpe.typeSymbol == mbFunctionClass) =>
         val annots = tpe.annotations.filter(ann => ann.tpe.typeSymbol == mbFunctionClass)
-        if (annots.length != 1)
-          global.reporter.error(symbol.pos, s"Multiple annotations found for $symbol: ${beforeInteropCommit(symbol.tpe)}")
+        if (lastSym != NoSymbol && annots.length != 1) {
+          global.reporter.error(lastPos, s"Multiple annotations found: ${beforeInteropCommit(lastTpe)}")
+        }
         val annot = annots.head
         // miniboxed functions ftw!
         val mbFun =
