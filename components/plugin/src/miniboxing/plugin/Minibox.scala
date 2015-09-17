@@ -28,6 +28,9 @@ import prepare._
 import infrastructure._
 import tweakerasure._
 import scala.tools.nsc.settings.ScalaVersion
+import scala.tools.nsc.SubComponent
+import java.lang.reflect.Method
+import collection.mutable
 
 
 /** Main miniboxing class */
@@ -38,29 +41,31 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
   val description = "Specializes generic classes"
 
   VersionChecker.versionMessage() match {
-    case Some(msg) =>
-      global.warning(msg)
+    case Some(msg) => global.warning(msg)
     case None =>
   }
 
-  lazy val components = {
+  lazy val componentsWithDescriptions = {
     // and here are the compiler phases miniboxing introduces:
-    List[PluginComponent](PreTyperPhase,
-                          PostTyperPhase,
-                          InteropInjectPhase,
-                          PreparePhase,
-                          InteropBridgePhase,
-                          InteropCoercePhase,
-                          InteropCommitPhase,
-                          HijackPhase,
-                          MiniboxInjectPhase,
-                          MiniboxBridgePhase,
-                          MiniboxCoercePhase,
-                          MiniboxCommitPhase,
-                          TweakErasurePhase,
-                          CompileTimeOnlyAddTagsPhase,
-                          CompileTimeOnlyRemoveTagsPhase)
+    List[(PluginComponent, String)](
+         PreTyperPhase                  -> "[miniboxing] adapt symbol flags for the REPL",
+         PostTyperPhase                 -> "[miniboxing] adapt symbol flags for the REPL",
+         InteropInjectPhase             -> "[miniboxing] introduce enchanced miniboxing library",
+         PreparePhase                   -> "[miniboxing] normalize the Scala AST",
+         InteropBridgePhase             -> "[miniboxing] introduce bridges for the miniboxed library",
+         InteropCoercePhase             -> "[miniboxing] adapt Scala entities to the miniboxed library",
+         InteropCommitPhase             -> "[miniboxing] transform Scala entities to the miniboxed library",
+         HijackPhase                    -> "[miniboxing] allow -P:minibox:mark-all to hijack @specialized",
+         MiniboxInjectPhase             -> "[miniboxing] duplicate classes and methods",
+         MiniboxBridgePhase             -> "[miniboxing] introduce bridges where necessary",
+         MiniboxCoercePhase             -> "[miniboxing] adapt the tree to the miniboxed representation",
+         MiniboxCommitPhase             -> "[miniboxing] introduce the optimizeed miniboxed data representation",
+         TweakErasurePhase              -> "[miniboxing] make erasure play well with miniboxing",
+         CompileTimeOnlyAddTagsPhase    -> "[miniboxing] prevent stock Scala from compiling against miniboxed code",
+         CompileTimeOnlyRemoveTagsPhase -> "[miniboxing] prevent stock Scala from compiling against miniboxed code")
   }
+
+  lazy val components: List[PluginComponent] = componentsWithDescriptions.map(_._1)
 
   // LDL Coercions
   global.addAnnotationChecker(MiniboxCoercePhase.StorageAnnotationChecker)
@@ -97,7 +102,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     val global: Minibox.this.global.type = Minibox.this.global
   }
 
-  override def processOptions(options: List[String], error: String => Unit) {
+  override def processOptions(options: List[String], error: String => Unit): Unit = {
 
     import common._
 
@@ -195,6 +200,30 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           error("Miniboxing: Option not understood: " + option)
       }
     }
+  }
+
+  // inject phase descriptions
+  var phasesSetMapGetter: Method = null
+  var phasesDescMapGetter: Method = null
+  var phasesDescMap: mutable.Map[SubComponent, String] = null
+  var phasesSet: mutable.Set[SubComponent] = null
+
+  try {
+    phasesSetMapGetter = classOf[Global].getDeclaredMethod("phasesSet")
+    phasesDescMapGetter = classOf[Global].getDeclaredMethod("phasesDescMap")
+    phasesDescMap = phasesDescMapGetter.invoke(global).asInstanceOf[mutable.Map[SubComponent, String]]
+    phasesSet = phasesSetMapGetter.invoke(global).asInstanceOf[mutable.Set[SubComponent]]
+
+    // get the miniboxing phase descriptions in:
+    for ((comp, descr) <- componentsWithDescriptions) {
+      if (settings.showPhases.value)
+        phasesSet += comp
+      phasesDescMap(comp) = descr
+    }
+  } catch {
+    case t: Throwable =>
+      global.reporter.warning(NoPosition, "Could not hook into the Scala compiler to inject phase descriptions. " +
+                                          "The error was: " + t.getMessage)
   }
 
   override val optionsHelp: Option[String] = Some(Seq(
