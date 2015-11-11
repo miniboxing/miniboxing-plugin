@@ -16,14 +16,13 @@ package metadata
 
 import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
-import miniboxing.runtime.MiniboxConstants._
+import miniboxing.internal.MiniboxConstants._
 
 trait MiniboxDefinitions extends ScalacVersion {
   this: PluginComponent =>
 
   import global._
   import definitions._
-  import miniboxing.runtime.MiniboxConstants._
 
   // Specialization/normalization info:
 
@@ -106,7 +105,7 @@ trait MiniboxDefinitions extends ScalacVersion {
   // Library:
 
   // array ops
-  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArray")
+  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArray")
   trait array {
     def owner: Symbol
     lazy val mbarray_update  = definitions.getMember(owner, newTermName("mbarray_update_minibox"))
@@ -114,8 +113,8 @@ trait MiniboxDefinitions extends ScalacVersion {
   }
 
   object array_1way        extends array { lazy val owner  = MiniboxArrayObjectSymbol }
-  object array_2way_long   extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArrayLong") }
-  object array_2way_double extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxArrayDouble") }
+  object array_2way_long   extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayLong") }
+  object array_2way_double extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayDouble") }
 
   def array(repr: Symbol): array = repr match {
     case _ if !flags.flag_two_way => array_1way
@@ -137,9 +136,9 @@ trait MiniboxDefinitions extends ScalacVersion {
     lazy val notag_==     = definitions.getMember(owner, newTermName("mboxed_eqeq_notag"))
     lazy val tag_toString = definitions.getMember(owner, newTermName("mboxed_toString"))
   }
-  object ops_1way        extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatch") }
-  object ops_2way_long   extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatchLong") }
-  object ops_2way_double extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxDispatchDouble")}
+  object ops_1way        extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.internal.MiniboxDispatch") }
+  object ops_2way_long   extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.internal.MiniboxDispatchLong") }
+  object ops_2way_double extends ops { lazy val owner = rootMirror.getRequiredModule("miniboxing.internal.MiniboxDispatchDouble")}
 
   def ops(repr: Symbol): ops = repr match {
     case _ if !flags.flag_two_way => ops_1way
@@ -154,9 +153,9 @@ trait MiniboxDefinitions extends ScalacVersion {
   def tag_toString(repr: Symbol) = ops(repr).tag_toString
 
   // conversions
-  lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversions")
-  lazy val ConversionsObjectLongSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversionsLong")
-  lazy val ConversionsObjectDoubleSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxConversionsDouble")
+  lazy val ConversionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxConversions")
+  lazy val ConversionsObjectLongSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxConversionsLong")
+  lazy val ConversionsObjectDoubleSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxConversionsDouble")
   trait convs {
     def owner: Symbol
     lazy val box2minibox = definitions.getMember(owner, newTermName("box2minibox_tt"))
@@ -259,7 +258,7 @@ trait MiniboxDefinitions extends ScalacVersion {
   lazy val numberOfTargsForTupleXClass = Map(Tuple1Class -> 1, Tuple2Class -> 2)
 
 
-  lazy val MbTupleModule = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedTuple")
+  lazy val MbTupleModule = rootMirror.getRequiredModule("miniboxing.internal.MiniboxedTuple")
 
   def tupleConstructor(n: Int, repr: List[String]) = definitions.getMember(MbTupleModule, newTermName(s"newTuple$n${repr.map("_"+_).mkString}"))
   lazy val MbTuple1Constructors: Map[Symbol, Symbol] =

@@ -35,15 +35,15 @@ trait InteropDefinitions {
   lazy val FunctionSyms = List(Function0Class, Function1Class, Function2Class)
   lazy val AbstractFunctions = List(AbstractFunction0Class, AbstractFunction1Class, AbstractFunction2Class)
 
-  lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction0")
-  lazy val MiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction1")
-  lazy val MiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.runtime.MiniboxedFunction2")
+  lazy val MiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.internal.MiniboxedFunction0")
+  lazy val MiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.internal.MiniboxedFunction1")
+  lazy val MiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.internal.MiniboxedFunction2")
   lazy val MiniboxedFunction0PolyTpe = PolyType(MiniboxedFunction0Class.typeParams, MiniboxedFunction0Class.tpe)
   lazy val MiniboxedFunction1PolyTpe = PolyType(MiniboxedFunction1Class.typeParams, MiniboxedFunction1Class.tpe)
   lazy val MiniboxedFunction2PolyTpe = PolyType(MiniboxedFunction2Class.typeParams, MiniboxedFunction2Class.tpe)
-  lazy val AbstractMiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction0")
-  lazy val AbstractMiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction1")
-  lazy val AbstractMiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.runtime.AbstractMiniboxedFunction2")
+  lazy val AbstractMiniboxedFunction0Class = global.rootMirror.getRequiredClass("miniboxing.internal.AbstractMiniboxedFunction0")
+  lazy val AbstractMiniboxedFunction1Class = global.rootMirror.getRequiredClass("miniboxing.internal.AbstractMiniboxedFunction1")
+  lazy val AbstractMiniboxedFunction2Class = global.rootMirror.getRequiredClass("miniboxing.internal.AbstractMiniboxedFunction2")
   lazy val AbstractMiniboxedFunction0PolyTpe = PolyType(AbstractMiniboxedFunction0Class.typeParams, AbstractMiniboxedFunction0Class.tpe)
   lazy val AbstractMiniboxedFunction1PolyTpe = PolyType(AbstractMiniboxedFunction1Class.typeParams, AbstractMiniboxedFunction1Class.tpe)
   lazy val AbstractMiniboxedFunction2PolyTpe = PolyType(AbstractMiniboxedFunction2Class.typeParams, AbstractMiniboxedFunction2Class.tpe)
@@ -53,7 +53,7 @@ trait InteropDefinitions {
         AbstractFunction1Class -> AbstractMiniboxedFunction1PolyTpe,
         AbstractFunction2Class -> AbstractMiniboxedFunction2PolyTpe)
 
-  lazy val FunctionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.runtime.MiniboxedFunctionBridge")
+  lazy val FunctionsObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxedFunctionBridge")
 
   //   def marker_mbfun2fun[T](t: T @mbFunction): T
   lazy val marker_mbfun2fun =
@@ -157,16 +157,16 @@ trait InteropDefinitions {
 
   lazy val directMethodSymbols = directMethodUpdate.keySet.toList
 
-  lazy val nobridgeClass = global.rootMirror.getRequiredClass("miniboxing.runtime.nobridge")
+  lazy val nobridgeClass = global.rootMirror.getRequiredClass("miniboxing.internal.nobridge")
   lazy val nobridgeTpe = nobridgeClass.tpe
 
   // Type classes
 
-  lazy val MiniboxedNumericClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedNumeric")
-  lazy val MiniboxedOrderingClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdering")
-  lazy val MiniboxedOrderedClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedOrdered")
-  lazy val MiniboxedIntegralClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedIntegral")
-  lazy val MiniboxedFractionalClass = global.rootMirror.getRequiredClass("miniboxing.runtime.math.MiniboxedFractional")
+  lazy val MiniboxedNumericClass = global.rootMirror.getRequiredClass("scala.MiniboxedNumeric")
+  lazy val MiniboxedOrderingClass = global.rootMirror.getRequiredClass("scala.MiniboxedOrdering")
+  lazy val MiniboxedOrderedClass = global.rootMirror.getRequiredClass("scala.MiniboxedOrdered")
+  lazy val MiniboxedIntegralClass = global.rootMirror.getRequiredClass("scala.MiniboxedIntegral")
+  lazy val MiniboxedFractionalClass = global.rootMirror.getRequiredClass("scala.MiniboxedFractional")
   lazy val NumericClass = global.rootMirror.getRequiredClass("scala.math.Numeric")
   lazy val OrderingClass = global.rootMirror.getRequiredClass("scala.math.Ordering")
   lazy val OrderedClass = global.rootMirror.getRequiredClass("scala.math.Ordered")

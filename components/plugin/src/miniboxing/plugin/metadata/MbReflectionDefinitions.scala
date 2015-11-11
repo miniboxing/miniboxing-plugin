@@ -24,7 +24,7 @@ trait MbReflectionDefinitions {
 
   import global._
   import definitions._
-  import miniboxing.runtime.MiniboxConstants._
+  import miniboxing.internal.MiniboxConstants._
 
   // user-facing methods:
   lazy val MiniboxingReflection     = rootMirror.getRequiredModule("scala.MbReflection")
@@ -34,7 +34,7 @@ trait MbReflectionDefinitions {
   lazy val reflectionMethods        = Set(reifiedType, storageType, isMiniboxed)
 
   // implementations:
-  lazy val MiniboxingReflectionImpl = rootMirror.getRequiredModule("miniboxing.runtime.reflect.MbReflectionImpl")
+  lazy val MiniboxingReflectionImpl = rootMirror.getRequiredModule("miniboxing.internal.reflect.MbReflectionImpl")
   lazy val reifiedTypeImpl          = definitions.getMember(MiniboxingReflectionImpl, newTermName("reifiedTypeImpl"))
   lazy val storageTypeImpl          = definitions.getMember(MiniboxingReflectionImpl, newTermName("storageTypeImpl"))
 

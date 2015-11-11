@@ -35,7 +35,7 @@ trait MbArrayDefinitions {
   lazy val MbArray_applyconstructor  = definitions.getMember(MbArrayModule, newTermName("apply"))
 
   // optimized alternatives:
-  lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.runtime.array.MbArrayOpts")
+  lazy val MbArrayOpts    = global.rootMirror.getRequiredModule("miniboxing.internal.array.MbArrayOpts")
   lazy val MbArrayOpts_apply: Map[Symbol, Symbol] =
     Map(LongClass   -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_J")),
         DoubleClass -> definitions.getMember(MbArrayOpts, newTermName("mbArray_apply_D")))

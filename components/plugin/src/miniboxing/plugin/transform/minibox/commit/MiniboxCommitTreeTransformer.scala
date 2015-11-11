@@ -17,7 +17,7 @@ package commit
 
 import scala.tools.nsc.transform.TypingTransformers
 import scala.tools.nsc.typechecker._
-import miniboxing.runtime.MiniboxConstants
+import miniboxing.internal.MiniboxConstants
 
 trait MiniboxCommitTreeTransformer extends TypingTransformers {
   self: MiniboxCommitComponent =>
