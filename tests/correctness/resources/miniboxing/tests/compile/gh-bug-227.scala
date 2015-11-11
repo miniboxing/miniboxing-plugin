@@ -1,5 +1,5 @@
 object Test {
-	def foo[T: Numeric] = implicitly[miniboxing.runtime.math.MiniboxedNumeric[T]]
-	def foo[T: Fractional] = implicitly[miniboxing.runtime.math.MiniboxedFractional[T]]
-	def foo[T: Integral] = implicitly[miniboxing.runtime.math.MiniboxedIntegral[T]]
+  def foo[T: Numeric] = implicitly[MiniboxedNumeric[T]]
+  def foo[T: Fractional] = implicitly[MiniboxedFractional[T]]
+  def foo[T: Integral] = implicitly[MiniboxedIntegral[T]]
 }

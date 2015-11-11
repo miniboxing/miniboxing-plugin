@@ -5,9 +5,9 @@ package respec {
     def apply(i: Int): T;
     def apply$D(T$TypeTag: Byte, i: Int): Double;
     def apply$J(T$TypeTag: Byte, i: Int): Long;
-    def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B];
-    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B];
-    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[T,B]): respec.Vec[B]
+    @miniboxing.internal.nobridge def map[@miniboxed B](f: miniboxing.internal.MiniboxedFunction1[T,B]): respec.Vec[B];
+    @miniboxing.internal.nobridge def map$n$D[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[T,B]): respec.Vec[B];
+    @miniboxing.internal.nobridge def map$n$J[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[T,B]): respec.Vec[B]
   };
   final class Vec$D[Tsp] extends Object with respec.Vec[Tsp] {
     <paramaccessor> private[this] val respec|Vec$D|T$TypeTag: Byte = _;
@@ -20,7 +20,7 @@ package respec {
     def apply(i: Int): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp](Vec$D.this.apply$D(Vec$D.this.respec|Vec$D|T$TypeTag, i), Vec$D.this.respec|Vec$D|T$TypeTag);
     def apply$D(T$TypeTag: Byte, i: Int): Double = MbArrayOpts.this.mbArray_apply_D[Tsp](Vec$D.this.elems, i, T$TypeTag);
     def apply$J(T$TypeTag: Byte, i: Int): Long = MiniboxConversions.this.unreachableConversion[Nothing]("Double", "Long");
-    def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map[@miniboxed B](f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = scala.MbArray.empty[B](Vec$D.this.elems.length());
       var i: Int = 0;
       while$1(){
@@ -37,7 +37,7 @@ package respec {
       };
       new respec.Vec$L[B](a)
     };
-    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$D[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$D.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -54,7 +54,7 @@ package respec {
       };
       new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$J[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$D.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -83,7 +83,7 @@ package respec {
     def apply(i: Int): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp](Vec$J.this.apply$J(Vec$J.this.respec|Vec$J|T$TypeTag, i), Vec$J.this.respec|Vec$J|T$TypeTag);
     def apply$D(T$TypeTag: Byte, i: Int): Double = MiniboxConversions.this.unreachableConversion[Nothing]("Long", "Double");
     def apply$J(T$TypeTag: Byte, i: Int): Long = MbArrayOpts.this.mbArray_apply_J[Tsp](Vec$J.this.elems, i, T$TypeTag);
-    def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map[@miniboxed B](f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = scala.MbArray.empty[B](Vec$J.this.elems.length());
       var i: Int = 0;
       while$1(){
@@ -100,7 +100,7 @@ package respec {
       };
       new respec.Vec$L[B](a)
     };
-    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$D[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$J.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -117,7 +117,7 @@ package respec {
       };
       new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$J[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$J.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -145,7 +145,7 @@ package respec {
     def apply(i: Int): Tsp = Vec$L.this.elems.apply(i);
     def apply$D(T$TypeTag: Byte, i: Int): Double = MiniboxConversionsDouble.this.box2minibox_tt[Tsp](Vec$L.this.apply(i), T$TypeTag);
     def apply$J(T$TypeTag: Byte, i: Int): Long = MiniboxConversionsLong.this.box2minibox_tt[Tsp](Vec$L.this.apply(i), T$TypeTag);
-    def map[@miniboxed B](f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map[@miniboxed B](f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = scala.MbArray.empty[B](Vec$L.this.elems.length());
       var i: Int = 0;
       while$1(){
@@ -162,7 +162,7 @@ package respec {
       };
       new respec.Vec$L[B](a)
     };
-    def map$n$D[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$D[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_D[B](Vec$L.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -179,7 +179,7 @@ package respec {
       };
       new respec.Vec$D[B](B$TypeTag, a)
     };
-    def map$n$J[B](B$TypeTag: Byte, f: miniboxing.runtime.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
+    @miniboxing.internal.nobridge def map$n$J[B](B$TypeTag: Byte, f: miniboxing.internal.MiniboxedFunction1[Tsp,B]): respec.Vec[B] = {
       val a: MbArray[B] = MbArrayOpts.this.mbArray_empty_J[B](Vec$L.this.elems.length(), B$TypeTag);
       var i: Int = 0;
       while$1(){
@@ -221,7 +221,7 @@ package respec {
     <stable> <accessor> def doubleVec(): respec.Vec[Double] = Test.this.doubleVec;
     scala.this.Predef.println("benchmark");
     Test.this.doubleVec().map$n$D[Double](8, {
-      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$DD[Double,Double] with Serializable {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1$DD[Double,Double] with Serializable {
         def <init>(): anonymous class $anon = {
           $anonfun.super.<init>(8, 8);
           ()

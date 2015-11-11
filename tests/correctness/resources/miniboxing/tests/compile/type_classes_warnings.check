@@ -1,42 +1,42 @@
-newSource1.scala:1: warning: Upgrade from scala.math.Numeric[G] to miniboxing.runtime.math.MiniboxedNumeric[G] to benefit from miniboxing specialization.
+newSource1.scala:1: warning: Upgrade from trait Numeric[G] to class MiniboxedNumeric[G] to benefit from miniboxing specialization.
 class ImplicitNumeric[@miniboxed G](implicit n: Numeric[G]) {}
                                                 ^
-newSource1.scala:2: warning: Upgrade from scala.math.Ordering[G] to miniboxing.runtime.math.MiniboxedOrdering[G] to benefit from miniboxing specialization.
+newSource1.scala:2: warning: Upgrade from trait Ordering[G] to class MiniboxedOrdering[G] to benefit from miniboxing specialization.
 class ImplicitOrdering[@miniboxed G](implicit n: Ordering[G]) {}
                                                  ^
-newSource1.scala:3: warning: Upgrade from scala.math.Ordered[G] to miniboxing.runtime.math.MiniboxedOrdered[G] to benefit from miniboxing specialization.
+newSource1.scala:3: warning: Upgrade from trait Ordered[G] to class MiniboxedOrdered[G] to benefit from miniboxing specialization.
 class ImplicitOrdered[@miniboxed G](implicit n: Ordered[G]) {}
                                                 ^
-newSource1.scala:4: warning: Upgrade from scala.math.Integral[G] to miniboxing.runtime.math.MiniboxedIntegral[G] to benefit from miniboxing specialization.
+newSource1.scala:4: warning: Upgrade from trait Integral[G] to class MiniboxedIntegral[G] to benefit from miniboxing specialization.
 class ImplicitIntegral[@miniboxed G](implicit n: Integral[G]) {}
                                                  ^
-newSource1.scala:5: warning: Upgrade from scala.math.Fractional[G] to miniboxing.runtime.math.MiniboxedFractional[G] to benefit from miniboxing specialization.
+newSource1.scala:5: warning: Upgrade from trait Fractional[G] to class MiniboxedFractional[G] to benefit from miniboxing specialization.
 class ImplicitFractional[@miniboxed G](implicit n: Fractional[G]) {}
                                                    ^
-newSource1.scala:13: warning: Upgrade from scala.math.Numeric[Z] to miniboxing.runtime.math.MiniboxedNumeric[Z] to benefit from miniboxing specialization.
+newSource1.scala:13: warning: Upgrade from trait Numeric[Z] to class MiniboxedNumeric[Z] to benefit from miniboxing specialization.
 abstract class MyNumeric[@miniboxed Z] extends Numeric[Z] {}
                                                ^
-newSource1.scala:14: warning: Upgrade from scala.math.Ordering[Z] to miniboxing.runtime.math.MiniboxedOrdering[Z] to benefit from miniboxing specialization.
+newSource1.scala:14: warning: Upgrade from trait Ordering[Z] to class MiniboxedOrdering[Z] to benefit from miniboxing specialization.
 abstract class MyOrdering[@miniboxed Z] extends Ordering[Z] {}
                                                 ^
-newSource1.scala:15: warning: Upgrade from scala.math.Ordered[Z] to miniboxing.runtime.math.MiniboxedOrdered[Z] to benefit from miniboxing specialization.
+newSource1.scala:15: warning: Upgrade from trait Ordered[Z] to class MiniboxedOrdered[Z] to benefit from miniboxing specialization.
 abstract class MyOrdered[@miniboxed Z] extends Ordered[Z] {}
                                                ^
-newSource1.scala:16: warning: Upgrade from scala.math.Integral[Z] to miniboxing.runtime.math.MiniboxedIntegral[Z] to benefit from miniboxing specialization.
+newSource1.scala:16: warning: Upgrade from trait Integral[Z] to class MiniboxedIntegral[Z] to benefit from miniboxing specialization.
 abstract class MyIntegral[@miniboxed Z] extends Integral[Z] {}
                                                 ^
-newSource1.scala:17: warning: Upgrade from scala.math.Fractional[Z] to miniboxing.runtime.math.MiniboxedFractional[Z] to benefit from miniboxing specialization.
+newSource1.scala:17: warning: Upgrade from trait Fractional[Z] to class MiniboxedFractional[Z] to benefit from miniboxing specialization.
 abstract class MyFractional[@miniboxed Z] extends Fractional[Z] {}
                                                   ^
-newSource1.scala:21: warning: Upgrade from scala.math.Numeric[T] to miniboxing.runtime.math.MiniboxedNumeric[T] to benefit from miniboxing specialization.
+newSource1.scala:21: warning: Upgrade from trait Numeric[T] to class MiniboxedNumeric[T] to benefit from miniboxing specialization.
   def square1[@miniboxed T](a:T)(implicit n: Numeric[T]): T = {
                                              ^
-newSource1.scala:25: warning: Upgrade from scala.math.Ordering[T] to miniboxing.runtime.math.MiniboxedOrdering[T] to benefit from miniboxing specialization.
+newSource1.scala:25: warning: Upgrade from trait Ordering[T] to class MiniboxedOrdering[T] to benefit from miniboxing specialization.
   def less1[@miniboxed T](a:T, b: T)(implicit o: Ordering[T]): Boolean = {
                                                  ^
-newSource1.scala:29: warning: Upgrade from scala.math.Integral[T] to miniboxing.runtime.math.MiniboxedIntegral[T] to benefit from miniboxing specialization.
+newSource1.scala:29: warning: Upgrade from trait Integral[T] to class MiniboxedIntegral[T] to benefit from miniboxing specialization.
   def square2[@miniboxed T](a:T)(implicit n: Integral[T]): T = {
                                              ^
-newSource1.scala:33: warning: Upgrade from scala.math.Fractional[T] to miniboxing.runtime.math.MiniboxedFractional[T] to benefit from miniboxing specialization.
+newSource1.scala:33: warning: Upgrade from trait Fractional[T] to class MiniboxedFractional[T] to benefit from miniboxing specialization.
   def square3[@miniboxed T](a:T)(implicit n: Fractional[T]): T = {
                                              ^

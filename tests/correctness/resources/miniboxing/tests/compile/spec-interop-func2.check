@@ -6,7 +6,7 @@ package miniboxing.tests.compile.spec.interop.functions2 {
       ()
     };
     def main(args: Array[String]): Unit = {
-      val f1: miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
+      val f1: miniboxing.internal.MiniboxedFunction1[Int,Int] = {
         @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>();
@@ -17,7 +17,7 @@ package miniboxing.tests.compile.spec.interop.functions2 {
         MiniboxedFunctionBridge.this.function1_bridge[Int, Int]((new anonymous class $anon(): Int => Int))
       };
       f1.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(4));
-      val f2: miniboxing.runtime.MiniboxedFunction1[Int,Int] = Fuctions2.this.foo();
+      val f2: miniboxing.internal.MiniboxedFunction1[Int,Int] = Fuctions2.this.foo();
       f2.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(3));
       val fl: List[Int => Int] = immutable.this.List.apply[Int => Int](scala.this.Predef.wrapRefArray[Int => Int](Array[Int => Int]{f2.extractFunctionX()}));
       {
@@ -25,7 +25,7 @@ package miniboxing.tests.compile.spec.interop.functions2 {
         ()
       }
     };
-    def foo(): miniboxing.runtime.MiniboxedFunction1[Int,Int] = {
+    @miniboxing.internal.nobridge def foo(): miniboxing.internal.MiniboxedFunction1[Int,Int] = {
       @SerialVersionUID(0) final <synthetic> class $anonfun extends scala.runtime.AbstractFunction1[Int,Int] with Serializable {
         def <init>(): anonymous class $anon = {
           $anonfun.super.<init>();

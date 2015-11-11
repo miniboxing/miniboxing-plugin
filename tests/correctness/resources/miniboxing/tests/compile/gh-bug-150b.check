@@ -18,8 +18,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
         ()
       };
       def foo[B](b: B): Unit = {
-        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2$DLL[Asp,B,B] with Serializable {
+        val f6: miniboxing.internal.MiniboxedFunction2[Asp,B,B] = {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction2$DLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>(F$D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$D|A$TypeTag);
               ()
@@ -39,8 +39,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
         ()
       };
       def foo[B](b: B): Unit = {
-        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2$JLL[Asp,B,B] with Serializable {
+        val f6: miniboxing.internal.MiniboxedFunction2[Asp,B,B] = {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction2$JLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>(F$J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$J|A$TypeTag);
               ()
@@ -59,8 +59,8 @@ package miniboxing.tests.compile.spec.interop.functions3 {
         ()
       };
       def foo[B](b: B): Unit = {
-        val f6: miniboxing.runtime.MiniboxedFunction2[Asp,B,B] = {
-          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction2$LLL[Asp,B,B] with Serializable {
+        val f6: miniboxing.internal.MiniboxedFunction2[Asp,B,B] = {
+          @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction2$LLL[Asp,B,B] with Serializable {
             def <init>(): anonymous class $anon = {
               $anonfun.super.<init>();
               ()

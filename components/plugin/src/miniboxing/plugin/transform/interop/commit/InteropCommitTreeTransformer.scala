@@ -179,7 +179,7 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
               // TODO:
               // (1) move to commit
               // (2) use a warning, no custom code!
-              minibox.suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol.fullName + "[" + targ + "]" + " to " + TypeClasses(tree0.symbol).fullName + "[" + targ + "] to benefit from miniboxing specialization. " )
+              minibox.suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol + "[" + targ + "]" + " to " + TypeClasses(tree0.symbol) + "[" + targ + "] to benefit from miniboxing specialization. " )
             super.transform(tree0)
 
           case _ =>

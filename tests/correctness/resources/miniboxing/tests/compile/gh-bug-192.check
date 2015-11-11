@@ -8,8 +8,8 @@ package miniboxing.tests.compile.bug192 {
       Test.super.<init>();
       ()
     };
-    def id(): miniboxing.runtime.MiniboxedFunction1 = {
-      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ with Serializable {
+    @miniboxing.internal.nobridge def id(): miniboxing.internal.MiniboxedFunction1 = {
+      @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1$JJ with Serializable {
         def <init>($outer: miniboxing.tests.compile.bug192.Test): anonymous class $anon = {
           $anonfun.super.<init>(5, 5);
           ()

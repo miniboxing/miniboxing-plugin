@@ -6,14 +6,14 @@ package miniboxing.tests.bug115 {
       ()
     };
     def foo(f: Int => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, f).apply$JJ(5, 5, MiniboxConversions.this.int2minibox(3))));
-    def bar(f: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Unit = Test.this.foo(f.extractFunctionX());
+    @miniboxing.internal.nobridge def bar(f: miniboxing.internal.MiniboxedFunction1[Int,Int]): Unit = Test.this.foo(f.extractFunctionX());
     def baz1(x: () => Int): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(MiniboxedFunctionBridge.this.function0_opt_bridge_long[Int](5, x).apply$J(5)));
     def baz2(x: () => Int): Unit = ();
-    def zab1(x: miniboxing.runtime.MiniboxedFunction0[Int]): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(x.apply$J(5)));
-    def zab2(x: miniboxing.runtime.MiniboxedFunction0[Int]): Unit = ();
+    @miniboxing.internal.nobridge def zab1(x: miniboxing.internal.MiniboxedFunction0[Int]): Unit = scala.this.Predef.println(MiniboxConversions.this.minibox2int(x.apply$J(5)));
+    @miniboxing.internal.nobridge def zab2(x: miniboxing.internal.MiniboxedFunction0[Int]): Unit = ();
     def main(args: Array[String]): Unit = {
       Test.this.foo({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
@@ -24,7 +24,7 @@ package miniboxing.tests.bug115 {
         new anonymous class $anon().extractFunctionX()
       });
       Test.this.bar({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
@@ -35,7 +35,7 @@ package miniboxing.tests.bug115 {
         new anonymous class $anon()
       });
       val f: Int => Int = {
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1$JJ[Int,Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5, 5);
             ()
@@ -48,7 +48,7 @@ package miniboxing.tests.bug115 {
       Test.this.foo(f);
       Test.this.bar(MiniboxedFunctionBridge.this.function1_opt_bridge_long_long[Int, Int](5, 5, f));
       Test.this.baz1({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction0$J[Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
@@ -62,7 +62,7 @@ package miniboxing.tests.bug115 {
         new anonymous class $anon().extractFunctionX()
       });
       Test.this.baz2({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction0$J[Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
@@ -76,7 +76,7 @@ package miniboxing.tests.bug115 {
         new anonymous class $anon().extractFunctionX()
       });
       Test.this.zab1({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction0$J[Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()
@@ -90,7 +90,7 @@ package miniboxing.tests.bug115 {
         new anonymous class $anon()
       });
       Test.this.zab2({
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction0$J[Int] with Serializable {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction0$J[Int] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>(5);
             ()

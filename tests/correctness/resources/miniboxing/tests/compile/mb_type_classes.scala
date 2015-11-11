@@ -1,7 +1,5 @@
 package miniboxing.tests.compile.typeclasses
 
-import miniboxing.runtime.math._
-
 object Test {
 
   object TestNumeric {
@@ -20,7 +18,7 @@ object Test {
       def compare(x: String, y: String): Int = ???
     }
 
-    def foo[@miniboxed T: MiniboxedNumeric] = 
+    def foo[@miniboxed T: MiniboxedNumeric] =
       println(implicitly[MiniboxedNumeric[T]].getClass)
     def bar[T: Numeric] = foo[T]
   }

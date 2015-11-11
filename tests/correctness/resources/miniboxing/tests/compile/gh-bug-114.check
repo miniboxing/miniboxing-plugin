@@ -7,8 +7,8 @@ package miniboxing.tests.correctness.bug114 {
       ()
     };
     def method(): T = {
-      val foo: miniboxing.runtime.MiniboxedFunction1[T,T] = {
-        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.runtime.AbstractMiniboxedFunction1[T,T] with Serializable {
+      val foo: miniboxing.internal.MiniboxedFunction1[T,T] = {
+        @SerialVersionUID(0) final <synthetic> class $anonfun extends miniboxing.internal.AbstractMiniboxedFunction1[T,T] with Serializable {
           def <init>(): anonymous class $anon = {
             $anonfun.super.<init>();
             ()

@@ -5,7 +5,7 @@ package <empty> {
       D.super.<init>();
       ()
     };
-    override def foo(t: miniboxing.runtime.MiniboxedFunction1[Int,Int]): Nothing = scala.this.Predef.???();
+    @miniboxing.internal.nobridge override def foo(t: miniboxing.internal.MiniboxedFunction1[Int,Int]): Nothing = scala.this.Predef.???();
     @scala.annotation.bridge override def foo(t: Int => Int): Nothing = D.this.foo(MiniboxedFunctionBridge.this.function1_bridge[Int, Int](t))
   }
 }

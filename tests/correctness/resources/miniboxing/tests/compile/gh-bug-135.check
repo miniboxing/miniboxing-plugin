@@ -12,7 +12,7 @@ package miniboxing.tests.compile.bug135 {
             $anonfun.super.<init>();
             ()
           };
-          final override def applyOrElse[A1 <: Int, B1 >: Int](x1: A1, default: miniboxing.runtime.MiniboxedFunction1[A1,B1]): B1 = {
+          @miniboxing.internal.nobridge final override def applyOrElse[A1 <: Int, B1 >: Int](x1: A1, default: miniboxing.internal.MiniboxedFunction1[A1,B1]): B1 = {
             case <synthetic> val x1: Int = ((x1.asInstanceOf[Int](): Int): Int @unchecked);
             x1 match {
               case 0 => 1
