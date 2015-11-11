@@ -1,9 +1,9 @@
 package miniboxing.benchmarks.hardcoded.linear
 
 import miniboxing.runtime.alternative.MiniboxArray_Linear._
-import miniboxing.runtime.MiniboxConstants._
-import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxDispatch._
+import miniboxing.internal.MiniboxConstants._
+import miniboxing.internal.MiniboxConversions._
+import miniboxing.internal.MiniboxDispatch._
 import scala.Int.int2long
 
 /*

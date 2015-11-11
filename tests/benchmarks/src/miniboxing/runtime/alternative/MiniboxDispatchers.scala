@@ -1,14 +1,14 @@
 package miniboxing.runtime.alternative
 
-import miniboxing.runtime.MiniboxConstants.DOUBLE
-import miniboxing.runtime.MiniboxConstants.INT
-import miniboxing.runtime.MiniboxConstants.LONG
-import miniboxing.runtime.MiniboxConversions.double2minibox
-import miniboxing.runtime.MiniboxConversions.int2minibox
-import miniboxing.runtime.MiniboxConversions.long2minibox
-import miniboxing.runtime.MiniboxConversions.minibox2double
-import miniboxing.runtime.MiniboxConversions.minibox2int
-import miniboxing.runtime.MiniboxConversions.minibox2long
+import miniboxing.internal.MiniboxConstants.DOUBLE
+import miniboxing.internal.MiniboxConstants.INT
+import miniboxing.internal.MiniboxConstants.LONG
+import miniboxing.internal.MiniboxConversions.double2minibox
+import miniboxing.internal.MiniboxConversions.int2minibox
+import miniboxing.internal.MiniboxConversions.long2minibox
+import miniboxing.internal.MiniboxConversions.minibox2double
+import miniboxing.internal.MiniboxConversions.minibox2int
+import miniboxing.internal.MiniboxConversions.minibox2long
 
 abstract class Dispatcher[T] {
 
@@ -31,8 +31,8 @@ abstract class Dispatcher[T] {
 
 object Dispatchers {
   object IntDispatcher extends Dispatcher[Int] {
-    import miniboxing.runtime.MiniboxConstants._
-    import miniboxing.runtime.MiniboxConversions._
+    import miniboxing.internal.MiniboxConstants._
+    import miniboxing.internal.MiniboxConversions._
 
     def tag: Int = INT
     def mbarray_new(len: Int): Array[Int] = new Array[Int](len)
@@ -45,7 +45,7 @@ object Dispatchers {
     def box2minibox(a: Any): Long = int2minibox(a.asInstanceOf[Int])
     def mboxed_toString(x: Long): String = minibox2int(x).toString
     def mboxed_eqeq(x: Long, y: Long, ytag: Byte): Boolean = if (ytag == INT) y == x else {
-      import miniboxing.runtime.MiniboxConversions
+      import miniboxing.internal.MiniboxConversions
       MiniboxConversions.minibox2box(x, INT) == MiniboxConversions.minibox2box(y, ytag)
     }
     def mboxed_eqeq(x: Long, y: Long): Boolean = x == y
@@ -53,8 +53,8 @@ object Dispatchers {
   }
 
   object DoubleDispatcher extends Dispatcher[Double] {
-    import miniboxing.runtime.MiniboxConstants._
-    import miniboxing.runtime.MiniboxConversions._
+    import miniboxing.internal.MiniboxConstants._
+    import miniboxing.internal.MiniboxConversions._
 
     def tag: Int = DOUBLE
     def mbarray_new(len: Int): Array[Double] = new Array[Double](len)
@@ -67,7 +67,7 @@ object Dispatchers {
     def box2minibox(a: Any): Long = double2minibox(a.asInstanceOf[Double])
     def mboxed_toString(x: Long): String = minibox2double(x).toString
     def mboxed_eqeq(x: Long, y: Long, ytag: Byte): Boolean = if (ytag == DOUBLE) y == x else {
-      import miniboxing.runtime.MiniboxConversions
+      import miniboxing.internal.MiniboxConversions
       MiniboxConversions.minibox2box(x, DOUBLE) == MiniboxConversions.minibox2box(y, ytag)
     }
     def mboxed_eqeq(x: Long, y: Long): Boolean = x == y
@@ -75,8 +75,8 @@ object Dispatchers {
   }
 
   object LongDispatcher extends Dispatcher[Long] {
-    import miniboxing.runtime.MiniboxConstants._
-    import miniboxing.runtime.MiniboxConversions._
+    import miniboxing.internal.MiniboxConstants._
+    import miniboxing.internal.MiniboxConversions._
 
     def tag: Int = LONG
     def mbarray_new(len: Int): Array[Long] = new Array[Long](len)
@@ -89,7 +89,7 @@ object Dispatchers {
     def box2minibox(a: Any): Long = long2minibox(a.asInstanceOf[Long])
     def mboxed_toString(x: Long): String = minibox2long(x).toString
     def mboxed_eqeq(x: Long, y: Long, ytag: Byte): Boolean = if (ytag == LONG) y == x else {
-      import miniboxing.runtime.MiniboxConversions
+      import miniboxing.internal.MiniboxConversions
       MiniboxConversions.minibox2box(x, LONG) == MiniboxConversions.minibox2box(y, ytag)
     }
     def mboxed_eqeq(x: Long, y: Long): Boolean = x == y

@@ -1,8 +1,8 @@
 package miniboxing.benchmarks.hardcoded.java_rt_2
 
-import miniboxing.runtime.MiniboxConstants._
-import miniboxing.runtime.MiniboxConversions._
-import miniboxing.runtime.MiniboxDispatch._
+import miniboxing.internal.MiniboxConstants._
+import miniboxing.internal.MiniboxConversions._
+import miniboxing.internal.MiniboxDispatch._
 import miniboxing.classloader.MiniboxingClassLoader
 
 trait MBList[T] {

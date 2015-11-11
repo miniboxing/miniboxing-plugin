@@ -1,6 +1,6 @@
 package miniboxing.benchmarks.hardcoded.java_rt_3
 
-import miniboxing.runtime.MiniboxConstants._
+import miniboxing.internal.MiniboxConstants._
 import miniboxing.runtime.alternative.java_runtime.MiniboxConversions3._
 import miniboxing.runtime.alternative.java_runtime.MiniboxDispatch3._
 import miniboxing.classloader.MiniboxingClassLoader

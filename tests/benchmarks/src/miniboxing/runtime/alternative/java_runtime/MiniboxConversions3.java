@@ -1,6 +1,6 @@
 package miniboxing.runtime.alternative.java_runtime;
 
-import miniboxing.runtime.MiniboxConstants;
+import miniboxing.internal.MiniboxConstants;
 
 
 public class MiniboxConversions3 {

@@ -1,8 +1,8 @@
 package miniboxing.benchmarks.launch.tests
 
 import org.scalameter.api._
-import miniboxing.runtime.MiniboxConstants._
-import miniboxing.runtime.MiniboxConversions._
+import miniboxing.internal.MiniboxConstants._
+import miniboxing.internal.MiniboxConversions._
 import miniboxing.benchmarks.hardcoded.java_rt_3._
 
 trait HardcodedMiniboxingSimple_JavaRT_3 extends BaseTest {
