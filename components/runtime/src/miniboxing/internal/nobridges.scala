@@ -1,3 +1,3 @@
-package miniboxing.runtime
+package miniboxing.internal
 
 class nobridge extends annotation.Annotation

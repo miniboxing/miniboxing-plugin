@@ -10,15 +10,15 @@
 // Authors:
 //    * Milos Stojanovic
 //
-package miniboxing.runtime.math
+package scala
 
 import scala.language.implicitConversions
 
 trait MiniboxedOrdered[@miniboxed T] {
-  outer => 
-    
+  outer =>
+
   val extractOrdered: Ordered[T]
-  
+
   def compare(that: T): Int
   def <  (that: T): Boolean = (this compare that) <  0
   def >  (that: T): Boolean = (this compare that) >  0
@@ -29,8 +29,8 @@ trait MiniboxedOrdered[@miniboxed T] {
 
 object MiniboxedOrdered {
   implicit def orderingToOrdered[@miniboxed T](x: T)(implicit ord: MiniboxedOrdering[T]): MiniboxedOrdered[T] =
-    new MiniboxedOrdered[T] { 
+    new MiniboxedOrdered[T] {
       val extractOrdered: Ordered[T] = Ordered.orderingToOrdered[T](x)(ord.extractOrdering)
-      def compare(that: T): Int = ord.compare(x, that) 
+      def compare(that: T): Int = ord.compare(x, that)
     }
 }

@@ -10,9 +10,9 @@
 // Authors:
 //    * Vlad Ureche
 //
-package miniboxing.runtime;
+package miniboxing.internal;
 
-import miniboxing.runtime.MiniboxConstants;
+import miniboxing.internal.MiniboxConstants;
 
 
 public class MiniboxConversionsLong {

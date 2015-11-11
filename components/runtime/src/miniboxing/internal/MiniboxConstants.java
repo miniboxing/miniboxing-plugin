@@ -10,7 +10,7 @@
 // Authors:
 //    * Vlad Ureche
 //
-package miniboxing.runtime;
+package miniboxing.internal;
 
 public interface MiniboxConstants {
   public static final byte UNIT = 0;

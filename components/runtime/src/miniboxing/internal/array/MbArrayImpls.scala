@@ -1,4 +1,4 @@
-package miniboxing.runtime
+package miniboxing.internal
 package array
 
 import scala.collection.mutable.WrappedArray

@@ -10,8 +10,8 @@
 // Authors:
 //    * Vlad Ureche
 //
-package miniboxing.runtime;
-import miniboxing.runtime.MiniboxConstants;
+package miniboxing.internal;
+import miniboxing.internal.MiniboxConstants;
 
 public class MiniboxArrayDouble {
 

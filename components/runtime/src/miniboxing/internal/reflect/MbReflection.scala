@@ -14,11 +14,11 @@
 // Thanks to: @tixxit (Tom Switzer), @dlwh (David Hall) and @ichoran (Rex Kerr)
 // for their very good feedback!
 //
-package miniboxing.runtime
+package miniboxing.internal
 package reflect
 
 import scala.reflect.ClassTag
-import miniboxing.runtime.MiniboxConstants._
+import miniboxing.internal.MiniboxConstants._
 
 object MbReflectionImpl {
 

@@ -10,7 +10,7 @@
 // Authors:
 //    * Milos Stojanovic
 //
-package miniboxing.runtime.math
+package scala
 
 import scala.language.implicitConversions
 

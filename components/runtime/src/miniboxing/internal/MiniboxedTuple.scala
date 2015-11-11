@@ -11,7 +11,7 @@
 //    * Milos Stojanovic
 //
 
-package miniboxing.runtime
+package miniboxing.internal
 
 object MiniboxedTuple {
 

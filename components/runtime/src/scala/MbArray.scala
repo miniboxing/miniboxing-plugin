@@ -14,7 +14,7 @@
 //
 package scala
 
-import miniboxing.runtime.array.MbArray_L;
+import miniboxing.internal.array.MbArray_L;
 
 /**
  * The `scala.MbArray` class is an alternative implementation of the `scala.Array` class
@@ -63,7 +63,7 @@ abstract class MbArray[T] extends Serializable {
 object MbArray {
   /** Create an empty MbArray of `size` */
   def empty[T](size: Int): MbArray[T] =
-    new miniboxing.runtime.array.MbArray_L[T](size);
+    new MbArray_L[T](size);
 
   /** Element-by-element constructor */
   def apply[T](xs: T*): MbArray[T] = {
@@ -75,7 +75,7 @@ object MbArray {
 
   /** Clone an array into a MbArray */
   def clone[T](array: Array[T]): MbArray[T] =
-    new miniboxing.runtime.array.MbArray_L[T](array);
+    new MbArray_L[T](array);
 
   /** Array copy for MbArrays
    *  @see [[http://docs.oracle.com/javase/7/docs/api/java/lang/System.html System.arraycopy]] */

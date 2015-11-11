@@ -1,4 +1,4 @@
-package miniboxing.runtime
+package miniboxing.internal
 
 import scala.runtime.{AbstractFunction0, AbstractFunction1, AbstractFunction2}
 

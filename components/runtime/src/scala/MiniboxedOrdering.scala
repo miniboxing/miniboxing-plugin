@@ -10,7 +10,7 @@
 // Authors:
 //    * Milos Stojanovic
 //
-package miniboxing.runtime.math
+package scala
 
 import java.util.Comparator
 import scala.language.{implicitConversions, higherKinds}
