@@ -170,6 +170,8 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             }
             super.transform(tree0)
 
+          // TODO: This should be in minibox-commit, but for some reason I'm breaking tree positions
+          // and can't have it there, because positions are lost. Ping #168.
           case _ if (TypeClasses.contains(tree0.symbol)) =>
             val targs  = tree0.tpe.dealiasWiden.typeArgs
             assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)

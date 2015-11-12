@@ -201,7 +201,7 @@ trait MiniboxMetadata {
     }
 
     def getNormalStem(variant: Symbol) = {
-      assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
+      // assert(variant.isMethod || (variant.isTerm && !variant.isMethod), s"Not a method/field: ${variant.defString}")
       normalStem.getOrElse(variant, NoSymbol)
     }
 
@@ -232,6 +232,30 @@ trait MiniboxMetadata {
         sym3
       } else
         sym
+
+    /** Map a specialized variant's type parameter to the equivalent stem's type param */
+    def getStemTypeParam(sym: Symbol): Symbol = {
+
+      // for classes
+      def stemClassTypeParam(sym: Symbol): Symbol =
+        if (isClassStem(sym.owner)) sym
+        else {
+          val stem = getClassStem(sym.owner)
+          if (stem == NoSymbol) sym
+          else (sym.owner.info.typeParams zip stem.info.typeParams).toMap.getOrElse(sym, sym)
+        }
+
+      def stemNormTypeParam(sym: Symbol): Symbol =
+        if (isNormalStem(sym.owner)) sym
+        else {
+          val stem = getNormalStem(sym.owner)
+          if (stem == NoSymbol) sym
+          else (sym.owner.info.typeParams zip stem.info.typeParams).toMap.getOrElse(sym, sym)
+        }
+
+      if (sym == NoSymbol) sym
+      else stemClassTypeParam(stemNormTypeParam(sym.deSkolemize))
+    }
 
     // Class state
     def getClassState(cls: Symbol): ClassState = {
