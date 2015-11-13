@@ -209,7 +209,9 @@ trait MiniboxMetadataWarnings {
 
     override def warn() =
       // make sure we don't overload the user => warn once per file
-      if (!warnedFiles.contains(miniboxedTypeArgument.associatedFile)) {
+      if ((miniboxedTypeArgument.associatedFile != null) &&
+          !warnedFiles.contains(miniboxedTypeArgument.associatedFile)) {
+
         super.warn()
         warnedFiles += miniboxedTypeArgument.associatedFile
       }
