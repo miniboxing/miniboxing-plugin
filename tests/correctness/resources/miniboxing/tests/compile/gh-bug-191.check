@@ -4,3 +4,6 @@ newSource1.scala:3: error: Value classes cannot be miniboxed. This is a fundamen
 newSource1.scala:4: warning: The following code could benefit from miniboxing specialization if the type parameter X of class RichX would be marked as "@miniboxed X" (it would be used to instantiate miniboxed type parameter X of method f$extension)
     def f = 0
             ^
+newSource1.scala:9: warning: The class Test2.RichX would benefit from miniboxing type parameter X, since it is instantiated by a primitive type.
+    print(i.f)
+          ^

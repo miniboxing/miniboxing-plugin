@@ -85,7 +85,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         //val tree1 = new BridgeTransformer(unit).addBridges(owner, tree)
         tree
       }
-      def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false) = MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg, isSymbolGenericAnnotated)
+
+      // TODO: Also close this loophole: suboptimalCodeWarning should be completely eliminated
+      def suboptimalCodeWarning(pos: Position, msg: String) =
+        MiniboxInjectTreeTransformation.this.suboptimalCodeWarning(pos, msg)
 
       // utility method:
       def retyped(context0: MiniboxInjectTreeTransformation.this.global.analyzer.Context, tree0: Tree) = {
@@ -335,13 +338,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                       Nil
                     }
                   case cd: ClassDef =>
-                    suboptimalCodeWarning(cd.pos, "The " + cd.symbol.tweakedToString + " will not be miniboxed based " +
-                                                  "on type parameter(s) " + cls.typeParams.map(_.nameString).mkString(", ") +
-                                                  " of miniboxed " + cls.tweakedToString + ". To have it specialized, " +
-                                                  "add the type parameters of " + cls.tweakedToString + ", marked with " +
-                                                  "\"@miniboxed\" to the definition of " + cd.symbol.tweakedToString +
-                                                  " and instantiate it explicitly passing the type parameters from " +
-                                                  cls.tweakedToString + ":", cd.symbol.isGenericAnnotated)
+                    // TODO: Only warn if you find traces of the miniboxed type parameters of the outer class
+
+                    InnerClassNotSpecializedWarning(cd.pos, cls, cd.symbol).warn()
                     removedFieldFinder.find(currentOwner, cd)
                     List(cd)
                   case dt: DefTree =>
@@ -508,7 +507,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
         // new C[Int] => new C_J[Int]
         case New(cl) =>
           val newType = miniboxQualifier(tree.pos, cl.tpe)
-          localTyper.typedQualifier(New(TypeTree(newType)))
+          localTyper.typedQualifier(New(TypeTree(newType).setPos(cl.pos)).setPos(tree.pos))
 
         // rewiring this calls
         // C.this.foo => C_J.this.foo
@@ -518,7 +517,12 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           res
 
         // rewire member selection
-        case Select(oldQual, mbr) if tree.symbol.isMethod =>
+        case Select(oldQual, mbr) if tree.symbol != ArrayModule &&
+                                     (tree.symbol.isMethod ||
+                                      oldQual.isInstanceOf[Super] ||
+                                      metadata.miniboxedTParamFlag(extractQualifierType(oldQual).typeSymbol) ||
+                                      metadata.memberOverloads.isDefinedAt(tree.symbol)) =>
+
           val oldMbrSym = tree.symbol
           val oldQualTpe: Type = extractQualifierType(oldQual)
           val oldQualSym = tree.symbol.owner //oldQualTpe.typeSymbol
@@ -571,11 +575,9 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           }
 
           val tpe1 = newQualTpe baseType (newMbrSym.owner)
-          val ntree  = gen.mkAttributedSelect(newQual, specMbrSym)
-          val ntree2 = localTyper.typedOperator(ntree)
-
-          assert(!metadata.dummyConstructors(ntree2.symbol), "dummy constructor: " + ntree2.symbol.defString + " left in tree " + tree)
-          ntree2
+          val ntree = localTyper.typedOperator(gen.mkAttributedSelect(newQual, specMbrSym).setPos(tree.pos))
+          assert(!metadata.dummyConstructors(ntree.symbol), "dummy constructor: " + ntree.symbol.defString + " left in tree " + tree)
+          ntree
 
         case tapply @ TypeApply(oldFun, targs) =>
           afterMiniboxInject(oldFun.symbol.owner.info)
@@ -677,7 +679,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                     gen.mkMethodCall(Predef_???, Nil)
                 }
 
-          val tree1 = gen.mkMethodCall(newFun, tagArgs ::: args)
+          val tree1 = gen.mkMethodCall(newFun, tagArgs ::: args).setPos(tree.pos)
           val tree2 =
             localTyper.silent(_.typed(tree1)) match {
               case global.analyzer.SilentResultValue(t: Tree) => t
@@ -686,7 +688,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                                                      err.toString() + "\nNote: The resulting bytecode will be incorrect " +
                                                      "due to this error, so please don't use it in production and " +
                                                      "report the bug to https://github.com/miniboxing/miniboxing-plugin/issues.")
-                gen.mkMethodCall(Predef_???, Nil)
+                localTyper.typed(gen.mkMethodCall(Predef_???, Nil))
             }
 
           tree2

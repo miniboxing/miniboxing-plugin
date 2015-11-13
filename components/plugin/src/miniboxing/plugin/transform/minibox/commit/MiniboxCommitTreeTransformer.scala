@@ -150,13 +150,13 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             }
             localTyper.typed(tree1)
 
-           // Array new
+          // Array new + warning!
           case tree@Apply(newArray @ Select(manifest, _), List(size)) if newArray.symbol == Manifest_newArray =>
             val tags = typeTagTrees(currentOwner)
             val tree1 = manifest.tpe.widen.typeArgs match {
-              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-                val tag = tags(tpe.typeSymbol)
-                val tree1 = gen.mkMethodCall(mbarray_new, List(tpe), List(transform(size), tag))
+              case targ :: Nil if tags.isDefinedAt(targ.typeSymbol) =>
+                val tag = tags(targ.typeSymbol)
+                val tree1 = gen.mkMethodCall(mbarray_new, List(targ), List(transform(size), tag))
                 val ptSym = tree.tpe.dealiasWiden.typeSymbol
                 val tree2 =
                   if (ptSym == ArrayClass)
@@ -164,7 +164,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                   else
                     tree1
                 stats("rewrote array new: " + tree + " ==> " + tree1)
-                new UseMbArrayInsteadOfArrayWarning(newArray.symbol, tpe, newArray.pos).warn()
+                ReplaceArrayByMbArrayBackwardWarning(newArray.symbol, metadata.getStemTypeParam(targ.typeSymbol), newArray.pos).warn()
                 tree2
               case _ =>
                 super.transform(tree)
@@ -184,6 +184,34 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 super.transform(tree)
             }
             localTyper.typed(tree1)
+
+          // Array[T](t1, t2, ...) => warning
+          case tree@Apply(apply, List(_ ,evidence)) if apply.symbol == ArrayModule_genericApply =>
+            val targs = tree.tpe.widen.typeArgs
+            if (targs.length == 1) {
+              val targ = targs.head
+              if (flags.flag_warn_mbarrays && metadata.getStemTypeParam(targ.typeSymbol.deSkolemize).isMiniboxAnnotated)
+                ReplaceArrayByMbArrayBackwardWarning(apply.symbol.typeParams.head, metadata.getStemTypeParam(targ.typeSymbol), tree0.pos, false).warn()
+            }
+            super.transform(tree)
+
+          // Type classes
+          case _ if (interop.TypeClasses.contains(tree0.tpe.typeSymbol)) =>
+            val targs  = tree0.tpe.dealiasWiden.typeArgs
+            assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)
+            val targ = targs.head
+
+            // warn only if the type parameter is either a primitive type or a miniboxed type parameter
+            if (ScalaValueClasses.contains(targ.typeSymbol))
+              ReplaceTypeClassByMbTypeClassWarning(tree0.pos, None, tree0.tpe.typeSymbol, interop.TypeClasses(tree0.tpe.typeSymbol), targ).warn()
+            else if (metadata.getStemTypeParam(targ.typeSymbol.deSkolemize).isMiniboxAnnotated)
+              ReplaceTypeClassByMbTypeClassWarning(tree0.pos,
+                                                   Some(metadata.getStemTypeParam(targ.typeSymbol.deSkolemize)),
+                                                   tree0.tpe.typeSymbol,
+                                                   interop.TypeClasses(tree0.tpe.typeSymbol),
+                                                   targ).warn()
+
+            super.transform(tree0)
 
           // simplify equality between miniboxed values
           case tree@Apply(Select(MiniboxToBox(val1, targ1, repr1), eqeq), List(MiniboxToBox(val2, targ2, repr2))) if (tree.symbol == Any_==) && (repr1 == repr2) =>
@@ -281,7 +309,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
                 var pos = tree.pos
                 if (pos == NoPosition) pos = fun.pos
                 if (pos == NoPosition) pos = arg.pos
-                suboptimalCodeWarning(pos, "The following code instantiating an `MbArray` object cannot be optimized since the type argument is not a primitive type (like Int), a miniboxed type parameter or a subtype of AnyRef. This means that primitive types could end up boxed:", typeSymbol.isGenericAnnotated)
+                AmbiguousMbArrayTypeArgumentWarning(pos).warn()
                 super.transform(tree)
             }
 
@@ -316,6 +344,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tree1 = gen.mkMethodCall(accessor, targs, List(ttag, tuple))
             localTyper.typed(tree1)
 
+          // coercion
           case BoxToMinibox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tree1 =
@@ -327,6 +356,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
               }
             localTyper.typed(tree1)
 
+          // coercion
           case MiniboxToBox(tree, targ, repr) =>
             val tags = minibox.typeTagTrees(currentOwner)
             val tree1 =
@@ -338,10 +368,12 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
               }
             localTyper.typed(tree1)
 
+          // coercion case 3
           case MiniboxToMinibox(tree, targ, repr1, repr2) =>
             val tree1 = gen.mkMethodCall(unreachableConversion, List(Literal(Constant(repr1.nameString)), Literal(Constant(repr2.nameString))))
             localTyper.typed(tree1)
 
+          // Optimized function bridge
           case Apply(TypeApply(conv, _targs), _args) if flags.flag_rewire_functionX_bridges && interop.function_bridges(conv.symbol) =>
             val targs = _targs.map(transform(_).tpe)
             val args  = _args.map(transform)

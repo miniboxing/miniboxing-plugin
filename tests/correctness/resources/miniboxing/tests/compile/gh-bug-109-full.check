@@ -1,0 +1,3 @@
+newSource1.scala:104: warning: The class miniboxing.example.CanBuildFrom would benefit from miniboxing type parameter Elem, since it is instantiated by miniboxed type parameter U of method map.
+  def map[@miniboxed U, That](f: Function1[T, U])(implicit cbf: CanBuildFrom[Repr, U, That]): That = mapTo[U, That](f)(cbf())
+                                                                                                                       ^

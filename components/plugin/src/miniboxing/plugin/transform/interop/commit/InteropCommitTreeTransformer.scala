@@ -159,31 +159,6 @@ trait InteropCommitTreeTransformer extends TypingTransformers {
             val res = localTyper.typedOperator(tree2)
              res
 
-          // TODO: This should be in minibox-commit, but for some reason I'm breaking tree positions
-          // and can't have it there, because positions are lost. Ping #168.
-          case tree@Apply(apply, List(_ ,evidence)) if apply.symbol == ArrayModule_genericApply =>
-            val targs = tree.tpe.widen.typeArgs
-            if (targs.length == 1) {
-              val targ = targs.head
-              if (flags.flag_warn_mbarrays && targ.typeSymbol.deSkolemize.hasAnnotation(MiniboxedClass))
-                new minibox.UseMbArrayInsteadOfArrayWarning(apply.symbol.typeParams.head, targ, tree0.pos, false).warn()
-            }
-            super.transform(tree0)
-
-          // TODO: This should be in minibox-commit, but for some reason I'm breaking tree positions
-          // and can't have it there, because positions are lost. Ping #168.
-          case _ if (TypeClasses.contains(tree0.symbol)) =>
-            val targs  = tree0.tpe.dealiasWiden.typeArgs
-            assert(targs.length == 1, "targs don't match for " + tree0 + ": " + targs)
-            val targ = targs(0)
-            // warn only if the type parameter is either a primitive type or a miniboxed type parameter
-            if (ScalaValueClasses.contains(targ.typeSymbol) || targ.typeSymbol.deSkolemize.hasAnnotation(MiniboxedClass))
-              // TODO:
-              // (1) move to commit
-              // (2) use a warning, no custom code!
-              minibox.suboptimalCodeWarning(tree0.pos, "Upgrade from " + tree0.symbol + "[" + targ + "]" + " to " + TypeClasses(tree0.symbol) + "[" + targ + "] to benefit from miniboxing specialization. " )
-            super.transform(tree0)
-
           case _ =>
             super.transform(tree0)
         }

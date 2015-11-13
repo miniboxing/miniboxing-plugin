@@ -373,16 +373,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
                   metadata.memberOverloads(alias)(spec2).paramss.map(_.length) == variantMethod.paramss.map(_.length)) {
                 variantMethod.asInstanceOf[TermSymbol].referenced = metadata.memberOverloads(alias)(spec2)
               } else {
-                if (currentRun.compiles(stemClass))
-                suboptimalCodeWarning(variantMethod.pos,
-                                      "The " + alias + " in " + alias.owner + " is called from " + stemClass + " " +
-                                      "using the `super." + alias.nameString + "` construction. However, after " +
-                                      "miniboxing, this construction becomes suboptimal, since there is no specialized " +
-                                      "variant of " + alias + " exactly matching the specialization in " + stemClass +
-                                      ". To fix this, make sure that the specializations of " + stemClass + " and " +
-                                      alias.owner + " match exactly.\nFor more information, please see " +
-                                      "https://github.com/miniboxing/miniboxing-plugin/issues/73:", !currentRun.compiles(stemClass))
-
+                MissingAliasForMemberWarning(variantMethod.pos, alias, stemClass).warn()
                 variantMethod = NoSymbol
               }
             }
@@ -437,6 +428,10 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       val localSpec: PartialSpec = spec.map({ case (t, sp) => (pmapOldToNew(t), sp)}) // Tsp => Boxed/Miniboxed
       val specializedTypeMapOuter = typeMappers.MiniboxSubst(pmapOldToTpe)            // T => Tsp
       val specializedTypeMapInner = typeMappers.MiniboxSubst(pmapNewToStorageNew)     // Tsp => @storage Tsp
+      val newTParams: List[Symbol] = stemClass.typeParams.map(pmapOldToNew)
+
+      // make a temporary type that already contains the type parameters:
+      beforeMiniboxInject(variantClass setInfo GenPolyType(newTParams, NothingTpe))
 
       // step5: Create the class info
       val variantClassScope = newScope
@@ -447,7 +442,6 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
           t => specializedTypeMapOuter(t)
         } map specializeParents
 
-        val newTParams: List[Symbol] = stemClass.typeParams.map(pmapOldToNew)
         GenPolyType(newTParams, ClassInfoType(sParents, variantClassScope, variantClass))
       }
       afterMiniboxInject(variantClass setInfo specializedInfoType)

@@ -63,7 +63,6 @@ trait MiniboxMetadata {
     protected val classStem = new mutable.HashMap[Symbol, Symbol]
 
 
-
     // Members (local scope, inside a class/trait):
 
     val memberOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]

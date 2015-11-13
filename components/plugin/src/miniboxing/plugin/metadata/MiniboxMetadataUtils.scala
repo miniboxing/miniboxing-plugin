@@ -133,21 +133,21 @@ trait MiniboxMetadataUtils {
             (pair._1, pair._2.withoutAnnotations) match {
 
               case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
-                (new BackwardWarning(p, tpe, pos).warn(BackwardWarningEnum.PrimitiveType, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                backwardWarning(p, tpe.typeSymbol, pos, BackwardWarningEnum.PrimitiveType, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
                 (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
 
               case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
                 mboxedTpars.get(tpar.deSkolemize) match {
                   case Some(spec: SpecInfo) =>
                     if (spec != Boxed)
-                      (new BackwardWarning(p, tpar.tpe, pos).warn(BackwardWarningEnum.MiniboxedTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                      backwardWarning(p, metadata.getStemTypeParam(tpar), pos, BackwardWarningEnum.MiniboxedTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
                     (p, spec)
 
                   case None =>
                     if (metadata.miniboxedTParamFlag(tpar.deSkolemize) && metadata.isClassStem(tpar.deSkolemize.owner) && !p.isMbArrayMethod)
-                      (new ForwardWarning(p, tpar.tpe, pos).warn(ForwardWarningEnum.StemClass, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                      forwardWarning(p, tpar.tpe, pos, ForwardWarningEnum.StemClass, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
                     else
-                      (new ForwardWarning(p, tpar.tpe, pos).warn(ForwardWarningEnum.InnerClass, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                      forwardWarning(metadata.getStemTypeParam(p), tpar.tpe, pos, ForwardWarningEnum.VariantClass, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
                     (p, Boxed)
                 }
 
@@ -155,7 +155,7 @@ trait MiniboxMetadataUtils {
                 (p, Boxed)
 
               case (p, tpe) =>
-                (new ForwardWarning(p, tpe, pos).warn(ForwardWarningEnum.NotSpecificEnoughTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)))
+                forwardWarning(metadata.getStemTypeParam(p), tpe, pos, ForwardWarningEnum.NotSpecificEnoughTypeParam, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
                 (p, Boxed)
             }
           res

@@ -1,3 +1,6 @@
+newSource1.scala:94: warning: The value x1 cannot have its signature minibox-transformed as it becomes part of class DDDDD, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
+      val x1: T = c
+          ^
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]

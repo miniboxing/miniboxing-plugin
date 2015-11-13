@@ -19,6 +19,9 @@ Specializing class CCCCC...
     def test(): Unit                                                       // is a specialized implementation of method test
     private[this] val c: Tsp                                               // is a specialized implementation of value c
   }
+newSource1.scala:94: warning: The value x1 cannot have its signature minibox-transformed as it becomes part of class DDDDD, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
+      val x1: T = c
+          ^
 [Now checking: minibox-inject]
 Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
 Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.

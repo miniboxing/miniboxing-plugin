@@ -1,3 +1,6 @@
+newSource1.scala:8: warning: The method foo cannot have its signature minibox-transformed as it becomes part of class F, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
+      def foo[@miniboxed V](s: S, v: V) = {
+          ^
 [[syntax trees at end of            minibox-inject]] // newSource1.scala
 package miniboxing.tests.compile.nested_rewiring.test3 {
   abstract trait C[@miniboxed T, @miniboxed U] extends Object;

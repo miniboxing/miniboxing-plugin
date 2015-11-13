@@ -29,7 +29,12 @@ abstract class Duplicators extends TweakedDuplicator with ScalacCrossCompilingLa
   import definitions.{ AnyRefClass, AnyValClass, AnyClass, AnyTpe, AnyRefTpe, AnyValTpe }
 
   def postTransform(onwer: Symbol, tree: Tree): Tree
-  def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false): Unit
+
+  def suboptimalCodeWarning(pos: Position, msg: String): Unit
+  def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false): Unit =
+    if (!isSymbolGenericAnnotated)
+      suboptimalCodeWarning(pos, msg)
+
   def flag_create_local_specs: Boolean
 
   case class AnnotationAttachment(annots: List[AnnotationInfo])

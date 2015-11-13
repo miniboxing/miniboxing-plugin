@@ -19,10 +19,8 @@ trait MiniboxLogging {
 
   import global._
 
-  def suboptimalCodeWarning(pos: Position, msg: String, isSymbolGenericAnnotated: Boolean = false, inLibrary: Boolean = false) =
-    if (flags.flag_strict_warnings && (pos != NoPosition) && !isSymbolGenericAnnotated)
-      if (!inLibrary || flags.flag_strict_warnings_outside)
-        global.reporter.warning(pos, msg)
+  def suboptimalCodeWarning(pos: Position, msg: String) =
+    global.reporter.warning(pos, msg)
 
   def global_log(msg: => String) = if (settings.log.value.contains(phaseName)) global.log(msg)
   def log(msg: => Any) = if (flags.flag_log) println(msg.toString) // TODO: Need to adapt tests to output miniboxing messages
