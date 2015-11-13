@@ -69,8 +69,9 @@ object Test {
       tc += System.nanoTime - startC
     }
 
-    assert(ta > tb, s"Array[Any] ($ta) is worse than MbArray[Int] ($tb)")
-    // may not always be the case:
+    // This is invalidated on Travis CI:
+    // assert(ta > tb, s"Array[Any] ($ta) is worse than MbArray[Int] ($tb)")
+    // This may not always be the case:
     // assert(tb > tc, s"MbArray[Int] ($tb) is worse than Array[Int] ($tc)")
   }
 }
