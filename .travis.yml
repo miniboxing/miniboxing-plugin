@@ -4,7 +4,7 @@ script:
 scala:
 - 2.10.4
 jdk:
-- oraclejdk7
+- oraclejdk6
 notifications:
   webhooks:
     urls:
