@@ -1,0 +1,32 @@
+newSource1.scala:4: warning: Use MbArray instead of Array to eliminate the need for ClassTags and benefit from seamless interoperability with the miniboxing specialization. For more details about MbArrays, please check the following link: http://scala-miniboxing.org/arrays.html
+    a(0) = a(1)
+         ^
+[[syntax trees at end of            minibox-commit]] // newSource1.scala
+package <empty> {
+  abstract trait Test[@miniboxed T] extends Object {
+    def foo(a: Array[T]): Unit
+  };
+  class Test$D[Tsp] extends Object with Test[Tsp] {
+    <paramaccessor> private[this] val Test$D|T$TypeTag: Byte = _;
+    def <init>(Test$D|T$TypeTag: Byte): Test$D[Tsp] = {
+      Test$D.super.<init>();
+      ()
+    };
+    def foo(a: Array[Tsp]): Unit = MiniboxArrayDouble.this.mbarray_update_minibox(a, 0, MiniboxArrayDouble.this.mbarray_apply_minibox(a, 1, Test$D.this.Test$D|T$TypeTag), Test$D.this.Test$D|T$TypeTag)
+  };
+  class Test$J[Tsp] extends Object with Test[Tsp] {
+    <paramaccessor> private[this] val Test$J|T$TypeTag: Byte = _;
+    def <init>(Test$J|T$TypeTag: Byte): Test$J[Tsp] = {
+      Test$J.super.<init>();
+      ()
+    };
+    def foo(a: Array[Tsp]): Unit = MiniboxArrayLong.this.mbarray_update_minibox(a, 0, MiniboxArrayLong.this.mbarray_apply_minibox(a, 1, Test$J.this.Test$J|T$TypeTag), Test$J.this.Test$J|T$TypeTag)
+  };
+  class Test$L[Tsp] extends Object with Test[Tsp] {
+    def <init>(): Test$L[Tsp] = {
+      Test$L.super.<init>();
+      ()
+    };
+    def foo(a: Array[Tsp]): Unit = a.update(0, a.apply(1))
+  }
+}

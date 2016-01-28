@@ -256,6 +256,16 @@ trait MiniboxMetadata {
       else stemClassTypeParam(stemNormTypeParam(sym.deSkolemize))
     }
 
+    /** Get a specialized type parameter's representation */
+    def getTypeParameterRepresentation(tpar: Symbol): SpecInfo = {
+      val tparStem = getStemTypeParam(tpar)
+      val tparOwner = tpar.owner
+      val ownerSpec = metadata.classSpecialization.getOrElse(tparOwner, Map.empty) ++
+                      metadata.memberSpecialization.getOrElse(tparOwner, Map.empty) ++
+                      metadata.normalSpecialization.getOrElse(tparOwner, Map.empty)
+      ownerSpec.getOrElse(tparStem, Boxed)
+    }
+
     // Class state
     def getClassState(cls: Symbol): ClassState = {
       afterMiniboxInject(cls.info)

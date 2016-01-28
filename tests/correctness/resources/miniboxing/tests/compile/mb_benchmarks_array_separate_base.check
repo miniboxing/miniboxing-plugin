@@ -80,7 +80,7 @@ package miniboxing.tests.compile.separate {
           if (pos.<(MBResizableArray$J.this.size$J(T$TypeTag)))
             {
               {
-                MBResizableArray$J.this.newarray$J(T$TypeTag).update(pos, MBResizableArray$J.this.array$J(T$TypeTag).apply(pos));
+                MiniboxArray.this.mbarray_update_minibox(MBResizableArray$J.this.newarray$J(T$TypeTag), pos, MiniboxArray.this.mbarray_apply_minibox(MBResizableArray$J.this.array$J(T$TypeTag), pos, T$TypeTag), T$TypeTag);
                 pos = pos.+(1)
               };
               while$1()

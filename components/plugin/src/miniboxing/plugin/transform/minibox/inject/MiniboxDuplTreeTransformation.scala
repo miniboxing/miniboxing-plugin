@@ -516,6 +516,53 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val res = localTyper.typed(This(newType.typeSymbol))
           res
 
+        // rewiring array apply when the array argument is miniboxed
+        // this allows successive apply/update cycles to be updated efficiently
+        case Apply(apply @ Select(array, _), List(pos)) if apply.symbol == Array_apply =>
+          val arrayTpe = array.tpe.widen
+          val targs = arrayTpe.typeArgs
+          targs match {
+            case tpe :: Nil =>
+              metadata.getTypeParameterRepresentation(tpe.typeSymbol) match {
+                case Miniboxed(repr) =>
+                  // the following warning encourages programmers to use MbArray instead of Array
+                  // before, it was triggered through member specialization (below), but since we hijacked
+                  // this case, we have to manually trigger it:
+                  showArrayToMbArrayWarning(ArrayClass.typeParams.head, tpe.typeSymbol, tree.pos)
+                  val mock = mocks(repr).mock_apply
+                  val call = gen.mkMethodCall(mock, List(transform(array), transform(pos)))
+                  val tped = localTyper.typed(call)
+                  debuglog(tree + " ==> " + tped)
+                  tped
+                case Boxed =>
+                  Descend
+              }
+            case _ =>
+              Descend
+          }
+
+        // rewrite array update
+        case Apply(update@Select(array, _), List(pos, element)) if update.symbol == Array_update =>
+          val arrayTpe = array.tpe.widen
+          val targs = arrayTpe.typeArgs
+          targs match {
+            case tpe :: Nil =>
+              metadata.getTypeParameterRepresentation(tpe.typeSymbol) match {
+                case Miniboxed(repr) =>
+                  // see comment above:
+                  showArrayToMbArrayWarning(ArrayClass.typeParams.head, tpe.typeSymbol, tree.pos)
+                  val mock = mocks(repr).mock_update
+                  val call = gen.mkMethodCall(mock, List(transform(array), transform(pos), transform(element)))
+                  val tped = localTyper.typed(call)
+                  debuglog(tree + " ==> " + tped)
+                  tped
+                case Boxed =>
+                  Descend
+              }
+            case _ =>
+              Descend
+          }
+
         // rewire member selection
         case Select(oldQual, mbr) if tree.symbol != ArrayModule &&
                                      (tree.symbol.isMethod ||

@@ -193,6 +193,9 @@ trait MiniboxMetadataWarnings {
       !isUselessWarning(mboxedTypeParam.owner)
   }
 
+  def showArrayToMbArrayWarning(arrayTypeParam: Symbol, miniboxedTypeArgument: Symbol, pos: Position) =
+    ReplaceArrayByMbArrayBackwardWarning(arrayTypeParam, metadata.getStemTypeParam(miniboxedTypeArgument), pos).warn()
+
   object ReplaceArrayByMbArrayBackwardWarning {
     val warnedFiles = perRunCaches.newSet[scala.reflect.io.AbstractFile]
   }
@@ -211,7 +214,6 @@ trait MiniboxMetadataWarnings {
       // make sure we don't overload the user => warn once per file
       if ((miniboxedTypeArgument.associatedFile != null) &&
           !warnedFiles.contains(miniboxedTypeArgument.associatedFile)) {
-
         super.warn()
         warnedFiles += miniboxedTypeArgument.associatedFile
       }

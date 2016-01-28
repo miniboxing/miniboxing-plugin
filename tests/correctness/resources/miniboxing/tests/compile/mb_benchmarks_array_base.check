@@ -57,7 +57,7 @@ package miniboxing.tests.compile {
           if (pos.<(MBResizableArray$J.this.size()))
             {
               {
-                MBResizableArray$J.this.newarray().update(pos, MBResizableArray$J.this.array().apply(pos));
+                MiniboxArray.this.mbarray_update_minibox(MBResizableArray$J.this.newarray(), pos, MiniboxArray.this.mbarray_apply_minibox(MBResizableArray$J.this.array(), pos, MBResizableArray$J.this.miniboxing|tests|compile|MBResizableArray$J|T$TypeTag), MBResizableArray$J.this.miniboxing|tests|compile|MBResizableArray$J|T$TypeTag);
                 pos = pos.+(1)
               };
               while$1()

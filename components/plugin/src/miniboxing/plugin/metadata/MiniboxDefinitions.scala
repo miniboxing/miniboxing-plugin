@@ -106,17 +106,17 @@ trait MiniboxDefinitions extends ScalacVersion {
 
   // array ops
   lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArray")
-  trait array {
+  trait ArrayDefinitions {
     def owner: Symbol
-    lazy val mbarray_update  = definitions.getMember(owner, newTermName("mbarray_update_minibox"))
-    lazy val mbarray_apply   = definitions.getMember(owner, newTermName("mbarray_apply_minibox"))
+    lazy val mbarray_update       = definitions.getMember(owner, newTermName("mbarray_update_minibox"))
+    lazy val mbarray_apply        = definitions.getMember(owner, newTermName("mbarray_apply_minibox"))
   }
 
-  object array_1way        extends array { lazy val owner  = MiniboxArrayObjectSymbol }
-  object array_2way_long   extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayLong") }
-  object array_2way_double extends array { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayDouble") }
+  object array_1way        extends ArrayDefinitions { lazy val owner  = MiniboxArrayObjectSymbol }
+  object array_2way_long   extends ArrayDefinitions { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayLong") }
+  object array_2way_double extends ArrayDefinitions { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayDouble") }
 
-  def array(repr: Symbol): array = repr match {
+  def array(repr: Symbol): ArrayDefinitions = repr match {
     case _ if !flags.flag_two_way => array_1way
     case LongClass          => array_2way_long
     case DoubleClass        => array_2way_double
@@ -126,6 +126,43 @@ trait MiniboxDefinitions extends ScalacVersion {
   lazy val mbarray_new     = definitions.getMember(MiniboxArrayObjectSymbol, newTermName("mbarray_new"))
   def mbarray_update(repr: Symbol) = array(repr).mbarray_update
   def mbarray_apply(repr: Symbol)  = array(repr).mbarray_apply
+
+  lazy val mockApplyToRealApply   = collection.mutable.Map[Symbol, Symbol]()
+  lazy val mockUpdateToRealUpdate = collection.mutable.Map[Symbol, Symbol]()
+
+  // Mock array_{apply,update}, before transformation to mbarray_{apply,update}
+  abstract class MockDefinitions {
+    def repr: Symbol
+
+    // mock method names:
+    private lazy val mock_apply_name = newTermName("mock_array_apply_" + repr.nameString.toLowerCase())
+    private lazy val mock_update_name = newTermName("mock_array_update_" + repr.nameString.toLowerCase())
+
+    // mock method symbols:
+    lazy val mock_apply =
+      newPolyMethod(1, ScalaRunTimeModule, mock_apply_name, 0L) { tparams: List[Symbol] =>
+        val tparam = tparams.head
+        (Some(List(appliedType(ArrayClass, tparam.tpe), IntTpe)), withStorage(tparam, repr))
+      }
+    lazy val mock_update =
+      newPolyMethod(1, ScalaRunTimeModule, mock_update_name, 0L) { tparams: List[Symbol] =>
+        val tparam = tparams.head
+        (Some(List(appliedType(ArrayClass, tparam.tpe), IntTpe, withStorage(tparam, repr))), UnitTpe)
+      }
+
+    mockApplyToRealApply   += mock_apply  -> array(repr).mbarray_apply
+    mockUpdateToRealUpdate += mock_update -> array(repr).mbarray_update
+  }
+
+  object mock_1way        extends MockDefinitions { def repr = LongClass }
+  object mock_2way_long   extends MockDefinitions { def repr = LongClass }
+  object mock_2way_double extends MockDefinitions { def repr = DoubleClass }
+
+  def mocks(repr: Symbol): MockDefinitions = repr match {
+    case _ if !flags.flag_two_way => mock_1way
+    case LongClass                => mock_2way_long
+    case DoubleClass              => mock_2way_double
+  }
 
   // Any ops
   trait ops {

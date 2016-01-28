@@ -90,7 +90,6 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
 
   class CoercionExtractor {
     def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type, List[Symbol])] = tree match {
-      // TODO: Return the storage too
       case Apply(TypeApply(fun, targ :: reprTpes), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe, reprTpes.map(_.tpe.typeSymbol)))
       case _ => None
     }
@@ -119,35 +118,42 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
       if (tree0.hasSymbolField)
         tree0.symbol.info
 
+      def invariantErrorTree(tree0: Tree, targ: Tree, tags: Map[Symbol, Tree]): Tree = {
+        reporter.error(tree0.pos, "An internal invariant of the miniboxing transformation was violated. "+
+                          "Technical details: " + tree0 + " tag not found " + targ + " with " +
+                          "tags being " + tags + ".")
+        gen.mkMethodCall(Predef_???, Nil)
+      }
+
       val tree1 =
         tree0 match {
 
-          // Array application
-          case BoxToMinibox(tree@Apply(apply @ Select(array, _), List(pos)), _, repr) if apply.symbol == Array_apply =>
+          // rewrite mock array apply to miniboxed array runtime apply
+          case Apply(TypeApply(mock, List(targ0)), List(array, pos)) if mockApplyToRealApply.isDefinedAt(mock.symbol) =>
             val tags = typeTagTrees(currentOwner)
-            val tree1 = array.tpe.widen.typeArgs match {
-              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-                val tag = tags(tpe.typeSymbol)
-                val tree1 = gen.mkMethodCall(mbarray_apply(repr), List(transform(array), transform(pos), tag))
-                stats("rewrote array apply: " + tree + " ==> " + tree1)
+            val targ = targ0.tpe.typeSymbol
+            val tree1 =
+              if (tags.isDefinedAt(targ)) {
+                val tag = tags(targ)
+                val tree1 = gen.mkMethodCall(mockApplyToRealApply(mock.symbol), List(transform(array), transform(pos), tag))
+                stats("rewrote array apply: " + tree0 + " ==> " + tree1)
                 tree1
-              case _ =>
-                super.transform(tree)
-            }
+              } else
+                invariantErrorTree(tree0, targ0, tags)
             localTyper.typed(tree1)
 
-          // Array update
-          case tree@Apply(update@Select(array, _), List(pos, MiniboxToBox(element, _, repr))) if update.symbol == Array_update =>
+          // rewrite mock array update to miniboxed array runtime update
+          case Apply(TypeApply(mock, List(targ0)), List(array, pos, elem)) if mockUpdateToRealUpdate.isDefinedAt(mock.symbol) =>
             val tags = typeTagTrees(currentOwner)
-            val tree1 = array.tpe.widen.typeArgs match {
-              case tpe :: Nil if tags.isDefinedAt(tpe.typeSymbol) =>
-                val tag = tags(tpe.typeSymbol)
-                val tree2 = gen.mkMethodCall(mbarray_update(repr), List(transform(array), transform(pos), transform(element), tag))
-                stats("rewrote array update: " + tree + " ==> " + tree2)
-                tree2
-              case _ =>
-                super.transform(tree)
-            }
+            val targ = targ0.tpe.typeSymbol
+            val tree1 =
+              if (tags.isDefinedAt(targ)) {
+                val tag = tags(targ)
+                val tree1 = gen.mkMethodCall(mockUpdateToRealUpdate(mock.symbol), List(transform(array), transform(pos), transform(elem), tag))
+                stats("rewrote array update: " + tree0 + " ==> " + tree1)
+                tree1
+              } else
+                invariantErrorTree(tree0, targ0, tags)
             localTyper.typed(tree1)
 
           // Array new + warning!
