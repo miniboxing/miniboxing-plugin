@@ -176,14 +176,14 @@ trait GenericBenchTest extends BaseTest {
 
     var a: ResizableArray[Int] = null
     var b: Boolean = true
-    test(transformation, "array.insert ", _ => { forceMegamorphicCallSites; () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.reverse", _ => { forceMegamorphicCallSites; a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.find   ", _ => { forceMegamorphicCallSites; a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
+    //test(transformation, "array.insert ", _ => { forceMegamorphicCallSites; () },                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
+    //test(transformation, "array.reverse", _ => { forceMegamorphicCallSites; a = array_insert() }, a = array_reverse(a), () => { assert(a.length == testSize); a = null })
+    //test(transformation, "array.find   ", _ => { forceMegamorphicCallSites; a = array_insert() }, b = array_find(a),    () => { assert(b == true); a = null })
 
     var l: List[Int] = null
     var i: Int = 0
     test(transformation, "list.insert  ", _ => { forceMegamorphicCallSites; () },                 l = list_insert(),    () => { assert(l.length == testSize); l = null })
-    test(transformation, "list.hashCode", _ => { forceMegamorphicCallSites; l = list_insert() },  i = list_hashCode(l), () => { assert(i != 0); l = null })
-    test(transformation, "list.find    ", _ => { forceMegamorphicCallSites; l = list_insert() },  b = list_find(l),     () => { assert(b == true); l = null })
+    //test(transformation, "list.hashCode", _ => { forceMegamorphicCallSites; l = list_insert() },  i = list_hashCode(l), () => { assert(i != 0); l = null })
+    //test(transformation, "list.find    ", _ => { forceMegamorphicCallSites; l = list_insert() },  b = list_find(l),     () => { assert(b == true); l = null })
   }
 }

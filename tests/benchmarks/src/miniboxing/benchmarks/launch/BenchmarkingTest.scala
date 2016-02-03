@@ -33,7 +33,7 @@ object BenchmarkingTest extends ScalameterBenchTest
   // the command used to start the JVM
   // HotSpot:
   lazy val javaCommand = "java -server"
-  lazy val javaPreJDK7 = false
+  lazy val javaPreJDK7 = true
   // JRockit:
   //  lazy val javaCommand = baseDir + "jrockit/bin/java -jrockit -d64 -Xms4g -Xmx4g -Xss4m"
   //  lazy val javaPreJDK7 = true
@@ -46,11 +46,13 @@ object BenchmarkingTest extends ScalameterBenchTest
     //List(1000, 2000, 3000)
     List(1000000, 2000000, 3000000)
     //List(1000)
+    List(3000000)
   }
   def megamorphicTestSize = 200000
 
   // run the tests:
-  testIdeal()
+  //testIdeal()
+  /*
   testHardcodedMiniboxingDispatch(false)
   testHardcodedMiniboxingDispatch(true)
   testHardcodedMiniboxingDispatchClassLoader(false)
@@ -77,7 +79,8 @@ object BenchmarkingTest extends ScalameterBenchTest
   testHardcodedMiniboxingSimple_JavaRT_3(true)
   testSpecialized(false)
   testSpecialized(true)
-  testGeneric(false)
+  */
+  //testGeneric(false)
   testGeneric(true)
 }
 

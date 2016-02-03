@@ -3,9 +3,9 @@ name := "miniboxing"
 
 scalaVersion in Global := "2.11.7"
 
-crossScalaVersions in Global := Seq("2.11.7", "2.10.5") // "2.12.0-SNAPSHOT" - partest not published :(
+crossScalaVersions in Global := Seq("2.11.7", "2.10.6") // "2.12.0-SNAPSHOT" - partest not published :(
 
-version in Global := "0.4-SNAPSHOT"
+version in Global := "0.4-M7"
 
 organization in Global := "org.scala-miniboxing.plugins"
 

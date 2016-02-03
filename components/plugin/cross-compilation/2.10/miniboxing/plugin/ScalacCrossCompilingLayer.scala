@@ -98,5 +98,5 @@ trait ScalacVersion {
   lazy val scalaVersion = scalaVersionMajor + "." + scalaVersionMinor + "." + scalaVersionRevision
   lazy val scalaVersionMajor = 2
   lazy val scalaVersionMinor = 10
-  lazy val scalaVersionRevision = 5
+  lazy val scalaVersionRevision = 6
 }

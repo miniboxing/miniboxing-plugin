@@ -66,14 +66,14 @@ trait IdealBenchTest extends BaseTest {
 
     var a: ResizableArray = null
     var b: Boolean = true
-    test(transformation, "array.insert ", _ => (),                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.reverse", _ => a = array_insert(), a = array_reverse(a), () => { assert(a.length == testSize); a = null })
-    test(transformation, "array.find   ", _ => a = array_insert(), b = array_find(a),    () => { assert(b == true); a = null })
+    //test(transformation, "array.insert ", _ => (),                 a = array_insert(),   () => { assert(a.length == testSize); a = null })
+    //test(transformation, "array.reverse", _ => a = array_insert(), a = array_reverse(a), () => { assert(a.length == testSize); a = null })
+    //test(transformation, "array.find   ", _ => a = array_insert(), b = array_find(a),    () => { assert(b == true); a = null })
 
     var l: List = null
     var i: Int = 0
     test(transformation, "list.insert  ", _ => (),                 l = list_insert(),    () => { assert(l.length == testSize); l = null })
-    test(transformation, "list.hashCode", _ => l = list_insert(),  i = list_hashCode(l), () => { assert(i != 0); l = null })
-    test(transformation, "list.find    ", _ => l = list_insert(),  b = list_find(l),     () => { assert(b == true); l = null })
+    //test(transformation, "list.hashCode", _ => l = list_insert(),  i = list_hashCode(l), () => { assert(i != 0); l = null })
+    //test(transformation, "list.find    ", _ => l = list_insert(),  b = list_find(l),     () => { assert(b == true); l = null })
   }
 }
