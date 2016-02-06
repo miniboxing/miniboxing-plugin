@@ -31,9 +31,25 @@ trait TweakErasureTreeTransformer extends TreeRewriters with ScalacCrossCompilin
     }
   }
 
+
+  // Check if there's another method with a similar signature in the owner,
+  // otherwise it's not safe to remove this override. For more details, see
+  // issue 228, where removing a bridge produces an AbstractMethodError.
+  def duplicateSignatureExists(dd: Symbol): Boolean = {
+
+    // shamelessly stolen from erasure:
+    def sameTypeAfterErasure(sym1: Symbol, sym2: Symbol) =
+      afterTweakErasure(sym1.info =:= sym2.info) && !sym1.isMacro && !sym2.isMacro
+
+    val otherDecls = dd.owner.info.decls.filterNot(sym => sym == dd)
+    val matchingDecls = otherDecls.filter(other => sameTypeAfterErasure(other, dd))
+    !matchingDecls.isEmpty
+  }
+
   class TweakErasureTransformer(unit: CompilationUnit) extends TreeRewriter(unit) {
     override def rewrite(tree: Tree) = tree match {
-      case dd @ DefDef(mods, name, _, _, _, CallNobridgeMethod()) if dd.symbol.isBridge =>
+      case dd @ DefDef(mods, name, _, _, _, CallNobridgeMethod()) if dd.symbol.isBridge && duplicateSignatureExists(dd.symbol) =>
+        dd.symbol.owner.info.members.unlink(dd.symbol)
 //        println("wiped: " + dd)
         Nil
       case _ =>
