@@ -1,3 +1,5 @@
+import language._
+
 trait Type[T]
 
 sealed trait EList[T] { self =>
