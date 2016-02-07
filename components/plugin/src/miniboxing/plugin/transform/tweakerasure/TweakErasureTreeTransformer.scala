@@ -41,7 +41,7 @@ trait TweakErasureTreeTransformer extends TreeRewriters with ScalacCrossCompilin
     def sameTypeAfterErasure(sym1: Symbol, sym2: Symbol) =
       afterTweakErasure(sym1.info =:= sym2.info) && !sym1.isMacro && !sym2.isMacro
 
-    val otherDecls = dd.owner.info.decls.filterNot(sym => sym == dd)
+    val otherDecls = dd.owner.info.decls.filter(sym => (sym != dd) && (sym.name == dd.name))
     val matchingDecls = otherDecls.filter(other => sameTypeAfterErasure(other, dd))
     !matchingDecls.isEmpty
   }
