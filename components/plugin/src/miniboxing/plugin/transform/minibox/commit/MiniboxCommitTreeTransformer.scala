@@ -83,11 +83,6 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
     !hasStorage
   }
 
-  abstract sealed class Constraint
-  case object Miniboxed extends Constraint
-  case object Boxed extends Constraint
-  case object NoConstraint extends Constraint
-
   class CoercionExtractor {
     def unapply(tree: Tree, sym: Symbol): Option[(Tree, Type, List[Symbol])] = tree match {
       case Apply(TypeApply(fun, targ :: reprTpes), List(inner)) if fun.symbol == sym => Some((inner, targ.tpe, reprTpes.map(_.tpe.typeSymbol)))
@@ -265,7 +260,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tpeSym = tree.tpe.dealiasWiden.typeSymbol
             val tags = minibox.typeTagTrees(currentOwner)
             val tag1 = tags(tpeSym)
-            val repr: Symbol = PartialSpec.valueClassRepresentation(tpeSym)
+            val repr: Symbol = extractRepresentation(tpeSym)
             val tree1 = gen.mkMethodCall(MbArrayOpts_apply(repr), List(tree.tpe.dealiasWiden), transform(array) :: args.map(transform) ::: List(tag1))
             val tree2 = gen.mkMethodCall(minibox2x(repr)(tpeSym), List(tree1))
             localTyper.typed(tree2)
@@ -282,7 +277,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
             val tpeSym = tree.tpe.dealiasWiden.typeSymbol
             val tags = minibox.typeTagTrees(currentOwner)
             val tag1 = tags(tpeSym)
-            val repr: Symbol = PartialSpec.valueClassRepresentation(tpeSym)
+            val repr: Symbol = extractRepresentation(tpeSym)
             val tree1 = gen.mkMethodCall(x2minibox(repr)(tpeSym), List(transform(tree)))
             val tree2 = gen.mkMethodCall(MbArrayOpts_update(repr), List(tree.tpe.dealiasWiden), transform(array) :: transform(index) :: tree1 :: tag1 :: Nil)
             localTyper.typed(tree2)
@@ -310,7 +305,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
               case Some(minibox.Miniboxed(repr))                  => specialize(repr, false)
               case Some(minibox.Boxed)                            => super.transform(tree)
               case None if tpe1 <:< AnyRefTpe                     => super.transform(tree)
-              case None if ScalaValueClasses.contains(typeSymbol) => specialize(PartialSpec.valueClassRepresentation(typeSymbol), true)
+              case None if ScalaValueClasses.contains(typeSymbol) => specialize(extractRepresentation(typeSymbol), true)
               case _ =>
                 var pos = tree.pos
                 if (pos == NoPosition) pos = fun.pos
@@ -429,5 +424,14 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
 
       tree1.setType(newTpe)
     }
+
+    def extractRepresentation(valueType: Symbol): Symbol =
+      PartialSpec.valueClassRepresentation(valueType) match {
+        case Miniboxed(repr) => repr
+        case Boxed =>
+          reporter.error(currentOwner.pos, s"Miniboxing plugin internal error: invalid extraction for ${valueType} in "+
+                                           s"${currentOwner.ownerChain.reverse.mkString(" > ")}. Compilation will fail.")
+          LongClass
+      }
   }
 }

@@ -17,6 +17,7 @@ package metadata
 import scala.tools.nsc.plugins.PluginComponent
 import scala.collection.immutable.ListMap
 import miniboxing.internal.MiniboxConstants._
+import miniboxing.internal.MiniboxArrayLong
 
 trait MiniboxDefinitions extends ScalacVersion {
   this: PluginComponent =>
@@ -105,16 +106,19 @@ trait MiniboxDefinitions extends ScalacVersion {
   // Library:
 
   // array ops
-  lazy val MiniboxArrayObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArray")
+  lazy val MiniboxArrayObjectSymbol       = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArray")
+  lazy val MiniboxArrayLongObjectSymbol   = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayLong")
+  lazy val MiniboxArrayDoubleObjectSymbol = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayDouble")
+
   trait ArrayDefinitions {
     def owner: Symbol
     lazy val mbarray_update       = definitions.getMember(owner, newTermName("mbarray_update_minibox"))
     lazy val mbarray_apply        = definitions.getMember(owner, newTermName("mbarray_apply_minibox"))
   }
 
-  object array_1way        extends ArrayDefinitions { lazy val owner  = MiniboxArrayObjectSymbol }
-  object array_2way_long   extends ArrayDefinitions { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayLong") }
-  object array_2way_double extends ArrayDefinitions { lazy val owner  = rootMirror.getRequiredModule("miniboxing.internal.MiniboxArrayDouble") }
+  object array_1way        extends ArrayDefinitions { lazy val owner  = if (flags.flag_float_object) MiniboxArrayLongObjectSymbol else MiniboxArrayObjectSymbol }
+  object array_2way_long   extends ArrayDefinitions { lazy val owner  = MiniboxArrayLongObjectSymbol }
+  object array_2way_double extends ArrayDefinitions { lazy val owner  = MiniboxArrayDoubleObjectSymbol }
 
   def array(repr: Symbol): ArrayDefinitions = repr match {
     case _ if !flags.flag_two_way => array_1way

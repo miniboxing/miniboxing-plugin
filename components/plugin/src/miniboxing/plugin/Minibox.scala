@@ -82,6 +82,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
     var flag_spec_no_opt = sys.props.get("miniboxing.Commit.no-opt").isDefined
     var flag_loader_friendly = sys.props.get("miniboxing.loader").isDefined
     var flag_two_way = true
+    var flag_float_object = false
     var flag_rewire_functionX_values = true
     var flag_rewire_functionX_repres = true
     var flag_rewire_functionX_bridges = true
@@ -141,10 +142,14 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           flag_mark_all = true
 
         // The following flags are undocumented, since they control options that transform the miniboxing compilation
-        // scheme in (possibly) binary incompatible ways, thus are not explosed by default to the user. Should
+        // scheme in (possibly) binary incompatible ways, thus are not exposed by default to the user.
 
         case "yone-way" =>                       // Undocumented flag, only used for running the test suite,
           flag_two_way = false                   // where the tests required the one-way translation
+        case "yone-way-precise" =>
+          flag_two_way = false                   // Undocumented flag, forces the miniboxing plugin to generate code
+          flag_float_object = true               // corresponding to having exact control over the primitives that it
+                                                 // should specialize on (like class C[@miniboxed(Int, Long) T])
         case "two-way" =>
           this.global.reporter.echo("Miniboxing plugin warning: The two-way transformation (with long and double as " +
                                     "storage types) has become default in version 0.4 version of the miniboxing plugin, " +

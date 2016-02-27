@@ -54,6 +54,7 @@ trait Flags {
   def flag_spec_no_opt: Boolean
   def flag_loader_friendly: Boolean
   def flag_two_way: Boolean
+  def flag_float_object: Boolean
   def flag_rewire_functionX_values: Boolean
   def flag_rewire_functionX_repres: Boolean
   def flag_rewire_functionX_bridges: Boolean

@@ -91,16 +91,27 @@ trait MiniboxMetadataUtils {
       }
     }
 
-    def valueClassRepresentation(vclass: Symbol): Symbol = {
-      val FloatRepr = if (flags.flag_two_way) DoubleClass else LongClass
+    def valueClassRepresentation(vclass: Symbol): SpecInfo = {
+
+      // The two basic encodings:
+      val LongRepr = Miniboxed(LongClass)
+      val DbleRepr = Miniboxed(DoubleClass)
+
+      val FloatRepr =
+        (flags.flag_two_way, flags.flag_float_object) match {
+          case (true, _)      => DbleRepr
+          case (false, false) => LongRepr
+          case (false, true)  => Boxed
+        }
+
       vclass match {
-        case `UnitClass`    => LongClass
-        case `BooleanClass` => LongClass
-        case `ByteClass`    => LongClass
-        case `CharClass`    => LongClass
-        case `ShortClass`   => LongClass
-        case `IntClass`     => LongClass
-        case `LongClass`    => LongClass
+        case `UnitClass`    => LongRepr
+        case `BooleanClass` => LongRepr
+        case `ByteClass`    => LongRepr
+        case `CharClass`    => LongRepr
+        case `ShortClass`   => LongRepr
+        case `IntClass`     => LongRepr
+        case `LongClass`    => LongRepr
         case `FloatClass`   => FloatRepr
         case `DoubleClass`  => FloatRepr
       }
@@ -134,7 +145,7 @@ trait MiniboxMetadataUtils {
 
               case (p, tpe) if ScalaValueClasses.contains(tpe.typeSymbol) =>
                 backwardWarning(p, tpe.typeSymbol, pos, BackwardWarningEnum.PrimitiveType, inLibrary = !common.isCompiledInCurrentBatch(p)).foreach(_.warn())
-                (p, Miniboxed(PartialSpec.valueClassRepresentation(tpe.typeSymbol)))
+                (p, PartialSpec.valueClassRepresentation(tpe.typeSymbol))
 
               case (p, TypeRef(_, tpar, _)) if tpar.deSkolemize.isTypeParameter =>
                 mboxedTpars.get(tpar.deSkolemize) match {
