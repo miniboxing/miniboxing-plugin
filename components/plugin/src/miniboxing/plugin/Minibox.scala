@@ -205,6 +205,29 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
           error("Miniboxing: Option not understood: " + option)
       }
     }
+
+    // TODO: Why is un-importing common.global enough?
+    import common.{global => _}
+    val global = Minibox.this.global
+
+    if (!flag_two_way) {
+      global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done " +
+                           "if you allow the plugin to use both long and double encodings (remove the `-P:minibox:Yone-way` " +
+                           "compiler option). In this run, the above classes will be generic and will box.")
+      flag_rewire_functionX_values = false
+      flag_rewire_functionX_repres = false
+      flag_rewire_functionX_bridges = false
+      flag_rewire_functionX_application = false
+      flag_rewire_mbarray = false
+      flag_rewire_tuples = false
+    } else {
+      if (!flag_rewire_mbarray)
+        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
+                             "be generic and will box.")
+      if (!flag_rewire_tuples)
+        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is disabled, thus `MbTuple`-s will " +
+                             "be generic and will box.")
+    }
   }
 
   // inject phase descriptions

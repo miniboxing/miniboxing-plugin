@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 newSource1.scala:8: warning: The method foo cannot have its signature minibox-transformed as it becomes part of class F, which allows outer code to call and/or override it. If you don't use it outside this class, you can make it private and miniboxing will be allowed to specialize it:
       def foo[@miniboxed V](s: S, v: V) = {
           ^
@@ -115,5 +116,3 @@ package miniboxing.tests.compile.nested_rewiring.test4 {
     }
   }
 }
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.

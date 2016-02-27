@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 Specializing trait F1...
   // interface:
   abstract trait F1[A, B] extends Object {
@@ -58,5 +59,3 @@ Specializing trait F1...
     def compose$n$J[Z](val Z$TypeTag: Byte,f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
     def compose[Z](f: miniboxing.tests.compile.bug85.full.F1[Z,Asp]): miniboxing.tests.compile.bug85.full.F1[Z,Bsp] // is a specialized implementation of method compose
   }
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.

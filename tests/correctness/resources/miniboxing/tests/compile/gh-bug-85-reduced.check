@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 Specializing trait MakeImplClass...
   // interface:
   abstract trait MakeImplClass[A] extends Object {
@@ -15,8 +16,6 @@ Specializing trait MakeImplClass...
     def foo$J(val A$TypeTag: Byte,a: Asp @storage[Long]): Asp @storage[Long] // is a forwarder to the specialized member
     def foo(a: Asp): Asp                                                   // is an interface method
   }
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.
 [[syntax trees at end of                   cleanup]] // newSource1.scala
 package miniboxing.tests.compile.bug85.reduced {
   abstract trait MakeImplClass extends Object {

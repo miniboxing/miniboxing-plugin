@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 Specializing class TailCallsCrasher...
 newSource1.scala:6: error: Following the miniboxing transformation, this method will no longer be in tailcall position (please see https://github.com/miniboxing/miniboxing-plugin/issues/181 for a workaround):
   @tailrec final def zzz1(x: A): A = zzz1(x)

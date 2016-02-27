@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 Specializing class HijackMe2...
   // interface:
   abstract trait HijackMe2[T] extends Object {
@@ -26,8 +27,6 @@ Specializing class HijackMe2...
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile {
   abstract trait HijackMe2[@miniboxed T] extends Object {

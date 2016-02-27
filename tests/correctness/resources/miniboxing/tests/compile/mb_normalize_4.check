@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 Specializing class SpCls4Tuple2...
   // interface:
   abstract trait SpCls4Tuple2[U, V] extends Object {
@@ -98,8 +99,6 @@ Specializing class SpCls4...
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.correctness {
   abstract trait SpCls4Tuple2[@miniboxed U, @miniboxed V] extends Object {

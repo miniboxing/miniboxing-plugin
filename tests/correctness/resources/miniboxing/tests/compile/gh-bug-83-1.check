@@ -1,11 +1,10 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 newSource1.scala:5: warning: The side-effecting statement(s) in the miniboxed class C's constructor will not be miniboxed. Please note this is caused by the fact that the miniboxing plugin was instructed not to specialize side-effecting constructor statements.
   t = t2
     ^
 [Now checking: minibox-inject]
 [Now checking: minibox-bridge]
 [Not checkable: minibox-coerce]
-Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbArray`-s will be generic and will box.
-Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow the plugin to use both long and double encodings (remove `P:minibox:Yone-way` compiler option). `MbTuple`-s will be generic and will box.
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug83.alt1 {
   abstract trait C[@miniboxed T] extends Object {

@@ -30,32 +30,7 @@ trait MiniboxCommitTreeTransformer extends TypingTransformers {
   override def newTransformer(unit: CompilationUnit): Transformer = new Transformer {
 
     override def transform(tree: Tree): Tree = {
-      var mbArray_transform = true
-      var mbTuple_transform = true
-
-      if (flags.flag_rewire_mbarray && !flags.flag_two_way) {
-        mbArray_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is only possible if you allow " +
-                             "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
-                             "compiler option). `MbArray`-s will be generic and will box.")
-      } else if (!flags.flag_rewire_mbarray) {
-        mbArray_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbArray` is disabled, thus `MbArray`-s will " +
-                             "be generic and will box.")
-      }
-
-      if (flags.flag_rewire_tuples && !flags.flag_two_way) {
-        mbTuple_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is only possible if you allow " +
-                             "the plugin to use both long and double encodings (remove `-P:minibox:Yone-way` " +
-                             "compiler option). `MbTuple`-s will be generic and will box.")
-      } else if (!flags.flag_rewire_tuples) {
-        mbTuple_transform = false
-        global.reporter.echo("Miniboxing plugin warning: Optimizing `MbTuple` is disabled, thus `MbTuple`-s will " +
-                             "be generic and will box.")
-      }
-
-      val specTrans = new MiniboxTreeTransformer(unit, mbArray_transform, mbTuple_transform)
+      val specTrans = new MiniboxTreeTransformer(unit, flags.flag_rewire_mbarray, flags.flag_rewire_tuples)
       afterMiniboxCommit(checkNoStorage(specTrans.transform(tree)))
     }
   }

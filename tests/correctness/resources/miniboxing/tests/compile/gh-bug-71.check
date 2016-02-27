@@ -1,3 +1,4 @@
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 newSource1.scala:4: error: [ occured while creating miniboxed method foo$J in class Test$J ]
 method id in object Test cannot be accessed in object miniboxing.tests.compile.bug71.Test
   def foo(t: T): T = Test.id(t)

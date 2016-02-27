@@ -1,4 +1,4 @@
-warning: 'minibox' selects 4 phases
+Miniboxing plugin warning: Optimizing `MbArray`s, tuples and functions can only be done if you allow the plugin to use both long and double encodings (remove the `P:minibox:Yone-way` compiler option). In this run, the above classes will be generic and will box.
 newSource1.scala:9: error: The method overrideMe in class Base72 overrides method overrideMe in class Base71 therefore needs to have the follwing type parameters marked with @miniboxed: type B.
   override def overrideMe[@miniboxed A, B](a: A, b: B): A = ???
                ^
