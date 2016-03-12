@@ -1,6 +1,6 @@
 [[syntax trees at end of            minibox-commit]] // newSource1.scala
 package miniboxing.tests.compile.bug122 {
-  abstract trait C[@miniboxed X] extends Object {
+  abstract trait C[@miniboxed X] extends Object with miniboxing.tests.compile.bug122.B[Long] {
     <stable> <accessor> def neutralElement(): Long;
     def aggregate(a: Long, b: Long): Long
   };

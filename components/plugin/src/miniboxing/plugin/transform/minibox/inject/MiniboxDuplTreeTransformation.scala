@@ -263,10 +263,17 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
 
         case ClassDef(_, _, _, impl: Template) =>
 
+          def transformStemTemplate(tpl: Template, stemClass: Symbol): Template =
+//            TODO: Check interaction with self types
+//            if ((stemClass.thisSym ne stemClass) && (stemClass.thisSym ne tpl.self.symbol))
+//              transformTemplate(treeCopy.Template(tpl, tpl.parents, localTyper.typedValDef(ValDef(stemClass.thisSym, EmptyTree)), tpl.body))
+//            else
+              transformTemplate(tpl)
+
           if (heuristics.isSpecializableClass(tree.symbol) && metadata.isClassStem(tree.symbol)) {
             // The base trait for the current class
             val specializedStemClassSym = tree.symbol
-            val baseTrait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformTemplate(rhs)))
+            val baseTrait = deriveClassDef(tree)(rhs => atOwner(tree.symbol)(transformStemTemplate(rhs, specializedStemClassSym)))
 
             // The specialized classes for the current class
             val specClassSymbols = metadata.classOverloads(specializedStemClassSym).values.toList.sortBy(_.name.toString)
@@ -299,8 +306,10 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val decls = afterMiniboxInject(cls.info).decls.toList
           val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false)).sortBy(_.nameString)
           def memberVariants(mbr: Symbol): List[Tree] = {
-            val specVariants = metadata.memberOverloads.get(mbr).map(_.values.toList.sortBy(_.nameString)).getOrElse(List(mbr))
-            specVariants.filter(_ != mbr).flatMap(mbr => createMemberTree(Some(mbr)))
+            val baseVariants = metadata.memberOverloads.get(mbr).map(_.values.toList).getOrElse(List())
+            val specVariants = metadata.specialOverloads.get(mbr).map(_.values.toList).getOrElse(List())
+            val res = (baseVariants ::: specVariants).sortBy(_.nameString).filter(_ != mbr).flatMap(other => createMemberTree(Some(other)))
+            res
           }
           val state = metadata.getClassState(cls)
           def isConstructorOrField(sym: Symbol) = (
@@ -406,7 +415,18 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val memberDefs = atOwner(currentOwner)(transformStats(tagMembers ::: bodyDefs, cls))
 
           // parents
-          val parents1 = map2(cls.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+          val parents1 =
+            if (cls.info.parents.length == parents.length)
+              map2(cls.info.parents, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+            else if (cls.info.parents.length == parents.length + 1)
+              TypeTree(cls.info.parents.head) :: map2(cls.info.parents.tail, parents)((tpe, parent) => TypeTree(tpe) setPos parent.pos)
+            else {
+              global.reporter.error(tree.pos, s"Miniboxing plugin internal error: Unexpected number of parents for " +
+                                              s"template of ${cls.owner.tweakedToString}. Before: $parents, " +
+                                              s"after ${cls.info.parents}. Please file a bug report!")
+              cls.info.parents.map(tpe => TypeTree(tpe))
+            }
+
 
           // new template def
           val templateDef = treeCopy.Template(tree, parents1, self, atOwner(currentOwner)(memberDefs))

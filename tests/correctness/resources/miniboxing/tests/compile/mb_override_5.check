@@ -117,7 +117,7 @@ package miniboxing.tests.compile {
     def overrideMe$JL(T$TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = MiniboxConversions.this.box2minibox_tt[Tsp](Base51$LL.this.overrideMe(MiniboxConversions.this.minibox2box[Tsp](t1, T$TypeTag), MiniboxConversions.this.minibox2box[Tsp](t2, T$TypeTag), MiniboxConversions.this.minibox2box[Tsp](t3, T$TypeTag), s), T$TypeTag);
     def overrideMe$LJ(S$TypeTag: Byte, t1: Tsp, t2: Tsp, t3: Tsp, s: Long): Tsp = Base51$LL.this.overrideMe(t1, t2, t3, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag))
   };
-  abstract trait Base52[@miniboxed T, S] extends Object {
+  abstract trait Base52[@miniboxed T, S] extends Object with miniboxing.tests.compile.Base51[T,S] {
     override def overrideMe(t1: T, t2: T, t3: T, s: S): T;
     override def overrideMe$J(T$TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: S): Long
   };

@@ -67,6 +67,10 @@ trait MiniboxMetadata {
 
     val memberOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
 
+    // Special overloads, generated through addSpecialOverloads
+
+    val specialOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+
     val memberSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
     protected val memberStem = new mutable.HashMap[Symbol, Symbol]
@@ -119,9 +123,6 @@ trait MiniboxMetadata {
 
     /** Those members that will be duplicated and specialized to produce the muliple overloads */
     val templateMembers = mutable.Set[Symbol]()
-
-    /** Stem class can have a class parent (see bug #162) */
-    val stemClassParent = mutable.HashMap[Symbol, Symbol]()
 
 
 

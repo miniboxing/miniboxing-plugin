@@ -56,9 +56,9 @@ trait MiniboxMetadataAddons {
     def isImplicitlyPredefMethod: Boolean = isPredefMemberNamed(sym, nme.implicitly)
     def isCastSymbol: Boolean = definitions.isCastSymbol(sym)
     def isIsInstanceOfAnyMethod: Boolean = sym == Any_isInstanceOf
-    def isArrowAssocMethod: Boolean = 
-      isPredefMemberNamed(sym, newTermName("ArrowAssoc")) || 
-      isPredefMemberNamed(sym, newTermName("any2ArrowAssoc")) || 
+    def isArrowAssocMethod: Boolean =
+      isPredefMemberNamed(sym, newTermName("ArrowAssoc")) ||
+      isPredefMemberNamed(sym, newTermName("any2ArrowAssoc")) ||
       (sym.owner == getMemberClass(PredefModule, newTermName("ArrowAssoc")) && sym.name == newTermName(NameTransformer.encode("->")))
 
     private def tweakedKind = if (sym.isTrait) if (flagdata.classStemTraitFlag(sym)) "trait" else "class" else sym.kindString
@@ -66,6 +66,9 @@ trait MiniboxMetadataAddons {
 
     def tweakedToString: String = tweakedKind + " " + tweakedName
     def tweakedFullString: String = tweakedKind + " " + sym.fullNameString
+    def isClassNotTrait = sym.isClass && !sym.isTrait
+    def hasInfoDefinedAfter(phase: StdPhase) =
+      sym.validTo > period(global.currentRunId, mboxInjectPhase.id)
   }
 
   class RichType(tpe: Type) {

@@ -75,7 +75,7 @@ package miniboxing.tests.compile {
     def overrideMe$LJ[@miniboxed C](S$TypeTag: Byte, t1: Tsp, t2: Tsp, s: Long, c: C): Tsp = Base61$LL.this.overrideMe[C](t1, t2, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag), c);
     def overrideMe$LJ$n$J[C](C$TypeTag: Byte, S$TypeTag: Byte, t1: Tsp, t2: Tsp, s: Long, c: Long): Tsp = Base61$LL.this.overrideMe$n$J[C](C$TypeTag, t1, t2, MiniboxConversions.this.minibox2box[Ssp](s, S$TypeTag), c)
   };
-  abstract trait Base62[@miniboxed T, S] extends Object {
+  abstract trait Base62[@miniboxed T, S] extends Object with miniboxing.tests.compile.Base61[T,S] {
     override def overrideMe[@miniboxed C](t1: T, t2: T, s: S, c: C): T;
     override def overrideMe$n$J[C](C$TypeTag: Byte, t1: T, t2: T, s: S, c: Long): T;
     override def overrideMe$J[@miniboxed C](T$TypeTag: Byte, t1: Long, t2: Long, s: S, c: C): Long;

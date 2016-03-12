@@ -26,7 +26,7 @@ package miniboxing.tests.compile.bug159 {
         ()
       }
     };
-    abstract trait B[@miniboxed T] extends Object;
+    abstract trait B[@miniboxed T] extends Object with miniboxing.tests.compile.bug159.Test.A[T];
     class B$D[Tsp] extends miniboxing.tests.compile.bug159.Test.A$D[Tsp] with miniboxing.tests.compile.bug159.Test.B[Tsp] {
       <paramaccessor> private[this] val miniboxing|tests|compile|bug159|Test|B$D|T$TypeTag: Byte = _;
       def <init>(miniboxing|tests|compile|bug159|Test|B$D|T$TypeTag: Byte): miniboxing.tests.compile.bug159.Test.B$D[Tsp] = {

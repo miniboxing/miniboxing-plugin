@@ -187,7 +187,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
             variantClass
         }
 
-        // step3: adapt the stem to be an interface
+        // step3: adapt the stem to be a trait
         val scope2 = removeFieldsFromStem(stemClass, scope1)
 
         // step4: normalize methods with @miniboxed type parameters
@@ -195,7 +195,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
         // step5: update the stem's parents to form its new type
         val parents1 = computeNewStemParentClasses(stemClass, stemClassTpe)
-        val tpe1 = GenPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
+        val tpe1 = genPolyType(stemClass.info.typeParams, ClassInfoType(parents1, scope3, stemClass))
 
         if (currentRun.compiles(stemClass))
           reportClasses(stemClass, scope3, variantClasses)
@@ -438,13 +438,17 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
       val specializeParents = parentClasses.specializeParentsTypeMapForSpec(stemClass.pos, variantClass, stemClass, localSpec)
       val specializedInfoType: Type = {
-        val sParents = (stemClass.info.parents ::: List(stemClass.tpe)) map {
-          t => specializedTypeMapOuter(t)
-        } map specializeParents
+        val firstParent = stemClass.info.parents.head.typeSymbol
+        val preSpecParents = stemClass.info.parents ::: List(stemClass.tpe)
+        val sParents = preSpecParents.map(specializedTypeMapOuter).map(specializeParents)
 
         GenPolyType(newTParams, ClassInfoType(sParents, variantClassScope, variantClass))
       }
       afterMiniboxInject(variantClass setInfo specializedInfoType)
+// TODO: Check interaction with self types
+//      if (stemClass.thisSym ne stemClass)
+//        variantClass.typeOfThis = specializedTypeMapOuter(stemClass.typeOfThis)
+
 
       // step6: Add type tag fields for each parameter
       val typeTagMap: List[(Symbol, Symbol)] =
@@ -741,96 +745,82 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
       newScope
     }
 
+    /**
+     * The rules for computing stem trait parents, based on some
+     * less-common Scala invariants. Refresher:
+     *
+     * 1. Traits can extend classes
+     * 2. When a {class|trait} (extends a trait that)* extends a
+     *    class it must extend that class (or a subclass) as well:
+     *     - the class must be the first parent extended
+     *     - the trait must follow in the mix-in group
+     * 3. Exception: Object, which is assumed automatically if
+     *    no class is extended :))
+     *
+     * Thus, we can have a stem trait as a sub-type of a class, no
+     * problem. But we need to satisfy the invariants above when
+     * transforming the stem, otherwise we make typer upset ;)
+     *
+     * Abbreviations:
+     *   P {x,y,z} Q means P x Q and P y Q and P z Q
+     *   (x)* means repetition: x x x x x x
+     */
     def computeNewStemParentClasses(stemClass: Symbol, stemClassTpe: Type): List[Type] = {
+
+      def transitiveClassParent(stemClass: Symbol, parent: Symbol): Symbol =
+        if (parent.isClassNotTrait)
+          parent
+        else {
+          // check deeper: is the parent of the parent a class?
+          if (parent == NoSymbol) {
+            global.reporter.error(stemClass.pos, s"Miniboxing plugin internal error: " +
+                                                 s"NoSymbol encountered as a transitive " +
+                                                 s"parent for $stemClass!")
+            NoSymbol
+          } else
+            // invariant: parent info must be at the current phase
+            assert(parent.hasInfoDefinedAfter(mboxInjectPhase))
+
+            // check parent's parents
+            parent.parentSymbols match {
+              case nparent :: _ => transitiveClassParent(stemClass, nparent)
+              case _            =>
+                global.reporter.error(stemClass.pos, s"Miniboxing plugin internal error: " +
+                                                     s"Empty transitive parents for $stemClass!")
+                NoSymbol
+            }
+        }
+
       val parents = stemClassTpe.parents
 
-      def findFirstClassParent(sym: Symbol): Symbol = {
-        if (metadata.isClassStem(sym))
-          metadata.stemClassParent(sym)
-        else if (isClassParent(sym))
-          sym
-        else // trait parent
-          sym.tpe.parents match {
-            case parentTpe :: _ =>
-              afterMiniboxInject(parentTpe.typeSymbol.info)
-              findFirstClassParent(parentTpe.typeSymbol)
-            case Nil => AnyRefClass
-          }
+      parents match {
+        case bparent::_ if bparent.typeSymbol.isClassNotTrait =>
+          parents
+        case bparent::_ =>
+          stemClassTpe.baseType(transitiveClassParent(stemClass, bparent.typeSymbol)) :: parents
+        case _                                                =>
+          global.reporter.error(stemClass.pos, s"Miniboxing plugin internal error: " +
+                                               s"$stemClass has empty parents!")
+          List(ErrorType)
       }
-
-      def isObject(sym: Symbol): Boolean =
-        sym == ObjectClass ||
-        sym == AnyRefClass ||
-        sym == AnyClass
-
-      def isClassParent(sym: Symbol): Boolean =
-        sym.isClass && !sym.isTrait
-
-      def isNoArgClassParent(sym: Symbol): Boolean =
-        isClassParent(sym) && sym.primaryConstructor.tpe.paramss.flatten.isEmpty
-
-      val (stemParent: Symbol, parentTpes: List[Type]) =
-        if (flagdata.classStemTraitFlag(stemClass))
-          parents match {
-            case firstParentTpe :: rest =>
-              val firstParent = firstParentTpe.typeSymbol
-              afterMiniboxInject(firstParent.info)
-              (findFirstClassParent(firstParent), parents)
-            case Nil =>
-              // not sure this should happen...
-              (AnyRefClass, List(AnyRefTpe))
-          }
-        else
-          // this stem was a class => it may need an AnyRef marker, so it can behave as such when
-          // retypechecking the tree
-          parents match {
-            case firstParentTpe :: rest =>
-              val firstParent = firstParentTpe.typeSymbol
-              afterMiniboxInject(firstParent.info)
-
-              if (metadata.isClassStem(firstParent)) {
-                val classParent = metadata.stemClassParent(firstParent)
-                (classParent, stemClass.tpe.baseType(classParent) :: parents)
-              } else if (isNoArgClassParent(firstParent)) {
-                (firstParent, parents)
-              } else if (isClassParent(firstParent)) {
-                if (currentRun.compiles(stemClass)) // #162: don't generate the error with each REPL line!
-                  global.reporter.warning(stemClass.pos, "The miniboxed class " + stemClass.name + " extends the generic " +
-                    firstParent + ", which triggers a limitation of the miniboxing transformation: any value of type " +
-                    stemClass.name + " cannot be used as a value of type " + firstParent.name + ", despite the fact that " +
-                    "members and implementations are correctly inherited. There is a simple workaround to this problem, which you " +
-                    "can apply to your code. For more information, please see https://github.com/miniboxing/miniboxing-plugin/issues/162. " +
-                    "Note that this can lead to further errors down the line. Also, keep in mind you should not expose " +
-                    "this class in your API, as it may break client code:"
-                  )
-                (AnyRefClass, AnyRefTpe :: rest)
-              } else { // it's a generic trait
-                (AnyRefClass, parents)
-              }
-            case Nil =>
-              (AnyRefClass, List(AnyRefTpe))
-          }
-
-      metadata.stemClassParent(stemClass) = stemParent
-      parentTpes
     }
 
     def reportClasses(stemClass: Symbol, scope3: Scope, classes: List[Symbol]) = {
-              log("  // interface:")
-        log("  " + stemClass.defString + " {")
-        for (decl <- scope3.toList.sortBy(_.defString))
-          log(f"    ${decl.defString}%-70s")
+      log("  // interface:")
+      log("  " + stemClass.defString + " {")
+      for (decl <- scope3.toList.sortBy(_.defString))
+        log(f"    ${decl.defString}%-70s")
 
+      log("  }\n")
+
+      classes foreach { cls =>
+        log("  // specialized class:")
+        log("  " + cls.defString + " {")
+        for (decl <- cls.info.decls.toList.sortBy(_.defString) if !metadata.dummyConstructors(decl))
+          log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
         log("  }\n")
-
-        classes foreach { cls =>
-          log("  // specialized class:")
-          log("  " + cls.defString + " {")
-          for (decl <- cls.info.decls.toList.sortBy(_.defString) if !metadata.dummyConstructors(decl))
-            log(f"    ${decl.defString}%-70s // ${memberSpecializationInfo.get(decl).map(_.toString).getOrElse("no info")}")
-          log("  }\n")
-        }
-        log("\n\n")
+      }
+      log("\n\n")
     }
   }
 }
