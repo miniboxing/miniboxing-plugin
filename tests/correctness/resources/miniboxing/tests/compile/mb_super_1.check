@@ -30,7 +30,7 @@ package miniboxing.tests.compile.sup1 {
       D.super.<init>(5);
       ()
     };
-    override def foo(i: Int): Int = MiniboxConversions.this.minibox2int(D.this.foo$J(5, MiniboxConversions.this.int2minibox(i)));
+    override def foo(i: Int): Int = MiniboxConversions.this.minibox2int(D.super.foo$J(5, MiniboxConversions.this.int2minibox(3)));
     override def foo$J(T$TypeTag: Byte, t: Long): Long = D.super.foo$J(5, MiniboxConversions.this.int2minibox(3))
   }
 }

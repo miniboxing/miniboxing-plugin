@@ -90,7 +90,9 @@ package miniboxing.tests.compile {
     override def overrideMe[@miniboxed C](t1: Tsp, t2: Tsp, s: Ssp, c: C): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base62$J.this.overrideMe$J[C](Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag), MiniboxConversions.this.box2minibox_tt[Tsp](t2, Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag), s, c), Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag);
     override def overrideMe$n$J[C](C$TypeTag: Byte, t1: Tsp, t2: Tsp, s: Ssp, c: Long): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base62$J.this.overrideMe$J$n$J[C](C$TypeTag, Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag), MiniboxConversions.this.box2minibox_tt[Tsp](t2, Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag), s, c), Base62$J.this.miniboxing|tests|compile|Base62$J|T$TypeTag);
     override def overrideMe$J[@miniboxed C](T$TypeTag: Byte, t1: Long, t2: Long, s: Ssp, c: C): Long = t2;
-    override def overrideMe$J$n$J[C](C$TypeTag: Byte, T$TypeTag: Byte, t1: Long, t2: Long, s: Ssp, c: Long): Long = t2
+    override def overrideMe$J$n$J[C](C$TypeTag: Byte, T$TypeTag: Byte, t1: Long, t2: Long, s: Ssp, c: Long): Long = t2;
+    override def overrideMe$JL[@miniboxed C](T$TypeTag: Byte, t1: Long, t2: Long, s: Ssp, c: C): Long = Base62$J.this.overrideMe$J[C](T$TypeTag, t1, t2, s, c);
+    override def overrideMe$JL$n$J[C](C$TypeTag: Byte, T$TypeTag: Byte, t1: Long, t2: Long, s: Ssp, c: Long): Long = Base62$J.this.overrideMe$J$n$J[C](C$TypeTag, T$TypeTag, t1, t2, s, c)
   };
   class Base62$L[Tsp, Ssp] extends miniboxing.tests.compile.Base61$LL[Tsp,Ssp] with miniboxing.tests.compile.Base62[Tsp,Ssp] {
     def <init>(): miniboxing.tests.compile.Base62$L[Tsp,Ssp] = {

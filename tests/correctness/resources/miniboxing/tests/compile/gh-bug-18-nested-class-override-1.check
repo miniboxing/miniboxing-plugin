@@ -23,7 +23,7 @@ package miniboxing.tests.compile {
           $anon.super.<init>(Dist1$J.this.miniboxing|tests|compile|Dist1$J|A$TypeTag);
           ()
         };
-        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply$J(Dist1$J.this.miniboxing|tests|compile|Dist1$J|A$TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist1$J.this.miniboxing|tests|compile|Dist1$J|A$TypeTag)), Dist1$J.this.miniboxing|tests|compile|Dist1$J|A$TypeTag);
+        def apply(a: Asp): Asp = scala.this.Predef.???();
         override def apply$J(A$TypeTag: Byte, a: Long): Long = MiniboxConversions.this.box2minibox_tt[Asp](scala.this.Predef.???(), A$TypeTag)
       };
       new anonymous class $anon()

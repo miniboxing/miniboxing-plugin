@@ -18,7 +18,7 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          final def apply(x: Int): Int = x.+(1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
         new anonymous class $anon().extractFunctionX()
@@ -29,7 +29,7 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          final def apply(x: Int): Int = x.+(1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
         new anonymous class $anon()
@@ -40,7 +40,7 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5, 5);
             ()
           };
-          final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+          final def apply(x: Int): Int = x.+(1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(MiniboxConversions.this.minibox2int(t1).+(1))
         };
         new anonymous class $anon().extractFunctionX()
@@ -53,7 +53,10 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          final def apply(): Int = {
+            scala.this.Predef.println("eval1");
+            1
+          };
           override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval1");
             MiniboxConversions.this.int2minibox(1)
@@ -67,7 +70,10 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          final def apply(): Int = {
+            scala.this.Predef.println("eval2");
+            2
+          };
           override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval2");
             MiniboxConversions.this.int2minibox(2)
@@ -81,7 +87,10 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          final def apply(): Int = {
+            scala.this.Predef.println("eval3");
+            3
+          };
           override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval3");
             MiniboxConversions.this.int2minibox(3)
@@ -95,7 +104,10 @@ package miniboxing.tests.bug115 {
             $anonfun.super.<init>(5);
             ()
           };
-          final def apply(): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$J(5));
+          final def apply(): Int = {
+            scala.this.Predef.println("eval4");
+            4
+          };
           override def apply$J(R$TypeTag: Byte): Long = {
             scala.this.Predef.println("eval4");
             MiniboxConversions.this.int2minibox(4)

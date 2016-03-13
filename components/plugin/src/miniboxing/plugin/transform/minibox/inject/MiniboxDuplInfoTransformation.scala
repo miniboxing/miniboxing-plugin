@@ -625,6 +625,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
 
       // 1. Get the overridden members
       def specializedOverriddenMembers(sym: Symbol): List[Symbol] = {
+        var res: List[Symbol] = Nil
         for (ovr <- sym.allOverriddenSymbols) {
 
           // Check we're not incorrectly overriding normalized members:
@@ -640,38 +641,55 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
           }
 
           // Check for specialized classes, that makes things more complex
-          if (heuristics.isSpecializableClass(ovr.owner) && (base != ovr.owner) && metadata.memberOverloads.isDefinedAt(ovr))
-            return List(ovr)
+          if (metadata.isClassStem(ovr.owner) && (base != ovr.owner) && metadata.memberOverloads.isDefinedAt(ovr))
+            res ::= ovr
         }
-        Nil
+
+        res
       }
 
-    // 2. Use this information to coordinate
-    if (clazz.isClass) // class or trait
+      // 2. Use this information to coordinate
+      if (!clazz.isClass) {
+        // not a class or trait?!?
+        global.reporter.error(clazz.pos, "Miniboxing plugin internal error: Adding special overrides for something " +
+                              "that is not a class or trait: " + clazz + " with scope " + scope)
+        return scope
+      }
 
-      for (sym <- scope1 if sym.isMethod && !sym.isConstructor) {
+      for (sym <- scope1.toList if sym.isMethod && !sym.isConstructor) {
         specializedOverriddenMembers(sym).foreach(ovr => {
-          // TODO: Inject owner chain specialization information here!
+
           val baseParent = ovr.owner
-          val baseParentTpe = clazz.info.baseType(baseParent)
+          val stemOrCurrentClass = metadata.getClassStem(clazz).orElse(clazz)
+          val baseParentTpe = stemOrCurrentClass.info.baseType(baseParent)
           val baseSpec = PartialSpec.fromTargs(NoPosition, baseParent.info.typeParams, baseParentTpe.typeArgs, clazz.owner, globalPSpec)
 
-          val localOverload = metadata.memberOverloads.get(ovr).flatMap(_.get(baseSpec)).getOrElse(NoSymbol)
-          // only generate the override if we don't have an overload which matches the current symbol:
-          // matching the symbol is a pain in the arse, since ovr points to the interface while localOverload
-          // points to the current clazz -- TODO: we could carry newMembers and get the correspondence
-          if ((localOverload.name != ovr.name) && (localOverload != NoSymbol)) {
+          val remoteOverload = metadata.memberOverloads.get(ovr).flatMap(_.get(baseSpec)).getOrElse(NoSymbol)
+          lazy val localOverloadExists =
+            scope1.exists(mbr => (mbr.name == remoteOverload.name) && (mbr.tpe matches clazz.info.memberInfo(remoteOverload)))
+            // Doesn't work since the info of the stem class does not contain the widening:
+            // scope1.filter(_.allOverriddenSymbols.contains(remoteOverload))
 
-            val overrider = localOverload.cloneSymbol(clazz)
-            overrider.setInfo(localOverload.info.cloneInfo(overrider).asSeenFrom(clazz.thisType, localOverload.owner))
+//          if ((sym.nameString == "overrideMe") && (sym.owner.nameString == "LongIsBase21Base22andBase23")) {
+//            println()
+//            println(sym + " from " + sym.owner)
+//            println(remoteOverload + " from " + remoteOverload.owner)
+//            println(localOverloadExists)
+//          }
+
+          // only generate the override if we don't have an overload which matches the current symbol:
+          if ((remoteOverload != NoSymbol) && (!localOverloadExists)) {
+
+            val overrider = remoteOverload.cloneSymbol(clazz)
+            overrider.setInfo(remoteOverload.info.cloneInfo(overrider).asSeenFrom(clazz.thisType, remoteOverload.owner))
             overrider.resetFlag(DEFERRED).setFlag(OVERRIDE)
             metadata.miniboxedMemberFlag += overrider
 
-            val paramUpdate = (localOverload.info.params zip overrider.info.params).toMap
-            val baseClazz = localOverload.owner
+            val paramUpdate = (remoteOverload.info.params zip overrider.info.params).toMap
+            val baseClazz = remoteOverload.owner
             val baseType = clazz.info.baseType(baseClazz)
             val tparamUpdate = (baseClazz.typeParams zip baseType.typeArgs.map(_.typeSymbol)).toMap
-            val typeTags = metadata.localTypeTags.getOrElse(localOverload, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
+            val typeTags = metadata.localTypeTags.getOrElse(remoteOverload, Map.empty).map({ case (tag, tpe) => (paramUpdate(tag), tparamUpdate(tpe))})
 
             // copy the body to the specialized overload and let the symbol forward. There is no optimal solution
             // when using nested class variantClassialization:
@@ -693,31 +711,30 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
               // if sym is a field accessor, the overrider will point to it, as there's no reason
               // for the field access to minibox and unbox back
               case Some(FieldAccessor(fld)) =>
-                memberSpecializationInfo(sym) = FieldAccessor(fld)
                 memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true).asOverride
 
               // if sym is the most specialized version of the code, then just move it over to the
               // new overrider symbol, exactly like in the example above -- `foo_JJ`
               case Some(SpecializedImplementationOf(parent)) =>
-                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
-                memberSpecializationInfo(overrider) = SpecializedImplementationOf(parent).asOverride
+                memberSpecializationInfo(overrider) = ForwardTo(sym)(overrider = true)
 
               case None =>
-                memberSpecializationInfo(sym) = ForwardTo(sym)(overrider = true)
                 memberSpecializationInfo(overrider) = SpecializedImplementationOf(sym).asOverride
 
               case info =>
-                global.reporter.error(sym.pos, "Member override creation: unaccounted case " + info + " for " + sym.fullName + "(" + sym + ")")
+                global.reporter.error(sym.pos, "Member override creation: unaccounted case " + info + " for " + sym.fullName + "(" + sym + " in " + sym.owner + ")" )
                 memberSpecializationInfo(overrider) = Interface.asOverride
             }
-            metadata.memberOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (globalPSpec -> overrider)
+            metadata.specialOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (globalPSpec -> overrider)
 
             scope1 enter overrider
           }
         })
       }
+
       scope1
     }
+
 
     // add members derived from deferred type tags
     def addDeferredTypeTagImpls(stemClass: Symbol, scope: Scope, inPlace: Boolean = false): Scope = {

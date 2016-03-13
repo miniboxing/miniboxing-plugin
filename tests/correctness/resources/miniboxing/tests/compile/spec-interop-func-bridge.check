@@ -63,7 +63,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Unit = _f_cast;
-          def apply(): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$J(0), 0);
+          def apply(): Unit = _f_cast.apply$mcV$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcV$sp(), 0)
         };
         new anonymous class $anon()
@@ -79,7 +79,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Boolean = _f_cast;
-          def apply(): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$J(1));
+          def apply(): Boolean = _f_cast.apply$mcZ$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZ$sp())
         };
         new anonymous class $anon()
@@ -95,7 +95,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Byte = _f_cast;
-          def apply(): Byte = MiniboxConversions.this.minibox2byte($anon.this.apply$J(2));
+          def apply(): Byte = _f_cast.apply$mcB$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.byte2minibox(_f_cast.apply$mcB$sp())
         };
         new anonymous class $anon()
@@ -111,7 +111,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Short = _f_cast;
-          def apply(): Short = MiniboxConversions.this.minibox2short($anon.this.apply$J(3));
+          def apply(): Short = _f_cast.apply$mcS$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.short2minibox(_f_cast.apply$mcS$sp())
         };
         new anonymous class $anon()
@@ -127,7 +127,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Char = _f_cast;
-          def apply(): Char = MiniboxConversions.this.minibox2char($anon.this.apply$J(4));
+          def apply(): Char = _f_cast.apply$mcC$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.char2minibox(_f_cast.apply$mcC$sp())
         };
         new anonymous class $anon()
@@ -143,7 +143,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Int = _f_cast;
-          def apply(): Int = MiniboxConversions.this.minibox2int($anon.this.apply$J(5));
+          def apply(): Int = _f_cast.apply$mcI$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcI$sp())
         };
         new anonymous class $anon()
@@ -159,7 +159,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Long = _f_cast;
-          def apply(): Long = MiniboxConversions.this.minibox2long($anon.this.apply$J(6));
+          def apply(): Long = _f_cast.apply$mcJ$sp();
           override def apply$J(R$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJ$sp())
         };
         new anonymous class $anon()
@@ -184,7 +184,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Float = _f_cast;
-          def apply(): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$D(7));
+          def apply(): Float = _f_cast.apply$mcF$sp();
           override def apply$D(R$TypeTag: Byte): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcF$sp())
         };
         new anonymous class $anon()
@@ -200,7 +200,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): () => Double = _f_cast;
-          def apply(): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$D(8));
+          def apply(): Double = _f_cast.apply$mcD$sp();
           override def apply$D(R$TypeTag: Byte): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcD$sp())
         };
         new anonymous class $anon()
@@ -226,7 +226,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Unit = _f_cast;
-          def apply(arg1: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJ(5, 0, MiniboxConversions.this.int2minibox(arg1)), 0);
+          def apply(arg1: Int): Unit = _f_cast.apply$mcVI$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVI$sp(MiniboxConversions.this.minibox2int(t1)), 0)
         };
         new anonymous class $anon()
@@ -243,7 +243,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Boolean = _f_cast;
-          def apply(arg1: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJ(5, 1, MiniboxConversions.this.int2minibox(arg1)));
+          def apply(arg1: Int): Boolean = _f_cast.apply$mcZI$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZI$sp(MiniboxConversions.this.minibox2int(t1)))
         };
         new anonymous class $anon()
@@ -260,7 +260,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Int = _f_cast;
-          def apply(arg1: Int): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(arg1)));
+          def apply(arg1: Int): Int = _f_cast.apply$mcII$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcII$sp(MiniboxConversions.this.minibox2int(t1)))
         };
         new anonymous class $anon()
@@ -277,7 +277,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Long = _f_cast;
-          def apply(arg1: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJ(5, 6, MiniboxConversions.this.int2minibox(arg1)));
+          def apply(arg1: Int): Long = _f_cast.apply$mcJI$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJI$sp(MiniboxConversions.this.minibox2int(t1)))
         };
         new anonymous class $anon()
@@ -294,7 +294,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Unit = _f_cast;
-          def apply(arg1: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJ(6, 0, MiniboxConversions.this.long2minibox(arg1)), 0);
+          def apply(arg1: Long): Unit = _f_cast.apply$mcVJ$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJ$sp(MiniboxConversions.this.minibox2long(t1)), 0)
         };
         new anonymous class $anon()
@@ -311,7 +311,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Boolean = _f_cast;
-          def apply(arg1: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJ(6, 1, MiniboxConversions.this.long2minibox(arg1)));
+          def apply(arg1: Long): Boolean = _f_cast.apply$mcZJ$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
@@ -328,7 +328,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Int = _f_cast;
-          def apply(arg1: Long): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJ(6, 5, MiniboxConversions.this.long2minibox(arg1)));
+          def apply(arg1: Long): Int = _f_cast.apply$mcIJ$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
@@ -345,7 +345,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Long = _f_cast;
-          def apply(arg1: Long): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJ(6, 6, MiniboxConversions.this.long2minibox(arg1)));
+          def apply(arg1: Long): Long = _f_cast.apply$mcJJ$sp(arg1);
           override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
@@ -371,7 +371,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Unit = _f_cast;
-          def apply(arg1: Float): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$DJ(7, 0, MiniboxConversionsDouble.this.float2minibox(arg1)), 0);
+          def apply(arg1: Float): Unit = _f_cast.apply$mcVF$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVF$sp(MiniboxConversionsDouble.this.minibox2float(t1)), 0)
         };
         new anonymous class $anon()
@@ -388,7 +388,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Boolean = _f_cast;
-          def apply(arg1: Float): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$DJ(7, 1, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          def apply(arg1: Float): Boolean = _f_cast.apply$mcZF$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
         };
         new anonymous class $anon()
@@ -405,7 +405,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Int = _f_cast;
-          def apply(arg1: Float): Int = MiniboxConversions.this.minibox2int($anon.this.apply$DJ(7, 5, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          def apply(arg1: Float): Int = _f_cast.apply$mcIF$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
         };
         new anonymous class $anon()
@@ -422,7 +422,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Long = _f_cast;
-          def apply(arg1: Float): Long = MiniboxConversions.this.minibox2long($anon.this.apply$DJ(7, 6, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          def apply(arg1: Float): Long = _f_cast.apply$mcJF$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
         };
         new anonymous class $anon()
@@ -439,7 +439,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Unit = _f_cast;
-          def apply(arg1: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$DJ(8, 0, MiniboxConversionsDouble.this.double2minibox(arg1)), 0);
+          def apply(arg1: Double): Unit = _f_cast.apply$mcVD$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVD$sp(MiniboxConversionsDouble.this.minibox2double(t1)), 0)
         };
         new anonymous class $anon()
@@ -456,7 +456,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Boolean = _f_cast;
-          def apply(arg1: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$DJ(8, 1, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          def apply(arg1: Double): Boolean = _f_cast.apply$mcZD$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZD$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
@@ -473,7 +473,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Int = _f_cast;
-          def apply(arg1: Double): Int = MiniboxConversions.this.minibox2int($anon.this.apply$DJ(8, 5, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          def apply(arg1: Double): Int = _f_cast.apply$mcID$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcID$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
@@ -490,7 +490,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Long = _f_cast;
-          def apply(arg1: Double): Long = MiniboxConversions.this.minibox2long($anon.this.apply$DJ(8, 6, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          def apply(arg1: Double): Long = _f_cast.apply$mcJD$sp(arg1);
           override def apply$DJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJD$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
@@ -516,7 +516,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Float = _f_cast;
-          def apply(arg1: Int): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JD(5, 7, MiniboxConversions.this.int2minibox(arg1)));
+          def apply(arg1: Int): Float = _f_cast.apply$mcFI$sp(arg1);
           override def apply$JD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFI$sp(MiniboxConversions.this.minibox2int(t1)))
         };
         new anonymous class $anon()
@@ -533,7 +533,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Int => Double = _f_cast;
-          def apply(arg1: Int): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JD(5, 8, MiniboxConversions.this.int2minibox(arg1)));
+          def apply(arg1: Int): Double = _f_cast.apply$mcDI$sp(arg1);
           override def apply$JD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDI$sp(MiniboxConversions.this.minibox2int(t1)))
         };
         new anonymous class $anon()
@@ -550,7 +550,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Float = _f_cast;
-          def apply(arg1: Long): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JD(6, 7, MiniboxConversions.this.long2minibox(arg1)));
+          def apply(arg1: Long): Float = _f_cast.apply$mcFJ$sp(arg1);
           override def apply$JD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
@@ -567,7 +567,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Long => Double = _f_cast;
-          def apply(arg1: Long): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JD(6, 8, MiniboxConversions.this.long2minibox(arg1)));
+          def apply(arg1: Long): Double = _f_cast.apply$mcDJ$sp(arg1);
           override def apply$JD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDJ$sp(MiniboxConversions.this.minibox2long(t1)))
         };
         new anonymous class $anon()
@@ -593,7 +593,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Float = _f_cast;
-          def apply(arg1: Float): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$DD(7, 7, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          def apply(arg1: Float): Float = _f_cast.apply$mcFF$sp(arg1);
           override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
         };
         new anonymous class $anon()
@@ -610,7 +610,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Float => Double = _f_cast;
-          def apply(arg1: Float): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$DD(7, 8, MiniboxConversionsDouble.this.float2minibox(arg1)));
+          def apply(arg1: Float): Double = _f_cast.apply$mcDF$sp(arg1);
           override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDF$sp(MiniboxConversionsDouble.this.minibox2float(t1)))
         };
         new anonymous class $anon()
@@ -627,7 +627,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Float = _f_cast;
-          def apply(arg1: Double): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$DD(8, 7, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          def apply(arg1: Double): Float = _f_cast.apply$mcFD$sp(arg1);
           override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFD$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
@@ -644,7 +644,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): Double => Double = _f_cast;
-          def apply(arg1: Double): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$DD(8, 8, MiniboxConversionsDouble.this.double2minibox(arg1)));
+          def apply(arg1: Double): Double = _f_cast.apply$mcDD$sp(arg1);
           override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDD$sp(MiniboxConversionsDouble.this.minibox2double(t1)))
         };
         new anonymous class $anon()
@@ -671,7 +671,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Unit = _f_cast;
-          def apply(arg1: Int, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJJ(5, 5, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          def apply(arg1: Int, arg2: Int): Unit = _f_cast.apply$mcVII$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)), 0)
         };
         new anonymous class $anon()
@@ -689,7 +689,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Boolean = _f_cast;
-          def apply(arg1: Int, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJJ(5, 5, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Int, arg2: Int): Boolean = _f_cast.apply$mcZII$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -707,7 +707,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Int = _f_cast;
-          def apply(arg1: Int, arg2: Int): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJJ(5, 5, 5, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Int, arg2: Int): Int = _f_cast.apply$mcIII$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -725,7 +725,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Long = _f_cast;
-          def apply(arg1: Int, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJJ(5, 5, 6, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Int, arg2: Int): Long = _f_cast.apply$mcJII$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -743,7 +743,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Unit = _f_cast;
-          def apply(arg1: Int, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJJ(5, 6, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          def apply(arg1: Int, arg2: Long): Unit = _f_cast.apply$mcVIJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)), 0)
         };
         new anonymous class $anon()
@@ -761,7 +761,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Boolean = _f_cast;
-          def apply(arg1: Int, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJJ(5, 6, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Int, arg2: Long): Boolean = _f_cast.apply$mcZIJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -779,7 +779,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Int = _f_cast;
-          def apply(arg1: Int, arg2: Long): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJJ(5, 6, 5, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Int, arg2: Long): Int = _f_cast.apply$mcIIJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -797,7 +797,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Long = _f_cast;
-          def apply(arg1: Int, arg2: Long): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJJ(5, 6, 6, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Int, arg2: Long): Long = _f_cast.apply$mcJIJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -815,7 +815,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Unit = _f_cast;
-          def apply(arg1: Long, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJJ(6, 5, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          def apply(arg1: Long, arg2: Int): Unit = _f_cast.apply$mcVJI$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)), 0)
         };
         new anonymous class $anon()
@@ -833,7 +833,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Boolean = _f_cast;
-          def apply(arg1: Long, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJJ(6, 5, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Long, arg2: Int): Boolean = _f_cast.apply$mcZJI$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -851,7 +851,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Int = _f_cast;
-          def apply(arg1: Long, arg2: Int): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJJ(6, 5, 5, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Long, arg2: Int): Int = _f_cast.apply$mcIJI$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -869,7 +869,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Long = _f_cast;
-          def apply(arg1: Long, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJJ(6, 5, 6, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Long, arg2: Int): Long = _f_cast.apply$mcJJI$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -887,7 +887,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Unit = _f_cast;
-          def apply(arg1: Long, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JJJ(6, 6, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          def apply(arg1: Long, arg2: Long): Unit = _f_cast.apply$mcVJJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)), 0)
         };
         new anonymous class $anon()
@@ -905,7 +905,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Boolean = _f_cast;
-          def apply(arg1: Long, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JJJ(6, 6, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Long, arg2: Long): Boolean = _f_cast.apply$mcZJJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -923,7 +923,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Int = _f_cast;
-          def apply(arg1: Long, arg2: Long): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JJJ(6, 6, 5, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Long, arg2: Long): Int = _f_cast.apply$mcIJJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -941,7 +941,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Long = _f_cast;
-          def apply(arg1: Long, arg2: Long): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JJJ(6, 6, 6, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Long, arg2: Long): Long = _f_cast.apply$mcJJJ$sp(arg1, arg2);
           override def apply$JJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -968,7 +968,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Unit = _f_cast;
-          def apply(arg1: Int, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JDJ(5, 8, 0, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          def apply(arg1: Int, arg2: Double): Unit = _f_cast.apply$mcVID$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
         };
         new anonymous class $anon()
@@ -986,7 +986,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Boolean = _f_cast;
-          def apply(arg1: Int, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JDJ(5, 8, 1, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Int, arg2: Double): Boolean = _f_cast.apply$mcZID$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1004,7 +1004,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Int = _f_cast;
-          def apply(arg1: Int, arg2: Double): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JDJ(5, 8, 5, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Int, arg2: Double): Int = _f_cast.apply$mcIID$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1022,7 +1022,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Long = _f_cast;
-          def apply(arg1: Int, arg2: Double): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JDJ(5, 8, 6, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Int, arg2: Double): Long = _f_cast.apply$mcJID$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1040,7 +1040,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Unit = _f_cast;
-          def apply(arg1: Long, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$JDJ(6, 8, 0, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          def apply(arg1: Long, arg2: Double): Unit = _f_cast.apply$mcVJD$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
         };
         new anonymous class $anon()
@@ -1058,7 +1058,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Boolean = _f_cast;
-          def apply(arg1: Long, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$JDJ(6, 8, 1, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Long, arg2: Double): Boolean = _f_cast.apply$mcZJD$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1076,7 +1076,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Int = _f_cast;
-          def apply(arg1: Long, arg2: Double): Int = MiniboxConversions.this.minibox2int($anon.this.apply$JDJ(6, 8, 5, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Long, arg2: Double): Int = _f_cast.apply$mcIJD$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1094,7 +1094,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Long = _f_cast;
-          def apply(arg1: Long, arg2: Double): Long = MiniboxConversions.this.minibox2long($anon.this.apply$JDJ(6, 8, 6, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Long, arg2: Double): Long = _f_cast.apply$mcJJD$sp(arg1, arg2);
           override def apply$JDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1121,7 +1121,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Unit = _f_cast;
-          def apply(arg1: Double, arg2: Int): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$DJJ(8, 5, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)), 0);
+          def apply(arg1: Double, arg2: Int): Unit = _f_cast.apply$mcVDI$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)), 0)
         };
         new anonymous class $anon()
@@ -1139,7 +1139,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Boolean = _f_cast;
-          def apply(arg1: Double, arg2: Int): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$DJJ(8, 5, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Double, arg2: Int): Boolean = _f_cast.apply$mcZDI$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1157,7 +1157,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Int = _f_cast;
-          def apply(arg1: Double, arg2: Int): Int = MiniboxConversions.this.minibox2int($anon.this.apply$DJJ(8, 5, 5, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Double, arg2: Int): Int = _f_cast.apply$mcIDI$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1175,7 +1175,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Long = _f_cast;
-          def apply(arg1: Double, arg2: Int): Long = MiniboxConversions.this.minibox2long($anon.this.apply$DJJ(8, 5, 6, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Double, arg2: Int): Long = _f_cast.apply$mcJDI$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1193,7 +1193,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Unit = _f_cast;
-          def apply(arg1: Double, arg2: Long): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$DJJ(8, 6, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)), 0);
+          def apply(arg1: Double, arg2: Long): Unit = _f_cast.apply$mcVDJ$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)), 0)
         };
         new anonymous class $anon()
@@ -1211,7 +1211,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Boolean = _f_cast;
-          def apply(arg1: Double, arg2: Long): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$DJJ(8, 6, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Double, arg2: Long): Boolean = _f_cast.apply$mcZDJ$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1229,7 +1229,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Int = _f_cast;
-          def apply(arg1: Double, arg2: Long): Int = MiniboxConversions.this.minibox2int($anon.this.apply$DJJ(8, 6, 5, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Double, arg2: Long): Int = _f_cast.apply$mcIDJ$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1247,7 +1247,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Long = _f_cast;
-          def apply(arg1: Double, arg2: Long): Long = MiniboxConversions.this.minibox2long($anon.this.apply$DJJ(8, 6, 6, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Double, arg2: Long): Long = _f_cast.apply$mcJDJ$sp(arg1, arg2);
           override def apply$DJJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1274,7 +1274,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Unit = _f_cast;
-          def apply(arg1: Double, arg2: Double): Unit = MiniboxConversionsLong.this.minibox2box[Unit]($anon.this.apply$DDJ(8, 8, 0, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)), 0);
+          def apply(arg1: Double, arg2: Double): Unit = _f_cast.apply$mcVDD$sp(arg1, arg2);
           override def apply$DDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversionsLong.this.box2minibox_tt[Unit](_f_cast.apply$mcVDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)), 0)
         };
         new anonymous class $anon()
@@ -1292,7 +1292,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Boolean = _f_cast;
-          def apply(arg1: Double, arg2: Double): Boolean = MiniboxConversions.this.minibox2boolean($anon.this.apply$DDJ(8, 8, 1, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Double, arg2: Double): Boolean = _f_cast.apply$mcZDD$sp(arg1, arg2);
           override def apply$DDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversions.this.boolean2minibox(_f_cast.apply$mcZDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1310,7 +1310,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Int = _f_cast;
-          def apply(arg1: Double, arg2: Double): Int = MiniboxConversions.this.minibox2int($anon.this.apply$DDJ(8, 8, 5, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Double, arg2: Double): Int = _f_cast.apply$mcIDD$sp(arg1, arg2);
           override def apply$DDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversions.this.int2minibox(_f_cast.apply$mcIDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1328,7 +1328,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Long = _f_cast;
-          def apply(arg1: Double, arg2: Double): Long = MiniboxConversions.this.minibox2long($anon.this.apply$DDJ(8, 8, 6, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Double, arg2: Double): Long = _f_cast.apply$mcJDD$sp(arg1, arg2);
           override def apply$DDJ(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Long = MiniboxConversions.this.long2minibox(_f_cast.apply$mcJDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1355,7 +1355,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Float = _f_cast;
-          def apply(arg1: Int, arg2: Int): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JJD(5, 5, 7, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Int, arg2: Int): Float = _f_cast.apply$mcFII$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1373,7 +1373,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Int) => Double = _f_cast;
-          def apply(arg1: Int, arg2: Int): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JJD(5, 5, 8, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Int, arg2: Int): Double = _f_cast.apply$mcDII$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDII$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1391,7 +1391,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Float = _f_cast;
-          def apply(arg1: Int, arg2: Long): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JJD(5, 6, 7, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Int, arg2: Long): Float = _f_cast.apply$mcFIJ$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1409,7 +1409,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Long) => Double = _f_cast;
-          def apply(arg1: Int, arg2: Long): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JJD(5, 6, 8, MiniboxConversions.this.int2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Int, arg2: Long): Double = _f_cast.apply$mcDIJ$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDIJ$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1427,7 +1427,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Float = _f_cast;
-          def apply(arg1: Long, arg2: Int): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JJD(6, 5, 7, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Long, arg2: Int): Float = _f_cast.apply$mcFJI$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1445,7 +1445,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Int) => Double = _f_cast;
-          def apply(arg1: Long, arg2: Int): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JJD(6, 5, 8, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Long, arg2: Int): Double = _f_cast.apply$mcDJI$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDJI$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1463,7 +1463,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Float = _f_cast;
-          def apply(arg1: Long, arg2: Long): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JJD(6, 6, 7, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Long, arg2: Long): Float = _f_cast.apply$mcFJJ$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1481,7 +1481,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Long) => Double = _f_cast;
-          def apply(arg1: Long, arg2: Long): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JJD(6, 6, 8, MiniboxConversions.this.long2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Long, arg2: Long): Double = _f_cast.apply$mcDJJ$sp(arg1, arg2);
           override def apply$JJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDJJ$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1508,7 +1508,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Float = _f_cast;
-          def apply(arg1: Int, arg2: Double): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JDD(5, 8, 7, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Int, arg2: Double): Float = _f_cast.apply$mcFID$sp(arg1, arg2);
           override def apply$JDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1526,7 +1526,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Int, Double) => Double = _f_cast;
-          def apply(arg1: Int, arg2: Double): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JDD(5, 8, 8, MiniboxConversions.this.int2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Int, arg2: Double): Double = _f_cast.apply$mcDID$sp(arg1, arg2);
           override def apply$JDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDID$sp(MiniboxConversions.this.minibox2int(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1544,7 +1544,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Float = _f_cast;
-          def apply(arg1: Long, arg2: Double): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$JDD(6, 8, 7, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Long, arg2: Double): Float = _f_cast.apply$mcFJD$sp(arg1, arg2);
           override def apply$JDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1562,7 +1562,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Long, Double) => Double = _f_cast;
-          def apply(arg1: Long, arg2: Double): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$JDD(6, 8, 8, MiniboxConversions.this.long2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Long, arg2: Double): Double = _f_cast.apply$mcDJD$sp(arg1, arg2);
           override def apply$JDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Long, t2: Double): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDJD$sp(MiniboxConversions.this.minibox2long(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1589,7 +1589,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Float = _f_cast;
-          def apply(arg1: Double, arg2: Int): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$DJD(8, 5, 7, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Double, arg2: Int): Float = _f_cast.apply$mcFDI$sp(arg1, arg2);
           override def apply$DJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1607,7 +1607,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Int) => Double = _f_cast;
-          def apply(arg1: Double, arg2: Int): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$DJD(8, 5, 8, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.int2minibox(arg2)));
+          def apply(arg1: Double, arg2: Int): Double = _f_cast.apply$mcDDI$sp(arg1, arg2);
           override def apply$DJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDDI$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2int(t2)))
         };
         new anonymous class $anon()
@@ -1625,7 +1625,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Float = _f_cast;
-          def apply(arg1: Double, arg2: Long): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$DJD(8, 6, 7, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Double, arg2: Long): Float = _f_cast.apply$mcFDJ$sp(arg1, arg2);
           override def apply$DJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1643,7 +1643,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Long) => Double = _f_cast;
-          def apply(arg1: Double, arg2: Long): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$DJD(8, 6, 8, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversions.this.long2minibox(arg2)));
+          def apply(arg1: Double, arg2: Long): Double = _f_cast.apply$mcDDJ$sp(arg1, arg2);
           override def apply$DJD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Long): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDDJ$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversions.this.minibox2long(t2)))
         };
         new anonymous class $anon()
@@ -1670,7 +1670,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Float = _f_cast;
-          def apply(arg1: Double, arg2: Double): Float = MiniboxConversionsDouble.this.minibox2float($anon.this.apply$DDD(8, 8, 7, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Double, arg2: Double): Float = _f_cast.apply$mcFDD$sp(arg1, arg2);
           override def apply$DDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Double = MiniboxConversionsDouble.this.float2minibox(_f_cast.apply$mcFDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()
@@ -1688,7 +1688,7 @@ package miniboxing.internal {
             ()
           };
           def extractFunctionX(): (Double, Double) => Double = _f_cast;
-          def apply(arg1: Double, arg2: Double): Double = MiniboxConversionsDouble.this.minibox2double($anon.this.apply$DDD(8, 8, 8, MiniboxConversionsDouble.this.double2minibox(arg1), MiniboxConversionsDouble.this.double2minibox(arg2)));
+          def apply(arg1: Double, arg2: Double): Double = _f_cast.apply$mcDDD$sp(arg1, arg2);
           override def apply$DDD(T1$TypeTag: Byte, T2$TypeTag: Byte, R$TypeTag: Byte, t1: Double, t2: Double): Double = MiniboxConversionsDouble.this.double2minibox(_f_cast.apply$mcDDD$sp(MiniboxConversionsDouble.this.minibox2double(t1), MiniboxConversionsDouble.this.minibox2double(t2)))
         };
         new anonymous class $anon()

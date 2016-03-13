@@ -15,7 +15,7 @@ package <empty> {
           $anonfun.super.<init>(C$D.this.C$D|T$TypeTag);
           ()
         };
-        final def apply(p: (Tsp, Tsp)): Tsp = MiniboxConversionsDouble.this.minibox2box[Tsp]($anonfun.this.apply$LD(C$D.this.C$D|T$TypeTag, p), C$D.this.C$D|T$TypeTag);
+        final def apply(p: (Tsp, Tsp)): Tsp = p._1();
         override def apply$LD(R$TypeTag: Byte, t1: (Tsp, Tsp)): Double = MiniboxedTuple.this.tuple2_accessor_1_double[Tsp, Tsp](R$TypeTag, t1)
       };
       new anonymous class $anon()
@@ -33,7 +33,7 @@ package <empty> {
           $anonfun.super.<init>(C$J.this.C$J|T$TypeTag);
           ()
         };
-        final def apply(p: (Tsp, Tsp)): Tsp = MiniboxConversionsLong.this.minibox2box[Tsp]($anonfun.this.apply$LJ(C$J.this.C$J|T$TypeTag, p), C$J.this.C$J|T$TypeTag);
+        final def apply(p: (Tsp, Tsp)): Tsp = p._1();
         override def apply$LJ(R$TypeTag: Byte, t1: (Tsp, Tsp)): Long = MiniboxedTuple.this.tuple2_accessor_1_long[Tsp, Tsp](R$TypeTag, t1)
       };
       new anonymous class $anon()

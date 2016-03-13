@@ -53,6 +53,7 @@ Specializing class Base52...
   class Base52$J[Tsp, Ssp] extends Base51$JL[Tsp,Ssp] with Base52[Tsp,Ssp] {
     def <init>(val miniboxing|tests|compile|Base52$J|T$TypeTag: Byte): miniboxing.tests.compile.Base52$J[Tsp,Ssp] // is a specialized implementation of constructor Base52
     override def overrideMe$J(val T$TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is a specialized implementation of method overrideMe
+    override def overrideMe$JL(val T$TypeTag: Byte,t1: Tsp @storage[Long],t2: Tsp @storage[Long],t3: Tsp @storage[Long],s: Ssp): Tsp @storage[Long] // is an override which forwards to the specialized member
     override def overrideMe(t1: Tsp,t2: Tsp,t3: Tsp,s: Ssp): Tsp           // is a forwarder to the specialized member
     private[this] val miniboxing|tests|compile|Base52$J|T$TypeTag: Byte    // is a type tag
   }
@@ -128,7 +129,8 @@ package miniboxing.tests.compile {
       ()
     };
     override def overrideMe(t1: Tsp, t2: Tsp, t3: Tsp, s: Ssp): Tsp = MiniboxConversions.this.minibox2box[Tsp](Base52$J.this.overrideMe$J(Base52$J.this.miniboxing|tests|compile|Base52$J|T$TypeTag, MiniboxConversions.this.box2minibox_tt[Tsp](t1, Base52$J.this.miniboxing|tests|compile|Base52$J|T$TypeTag), MiniboxConversions.this.box2minibox_tt[Tsp](t2, Base52$J.this.miniboxing|tests|compile|Base52$J|T$TypeTag), MiniboxConversions.this.box2minibox_tt[Tsp](t3, Base52$J.this.miniboxing|tests|compile|Base52$J|T$TypeTag), s), Base52$J.this.miniboxing|tests|compile|Base52$J|T$TypeTag);
-    override def overrideMe$J(T$TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = t2
+    override def overrideMe$J(T$TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = t2;
+    override def overrideMe$JL(T$TypeTag: Byte, t1: Long, t2: Long, t3: Long, s: Ssp): Long = Base52$J.this.overrideMe$J(T$TypeTag, t1, t2, t3, s)
   };
   class Base52$L[Tsp, Ssp] extends miniboxing.tests.compile.Base51$LL[Tsp,Ssp] with miniboxing.tests.compile.Base52[Tsp,Ssp] {
     def <init>(): miniboxing.tests.compile.Base52$L[Tsp,Ssp] = {

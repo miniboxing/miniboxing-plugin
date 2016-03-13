@@ -226,7 +226,7 @@ package respec {
           $anonfun.super.<init>(8, 8);
           ()
         };
-        final def apply(x: Double): Double = MiniboxConversionsDouble.this.minibox2double($anonfun.this.apply$DD(8, 8, MiniboxConversionsDouble.this.double2minibox(x)));
+        final def apply(x: Double): Double = x.*(x);
         override def apply$DD(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Double): Double = MiniboxConversionsDouble.this.double2minibox(MiniboxConversionsDouble.this.minibox2double(t1).*(MiniboxConversionsDouble.this.minibox2double(t1)))
       };
       new anonymous class $anon()

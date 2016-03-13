@@ -24,7 +24,7 @@ package miniboxing.tests.compile {
           ()
         };
         protected def loop(a: Long): Long = a;
-        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.apply$J(Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag, MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag)), Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag);
+        def apply(a: Asp): Asp = MiniboxConversions.this.minibox2box[Asp]($anon.this.loop(MiniboxConversions.this.box2minibox_tt[Asp](a, Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag)), Dist2$J.this.miniboxing|tests|compile|Dist2$J|A$TypeTag);
         override protected def apply$J(A$TypeTag: Byte, a: Long): Long = $anon.this.loop(a)
       };
       new anonymous class $anon()

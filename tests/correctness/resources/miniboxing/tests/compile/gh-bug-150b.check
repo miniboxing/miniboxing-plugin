@@ -24,7 +24,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>(F$D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$D|A$TypeTag);
               ()
             };
-            final def apply(x: Asp, y: B): B = $anonfun.this.apply$DLL(F$D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$D|A$TypeTag, MiniboxConversionsDouble.this.box2minibox_tt[Asp](x, F$D.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$D|A$TypeTag), y);
+            final def apply(x: Asp, y: B): B = y;
             override def apply$DLL(T1$TypeTag: Byte, t1: Double, t2: B): B = t2
           };
           new anonymous class $anon()
@@ -45,7 +45,7 @@ package miniboxing.tests.compile.spec.interop.functions3 {
               $anonfun.super.<init>(F$J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$J|A$TypeTag);
               ()
             };
-            final def apply(x: Asp, y: B): B = $anonfun.this.apply$JLL(F$J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$J|A$TypeTag, MiniboxConversionsLong.this.box2minibox_tt[Asp](x, F$J.this.miniboxing|tests|compile|spec|interop|functions3|Fuctions3|F$J|A$TypeTag), y);
+            final def apply(x: Asp, y: B): B = y;
             override def apply$JLL(T1$TypeTag: Byte, t1: Long, t2: B): B = t2
           };
           new anonymous class $anon()

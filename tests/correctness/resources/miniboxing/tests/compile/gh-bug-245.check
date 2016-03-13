@@ -1,0 +1,215 @@
+newSource1.scala:5: warning: The class C would benefit from miniboxing type parameter U, since it is instantiated by miniboxed type parameter U of class D.
+class D[T, @miniboxed U] extends C[T, U] {
+                                 ^
+newSource1.scala:9: warning: The class D would benefit from miniboxing type parameter T, since it is instantiated by miniboxed type parameter T of class E.
+class E[@miniboxed T, @miniboxed U] extends D[T, U] {
+      ^
+[[syntax trees at end of            minibox-inject]] // newSource1.scala
+package <empty> {
+  class C[T, U] extends Object {
+    def <init>(): C[T,U] = {
+      C.super.<init>();
+      ()
+    };
+    def foo(t: T, u: U): Int = 1
+  };
+  abstract trait D[T, @miniboxed U] extends C[T,U] {
+    override def foo(t: T, u: U): Int;
+    override def foo$D(U$TypeTag: Byte, t: T, u: U @storage[Double]): Int;
+    override def foo$J(U$TypeTag: Byte, t: T, u: U @storage[Long]): Int
+  };
+  class D$D[Tsp, Usp] extends C[Tsp,Usp] with D[Tsp,Usp] {
+    <paramaccessor> private[this] val D$D|U$TypeTag: Byte = _;
+    def <init>(D$D|U$TypeTag: Byte): D$D[Tsp,Usp] = {
+      D$D.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = D$D.this.foo$D(D$D.this.D$D|U$TypeTag, t, u);
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = 2;
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = D$D.this.foo$D(U$TypeTag, t, u)
+  };
+  class D$J[Tsp, Usp] extends C[Tsp,Usp] with D[Tsp,Usp] {
+    <paramaccessor> private[this] val D$J|U$TypeTag: Byte = _;
+    def <init>(D$J|U$TypeTag: Byte): D$J[Tsp,Usp] = {
+      D$J.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = D$J.this.foo$J(D$J.this.D$J|U$TypeTag, t, u);
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = D$J.this.foo$J(U$TypeTag, t, u);
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = 2
+  };
+  class D$L[Tsp, Usp] extends C[Tsp,Usp] with D[Tsp,Usp] {
+    def <init>(): D$L[Tsp,Usp] = {
+      D$L.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = 2;
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = D$L.this.foo(t, u);
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = D$L.this.foo(t, u)
+  };
+  abstract trait E[@miniboxed T, @miniboxed U] extends C[T,U] with D[T,U] {
+    override def foo(t: T, u: U): Int;
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: T @storage[Double], u: U @storage[Double]): Int;
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: T @storage[Double], u: U @storage[Long]): Int;
+    override def foo$DL(T$TypeTag: Byte, t: T @storage[Double], u: U): Int;
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: T @storage[Long], u: U @storage[Double]): Int;
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: T @storage[Long], u: U @storage[Long]): Int;
+    override def foo$JL(T$TypeTag: Byte, t: T @storage[Long], u: U): Int;
+    override def foo$LD(U$TypeTag: Byte, t: T, u: U @storage[Double]): Int;
+    override def foo$LJ(U$TypeTag: Byte, t: T, u: U @storage[Long]): Int
+  };
+  class E$DD[Tsp, Usp] extends D$D[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$DD|T$TypeTag: Byte = _;
+    <paramaccessor> private[this] val E$DD|U$TypeTag: Byte = _;
+    def <init>(E$DD|T$TypeTag: Byte, E$DD|U$TypeTag: Byte): E$DD[Tsp,Usp] = {
+      E$DD.super.<init>(E$DD|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$DD.this.foo$DD(E$DD.this.E$DD|T$TypeTag, E$DD.this.E$DD|U$TypeTag, t, u);
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$DD.this.foo$DD(E$DD.this.E$DD|T$TypeTag, U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = 3;
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$DD.this.foo$DD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$DD.this.foo$DD(T$TypeTag, E$DD.this.E$DD|U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$DD.this.foo$DD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$DD.this.foo$DD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$DD.this.foo$DD(T$TypeTag, E$DD.this.E$DD|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$DD.this.foo$DD(E$DD.this.E$DD|T$TypeTag, U$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$DD.this.foo$DD(E$DD.this.E$DD|T$TypeTag, U$TypeTag, t, u)
+  };
+  class E$DJ[Tsp, Usp] extends D$J[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$DJ|T$TypeTag: Byte = _;
+    <paramaccessor> private[this] val E$DJ|U$TypeTag: Byte = _;
+    def <init>(E$DJ|T$TypeTag: Byte, E$DJ|U$TypeTag: Byte): E$DJ[Tsp,Usp] = {
+      E$DJ.super.<init>(E$DJ|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$DJ.this.foo$DJ(E$DJ.this.E$DJ|T$TypeTag, E$DJ.this.E$DJ|U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$DJ.this.foo$DJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = 3;
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$DJ.this.foo$DJ(T$TypeTag, E$DJ.this.E$DJ|U$TypeTag, t, u);
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$DJ.this.foo$DJ(E$DJ.this.E$DJ|T$TypeTag, U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$DJ.this.foo$DJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$DJ.this.foo$DJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$DJ.this.foo$DJ(T$TypeTag, E$DJ.this.E$DJ|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$DJ.this.foo$DJ(E$DJ.this.E$DJ|T$TypeTag, U$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$DJ.this.foo$DJ(E$DJ.this.E$DJ|T$TypeTag, U$TypeTag, t, u)
+  };
+  class E$DL[Tsp, Usp] extends D$L[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$DL|T$TypeTag: Byte = _;
+    def <init>(E$DL|T$TypeTag: Byte): E$DL[Tsp,Usp] = {
+      E$DL.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$DL.this.foo$DL(E$DL.this.E$DL|T$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$DL.this.foo$DL(T$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$DL.this.foo$DL(T$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = 3;
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$DL.this.foo$DL(T$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$DL.this.foo$DL(T$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$DL.this.foo$DL(T$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$DL.this.foo$DL(E$DL.this.E$DL|T$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$DL.this.foo$DL(E$DL.this.E$DL|T$TypeTag, t, u)
+  };
+  class E$JD[Tsp, Usp] extends D$D[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$JD|T$TypeTag: Byte = _;
+    <paramaccessor> private[this] val E$JD|U$TypeTag: Byte = _;
+    def <init>(E$JD|T$TypeTag: Byte, E$JD|U$TypeTag: Byte): E$JD[Tsp,Usp] = {
+      E$JD.super.<init>(E$JD|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$JD.this.foo$JD(E$JD.this.E$JD|T$TypeTag, E$JD.this.E$JD|U$TypeTag, t, u);
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$JD.this.foo$JD(E$JD.this.E$JD|T$TypeTag, U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$JD.this.foo$JD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$JD.this.foo$JD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$JD.this.foo$JD(T$TypeTag, E$JD.this.E$JD|U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = 3;
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$JD.this.foo$JD(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$JD.this.foo$JD(T$TypeTag, E$JD.this.E$JD|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$JD.this.foo$JD(E$JD.this.E$JD|T$TypeTag, U$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$JD.this.foo$JD(E$JD.this.E$JD|T$TypeTag, U$TypeTag, t, u)
+  };
+  class E$JJ[Tsp, Usp] extends D$J[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$JJ|T$TypeTag: Byte = _;
+    <paramaccessor> private[this] val E$JJ|U$TypeTag: Byte = _;
+    def <init>(E$JJ|T$TypeTag: Byte, E$JJ|U$TypeTag: Byte): E$JJ[Tsp,Usp] = {
+      E$JJ.super.<init>(E$JJ|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$JJ.this.foo$JJ(E$JJ.this.E$JJ|T$TypeTag, E$JJ.this.E$JJ|U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$JJ.this.foo$JJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$JJ.this.foo$JJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$JJ.this.foo$JJ(T$TypeTag, E$JJ.this.E$JJ|U$TypeTag, t, u);
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$JJ.this.foo$JJ(E$JJ.this.E$JJ|T$TypeTag, U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$JJ.this.foo$JJ(T$TypeTag, U$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = 3;
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$JJ.this.foo$JJ(T$TypeTag, E$JJ.this.E$JJ|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$JJ.this.foo$JJ(E$JJ.this.E$JJ|T$TypeTag, U$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$JJ.this.foo$JJ(E$JJ.this.E$JJ|T$TypeTag, U$TypeTag, t, u)
+  };
+  class E$JL[Tsp, Usp] extends D$L[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$JL|T$TypeTag: Byte = _;
+    def <init>(E$JL|T$TypeTag: Byte): E$JL[Tsp,Usp] = {
+      E$JL.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$JL.this.foo$JL(E$JL.this.E$JL|T$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$JL.this.foo$JL(T$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$JL.this.foo$JL(T$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$JL.this.foo$JL(T$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$JL.this.foo$JL(T$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$JL.this.foo$JL(T$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = 3;
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$JL.this.foo$JL(E$JL.this.E$JL|T$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$JL.this.foo$JL(E$JL.this.E$JL|T$TypeTag, t, u)
+  };
+  class E$LD[Tsp, Usp] extends D$D[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$LD|U$TypeTag: Byte = _;
+    def <init>(E$LD|U$TypeTag: Byte): E$LD[Tsp,Usp] = {
+      E$LD.super.<init>(E$LD|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$LD.this.foo$LD(E$LD.this.E$LD|U$TypeTag, t, u);
+    override def foo$D(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$LD.this.foo$LD(U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$LD.this.foo$LD(U$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$LD.this.foo$LD(U$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$LD.this.foo$LD(E$LD.this.E$LD|U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$LD.this.foo$LD(U$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$LD.this.foo$LD(U$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$LD.this.foo$LD(E$LD.this.E$LD|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = 3;
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$LD.this.foo$LD(U$TypeTag, t, u)
+  };
+  class E$LJ[Tsp, Usp] extends D$J[Tsp,Usp] with E[Tsp,Usp] {
+    <paramaccessor> private[this] val E$LJ|U$TypeTag: Byte = _;
+    def <init>(E$LJ|U$TypeTag: Byte): E$LJ[Tsp,Usp] = {
+      E$LJ.super.<init>(E$LJ|U$TypeTag);
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = E$LJ.this.foo$LJ(E$LJ.this.E$LJ|U$TypeTag, t, u);
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$LJ.this.foo$LJ(E$LJ.this.E$LJ|U$TypeTag, t, u);
+    override def foo$J(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$LJ.this.foo$LJ(E$LJ.this.E$LJ|U$TypeTag, t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$LJ.this.foo$LJ(U$TypeTag, t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = 3
+  };
+  class E$LL[Tsp, Usp] extends D$L[Tsp,Usp] with E[Tsp,Usp] {
+    def <init>(): E$LL[Tsp,Usp] = {
+      E$LL.super.<init>();
+      ()
+    };
+    override def foo(t: Tsp, u: Usp): Int = 3;
+    override def foo$DD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Double]): Int = E$LL.this.foo(t, u);
+    override def foo$DJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Double], u: Usp @storage[Long]): Int = E$LL.this.foo(t, u);
+    override def foo$DL(T$TypeTag: Byte, t: Tsp @storage[Double], u: Usp): Int = E$LL.this.foo(t, u);
+    override def foo$JD(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Double]): Int = E$LL.this.foo(t, u);
+    override def foo$JJ(T$TypeTag: Byte, U$TypeTag: Byte, t: Tsp @storage[Long], u: Usp @storage[Long]): Int = E$LL.this.foo(t, u);
+    override def foo$JL(T$TypeTag: Byte, t: Tsp @storage[Long], u: Usp): Int = E$LL.this.foo(t, u);
+    override def foo$LD(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Double]): Int = E$LL.this.foo(t, u);
+    override def foo$LJ(U$TypeTag: Byte, t: Tsp, u: Usp @storage[Long]): Int = E$LL.this.foo(t, u)
+  }
+}
+

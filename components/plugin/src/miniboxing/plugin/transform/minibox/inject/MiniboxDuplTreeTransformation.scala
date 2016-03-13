@@ -287,7 +287,8 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
                       impl.body.filter(x => !x.hasSymbolField || !x.symbol.isMixinConstructor).map(_.duplicate)
                     ))
                 // type check and transform the class before returning the tree
-                transform(localTyper.typed(classDef2))
+                val res = transform(localTyper.typed(classDef2))
+                res
               }
 
             baseTrait :: specClasses
@@ -634,8 +635,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
             val tpe1 = newQualTpe baseType (newMbrSym.owner)
             extractSpec(tree.pos, tpe1, currentOwner) match { // Get the partial specialization
               case Some(pspec) if metadata.memberOverloads.get(newMbrSym).flatMap(_.get(pspec)).isDefined =>
-                val newMethodSym = metadata.memberOverloads(newMbrSym)(pspec)
-                newMethodSym
+                metadata.memberOverloads(newMbrSym)(pspec)
               case _ =>
                 newMbrSym
             }

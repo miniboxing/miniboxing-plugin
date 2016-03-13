@@ -14,7 +14,7 @@ package miniboxing.tests.compile.bug192 {
           $anonfun.super.<init>(5, 5);
           ()
         };
-        final def apply(x: Int): Int = MiniboxConversions.this.minibox2int($anonfun.this.apply$JJ(5, 5, MiniboxConversions.this.int2minibox(x)));
+        final def apply(x: Int): Int = x;
         override def apply$JJ(T1$TypeTag: Byte, R$TypeTag: Byte, t1: Long): Long = t1;
         <synthetic> <paramaccessor> private[this] val $outer: miniboxing.tests.compile.bug192.Test = _;
         <synthetic> <stable> def $outer(): miniboxing.tests.compile.bug192.Test = $anonfun.this.$outer;

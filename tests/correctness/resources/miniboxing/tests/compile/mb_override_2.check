@@ -147,7 +147,7 @@ package miniboxing.tests.compile {
       LongIsBase21Base22andBase23.super.<init>();
       ()
     };
-    override def overrideMe(t: Long, s: Long): Long = MiniboxConversions.this.minibox2long(LongIsBase21Base22andBase23.this.overrideMe$JJ(6, 6, MiniboxConversions.this.long2minibox(t), MiniboxConversions.this.long2minibox(s)));
+    override def overrideMe(t: Long, s: Long): Long = scala.this.Predef.???();
     override def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???())
   }
 }

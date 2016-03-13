@@ -11,10 +11,10 @@ package miniboxing.tests.compile.bug122 {
       ()
     };
     private[this] val neutralElement: Long = 0L;
-    <stable> <accessor> def neutralElement(): Long = MiniboxConversions.this.minibox2long(C$D.this.neutralElement$J(6));
-    override def neutralElement$J(T$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(C$D.this.neutralElement);
-    def aggregate(a: Long, b: Long): Long = MiniboxConversions.this.minibox2long(C$D.this.aggregate$J(6, MiniboxConversions.this.long2minibox(a), MiniboxConversions.this.long2minibox(b)));
-    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(MiniboxConversions.this.minibox2long(a).+(MiniboxConversions.this.minibox2long(b)))
+    <stable> <accessor> def neutralElement(): Long = C$D.this.neutralElement;
+    override def neutralElement$J(T$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(C$D.this.neutralElement());
+    def aggregate(a: Long, b: Long): Long = a.+(b);
+    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(C$D.this.aggregate(MiniboxConversions.this.minibox2long(a), MiniboxConversions.this.minibox2long(b)))
   };
   class C$J[Xsp] extends miniboxing.tests.compile.bug122.B$J[Long] with miniboxing.tests.compile.bug122.C[Xsp] {
     <paramaccessor> private[this] val miniboxing|tests|compile|bug122|C$J|X$TypeTag: Byte = _;
@@ -23,10 +23,10 @@ package miniboxing.tests.compile.bug122 {
       ()
     };
     private[this] val neutralElement: Long = 0L;
-    <stable> <accessor> def neutralElement(): Long = MiniboxConversions.this.minibox2long(C$J.this.neutralElement$J(6));
-    override def neutralElement$J(T$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(C$J.this.neutralElement);
-    def aggregate(a: Long, b: Long): Long = MiniboxConversions.this.minibox2long(C$J.this.aggregate$J(6, MiniboxConversions.this.long2minibox(a), MiniboxConversions.this.long2minibox(b)));
-    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(MiniboxConversions.this.minibox2long(a).+(MiniboxConversions.this.minibox2long(b)))
+    <stable> <accessor> def neutralElement(): Long = C$J.this.neutralElement;
+    override def neutralElement$J(T$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(C$J.this.neutralElement());
+    def aggregate(a: Long, b: Long): Long = a.+(b);
+    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(C$J.this.aggregate(MiniboxConversions.this.minibox2long(a), MiniboxConversions.this.minibox2long(b)))
   };
   class C$L[Xsp] extends miniboxing.tests.compile.bug122.B$J[Long] with miniboxing.tests.compile.bug122.C[Xsp] {
     def <init>(): miniboxing.tests.compile.bug122.C$L[Xsp] = {
@@ -35,9 +35,9 @@ package miniboxing.tests.compile.bug122 {
     };
     private[this] val neutralElement: Long = 0L;
     <stable> <accessor> def neutralElement(): Long = C$L.this.neutralElement;
-    override def neutralElement$J(T$TypeTag: Byte): Long = C$L.this.neutralElement$J(6);
-    def aggregate(a: Long, b: Long): Long = MiniboxConversions.this.minibox2long(C$L.this.aggregate$J(6, MiniboxConversions.this.long2minibox(a), MiniboxConversions.this.long2minibox(b)));
-    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(MiniboxConversions.this.minibox2long(a).+(MiniboxConversions.this.minibox2long(b)))
+    override def neutralElement$J(T$TypeTag: Byte): Long = MiniboxConversions.this.long2minibox(C$L.this.neutralElement());
+    def aggregate(a: Long, b: Long): Long = a.+(b);
+    override def aggregate$J(T$TypeTag: Byte, a: Long, b: Long): Long = MiniboxConversions.this.long2minibox(C$L.this.aggregate(MiniboxConversions.this.minibox2long(a), MiniboxConversions.this.minibox2long(b)))
   };
   abstract trait B[@miniboxed T] extends Object {
     def aggregate(a: T, b: T): T;
