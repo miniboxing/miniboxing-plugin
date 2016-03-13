@@ -148,6 +148,7 @@ package miniboxing.tests.compile {
       ()
     };
     override def overrideMe(t: Long, s: Long): Long = scala.this.Predef.???();
+    override def overrideMe$J(T$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???());
     override def overrideMe$JJ(T$TypeTag: Byte, S$TypeTag: Byte, t: Long, s: Long): Long = MiniboxConversions.this.long2minibox(scala.this.Predef.???())
   }
 }

@@ -308,7 +308,7 @@ trait MiniboxInjectTreeTransformation extends TypingTransformers {
           val tags = decls.filter(memberSpecializationInfo.get(_).map(_.isTag).getOrElse(false)).sortBy(_.nameString)
           def memberVariants(mbr: Symbol): List[Tree] = {
             val baseVariants = metadata.memberOverloads.get(mbr).map(_.values.toList).getOrElse(List())
-            val specVariants = metadata.specialOverloads.get(mbr).map(_.values.toList).getOrElse(List())
+            val specVariants = metadata.specialOverloads.getOrElse(mbr, Nil)
             val res = (baseVariants ::: specVariants).sortBy(_.nameString).filter(_ != mbr).flatMap(other => createMemberTree(Some(other)))
             res
           }

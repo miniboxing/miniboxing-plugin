@@ -725,7 +725,7 @@ trait MiniboxInjectInfoTransformation extends InfoTransform {
                 global.reporter.error(sym.pos, "Member override creation: unaccounted case " + info + " for " + sym.fullName + "(" + sym + " in " + sym.owner + ")" )
                 memberSpecializationInfo(overrider) = Interface.asOverride
             }
-            metadata.specialOverloads.getOrElseUpdate(sym, collection.mutable.HashMap()) += (globalPSpec -> overrider)
+            metadata.specialOverloads(sym) = overrider :: metadata.specialOverloads.get(sym).getOrElse(Nil)
 
             scope1 enter overrider
           }

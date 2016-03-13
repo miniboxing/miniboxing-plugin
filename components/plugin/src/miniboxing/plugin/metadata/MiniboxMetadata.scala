@@ -69,7 +69,7 @@ trait MiniboxMetadata {
 
     // Special overloads, generated through addSpecialOverloads
 
-    val specialOverloads = new mutable.HashMap[Symbol, mutable.HashMap[PartialSpec, Symbol]]
+    val specialOverloads = new mutable.HashMap[Symbol, List[Symbol]]
 
     val memberSpecialization = new mutable.HashMap[Symbol, PartialSpec]
 
