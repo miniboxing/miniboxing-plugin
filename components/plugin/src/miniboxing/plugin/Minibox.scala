@@ -514,6 +514,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
   private object CompileTimeOnlyAddTagsPhase extends {
     val common = Minibox.this.common
+    val interop: InteropInjectPhase.type = InteropInjectPhase
   } with CompileTimeOnlyAddTagsComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = Nil
@@ -538,6 +539,7 @@ class Minibox(val global: Global) extends Plugin with ScalacVersion {
 
   private object CompileTimeOnlyRemoveTagsPhase extends {
     val common = Minibox.this.common
+    val interop: InteropInjectPhase.type = InteropInjectPhase
   } with CompileTimeOnlyRemoveTagsComponent {
     val global: Minibox.this.global.type = Minibox.this.global
     val runsAfter = List(PicklerPhaseName)

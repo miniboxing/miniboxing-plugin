@@ -277,6 +277,8 @@ trait CompileTimeOnlyAddTagsComponent extends
   def beforeAddCompileOnly[T](op: => T): T = global.beforePhase(addCompileOnlyPhase)(op)
 
   val common: CommonDefinitions { val global: CompileTimeOnlyAddTagsComponent.this.global.type }
+  val interop: InteropInjectComponent { val global: CompileTimeOnlyAddTagsComponent.this.global.type }
+
   def flags = common /* common contains the flags as well */
 }
 
@@ -293,6 +295,8 @@ trait CompileTimeOnlyRemoveTagsComponent extends
   def beforeRemoveCompileOnly[T](op: => T): T = global.beforePhase(removeCompileOnlyPhase)(op)
 
   val common: CommonDefinitions { val global: CompileTimeOnlyRemoveTagsComponent.this.global.type }
+  val interop: InteropInjectComponent { val global: CompileTimeOnlyRemoveTagsComponent.this.global.type }
+
   def flags = common /* common contains the flags as well */
 }
 

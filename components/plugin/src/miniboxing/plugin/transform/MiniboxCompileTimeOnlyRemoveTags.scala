@@ -34,11 +34,21 @@ trait MiniboxCompileTimeOnlyRemoveTags extends InfoTransform {
   }
 
   def transformInfo(sym: Symbol, tpe: Type): Type = {
+    var removeAnnotation = false
+
     if (sym.name == nme.CONSTRUCTOR &&
-        (sym.owner.isClass || sym.owner.isTrait) &&
-        sym.hasAnnotation(CompileTimeOnlyClass) &&
-        isMiniboxedAnnotation(sym.getAnnotation(CompileTimeOnlyClass)))
+       (sym.owner.isClass || sym.owner.isTrait) &&
+       (sym.owner.typeParams.exists(_.hasAnnotation(MinispecClass))))
+      removeAnnotation = true
+
+    if ((sym.isMethod) &&
+        (sym.hasAnnotation(CompileTimeOnlyClass)) &&
+        (isMiniboxedAnnotation(sym.getAnnotation(CompileTimeOnlyClass))))
+      removeAnnotation = true
+
+    if (removeAnnotation)
       sym.removeAnnotation(CompileTimeOnlyClass)
+
     tpe
   }
 }
