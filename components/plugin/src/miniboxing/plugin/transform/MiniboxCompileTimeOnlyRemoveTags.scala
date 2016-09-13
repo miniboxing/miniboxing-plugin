@@ -28,7 +28,8 @@ trait MiniboxCompileTimeOnlyRemoveTags extends InfoTransform {
       case Some(List(Literal(Constant(msg)))) =>
         // TODO: Check the message is actually a miniboxing-issued message
         // TODO: Check the miniboxing plugin version and warn in case of mismatch
-        true
+        msg.toString.contains("was compiled with the miniboxing plugin and can only be called by code also " +
+                              "compiled with the miniboxing plugin (see scala-miniboxing.org/compatibility)")
       case _ => false
     }
   }

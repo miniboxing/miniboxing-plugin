@@ -47,7 +47,8 @@ class TestSuite extends ScalacVersion {
     // line number changes for 2.11.7:
     "<console>:\\d+:" -> "console:<line>:",
     // don't rely on anonymous class numbers:
-    "anon\\$[0-9]+" -> "anon\\$X"
+    "anon\\$[0-9]+" -> "anon\\$X",
+    "scala=2.[0-9]+" -> "scala=ver"
   )
 
   implicit class JFileExt(jfile: JFile) {

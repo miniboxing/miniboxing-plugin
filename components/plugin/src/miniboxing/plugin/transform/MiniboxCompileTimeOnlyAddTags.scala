@@ -16,6 +16,7 @@ package hijack
 
 import scala.tools.nsc.transform.InfoTransform
 import scala.collection.immutable.ListMap
+import miniboxing.plugin.ScalacVersion
 
 trait MiniboxCompileTimeOnlyAddTags extends InfoTransform {
   this: CompileTimeOnlyAddTagsComponent =>
@@ -42,8 +43,12 @@ trait MiniboxCompileTimeOnlyAddTags extends InfoTransform {
       annotate = true
 
     // Annotate the constructor with @compileTimeOnly:
-    if (annotate)
-      sym.addAnnotation(Annotation(CompileTimeOnlyClass.tpe, List(Literal(Constant("use the miniboxing plugin!"))), ListMap.empty))
+    if (annotate) {
+      val message = "The " + sym.toString + " was compiled with the miniboxing plugin and can only be called by code also " +
+                    "compiled with the miniboxing plugin (see scala-miniboxing.org/compatibility) [mbox=0.4, scala=" +
+                    (new ScalacVersion{}).scalaBinaryVersion + "]"
+      sym.addAnnotation(Annotation(CompileTimeOnlyClass.tpe, List(Literal(Constant(message))), ListMap.empty))
+    }
 
     tpe
   }

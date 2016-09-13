@@ -1,6 +1,6 @@
-newSource1.scala:6: error: use the miniboxing plugin!
+newSource1.scala:6: error: The constructor C was compiled with the miniboxing plugin and can only be called by code also compiled with the miniboxing plugin (see scala-miniboxing.org/compatibility) [mbox=0.4, scala=2.11]
     val c = new C[Int]
             ^
-newSource1.scala:7: error: use the miniboxing plugin!
+newSource1.scala:7: error: The constructor C was compiled with the miniboxing plugin and can only be called by code also compiled with the miniboxing plugin (see scala-miniboxing.org/compatibility) [mbox=0.4, scala=2.11]
     object O extends C[String]
                      ^
