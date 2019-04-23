@@ -37,7 +37,7 @@ The development branches are:
  - [wip](https://github.com/miniboxing/miniboxing-plugin/tree/wip) is pretty stable, usually has the last resonably stable developments
  - [topic/erasure-rebase](https://github.com/miniboxing/miniboxing-plugin/tree/topic/erasure-rebase) contains the most recent developments, but expect tests to be broken most of the time
 
-###Repository organization###
+### Repository organization ###
  - wip is the working branch, most current version of the plugin
  - master is usually a bit behind wip, but should be stable (alpha-stable, not production-ready!)
  - sbt is used for compilation and testing
@@ -49,5 +49,5 @@ The development branches are:
    - `tests/correctness`      - the tests for the plugin transformation
    - `docs`                   - documents released as the development goes on
 
-##Questions?##
+## Questions? ##
 If you have any question, you can contact me at vlad dot ureche at epfl dot ch.
